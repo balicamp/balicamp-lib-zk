@@ -1,0 +1,9 @@
+<?page title="dual control button" contentType="text/html;charset=UTF-8"?>
+<zk 
+	xmlns="http://www.zkoss.org/2005/zul" 
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<panelchildren>
+		<image src="/web/zul/img/ctrlimages/tests16.png"></image>
+	
+	</panelchildren>
+</zk>

@@ -1,0 +1,14 @@
+<?page title="LOV test app" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window title="LOV test app" border="normal" apply="id.co.sigma.lab.zk.controller.LOVSandboxController">
+<vbox>
+	<hbox>Ini combo box : JENIS_KELAMIN<combobox id="comboBox"></combobox></hbox>
+	<hbox>Sample Manual<combobox id="manualComboBox"></combobox></hbox>
+	<hbox>Kabupatan(custom render)<combobox id="kabupatenComboBox"></combobox></hbox>
+	<hbox>Department(custom datasource)<combobox id="customDSComboBox"></combobox></hbox>
+	<hbox>Bandbox <bandbox id="bandboxLOV"></bandbox></hbox>
+	
+</vbox>
+
+</window>
+</zk>

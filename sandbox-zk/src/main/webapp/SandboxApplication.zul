@@ -1,0 +1,8 @@
+<?page title="Sandbox App" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk>
+<window  border="none">
+<include src="~./zul/pages/master/security/User-List.zul"></include>
+<image src="/web/zul/img/ctrlimages/Folder-Warning256.png"></image>
+</window>
+</zk>

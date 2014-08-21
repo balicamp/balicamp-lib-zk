@@ -1,0 +1,34 @@
+<?page title="User List" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window title="User List" 
+	border="none" 
+	apply="id.co.sigma.zk.ui.controller.security.UserListController">
+	
+	<listbox id="userListbox" height="300px"
+		width="785px"
+		mold="paging"
+		pageSize="10" >
+		<listhead>
+			<listheader label="No" width="50px" align="center"/>
+			<listheader label="Action" width="150px" align="center"/>
+			<listheader label="Username" width="200px" align="center"/>
+			<listheader label="Real Name" width="250px" align="center"/>
+			<listheader label="email" width="200px" align="center"/>
+		</listhead>
+		<template name="model">
+			<listitem >
+				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell  style="text-align:center">
+				<a href="www.google.com">sample</a>
+					<button >Edit</button>
+					<button >erase</button>
+					<button >view</button>
+				</listcell>
+				<listcell label="${each.userCode}" style="text-align:left"/>
+				<listcell label="${each.realName}" style="text-align:left"/>
+			 	<listcell label="${each.email}" style="text-align:left"/>
+			</listitem>
+		</template>
+	</listbox>
+</window>
+</zk>

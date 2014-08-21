@@ -1,0 +1,43 @@
+<?page title="Edit Page" contentType="text/html;charset=UTF-8"?>
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
+<zk>
+<window 	
+	id="pageDefEditor"
+	title="Edit Page" 
+	border="normal"
+ 	width="500px"
+ 	height="400px"
+	apply="id.co.sigma.zk.ui.controller.security.PageDefintionEditorController">
+<grid vflex="1">
+	
+		<columns>
+				<column width="150px" />
+				<column  />
+			</columns>
+		<rows>
+		<row>
+			Code
+			<textbox id="txtPageCode"  
+			
+				value="@{pageDefEditor$composer.editedData.pageCode}"></textbox>
+		</row>
+		<row>
+			URL
+			<textbox id="txtPageUrl"
+				value="@{pageDefEditor$composer.editedData.pageUrl}"></textbox>
+		</row>
+		<row>
+			Remark
+			<textbox id="txtPageRemark"
+				value="@{pageDefEditor$composer.editedData.additionalData}"></textbox>
+		</row>
+		<row>
+			Additional Data
+			<textbox id="txtAdditionalData"
+				value="@{pageDefEditor$composer.editedData.remark}"></textbox>
+		</row>
+		</rows>
+	</grid>
+	<button id="btnSimpan">Simpan</button><button id="btnBatal">Batal</button>
+</window>
+</zk>

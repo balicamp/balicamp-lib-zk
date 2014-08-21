@@ -1,0 +1,41 @@
+<?page title="Auto Generated index.zul"?>
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
+<window id="index" 
+	apply="id.co.sigma.lab.zk.controller.IndexController" 
+	title="Hello World!!" border="normal" >
+
+ 	<hbox align="center">
+        Keyword:
+        <textbox id="keywordBox" />
+        <button id="searchButton" label="Search"  />
+    </hbox>
+	<listbox 
+		height="330px" 
+		id="personListbox"
+		
+		mold="paging"
+		pageSize="10" 
+		>	
+		<listhead>
+			<listheader label="No" width="50px" align="center"/>
+			<listheader label="Id" width="100px" align="center"/>
+			<listheader label="Nama" width="250px"  align="center"/>
+			<listheader label="Test" width="250px" align="center"/>
+
+		</listhead>
+		<template name="model">
+		<listitem >
+			<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+			<listcell label="${each.id}" style="text-align:rigth"/>
+			<listcell label="${each.name}" style="text-align:left"/>
+			 <listcell label="${each.email}" style="text-align:left"/>
+			 
+			 
+		</listitem>
+		</template>
+	</listbox>
+	
+	
+	
+</window>
+

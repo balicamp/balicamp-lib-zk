@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration SYSTEM "log4j.dtd">
+
+<configuration xmlns="http://logging.apache.org/" debug="true">
+	
+	
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d [%t] - [%5p] %c.%M(%L) | %m%n"/>
+        </layout>
+    </appender>
+	
+	<logger name="org.hibernate">
+        <level value="TRACE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+ 	<logger name="org.hibernate.type">
+        <level value="TRACE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+	<root>
+		<level value="ERROR" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+</configuration>
