@@ -61,14 +61,14 @@
     <description>ZK toy app. untuk mengetes component ZK</description>
     <dependencies>
     	<dependency>
-    		<groupId>id.co.sigma.commonlib</groupId>
+    		<groupId>id.co.sigma.commonlib.zk</groupId>
     		<artifactId>lib-zk-bccore</artifactId>
     		<version>${project.version}</version>
     	</dependency>
     	<dependency>
     		<groupId>id.co.sigma.commonlib</groupId>
     		<artifactId>sandbox-shared</artifactId>
-    		<version>${project.version}</version>
+    		<version>${bcommon.libs.version}</version>
     	</dependency>
     </dependencies>
     
