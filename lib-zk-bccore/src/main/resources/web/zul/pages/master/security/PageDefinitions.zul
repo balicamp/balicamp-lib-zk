@@ -45,19 +45,26 @@
 			<listheader label="Remark" width="300px" align="center"/>
 			<listheader label="Additional Data" width="200px" align="center"/>
 		</listhead>
-		<template name="model">
+		<template 
+			name="model">
 			<listitem >
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell></listcell>
+				<listcell><button 
+					tooltiptext="Edit data" forward="onClick=pageListBox.onEditOnGridClick" 
+					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
 				<listcell label="${each.pageCode}" style="text-align:left"/>
 				<listcell label="${each.pageUrl}" style="text-align:left"/>
 				<listcell label="${each.remark}" style="text-align:left"/>
 				<listcell label="${each.additionalData}" style="text-align:left"/>
 			</listitem>
 		</template>		
+		<listfoot>  
+                    <listfooter span="6" align="left"><button id="btnTambah">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
+                    
+                </listfoot>
 	</listbox>
 	<separator bar="false"/>
-	<button id="btnTambah">Tambah</button>
+	
 	
 </window>
 </zk>

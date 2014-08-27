@@ -3,13 +3,14 @@ package id.co.sigma.lab.zk.controller;
 
 import java.util.List;
 
-
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.sandbox.shared.domain.Person;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.zkoss.zk.ui.Component;
@@ -33,6 +34,11 @@ public class IndexController extends GenericForwardComposer<Component>{
 	 */
 	private static final long serialVersionUID = -3985804946802605085L;
 	
+	
+	private static Logger loggerByName = LoggerFactory.getLogger(IndexController.class.getName()); 
+	
+	private static Logger loggerByClass = LoggerFactory.getLogger(IndexController.class); 
+	
 	@Autowired
 	IGeneralPurposeDao generalPurposeDao ;
 	
@@ -46,7 +52,8 @@ public class IndexController extends GenericForwardComposer<Component>{
 	private List<Person> persons ; 
 	@Override
 	public void doBeforeComposeChildren(Component comp) throws Exception {
-		
+		loggerByClass.debug("ini by class");
+		loggerByName.debug("ini by Name");
 		super.doBeforeComposeChildren(comp);
 	}
 	@Override
@@ -61,6 +68,8 @@ public class IndexController extends GenericForwardComposer<Component>{
 	}
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
+		loggerByClass.debug("ini by class");
+		loggerByName.debug("ini by Name");
 		super.doAfterCompose(comp);
 		/* Window win = (Window) comp;
          AnnotateDataBinder binder = new AnnotateDataBinder(win);
@@ -88,6 +97,7 @@ public class IndexController extends GenericForwardComposer<Component>{
 		personData.initiate(personListbox.getPageSize());/**/
 		personListbox.setModel(personData);
 		Executions.createComponents("~./zul/pages/HelloComponent.zul", null	, null);
+		
 		 
 		
 		

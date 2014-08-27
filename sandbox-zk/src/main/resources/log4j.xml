@@ -10,7 +10,45 @@
                    value="%d [%t] - [%5p] %c.%M(%L) | %m%n"/>
         </layout>
     </appender>
-	
+    
+    
+    <appender name="IDX" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d [%t] - [%5p] %c.%M(%L) | %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="ALL" class="org.apache.log4j.RollingFileAppender">
+            <param name="File" value="/tmp/itdc-logs/all.log"/>               
+            <param name="MaxFileSize" value="2000KB"/>
+            <param name="MaxBackupIndex" value="20"/>
+            <layout class="org.apache.log4j.PatternLayout">
+                <param name="ConversionPattern"
+                    value="[start-sigma-log]%d [%t] - [%5p] %c.%M(%L) | %m%n [end-sigma-log]\n"/>
+            </layout>
+    </appender>
+    
+    <appender name="IDX" class="org.apache.log4j.RollingFileAppender">
+            <param name="File" value="/tmp/itdc-logs/idx.log"/>               
+            <param name="MaxFileSize" value="2000KB"/>
+            <param name="MaxBackupIndex" value="20"/>
+            <layout class="org.apache.log4j.PatternLayout">
+                <param name="ConversionPattern"
+                    value="[start-sigma-log]%d [%t] - [%5p] %c.%M(%L) | %m%n [end-sigma-log]\n"/>
+            </layout>
+    </appender>
+    
+    
+    <!-- 
+    
+	 -->
+	 
+	 <logger name="id.co.sigma.lab.zk.controller.IndexController">
+        <level value="DEBUG"/>
+        <appender-ref ref="IDX"/>
+    </logger>
+	 
 	<logger name="org.hibernate">
         <level value="TRACE"/>
         <appender-ref ref="CONSOLE"/>
@@ -23,5 +61,6 @@
 	<root>
 		<level value="ERROR" />
 		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ALL"/>
 	</root>
 </configuration>

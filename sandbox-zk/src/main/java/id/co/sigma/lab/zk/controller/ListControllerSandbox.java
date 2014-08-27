@@ -1,6 +1,7 @@
 package id.co.sigma.lab.zk.controller;
 
 
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -19,6 +20,7 @@ import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
  */
 public class ListControllerSandbox extends BaseSimpleListController<Person>{
 
+	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ListControllerSandbox.class.getName()); 
 	@QueryParameterEntry(
 				filteredField="email" , 
 				queryOperator=SimpleQueryFilterOperator.likeBothSide)
