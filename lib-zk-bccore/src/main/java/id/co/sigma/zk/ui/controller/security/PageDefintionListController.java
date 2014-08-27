@@ -1,23 +1,28 @@
 package id.co.sigma.zk.ui.controller.security;
 
+import java.awt.event.MouseEvent;
+
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.security.domain.PageDefinition;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 /**
  * controller untuk handler 
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
-public class PageDefintionListController extends BaseSimpleListController<PageDefinition>{
+public class PageDefintionListController extends BaseSimpleListController<PageDefinition> implements IReloadablePanel{
 
 	
 	/**
@@ -29,17 +34,23 @@ public class PageDefintionListController extends BaseSimpleListController<PageDe
 	
 	
 	
-	@QueryParameterEntry(filteredField="pageCode" , queryOperator=SimpleQueryFilterOperator.likeBothSide ) 
+	@QueryParameterEntry(filteredField="pageCode" , 
+			queryOperator=SimpleQueryFilterOperator.likeBothSide ) 
 	@Wire Textbox txtPageCode	;
-	@QueryParameterEntry(filteredField="pageUrl" , queryOperator=SimpleQueryFilterOperator.likeBothSide )
+	@QueryParameterEntry(filteredField="pageUrl" ,
+			queryOperator=SimpleQueryFilterOperator.likeBothSide )
 	@Wire Textbox txtPagUrl ;
-	@QueryParameterEntry(filteredField="remark" , queryOperator=SimpleQueryFilterOperator.likeBothSide )
+	@QueryParameterEntry(filteredField="remark" , 
+			queryOperator=SimpleQueryFilterOperator.likeBothSide )
 	@Wire Textbox txtPageRemark; 
 	
 	
 	@Wire Button btnCari ;
 	@Wire Button btnReset ; 
 	@Wire Button btnTambah ; 
+	
+	@Wire Button btnEdit ; 
+	@Wire Button btnHapus ; 
 
 	@Override
 	protected Class<? extends PageDefinition> getHandledClass() {
@@ -74,6 +85,32 @@ public class PageDefintionListController extends BaseSimpleListController<PageDe
 	public void addClick() {
 		PageDefinition def = new PageDefinition(); 
 		EditorManager.getInstance().addNewData("~./zul/pages/master/security/PageDefinitionEditor.zul", def, this);
+	}
+	
+	@Override
+	public void reload() {
+		invokeSearch();
+		
+	}
+	
+	
+	
+	
+	@Listen(value="onClick = #btnHapus")
+	public void hapusClick() {
+		
+	}
+	
+	@Listen(value="onSelect = #pageListBox")
+	public void listboxSelected () {
+		System.out.println("selected");
+		btnHapus.setVisible(true); 
+		btnEdit.setVisible(true);
+	}
+	
+	@Listen(value="onClick =#pageListBox")
+	public void onEditOnGridClick(ForwardEvent evt ) {
+		Messagebox.show("Test click Grid"); 
 	}
 	
 

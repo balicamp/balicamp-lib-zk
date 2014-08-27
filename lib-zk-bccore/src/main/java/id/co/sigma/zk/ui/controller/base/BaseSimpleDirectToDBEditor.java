@@ -36,7 +36,8 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	@Override
 	protected void updateData(POJO data) throws Exception {
 		generalPurposeService.update(data);
-		
 	}
+	
+	
 
 }

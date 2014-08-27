@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
@@ -45,7 +46,7 @@ public abstract class BaseSimpleListController<DATA> extends BaseSimpleControlle
 	
 	
 	
-	
+	private DATA selectedItem ; 
 	
 	
 	

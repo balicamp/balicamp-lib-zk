@@ -9,6 +9,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
 import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
@@ -62,6 +63,13 @@ public class PageDefintionEditorController extends BaseSimpleDirectToDBEditor<Pa
 		}
 		
 	}
+	
+	@Listen(value="onClick = #btnBatal")
+	public void batalClick() {
+		EditorManager.getInstance().closeCurrentEditorPanel();
+	}
+	
+	
 	@Override
 	public void insertData() throws Exception {
 		//FIXME: ini masih di hard code dulu
@@ -69,9 +77,9 @@ public class PageDefintionEditorController extends BaseSimpleDirectToDBEditor<Pa
 		super.insertData();
 	}
 	
-	@Listen(value="onClick = #btnBatal")
-	public void batalClick() {
-		
-	}
+
+	
+	
+	
 
 }

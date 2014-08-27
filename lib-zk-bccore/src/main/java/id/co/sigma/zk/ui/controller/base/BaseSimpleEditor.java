@@ -11,6 +11,7 @@ import org.zkoss.zk.ui.metainfo.ComponentInfo;
 
 import id.co.sigma.zk.ui.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 
 
@@ -19,7 +20,7 @@ import id.co.sigma.zk.ui.controller.ZKEditorState;
  * controller sederhana
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
-public abstract class BaseSimpleEditor<  POJO > extends BaseSimpleController implements IEditorPanel{
+public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController implements IEditorPanel {
 	
 	
 	
@@ -81,12 +82,20 @@ public abstract class BaseSimpleEditor<  POJO > extends BaseSimpleController imp
 	 */
 	public   void updateData (  ) throws Exception {
 		updateData(getEditedData());
+		if ( this.editorCallerReference != null && this.editorCallerReference instanceof IReloadablePanel) {
+			((IReloadablePanel)editorCallerReference).reload();
+		}
+		EditorManager.getInstance().closeCurrentEditorPanel();
 	}
 	/**
 	 * insert data yang sedang di edit
 	 */
 	public void insertData ()  throws Exception {
 		insertData(getEditedData());
+		if ( this.editorCallerReference != null && this.editorCallerReference instanceof IReloadablePanel) {
+			((IReloadablePanel)editorCallerReference).reload();
+		}
+		EditorManager.getInstance().closeCurrentEditorPanel();
 	}
 	
 	/**
