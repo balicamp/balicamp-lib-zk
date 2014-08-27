@@ -25,7 +25,7 @@
     project="lib-zk-bccore" 
     file="/lib-zk-bccore/src/main/java/id/co/sigma/zk/ui/controller/base/BaseSimpleDirectToDBEditor.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="745" y="667"/>    
+    <position height="-1" width="-1" x="713" y="667"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
