@@ -11,6 +11,7 @@ import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.lov.CommonLOVHeader;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.lov.ILOVProviderService;
+import id.co.sigma.zk.service.IZKCommonService;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.lov.CommonLOVWithRenderer;
 import id.co.sigma.zk.ui.lov.DefaultLOVRenderer;
@@ -49,8 +50,11 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	
 	
 	@Autowired
-	ILOVProviderService lovProviderService;
+	protected ILOVProviderService lovProviderService;
 	
+	
+	@Autowired
+	protected IZKCommonService zkCommonService ; 
 	
 	
 	/**

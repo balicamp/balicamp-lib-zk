@@ -9,7 +9,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 
-import id.co.sigma.zk.ui.ZKCoreLibConstant;
+import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
@@ -142,10 +142,24 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				editorCallerReference = (BaseSimpleController) passedParameter.get(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT); 
 			}
 			
+			runAditionalTaskOnDataRevieved(editedData, editorState, passedParameter);
+			
 		}
 		return super.doBeforeCompose(page, parent, compInfo);
 	}
 	
+	
+	
+	
+	
+	
+	
+	/**
+	 * di sini pekerjaan untuk handle task pada saat data di terima
+	 */
+	protected void runAditionalTaskOnDataRevieved (POJO editedData , ZKEditorState editorState , Map<?,?>   rawDataParameter) {
+		
+	}
 	
 	
 	/**

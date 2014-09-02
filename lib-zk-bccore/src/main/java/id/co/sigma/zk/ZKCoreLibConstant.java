@@ -1,4 +1,4 @@
-package id.co.sigma.zk.ui;
+package id.co.sigma.zk;
 
 /**
  * constant untuk ZK
@@ -12,6 +12,12 @@ public final class ZKCoreLibConstant {
 	 */
 	public static final String EDITED_DATA_ATTRIBUTE_KEY="editedData";
 	
+	
+	
+	/**
+	 * container data
+	 */
+	public static final String EDITED_DATA_CLIENT_CONTAINER_KEY="editedDataContainer";
 	
 	
 	/**

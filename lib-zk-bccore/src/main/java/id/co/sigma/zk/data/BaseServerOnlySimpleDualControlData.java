@@ -1,4 +1,4 @@
-package id.co.sigma.zk.ui.data;
+package id.co.sigma.zk.data;
 
 import com.google.gson.Gson;
 
