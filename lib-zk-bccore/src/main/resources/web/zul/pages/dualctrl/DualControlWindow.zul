@@ -1,0 +1,28 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<panel>
+		<panelchildren>
+			<groupbox>
+				<label id="caption" value="Approval"/>
+			</groupbox>
+		</panelchildren>
+	</panel>
+	<separator />
+	<panel>
+		<panelchildren id="windowContent">			
+		</panelchildren>
+	</panel>
+	<separator />
+	<panel>
+		<panelchildren>
+			<groupbox>
+				<hlayout id="buttonBar">
+					<button id="btnApprove" label="Approve"/>
+					<button id="btnCorrection" label="Correction"/>
+					<button id="btnReject" label="Reject"/>
+					<button id="btnCancel" label="Cancel"/>
+				</hlayout>
+			</groupbox>
+		</panelchildren>
+	</panel>
+</zk>

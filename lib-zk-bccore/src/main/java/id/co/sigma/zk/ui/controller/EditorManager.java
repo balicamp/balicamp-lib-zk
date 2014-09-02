@@ -92,7 +92,8 @@ public final class EditorManager {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 
 		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.ADD_NEW); 
-		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
+		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller);
+		parameter.put("userApproval", "/user/UserApproval.zul");
 		showHideLatestComponent(false);
 		includePanel.setVisible(false);
 		editorContainerWindow.setVisible(true); 

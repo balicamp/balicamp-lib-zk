@@ -2,17 +2,26 @@ package id.co.sigma.zk.ui.controller.base;
 
 
 
-import java.util.Map;
-
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.metainfo.ComponentInfo;
-
 import id.co.sigma.zk.ui.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
+
+import java.lang.reflect.Field;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.metainfo.ComponentInfo;
+import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Timebox;
 
 
 
@@ -21,8 +30,6 @@ import id.co.sigma.zk.ui.controller.ZKEditorState;
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
 public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController implements IEditorPanel {
-	
-	
 	
 	/**
 	 * 
@@ -111,11 +118,49 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		return editedData;
 	}
 	
+	/**
+	 * parse data dari client	
+	 * @param comp
+	 */
+	protected void parseEditedData(Component comp) {
+		Field[] fields = editedData.getClass().getDeclaredFields();
+		IdSpace idSpace = comp.getSpaceOwner();
+		for(Field field : fields) {
+			Component input = idSpace.getFellowIfAny(field.getName());
+			if(input != null) {
+				Object val = null; 
+				if(input instanceof Datebox) {
+					val = ((Datebox)input).getValue();
+				} else if(input instanceof Timebox) {
+					val = ((Timebox)input).getValue();
+				} else if(input instanceof Intbox) {
+					val = ((Intbox)input).getValue();
+				} else if(input instanceof Decimalbox) {
+					val = ((Decimalbox)input).getValue();
+				} else if(input instanceof Doublebox) {
+					val = ((Doublebox)input).getValue();
+				} else if(input instanceof Textbox) {
+					val = ((Textbox)input).getValue();
+				}
+				
+				try {
+					
+					BeanUtils.setProperty(editedData, field.getName(), val);
+					
+				} catch (Exception e) {
+				}
+			}
+		}
+	}
 	
-	
-	
-	
-	
+//	protected void loadEditedData() {
+//		if(editedData != null) {
+//			Field[] fields = editedData.getClass().getDeclaredFields();
+//			for(Field field : fields) {
+//				
+//			}
+//		}
+//	}
 	
 	
 	@Override
