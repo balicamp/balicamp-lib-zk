@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language-addon>
+    <addon-name>sigma-core-composite</addon-name>
+	<language-name>xul/html</language-name>
+
+	<component>
+        <component-name>dualCtrlWindow</component-name>
+        <extends>window</extends>
+        <component-class>id.co.sigma.zk.ui.controller.dualcontrol.DualControlWindow</component-class>
+    </component>	
+
+	<component>
+        <component-name>editorWindow</component-name>
+        <extends>window</extends>
+        <component-class>id.co.sigma.zk.ui.controller.base.window.EditorWindow</component-class>
+    </component>	
+    
+</language-addon>

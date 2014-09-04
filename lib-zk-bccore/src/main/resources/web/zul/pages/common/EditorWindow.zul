@@ -1,0 +1,26 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<panel>
+		<panelchildren>
+			<groupbox>
+				<label id="caption"/>
+			</groupbox>
+		</panelchildren>
+	</panel>
+	<separator/>
+	<panel>
+		<panelchildren id="panelEditor">
+		</panelchildren>
+	</panel>
+	<separator/>
+	<panel>
+		<panelchildren>
+			<groupbox>
+				<hlayout>
+					<button id="btnSave" label="Simpan"/>
+					<button id="btnCancel" label="Cancel"/>
+				</hlayout>
+			</groupbox>
+		</panelchildren>
+	</panel>
+</zk>
