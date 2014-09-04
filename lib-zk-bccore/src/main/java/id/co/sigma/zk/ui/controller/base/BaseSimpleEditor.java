@@ -18,6 +18,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 
+import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
