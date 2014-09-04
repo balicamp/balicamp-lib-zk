@@ -53,6 +53,13 @@
 	</plugins>
     </build>
 
+	<repositories>
+		<repository>
+			<id>servlet repository</id>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+	</repositories>
+	
     <dependencies>
 		<dependency>
 	      <groupId>org.zkoss.zk</groupId>
@@ -99,7 +106,7 @@
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
+      <artifactId>commons-logging</artifactId> 
       <version>${commons.logging.version}</version>
     </dependency>
     <dependency>
@@ -128,9 +135,15 @@
 		
 		<dependency>
 			<groupId>javax.servlet</groupId>
-  			<artifactId>servlet-api</artifactId>
+  			<artifactId>javax.servlet-api</artifactId>
   			<version>3.0.1</version>
   			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.2</version>
 		</dependency>
 		
   	</dependencies>
