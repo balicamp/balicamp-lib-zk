@@ -119,10 +119,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	}
 	
 	/**
-	 * parse data dari client	
+	 * parse data dari client	 
 	 * @param comp
 	 */
-	protected void parseEditedData(Component comp) {
+	protected void parseEditedData(Component comp) { 
 		Field[] fields = editedData.getClass().getDeclaredFields();
 		IdSpace idSpace = comp.getSpaceOwner();
 		for(Field field : fields) {

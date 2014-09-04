@@ -1,16 +1,19 @@
 package id.co.sigma.zk.ui.controller.base;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -22,7 +25,7 @@ import org.zkoss.zul.impl.InputElement;
  * 
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
-public abstract class BaseSimpleListController<DATA> extends BaseSimpleController{
+public abstract class BaseSimpleListController<DATA extends Serializable> extends BaseSimpleController{
 	
 	
 	
@@ -39,7 +42,8 @@ public abstract class BaseSimpleListController<DATA> extends BaseSimpleControlle
 	
 	
 	 
-	
+	@Autowired
+	private IGeneralPurposeService generalPurposeService ;  
 	
 	
 	SimpleQueryDrivenListModel<DATA> dataModel ;
@@ -57,6 +61,7 @@ public abstract class BaseSimpleListController<DATA> extends BaseSimpleControlle
 	 * class yang di render controller ini
 	 */
 	protected abstract Class<? extends DATA> getHandledClass() ;
+	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
@@ -67,6 +72,7 @@ public abstract class BaseSimpleListController<DATA> extends BaseSimpleControlle
 		SimpleSortArgument [] sorts = getSorts(); 
 		invokeSearch(filters, sorts);
 	}
+	
 	public void invokeSearch (final SimpleQueryFilter[] filters ,final   SimpleSortArgument[] sorts) {
 		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
 		dataModel  = new SimpleQueryDrivenListModel<DATA>() {
@@ -90,7 +96,13 @@ public abstract class BaseSimpleListController<DATA> extends BaseSimpleControlle
 	}
 	
 	
-	
+	protected void deleteData(DATA data, Serializable pk, String pkFieldName) {
+		try {
+			generalPurposeService.delete(data.getClass(), pk, pkFieldName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	

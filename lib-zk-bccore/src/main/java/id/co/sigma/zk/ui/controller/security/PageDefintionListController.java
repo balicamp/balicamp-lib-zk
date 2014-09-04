@@ -3,11 +3,13 @@ package id.co.sigma.zk.ui.controller.security;
 import java.awt.event.MouseEvent;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
@@ -94,24 +96,41 @@ public class PageDefintionListController extends BaseSimpleListController<PageDe
 	}
 	
 	
-	
-	
-	@Listen(value="onClick = #btnHapus")
-	public void hapusClick() {
-		
+	@Listen("onEditData = #pageListBox")
+	public void clickEdit(ForwardEvent e) {
+		Component item = e.getOrigin().getTarget().getParent().getParent();
+		if(item instanceof Listitem) {
+			PageDefinition pDef = ((Listitem)item).getValue();
+			EditorManager.getInstance().editData("~./zul/pages/master/security/PageDefinitionEditor.zul", pDef, this);
+		}
 	}
 	
-	@Listen(value="onSelect = #pageListBox")
-	public void listboxSelected () {
-		System.out.println("selected");
-		btnHapus.setVisible(true); 
-		btnEdit.setVisible(true);
+	@Listen("onDeleteData = #pageListBox")
+	public void clickDelete(ForwardEvent e) {
+		Component item = e.getOrigin().getTarget().getParent().getParent();
+		if(item instanceof Listitem) {
+			PageDefinition pDef = ((Listitem)item).getValue();
+			deleteData(pDef, pDef.getId(), "id");
+			reload();
+		}
 	}
 	
-	@Listen(value="onClick =#pageListBox")
-	public void onEditOnGridClick(ForwardEvent evt ) {
-		Messagebox.show("Test click Grid"); 
-	}
+//	@Listen(value="onClick = #btnHapus")
+//	public void hapusClick() {
+//		
+//	}
+	
+//	@Listen(value="onSelect = #pageListBox")
+//	public void listboxSelected () {
+//		System.out.println("selected");
+//		btnHapus.setVisible(true); 
+//		btnEdit.setVisible(true);
+//	}
+//	
+//	@Listen(value="onClick =#pageListBox")
+//	public void onEditOnGridClick(ForwardEvent evt ) {
+//		Messagebox.show("Test click Grid"); 
+//	}
 	
 
 }
