@@ -2,11 +2,6 @@ package id.co.sigma.zk.ui.controller.base;
 
 
 
-import id.co.sigma.zk.ui.ZKCoreLibConstant;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.IReloadablePanel;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
-
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -23,6 +18,11 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 
+import id.co.sigma.zk.ZKCoreLibConstant;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
+
 
 
 /**
@@ -30,6 +30,8 @@ import org.zkoss.zul.Timebox;
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
 public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController implements IEditorPanel {
+	
+	
 	
 	/**
 	 * 
@@ -153,15 +155,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		}
 	}
 	
-//	protected void loadEditedData() {
-//		if(editedData != null) {
-//			Field[] fields = editedData.getClass().getDeclaredFields();
-//			for(Field field : fields) {
-//				
-//			}
-//		}
-//	}
-	
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
@@ -187,10 +180,24 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				editorCallerReference = (BaseSimpleController) passedParameter.get(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT); 
 			}
 			
+			runAditionalTaskOnDataRevieved(editedData, editorState, passedParameter);
+			
 		}
 		return super.doBeforeCompose(page, parent, compInfo);
 	}
 	
+	
+	
+	
+	
+	
+	
+	/**
+	 * di sini pekerjaan untuk handle task pada saat data di terima
+	 */
+	protected void runAditionalTaskOnDataRevieved (POJO editedData , ZKEditorState editorState , Map<?,?>   rawDataParameter) {
+		
+	}
 	
 	
 	/**

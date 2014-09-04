@@ -1,9 +1,10 @@
 package id.co.sigma.zk.ui.controller;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
-import id.co.sigma.zk.ui.ZKCoreLibConstant;
+import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.controller.base.IEditorPanel;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +72,26 @@ public final class EditorManager {
 	
 	
 	/**
+	 * ini untuk menampilkan editor dengan tipe data tidak di simpan ke database langsung
+	 * @param zulPath zul path dari data
+	 * @param dataContainer container dari data
+	 * @param editedData data yang di edit
+	 * @param caller pemanggil
+	 */
+	public<DATA extends SingleKeyEntityData<?>> void editData ( String zulPath ,ZKClientSideListDataEditorContainer<DATA> dataContainer ,DATA editedData , BaseSimpleController caller ) {
+		
+		Map<String, Object> parameter = new HashMap<String, Object>() ; 
+		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, editedData); 
+		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.EDIT); 
+		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
+		parameter.put(ZKCoreLibConstant.EDITED_DATA_CLIENT_CONTAINER_KEY, dataContainer);
+		showHideLatestComponent(false);
+		includePanel.setVisible(false);
+		editorContainerWindow.setVisible(true); 
+		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+	}
+	
+	/**
 	 * menampilkan editor
 	 * @param zulPath url dari zul untuk edit
 	 * @param editedData data yang di edit
@@ -81,6 +102,7 @@ public final class EditorManager {
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, editedData); 
 		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.EDIT); 
 		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
+		
 		showHideLatestComponent(false);
 		includePanel.setVisible(false);
 		editorContainerWindow.setVisible(true); 
@@ -88,6 +110,26 @@ public final class EditorManager {
 	}
 	
 	
+	
+	public<DATA > void addNewData ( String zulPath, ZKClientSideListDataEditorContainer<DATA> container ,DATA appendedData , BaseSimpleController caller ) {
+		Map<String, Object> parameter = new HashMap<String, Object>() ; 
+		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 
+		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.ADD_NEW);
+		parameter.put(ZKCoreLibConstant.EDITED_DATA_CLIENT_CONTAINER_KEY, container);
+		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
+		showHideLatestComponent(false);
+		includePanel.setVisible(false);
+		editorContainerWindow.setVisible(true); 
+		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+	}
+	
+	
+	/**
+	 * menampilkan editor data
+	 * @param zulPath path dari zul
+	 * @param appendedData data yang di add
+	 * @param caller caller dari editor. biasanay this 
+	 */
 	public<DATA extends SingleKeyEntityData<?>> void addNewData ( String zulPath ,DATA appendedData , BaseSimpleController caller ) {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 

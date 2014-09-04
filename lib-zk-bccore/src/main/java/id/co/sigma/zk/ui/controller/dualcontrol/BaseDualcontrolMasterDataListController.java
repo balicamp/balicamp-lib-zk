@@ -8,7 +8,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 
 import id.co.sigma.common.data.app.SimpleDualControlData;
-import id.co.sigma.zk.ui.ZKCoreLibConstant;
+import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 

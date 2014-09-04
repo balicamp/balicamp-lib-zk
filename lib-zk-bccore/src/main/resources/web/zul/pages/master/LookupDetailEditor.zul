@@ -1,0 +1,44 @@
+<?page title="Editor Lookup Detail" contentType="text/html;charset=UTF-8"?>
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
+<zk>
+<window title="Editor Lookup Detail" border="normal" id="lookupDetail" 
+	apply="id.co.sigma.zk.ui.controller.master.LookupDetailEditorController">
+<grid vflex="1">
+	
+		<columns>
+				<column width="150px" />
+				<column  />
+			</columns>
+		<rows>
+		<row>
+			Locale
+			<textbox id="txtI18n" ></textbox>
+		</row>
+		<row>
+			Kode
+			<textbox id="txtCode"></textbox>
+		</row>
+		<row>
+			Label
+			<textbox id="txtLabel"></textbox>
+		</row>
+		<row>
+			additional data 1
+			<textbox id="txtAdditionalData1"></textbox>
+		</row>
+		<row>
+			additional data 2
+			<textbox id="txtAdditionalData2"></textbox>
+		</row>
+		
+		<row>
+			Sequence
+			<intbox id="txtSequence"></intbox>
+		</row>
+		
+		
+		</rows>
+	</grid>
+	<button id="btnSave">Simpan</button><button id="btnCancel">Batal</button>
+</window>
+</zk>

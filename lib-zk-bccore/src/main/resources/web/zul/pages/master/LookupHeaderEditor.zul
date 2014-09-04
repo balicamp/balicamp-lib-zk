@@ -1,0 +1,68 @@
+<?page title="Lookup Header Editor" contentType="text/html;charset=UTF-8"?>
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
+<zk>
+<window title="Lookup Header Editor" 
+border="normal" 
+	id="lookupHeader" 
+	apply="id.co.sigma.zk.ui.controller.master.LookupHeaderEditorController">
+	<grid >
+		<columns>
+			<column label="Type" width="150px" />
+			<column label="Content" />
+		</columns>
+		<rows>
+			<row>
+				ID
+				<textbox id="txtIdLov" maxlength="32"></textbox>
+			</row>
+			<row>
+				Catatan
+				<textbox id="txtRemark" maxlength="128"></textbox>
+			</row>
+			<row>
+				Versi
+				<textbox id="txtVersion" maxlength="16"></textbox>
+			</row>
+		</rows>
+	</grid>	
+	
+	
+		
+	
+	
+	<listbox
+	id="lsbLookupDetails"
+		height="300px">
+		<listhead>
+			<listheader label="No" width="50px" align="center"/>
+			<listheader label="Action" width="150px" align="center"/>
+			<listheader label="Locale" width="100px" align="center"/>
+			<listheader label="Kode" width="150px" align="center"/>
+			<listheader label="Label" width="200px" align="center"/>
+			<listheader label="Ext Field 1" width="100px" align="center"/>
+			<listheader label="Ext Field 2" width="100px" align="center"/>
+		</listhead>
+		<template 
+			name="model">
+			<listitem >
+				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell><button 
+					tooltiptext="Edit data" forward="onClick=pageListBox.onEditOnGridClick" 
+					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
+				<listcell label="${each.i18Key}" style="text-align:left"/>
+				<listcell label="${each.detailCode}" style="text-align:left"/>
+				<listcell label="${each.label}" style="text-align:left"/>
+				<listcell label="${each.extField1}" style="text-align:left"/>
+				<listcell label="${each.extField2}" style="text-align:left"/>
+				<listcell label="${each.sequence}" style="text-align:right"/>
+			</listitem>
+		</template>		
+		<listfoot>  
+			<listfooter span="8" align="left"><button id="btnAdd">Tambah</button></listfooter>
+		</listfoot>
+	</listbox>	
+			
+			
+	<button id="btnSave">Simpan</button><button id="btnClose">Batal</button>		
+</window>
+</zk>

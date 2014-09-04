@@ -1,0 +1,59 @@
+<?page title="Lookup Header Editor" contentType="text/html;charset=UTF-8"?>
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
+<zk>
+<window title="Daftar Lookup Header" 
+border="normal" 
+	id="lookupHeaderList" 
+	apply="id.co.sigma.zk.ui.controller.master.LookupHeaderListController">
+	
+	<grid vflex="1">
+	
+		<columns>
+				<column width="150px" />
+				<column  />
+			</columns>
+		<rows>
+		<row>
+			Kode
+			<textbox id="txtKode"></textbox>
+		</row>
+		<row>
+			Catatan
+			<textbox id="txtRemark"></textbox>
+		</row>
+		</rows>
+	</grid>	
+	<button id="btnSearch">Cari</button><button id="btnReset">Reset</button>
+	
+	<separator></separator>
+	<listbox
+	id="lsbLookupHeader"
+		height="300px"
+		mold="paging"
+		pageSize="10" >
+		<listhead>
+			<listheader label="No" width="50px" align="center"/>
+			<listheader label="Action" width="150px" align="center"/>
+			<listheader label="ID" width="250px" align="center"/>
+			<listheader label="Catatan" width="300px" align="center"/>
+			<listheader label="Versi" width="300px" align="center"/>
+		</listhead>
+		<template 
+			name="model">
+			<listitem >
+				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell><button 
+					tooltiptext="Edit data" forward="onClick=pageListBox.onEditOnGridClick" 
+					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
+				<listcell label="${each.id}" style="text-align:left"/>
+				<listcell label="${each.remark}" style="text-align:left"/>
+				<listcell label="${each.version}" style="text-align:left"/>
+			</listitem>
+		</template>		
+		<listfoot>  
+			<listfooter span="5" align="left"><button id="btnAdd">Tambah</button></listfooter>
+		</listfoot>
+	</listbox>
+			
+</window>
+</zk>
