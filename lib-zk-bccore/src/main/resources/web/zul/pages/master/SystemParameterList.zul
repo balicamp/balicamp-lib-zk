@@ -1,5 +1,4 @@
 <?page title="Auto Generated index.zul"?>
-<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
 <window id="index" apply="id.co.sigma.zk.ui.controller.master.SystemParameterController" title="Parameter System" border="normal">
     <vlayout>
     	Key:
@@ -35,8 +34,14 @@
         <template name="model">
         <listitem >
         	<listcell>
-        		<button forward="onClick=listbox.onEdit" image="/img/pencil-16.png" width="36px" />
-              	<button forward="onClick=listbox.onDelete" image="/img/del_red_16.png" width="36px" />
+        		<!-- <button forward="onClick=listbox.onEdit" image="/img/pencil-16.png" width="36px" />
+              	<button forward="onClick=listbox.onDelete" image="/img/del_red_16.png" width="36px" /> -->
+              	<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell>
+					<actionButton controller="${wList$composer}" 
+						editorPage="~./zul/pages/master/SystemParameterFormEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data page: ${each.pageCode} ?"/>
+				</listcell>
         	</listcell>
             <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
             <listcell label="${each.id}" style="text-align:rigth"/>
