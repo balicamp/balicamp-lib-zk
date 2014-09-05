@@ -1,0 +1,54 @@
+<?page title="Auto Generated index.zul"?>
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
+<window id="index" apply="id.co.sigma.zk.ui.controller.master.SystemParameterController" title="Parameter System" border="normal">
+    <vlayout>
+    	Key:
+        <textbox id="keySearch" />
+        Catatan
+        <textbox id="remarkSearch" />
+    </vlayout>
+   
+     <vbox align="center">
+     	<button id="searchButton" label="Search" 
+            onClick="@command('click')"/>
+     </vbox>
+        
+    
+    <vbox align="center">
+    </vbox>
+    <listbox 
+        height="400px" 
+        id="listbox"
+
+        mold="paging"
+        pageSize="10" 
+        >   
+        <listhead>
+        	<listheader label="Edit" width="100px" align="center"/>
+            <listheader label="No" width="50px" align="center"/>
+            <listheader label="Key" width="100px" align="center"/>
+            <listheader label="Nilai" width="250px"  align="center"/>
+            <listheader label="Catatan" width="250px" align="center"/>
+			<listheader label="Tipe" width="250px" align="center"/>
+			<listheader label="Boleh di edit" width="200px" align="center"/>
+        </listhead>
+        <template name="model">
+        <listitem >
+        	<listcell>
+        		<button forward="onClick=listbox.onEdit" image="/img/pencil-16.png" width="36px" />
+              	<button forward="onClick=listbox.onDelete" image="/img/del_red_16.png" width="36px" />
+        	</listcell>
+            <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+            <listcell label="${each.id}" style="text-align:rigth"/>
+            <listcell label="${each.valueRaw}" style="text-align:left"/>
+            <listcell label="${each.remark}" style="text-align:left"/>
+             <listcell label="${each.paramType}" style="text-align:left"/>
+             <listcell label="${each.editableFlag}" style="text-align:left"/>
+        </listitem>
+        </template>
+    </listbox>
+    
+     <vbox align="center">
+     	<button id="addButton" label="Tambah" />
+     </vbox>
+</window>
