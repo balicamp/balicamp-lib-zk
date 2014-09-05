@@ -1,0 +1,5 @@
+<zk>
+	<image src="~./zul/img/ctrlimages/plus-16.png" width="16px" height="16px" />
+	<image src="~./zul/img/ctrlimages/pencil-16.png" width="16px" height="16px" />
+	<image src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px"/>
+</zk>
