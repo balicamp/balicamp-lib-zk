@@ -1,5 +1,5 @@
 <?page title="Edit Page" contentType="text/html;charset=UTF-8"?>
-
+<!-- <?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> -->
 <zk>
 
 <editorWindow id="pageDefEditor" captionLabel="Edit Page"
