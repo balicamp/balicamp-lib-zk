@@ -178,10 +178,6 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 
 	public abstract Listbox getListbox()  ; 
 	
-	/**
-	 * 
-	 * @param data
-	 */
 	public void deleteData(DATA data) {
 		
 	}

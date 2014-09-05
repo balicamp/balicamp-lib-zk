@@ -98,7 +98,6 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			springWired = true ; 
 		} catch (Exception e) {
 			springWired = false ;
-			logger.error("gagal wire spring.error:" +e.getMessage() ,e );
 		}
 	}
 	

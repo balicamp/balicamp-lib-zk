@@ -1,0 +1,64 @@
+<?page title="Daftar Halaman" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window 
+	title="Group Management"
+	border="normal" 
+	apply="id.co.sigma.zk.ui.controller.security.GroupManagementListController">
+	
+	<groupbox id="searchBox" mold="3d" width="100%">
+		<grid >
+			<rows>
+				<row>
+					<cell width="200px">Group Code</cell>
+					<cell><textbox id="txtGroupCode"></textbox></cell>
+				</row>
+				<row>
+					<cell>Group Name</cell>
+					<cell><textbox id="txtGroupName"></textbox></cell>
+				</row>
+			</rows>	
+		</grid>	
+		<button id="btnCari">Cari</button>
+		<space></space>
+		<button id="btnReset">Reset</button>
+	</groupbox>
+	<separator bar="false"/>
+	
+	
+	<listbox 
+		id="pageListBox" 
+		width="100%"
+		height="300px"
+		mold="paging"
+		pageSize="10" >
+		<listhead>
+			<listheader label="No" width="50px" align="center"/>
+			<listheader label="Action" width="150px" align="center"/>
+			<listheader label="Code" hflex="1" align="center"/>
+			<listheader label="Name" hflex="1" align="center"/>
+		</listhead>
+		<template 
+			name="model">
+			<listitem >
+				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell>
+					<image src="/img/pencil-16.png" width="16" height="16" forward="onClick=pageListBox.onBtnEditClick" tooltiptext="Edit" />
+					<image src="/img/del_red_16.png" width="16" height="16" forward="onClick=pageListBox.onBtnDelClick" tooltiptext="Delete" />
+				</listcell>
+				<listcell label="${each.groupCode}" style="text-align:left"/>
+				<listcell label="${each.groupName}" style="text-align:left"/>
+			</listitem>
+		</template>		
+		<listfoot>  
+        	<listfooter span="6" align="left">
+	        	<button id="btnTambah">Tambah</button>
+	        	<button id="btnEdit" visible="false">Edit</button>
+	        	<button id="btnHapus"  visible="false">Hapus</button>
+        	</listfooter>
+        </listfoot>
+	</listbox>
+	<separator bar="false"/>
+	
+	
+</window>
+</zk>

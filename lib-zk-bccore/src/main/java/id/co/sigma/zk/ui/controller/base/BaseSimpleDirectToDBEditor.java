@@ -68,7 +68,7 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 					}
 				}
 			});				
-		} else saveData(evt);
+		} else saveData(evt); 
 	}
 	
 	private final void saveData(final Event event) {
