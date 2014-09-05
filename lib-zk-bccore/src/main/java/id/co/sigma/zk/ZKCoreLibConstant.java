@@ -15,7 +15,7 @@ public final class ZKCoreLibConstant  {
 	
 	
 	/**
-	 * container data
+	 * container data.key
 	 */
 	public static final String EDITED_DATA_CLIENT_CONTAINER_KEY="editedDataContainer";
 	
