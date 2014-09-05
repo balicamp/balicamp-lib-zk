@@ -21,7 +21,7 @@ import org.zkoss.zul.Messagebox;
 public class ActionButton extends Div implements IdSpace, AfterCompose {
 
 	/**
-	 * 
+	 *  
 	 */
 	private static final long serialVersionUID = 1L;
 	
