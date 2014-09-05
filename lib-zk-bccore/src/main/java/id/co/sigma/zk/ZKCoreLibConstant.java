@@ -4,7 +4,7 @@ package id.co.sigma.zk;
  * constant untuk ZK
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
-public final class ZKCoreLibConstant {
+public final class ZKCoreLibConstant  {
 	
 	
 	/**
