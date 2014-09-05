@@ -1,4 +1,4 @@
 <zk>
-	<image src="~./zul/img/ctrlimages/maintenance16.png"/>
-	<image src="~./zul/img/ctrlimages/Folder-Delete16.png"/>
+	<image src="~./zul/img/ctrlimages/pencil-16.png" width="16px" height="16px" />
+	<image src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px"/>
 </zk>
