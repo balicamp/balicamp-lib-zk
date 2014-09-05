@@ -1,17 +1,10 @@
 package id.co.sigma.zk.ui.controller.security;
 
+import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zhtml.Messagebox;
-import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Textbox;
-
-import id.co.sigma.common.security.domain.PageDefinition;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
-import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 /**
  * editor page definition

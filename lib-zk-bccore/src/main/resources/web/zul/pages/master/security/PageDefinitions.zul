@@ -1,8 +1,9 @@
 <?page title="Daftar Halaman" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window 
+<window
+	id="wList" 
 	title="Page Definitions"
-	 border="normal" 
+	border="normal" 
 	apply="id.co.sigma.zk.ui.controller.security.PageDefintionListController">
 	<groupbox id="searchBox" mold="3d" width="500px">
 		
@@ -47,11 +48,13 @@
 		</listhead>
 		<template 
 			name="model">
-			<listitem >
+			<listitem value="${each}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell><button 
-					tooltiptext="Edit data" forward="onClick=pageListBox.onEditOnGridClick" 
-					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
+				<listcell>
+					<actionButton controller="${wList$composer}" 
+						editorPage="~./zul/pages/master/security/PageDefinitionEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data page: ${each.pageCode} ?"/>
+				</listcell>
 				<listcell label="${each.pageCode}" style="text-align:left"/>
 				<listcell label="${each.pageUrl}" style="text-align:left"/>
 				<listcell label="${each.remark}" style="text-align:left"/>
