@@ -88,7 +88,7 @@ public class SystemParameterController extends BaseSimpleListController<SystemSi
 	   
 	    
 	 	@Listen("onDelete=#listbox")
-		public void onDelete(ForwardEvent event){
+		public void onDelete(ForwardEvent event) {
 			try {
 				Button btn = (Button)event.getOrigin().getTarget();
 				Listitem item = (Listitem)btn.getParent().getParent();
