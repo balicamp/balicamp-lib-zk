@@ -1,6 +1,7 @@
-<?page title="Daftar Halaman" contentType="text/html;charset=UTF-8"?>
+<?page title="Group Management" contentType="text/html;charset=UTF-8"?>
 <zk>
 <window 
+	id="groupMgmWin" 
 	title="Group Management"
 	border="normal" 
 	apply="id.co.sigma.zk.ui.controller.security.GroupManagementListController">
@@ -42,8 +43,9 @@
 			<listitem >
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
 				<listcell>
-					<image src="/img/pencil-16.png" width="16" height="16" forward="onClick=pageListBox.onBtnEditClick" tooltiptext="Edit" />
-					<image src="/img/del_red_16.png" width="16" height="16" forward="onClick=pageListBox.onBtnDelClick" tooltiptext="Delete" />
+					<actionButton editorPage="~./zul/pages/master/security/GroupManagementEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data group: ${each.groupCode}"
+						controller="${groupMgmWin$composer}" />
 				</listcell>
 				<listcell label="${each.groupCode}" style="text-align:left"/>
 				<listcell label="${each.groupName}" style="text-align:left"/>
@@ -52,8 +54,6 @@
 		<listfoot>  
         	<listfooter span="6" align="left">
 	        	<button id="btnTambah">Tambah</button>
-	        	<button id="btnEdit" visible="false">Edit</button>
-	        	<button id="btnHapus"  visible="false">Hapus</button>
         	</listfooter>
         </listfoot>
 	</listbox>

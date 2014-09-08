@@ -5,13 +5,11 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
+import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
-
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Listbox;
@@ -82,5 +80,10 @@ public class GroupManagementListController extends BaseSimpleListController<User
 		txtGroupName.setValue("");
 	}
 	
+	@Listen("onClick=#btnTambah")
+	public void btnTambahClick(){
+		UserGroup usrGrp = new UserGroup();
+		EditorManager.getInstance().addNewData("~./zul/pages/master/security/GroupManagementEditor.zul", usrGrp, this);
+	}
 	
 }
