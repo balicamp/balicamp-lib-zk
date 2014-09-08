@@ -1,4 +1,4 @@
-<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> 
 <window id="editorSystemParameter" apply="id.co.sigma.zk.ui.controller.master.SystemParameterEditorController">
 		<grid vflex="1">
 			<columns>
@@ -12,21 +12,38 @@
 						value="@{editorSystemParameter$composer.editedData.id}"
 						width="150px" />
 				</row>
+				
 				<row>
 					<cell>Param Type :</cell>
 					<cell><combobox id="cmbType" model="@{editorSystemParameter$SystemParameterEditorController.listModelParamtype}" selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.paramType}"/></cell>
 				</row>
+				
+				<row visible="@{editorSystemParameter$SystemParameterEditorController.textbox, load-after='cmbType.onChange'}" width="150%">
+					<label value="Param Value" width="150px"/>
+					<textbox id="paramValue"
+						value="@{editorSystemParameter$composer.editedData.valueRaw}"
+						width="150px" />
+				</row>
+				
+				<row visible="@{editorSystemParameter$SystemParameterEditorController.datepicker, load-after='cmbType.onChange'}">
+					<label value="Param Value" width="150px"/>
+					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
+				</row>
+				
+				<row width = "150%" visible="@{editorSystemParameter$SystemParameterEditorController.radiogrup, load-after='cmbType.onChange'}" >
+					<label value="Param Value" width="150px"/>
+					<radiogroup id="radioValue" selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.valueRaw}" >	
+							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/> 
+							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
+					</radiogroup>
+				</row>
+				
 				<row>
 					<label value="Param Remark" width="150px" />
 					<textbox id="paramRemark"
 						value="@{editorSystemParameter$composer.editedData.remark}"
 						width="150px" />
-				</row>
-				<row>
-					<label value="Param Value" width="150px" />
-					<textbox id="paramValue"
-						value="@{editorSystemParameter$composer.editedData.valueRaw}"
-						width="150px" />
+					 
 				</row>
 				<row>
 					<cell>Edited Flag :</cell>

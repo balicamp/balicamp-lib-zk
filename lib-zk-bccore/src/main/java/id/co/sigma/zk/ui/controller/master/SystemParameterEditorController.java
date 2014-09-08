@@ -1,5 +1,7 @@
 package id.co.sigma.zk.ui.controller.master;
 
+import java.util.Date;
+
 import id.co.sigma.common.data.app.SystemSimpleParameter;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
@@ -10,13 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -38,6 +46,10 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     @Wire Textbox paramRemark;
     @Wire Textbox paramValue ; 
     @Wire Combobox editable;
+    @Wire Combobox cmbType;
+    @Wire Datebox dateValue;
+    @Wire Radiogroup radioValue;
+  
 
 
     ListModelList<String> listModelEditable;
@@ -45,12 +57,36 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     SystemSimpleParameter system;
     Window win;
     AnnotateDataBinder binder;
-    
-    
-    
+    boolean textbox,datepicker, radiogrup;
     
 
-    public ListModelList<String> getListModelParamtype() {
+
+
+	public boolean isRadiogrup() {
+		return radiogrup;
+	}
+
+	public void setRadiogrup(boolean radiogrup) {
+		this.radiogrup = radiogrup;
+	}
+
+	public boolean isTextbox() {
+		return textbox;
+	}
+
+	public void setTextbox(boolean textbox) {
+		this.textbox = textbox;
+	}
+
+	public boolean isDatepicker() {
+		return datepicker;
+	}
+
+	public void setDatepicker(boolean datepicker) {
+		this.datepicker = datepicker;
+	}
+
+	public ListModelList<String> getListModelParamtype() {
 		return listModelParamtype;
 	}
 
@@ -91,7 +127,8 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
                 logger.error("gagal update file. error : " + e.getMessage() , e);
                  Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Simpan Data", Messagebox.OK, Messagebox.ERROR);
             }
-
+				/*Date datenya = dateValue.getValue();
+				String valStr = datenya.toString();*/
         }
 
     }
@@ -101,6 +138,23 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
         EditorManager.getInstance().closeCurrentEditorPanel();
     }
 
+    @Listen("onChange=#cmbType")
+    public void onChange(Event event){
+		if(cmbType.getValue().equals("java.util.Date")){
+			setTextbox(false);
+			setDatepicker(true);
+			setRadiogrup(false);
+		}else if (cmbType.getValue().equals("java.lang.Boolean")){
+			setTextbox(false);
+		    setDatepicker(false);
+		    setRadiogrup(true);
+		}else {
+		    setTextbox(true);
+		    setDatepicker(false);
+		    setRadiogrup(false);
+		}
+    }
+    
     @Override
     public void doAfterCompose(Component comp) throws Exception {
     	// TODO Auto-generated method stub
