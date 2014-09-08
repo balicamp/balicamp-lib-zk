@@ -1,0 +1,56 @@
+<?page title="Group Management Editor" contentType="text/html;charset=UTF-8"?>
+<zk>
+<editorWindow id="groupMgmEditorWin" captionLabel="Edit Page"
+	apply="id.co.sigma.zk.ui.controller.security.GroupManagementEditorController"
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+	confirmationMsg="Apakah anda akan menyimpan data ini ?">
+	
+	<separator />
+	
+	<groupbox id="groupMgmForm" mold="3d" width="100%">
+		<grid >
+			<rows>
+				<row>
+					<cell width="200px">Group Code</cell>
+					<cell><textbox id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}"></textbox></cell>
+				</row>
+				<row>
+					<cell>Group Name</cell>
+					<cell><textbox id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}"></textbox></cell>
+				</row>
+				<row>
+					<cell width="200px">Super Group?</cell>
+					<cell>
+						<checkbox id="cbSuperGroup"></checkbox>
+						<textbox id="superGroup" value="${groupMgmEditorWin$composer.editedData.superGroup}" visible="false" />
+					</cell>
+				</row>
+			</rows>	
+		</grid>
+	</groupbox>
+	
+	<separator />
+	
+	<!-- <groupbox id="groupMgmDetails" mold="3d" width="100%">
+		<tree id="groupMgmTree">
+			<treecols>
+				<treecol hflex="1" label="Kode Menu"/>
+				<treecol hflex="1" label="Label Menu"/>
+				<treecol hflex="1" label="Zul Path"/>
+				<treecol width="150px" label="Action"/>
+			</treecols>
+			<treeitem>
+				<treerow>
+					<treecell>xxx</treecell>
+					<treecell>yyy</treecell>
+					<treecell>~./zul/pages/master/security/PageX.zul</treecell>
+					<treecell>
+						<checkbox></checkbox>
+					</treecell>
+				</treerow>
+			</treeitem> 
+		</tree>
+	</groupbox>-->
+	
+</editorWindow>
+</zk>
