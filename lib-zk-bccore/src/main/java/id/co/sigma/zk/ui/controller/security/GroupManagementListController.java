@@ -8,8 +8,11 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+
 import java.util.List;
-import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Listbox;
@@ -28,7 +31,8 @@ public class GroupManagementListController extends BaseSimpleListController<User
 		new SimpleSortArgument("groupCode", true)
 	};
 	
-	@Resource(name="securityApplicationId")
+	@Qualifier(value="securityApplicationId")
+	@Autowired
 	private String applicationId;
 	
 	@Wire private Listbox pageListBox;
