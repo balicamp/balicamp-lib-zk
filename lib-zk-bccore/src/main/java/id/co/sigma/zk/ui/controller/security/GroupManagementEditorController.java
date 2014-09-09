@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.security;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import id.co.sigma.common.data.query.SimpleQueryFilter;
@@ -8,6 +9,7 @@ import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.zk.tree.MenuTreeNode;
+import id.co.sigma.zk.tree.MenuTreeNodeCollection;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,10 +33,6 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	@Qualifier(value="securityApplicationId")
 	@Autowired
 	private String applicationId;
-	
-	private static final SimpleSortArgument[] sortArgs = {
-		new SimpleSortArgument("groupCode", true)
-	};
 	
 	@Wire Checkbox cbSuperGroup;
 	@Wire Textbox superGroup;
@@ -61,24 +59,76 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		
 		UserGroup data = getEditedData();
 		if(data != null){
-			cbSuperGroup.setChecked(data.getSuperGroup().equalsIgnoreCase("Y"));
+			boolean checked = false;
+			if(data.getSuperGroup()!=null){
+				checked = data.getSuperGroup().equalsIgnoreCase("Y");
+			}
+			cbSuperGroup.setChecked(checked);
 		}		
 	}
 	
 	public DefaultTreeModel<ApplicationMenu> getTreeModel(){
-		return new DefaultTreeModel<ApplicationMenu>(getTreeNodes());
+		return new DefaultTreeModel<ApplicationMenu>(getTreeNodes(null));
 	}
 	
-	public MenuTreeNode<ApplicationMenu> getTreeNodes(){
-		return null;
+	public MenuTreeNode<ApplicationMenu> getTreeNodes(Integer parentId){
+		List<ApplicationMenu> menus = getMenus(parentId);
+		if(menus!=null && menus.size() > 0){
+			MenuTreeNodeCollection<ApplicationMenu> menuNodes = new MenuTreeNodeCollection<ApplicationMenu>();
+			for (ApplicationMenu menu : menus) {
+				MenuTreeNode<ApplicationMenu> menuNode = null;
+				if(menuHasChild(menu.getId().intValue())){
+					menuNode = new MenuTreeNode<ApplicationMenu>(menu, populateTreeNodes(getMenus(menu.getId().intValue())));
+				}else{
+					menuNode = new MenuTreeNode<ApplicationMenu>(menu);
+				}
+				menuNodes.add(menuNode);
+			}
+			return new MenuTreeNode<ApplicationMenu>(null, menuNodes);
+		}else{
+			return null;
+		}
 	}
 	
-	private List<ApplicationMenu> getAppMenu(Integer parentId){
+	private MenuTreeNodeCollection<ApplicationMenu> populateTreeNodes(List<ApplicationMenu> menus){
+		MenuTreeNodeCollection<ApplicationMenu> menuNodes = new MenuTreeNodeCollection<ApplicationMenu>();
+		for (ApplicationMenu menu : menus) {
+			MenuTreeNode<ApplicationMenu> menuNode = null;
+			if(menuHasChild(menu.getId().intValue())){
+				menuNode = new MenuTreeNode<ApplicationMenu>(menu, populateTreeNodes(getMenus(menu.getId().intValue())));
+			}else{
+				menuNode = new MenuTreeNode<ApplicationMenu>(menu);
+			}
+			menuNodes.add(menuNode);
+		}
+		return menuNodes;
+	}
+	
+	private boolean menuHasChild(Integer parentId){
+		List<ApplicationMenu> menuChild = getMenus(parentId);
+		if(menuChild != null){
+			return (menuChild.size() > 0);
+		}else{
+			return false;
+		}
+	}
+	
+	private List<ApplicationMenu> getMenus(Integer parentId){
 		Long appId = new Long(applicationId);
 		
+		SimpleQueryFilter parentIdFltr = null;
+		if(parentId == null){
+			parentIdFltr = new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.fieldIsNull, parentId);
+		}else{
+			parentIdFltr = new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, new Long(parentId.toString()));
+		}
 		SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
 			new SimpleQueryFilter("applicationId", SimpleQueryFilterOperator.equal, appId),
-			new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, parentId)
+			parentIdFltr
+		};
+		
+		SimpleSortArgument[] sortArgs = {
+			new SimpleSortArgument("functionCode", true)
 		};
 		
 		try {

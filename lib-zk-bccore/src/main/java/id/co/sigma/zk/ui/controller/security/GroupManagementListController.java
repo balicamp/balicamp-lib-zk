@@ -24,10 +24,6 @@ public class GroupManagementListController extends BaseSimpleListController<User
 	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GroupManagementListController.class.getName());
 	
-	private static final SimpleSortArgument[] sortArgs = {
-		new SimpleSortArgument("groupCode", true)
-	};
-	
 	@Qualifier(value="securityApplicationId")
 	@Autowired
 	private String applicationId;
