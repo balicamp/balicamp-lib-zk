@@ -1,0 +1,66 @@
+<?page title="User Editor" contentType="text/html;charset=UTF-8"?>
+<zk>
+<editorWindow
+	id="userEditor"
+	captionLabel="Edit Page"
+	apply="id.co.sigma.zk.ui.controller.security.UserEditorController"
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+	confirmationMsg="Apakah anda akan menyimpan data ini ?">
+	
+	<grid vflex="1">	
+		<columns>
+				<column width="150px" />
+				<column  />
+			</columns>
+		<rows>
+			<row>
+				User Name
+				<textbox id="userCode"			
+					value="${userEditor$composer.editedData.userCode}">
+				</textbox>
+			</row>
+			<row>
+				Real Name
+				<textbox id="realName"
+					value="${userEditor$composer.editedData.realName}"></textbox>
+			</row>
+			<row>
+				Email
+				<textbox id="email"
+					value="${userEditor$composer.editedData.email}"></textbox>
+			</row>
+			<row>
+				Branch
+				<bandbox id="bdBranch">
+				    <bandpopup>
+				        <vbox>
+				            <hbox>
+				                Search
+				                <textbox />
+				            </hbox>
+				            <listbox width="400px"
+				                onSelect="bdBranch.value=self.selectedItem.label;bdBranch.close();">
+				                <listhead>
+				                    <listheader label="Name" />
+				                    <listheader label="Description" />
+				                </listhead>
+				               	<listitem forEach="${userEditor$composer.listBranch}" >
+				                		<listcell label="${each[0]}" />
+				                    	<listcell label="${each[1]}" />
+				               	</listitem>
+				            </listbox>
+				        </vbox>
+				    </bandpopup>
+				</bandbox>
+			</row>
+			<row>
+				<include src="~./zul/pages/master/security/incl/UserGroupList.zul"/>
+			</row>
+		</rows>
+	</grid>
+	
+	
+	
+</editorWindow>
+
+</zk>

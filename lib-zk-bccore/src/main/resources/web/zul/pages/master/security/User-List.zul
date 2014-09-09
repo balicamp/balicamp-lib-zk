@@ -3,9 +3,29 @@
 <window title="User List" 
 	border="none" 
 	apply="id.co.sigma.zk.ui.controller.security.UserListController">
+	<groupbox>
+		<grid >
+			<columns>
+				<column label="Type" width="150px" />
+				<column label="Content" />
+			</columns>
+			<rows>
+			<row>
+				Kode
+				<textbox id="txtUserCode"></textbox>
+			</row>
+			<row>
+				Real Name
+				<textbox id="txtRealName"></textbox>
+			</row>
+			</rows>	
+		</grid>	
+		<button id="btnCari">Cari</button>
+		<button id="btnReset">Reset</button>
+	</groupbox>
+	<separator bar="false"/>
 	
 	<listbox id="userListbox" height="300px"
-		width="785px"
 		mold="paging"
 		pageSize="10" >
 		<listhead>
@@ -18,17 +38,17 @@
 		<template name="model">
 			<listitem >
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell  style="text-align:center">
-				<a href="www.google.com">sample</a>
-					<button >Edit</button>
-					<button >erase</button>
-					<button >view</button>
-				</listcell>
+				<listcell><button 
+					tooltiptext="Edit data" forward="onClick=userListbox.onEditOnGridClick" 
+					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
 				<listcell label="${each.userCode}" style="text-align:left"/>
 				<listcell label="${each.realName}" style="text-align:left"/>
 			 	<listcell label="${each.email}" style="text-align:left"/>
 			</listitem>
 		</template>
+		<listfoot>  
+            <listfooter span="6" align="left"><button id="btnTambah">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
+        </listfoot>
 	</listbox>
 </window>
 </zk>

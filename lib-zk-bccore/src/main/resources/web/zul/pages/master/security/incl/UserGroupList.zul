@@ -1,0 +1,18 @@
+<?page title="User Group List" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window id="win" apply="id.co.sigma.zk.ui.controller.security.UserGroupListController">
+          <grid>
+          	<rows>
+	            <row>
+	                <listbox id="clinicalSitesCheckbox" model="${win$composer.selectedCheckboxs}"
+                    		checkmark="true" multiple="true">
+		                    <template name="model">
+		                        <listitem label="${each}" />
+		                    </template>
+            		</listbox>
+	            </row>
+            </rows>
+            
+          </grid>
+   	</window>
+</zk>
