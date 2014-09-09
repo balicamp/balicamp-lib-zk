@@ -2,10 +2,19 @@ package id.co.sigma.zk.ui.controller.base;
 
 
 
+import id.co.sigma.common.data.SingleKeyEntityData;
+import id.co.sigma.common.security.domain.audit.BaseAuditedObject;
+import id.co.sigma.zk.ZKCoreLibConstant;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
+
 import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
@@ -17,12 +26,6 @@ import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
-
-import id.co.sigma.common.server.util.ExtendedBeanUtils;
-import id.co.sigma.zk.ZKCoreLibConstant;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.IReloadablePanel;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
 
 
 
@@ -129,29 +132,68 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		Field[] fields = editedData.getClass().getDeclaredFields();
 		IdSpace idSpace = comp.getSpaceOwner();
 		for(Field field : fields) {
-			Component input = idSpace.getFellowIfAny(field.getName());
-			if(input != null) {
-				Object val = null; 
-				if(input instanceof Datebox) {
-					val = ((Datebox)input).getValue();
-				} else if(input instanceof Timebox) {
-					val = ((Timebox)input).getValue();
-				} else if(input instanceof Intbox) {
-					val = ((Intbox)input).getValue();
-				} else if(input instanceof Decimalbox) {
-					val = ((Decimalbox)input).getValue();
-				} else if(input instanceof Doublebox) {
-					val = ((Doublebox)input).getValue();
-				} else if(input instanceof Textbox) {
-					val = ((Textbox)input).getValue();
+			try {
+				if(field.getType().isAssignableFrom(SingleKeyEntityData.class)){
+					Field[] childFields = field.getClass().getDeclaredFields();
+					for(Field f : childFields){
+						setProperty(idSpace, field, f);
+					}
+				}else{
+						setProperty(idSpace, field);
+}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+}
+	
+	
+	/**
+	 * Set value property class
+	 * @param idSpace
+	 * @param field
+	 */
+	protected void setProperty(IdSpace idSpace, Field... fields){
+		StringBuffer buffer = new StringBuffer();
+		for(Field field : fields){
+			if(buffer.length()>0){
+				buffer.append("_");
+			}
+				buffer.append(field.getName());
+		}
+		Component input = idSpace.getFellowIfAny(buffer.toString());
+		if(input != null) {
+			Object val = null; 
+			if(input instanceof Datebox) {
+				val = ((Datebox)input).getValue();
+			} else if(input instanceof Timebox) {
+				val = ((Timebox)input).getValue();
+			} else if(input instanceof Intbox) {
+				val = ((Intbox)input).getValue();
+			} else if(input instanceof Decimalbox) {
+				val = ((Decimalbox)input).getValue();
+			} else if(input instanceof Doublebox) {
+				val = ((Doublebox)input).getValue();
+			} else if(input instanceof Textbox) {
+				val = ((Textbox)input).getValue();
+			}
+			
+			try {
+				if(fields.length>1){
+					Object childObj = null;
+					Object parentObj = editedData;
+					for(int i = 0; i < fields.length - 1; i++){
+						childObj = PropertyUtils.getProperty(parentObj, fields[i].getName());
+						parentObj = childObj;
+					}
+					System.out.println("Child: " + childObj + ", val: " + val);
+					if(childObj != null) {
+						BeanUtils.setProperty(childObj, fields[fields.length-1].getName(), val);
+					}
+				}else{
+					BeanUtils.setProperty(editedData,fields[0].getName() , val);
 				}
-				
-				try {
-					
-					BeanUtils.setProperty(editedData, field.getName(), val);
-					
-				} catch (Exception e) {
-				}
+			} catch (Exception e) {
 			}
 		}
 	}
