@@ -132,6 +132,8 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
         }
 
     }
+	
+	
 
     @Listen("onClick=#btnCancel")
     public void onCancel(){
