@@ -32,7 +32,7 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	private IGeneralPurposeService generalPurposeService ;  
 	
 	@Autowired
-	IGeneralPurposeDao  generalPurposeDao ; 
+	protected IGeneralPurposeDao  generalPurposeDao ; 
 	
 	
 	@Override

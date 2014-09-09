@@ -1,6 +1,5 @@
 package id.co.sigma.zk.ui.controller.security;
 
-import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.UserGroup;
@@ -8,8 +7,6 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,21 +40,6 @@ public class GroupManagementListController extends BaseSimpleListController<User
 	@QueryParameterEntry(filteredField="groupName", queryOperator=SimpleQueryFilterOperator.likeBothSide)
 	@Wire private Textbox txtGroupName;
 	
-	protected List<UserGroup> getGroups(){
-		Long appId = new Long(applicationId);
-		SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
-			new SimpleQueryFilter("applicationId", SimpleQueryFilterOperator.equal, appId)
-		};
-		
-		try {
-			return generalPurposeDao.list(UserGroup.class, filters, sortArgs);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Gagal membaca data sec_group! ApplicationId: " + applicationId + ", Error: " + e.getMessage(), e);
-			return null;
-		}
-	}
-
 	@Override
 	public void reload() {
 		invokeSearch();
