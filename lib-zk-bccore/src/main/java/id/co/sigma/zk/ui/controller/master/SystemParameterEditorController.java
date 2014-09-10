@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.master;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import id.co.sigma.common.data.app.SystemSimpleParameter;
@@ -45,10 +46,10 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     @Wire Textbox paramType; 
     @Wire Textbox paramRemark;
     @Wire Textbox paramValue ; 
-    @Wire Combobox editable;
     @Wire Combobox cmbType;
     @Wire Datebox dateValue;
     @Wire Radiogroup radioValue;
+    @Wire Radiogroup editable;
   
 
 
@@ -59,8 +60,27 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     AnnotateDataBinder binder;
     boolean textbox,datepicker, radiogrup;
     
+    
+    private Date dtValue ;
+    
 
 
+
+	public Date getDtValue() {
+		return dtValue;
+	}
+
+	public void setDtValue(Date dtValue) {
+		this.dtValue = dtValue;
+	}
+
+	public Radiogroup getEditable() {
+		return editable;
+	}
+
+	public void setEditable(Radiogroup editable) {
+		this.editable = editable;
+	}
 
 	public boolean isRadiogrup() {
 		return radiogrup;
@@ -110,7 +130,7 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 		this.listModelEditable = listModelEditable;
 	}
 
-	@Listen(value="onClick = #saveButton")
+	/*@Listen(value="onClick = #saveButton")
     public void simpanClick() {
         if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
             try {
@@ -127,11 +147,11 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
                 logger.error("gagal update file. error : " + e.getMessage() , e);
                  Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Simpan Data", Messagebox.OK, Messagebox.ERROR);
             }
-				/*Date datenya = dateValue.getValue();
-				String valStr = datenya.toString();*/
+				Date datenya = dateValue.getValue();
+				String valStr = datenya.toString();
         }
 
-    }
+    }*/
 	
 	
 
@@ -140,7 +160,8 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
         EditorManager.getInstance().closeCurrentEditorPanel();
     }
 
-    @Listen("onChange=#cmbType")
+
+	@Listen("onChange=#cmbType")
     public void onChange(Event event){
 		if(cmbType.getValue().equals("java.util.Date")){
 			setTextbox(false);
@@ -177,6 +198,10 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     	listModelParamtype.add("java.lang.BigInteger");
     	listModelParamtype.add("java.util.Date");
     	listModelParamtype.add("java.lang.Boolean");
+    	
+    	if ( Date.class.getName().equals(editedData.getParamType())){
+    		editedData.setValueRaw(dtValue.toString());
+    	}
     }
     
     @Override
@@ -185,5 +210,27 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     	system = (SystemSimpleParameter)Executions.getCurrent().getAttribute("system");
     	return super.doBeforeCompose(page, parent, compInfo);
     }
+    
+    
+    @Override
+    protected void parseEditedData(Component comp) {
+    	super.parseEditedData(comp);
+    	editedData.setEditableFlag(editable!= null?"Y":"N");
+    	
+    	editedData.setParamType(cmbType.getValue());
+    	if (dateValue.isVisible()){
+    		//SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+            String date = dtValue.toString();
+    		editedData.setValueRaw(date);
+    	} else if (paramValue.isVisible()){
+    		editedData.setValueRaw(paramValue.getValue());
+    	} else {
+    		editedData.setValueRaw(radioValue!=null?"Y":"N");
+    	}
+
+    }
+    
+    
+    
 }
 

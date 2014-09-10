@@ -55,11 +55,6 @@
         </listhead>
         <template name="model">
         <listitem >
- <!--        	<listcell>
-        		<button forward="onClick=listbox.onEdit" image="/img/pencil-16.png" width="36px" />
-              	<button forward="onClick=listbox.onDelete" image="/img/del_red_16.png" width="36px" />
-        	</listcell>
-        	 -->
         	<listcell>
 					<actionButton editorPage="~./zul/pages/master/SystemParameterFormEditor.zul"
 						deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"

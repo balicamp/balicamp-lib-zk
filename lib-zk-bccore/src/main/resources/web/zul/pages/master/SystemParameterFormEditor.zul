@@ -1,5 +1,7 @@
 <?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> 
-<window id="editorSystemParameter" apply="id.co.sigma.zk.ui.controller.master.SystemParameterEditorController">
+<editorWindow id="editorSystemParameter" apply="id.co.sigma.zk.ui.controller.master.SystemParameterEditorController" 
+				cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+					confirmationMsg="Apakah anda akan menyimpan data ini ?">
 		<grid vflex="1">
 			<columns>
 				<column width="150px" />
@@ -9,7 +11,7 @@
 				<row>
 					<label value="Param Key" width="150px" />
 					<textbox id="paramKey"
-						value="@{editorSystemParameter$composer.editedData.id}"
+						value="${editorSystemParameter$composer.editedData.id}"
 						width="150px" />
 				</row>
 				
@@ -21,18 +23,18 @@
 				<row visible="@{editorSystemParameter$SystemParameterEditorController.textbox, load-after='cmbType.onChange'}" width="150%">
 					<label value="Param Value" width="150px"/>
 					<textbox id="paramValue"
-						value="@{editorSystemParameter$composer.editedData.valueRaw}"
+						value="${editorSystemParameter$composer.editedData.valueRaw}"
 						width="150px" />
 				</row>
 				
 				<row visible="@{editorSystemParameter$SystemParameterEditorController.datepicker, load-after='cmbType.onChange'}">
 					<label value="Param Value" width="150px"/>
-					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
-				</row>
+					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" value="${editorSystemParameter$composer.dtValue}"/>
+				</row> 
 				
 				<row width = "150%" visible="@{editorSystemParameter$SystemParameterEditorController.radiogrup, load-after='cmbType.onChange'}" >
 					<label value="Param Value" width="150px"/>
-					<radiogroup id="radioValue" selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.valueRaw}" >	
+					<radiogroup id="radioValue" selectedItem="${editorSystemParameter$SystemParameterEditorController.system.valueRaw}" >	
 							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/> 
 							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
 					</radiogroup>
@@ -41,23 +43,23 @@
 				<row>
 					<label value="Param Remark" width="150px" />
 					<textbox id="paramRemark"
-						value="@{editorSystemParameter$composer.editedData.remark}"
+						value="${editorSystemParameter$composer.editedData.remark}"
 						width="150px" />
 					 
 				</row>
 				<row>
 					<cell>Edited Flag :</cell>
 					<cell>
-					<radiogroup id="editableFlag" selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.editableFlag}" >	
-							<radio id="editY" value ="Yes" label="Yes" selected="true" radiogroup="editableFlag"/> 
-							<radio id="editN" value ="No" label="No" radiogroup="editableFlag"/> 
+					<radiogroup id="editable" selectedItem="${editorSystemParameter$SystemParameterEditorController.system.editableFlag}" >	
+							<radio id="editY" value ="Yes" label="Yes" selected="true" radiogroup="editable"/> 
+							<radio id="editN" value ="No" label="No" radiogroup="editable"/> 
 					</radiogroup>
 					</cell>
 				</row>
 			</rows>
 		</grid>
-		<hlayout>
+<!-- 		<hlayout>
 		<button id="saveButton" label="Save"/>
 		<button id="btnCancel" label="Cancel"/>
-		</hlayout>
-</window>
+		</hlayout> -->
+</editorWindow>
