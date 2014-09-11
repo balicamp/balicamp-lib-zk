@@ -10,11 +10,17 @@ import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.poi.hssf.record.DConRefRecord;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
@@ -26,6 +32,7 @@ import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
+import org.zkoss.zul.impl.InputElement;
 
 
 
@@ -129,24 +136,60 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * @param comp
 	 */
 	protected void parseEditedData(Component comp) { 
-		Field[] fields = editedData.getClass().getDeclaredFields();
 		IdSpace idSpace = comp.getSpaceOwner();
-		for(Field field : fields) {
-			try {
-				if(field.getType().isAssignableFrom(SingleKeyEntityData.class)){
-					Field[] childFields = field.getClass().getDeclaredFields();
-					for(Field f : childFields){
-						setProperty(idSpace, field, f);
+		Collection<Component> fellows = idSpace.getFellows();
+		for(Component fComp : fellows) {
+			if(fComp instanceof InputElement) {
+				String fId = fComp.getId();
+				if(fId.contains(".")) {
+					String[] fields = fId.split("\\.");
+					Object currObj = editedData;
+					try {
+						for(int i = 0; i < fields.length - 1; i++) {
+							currObj = PropertyUtils.getProperty(currObj, fields[i]);
+						}
+						if(currObj != null) {
+							setProperty(fComp, currObj, fields[fields.length - 1]);
+						}
+					} catch (Exception e) {
+						setProperty(fComp, editedData, fId);
 					}
-				}else{
-						setProperty(idSpace, field);
-}
-			} catch (Exception e) {
-				e.printStackTrace();
+				} else {
+					setProperty(fComp, editedData, fId);
+				}
 			}
+		}
 	}
-}
 	
+	/**
+	 * Set data property dari input client
+	 * @param input
+	 * @param data
+	 * @param fieldName
+	 */
+	private void setProperty(Component input, Object data, String fieldName) {
+		if(input != null) {
+			Object val = null; 
+			if(input instanceof Datebox) {
+				val = ((Datebox)input).getValue();
+			} else if(input instanceof Timebox) {
+				val = ((Timebox)input).getValue();
+			} else if(input instanceof Intbox) {
+				val = ((Intbox)input).getValue();
+			} else if(input instanceof Decimalbox) {
+				val = ((Decimalbox)input).getValue();
+			} else if(input instanceof Doublebox) {
+				val = ((Doublebox)input).getValue();
+			} else if(input instanceof Textbox) {
+				val = ((Textbox)input).getValue();
+			}
+			
+			try {
+				BeanUtils.setProperty(data, fieldName, val);
+			} catch (Exception e) {
+			}
+		}
+	}
 	
 	/**
 	 * Set value property class
@@ -159,7 +202,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			if(buffer.length()>0){
 				buffer.append("_");
 			}
-				buffer.append(field.getName());
+			buffer.append(field.getName());
 		}
 		Component input = idSpace.getFellowIfAny(buffer.toString());
 		if(input != null) {
@@ -180,15 +223,12 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			
 			try {
 				if(fields.length>1){
-					Object childObj = null;
-					Object parentObj = editedData;
+					Object currObject = editedData;
 					for(int i = 0; i < fields.length - 1; i++){
-						childObj = PropertyUtils.getProperty(parentObj, fields[i].getName());
-						parentObj = childObj;
+						currObject = PropertyUtils.getProperty(currObject, fields[i].getName());
 					}
-					System.out.println("Child: " + childObj + ", val: " + val);
-					if(childObj != null) {
-						BeanUtils.setProperty(childObj, fields[fields.length-1].getName(), val);
+					if(currObject != null) {
+						BeanUtils.setProperty(currObject, fields[fields.length-1].getName(), val);
 					}
 				}else{
 					BeanUtils.setProperty(editedData,fields[0].getName() , val);

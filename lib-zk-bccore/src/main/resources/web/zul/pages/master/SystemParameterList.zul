@@ -1,6 +1,6 @@
 <?page title="Auto Generated index.zul"?>
 <window id="index" apply="id.co.sigma.zk.ui.controller.master.SystemParameterController" title="Parameter System" border="normal">
-    <vlayout>
+<!--     <vlayout>
     	Key:
         <textbox id="keySearch" />
         Catatan
@@ -11,7 +11,29 @@
      	<button id="searchButton" label="Search" 
             onClick="@command('click')"/>
      </vbox>
-        
+      -->
+     <groupbox id="searchBox" mold="3d" width="500px">
+     
+     <grid >
+			<columns>
+				<column label="Type" width="150px" />
+				<column label="Content" />
+			</columns>
+			<rows>
+			<row>
+				Key Parameter
+				<textbox id="keySearch"></textbox>
+			</row>
+			<row>
+				Remark
+				<textbox id="remarkSearch"></textbox>
+			</row>
+			</rows>	
+		</grid>	
+		<button id="searchButton">Search</button>
+		<button id="resetButton">Reset</button>
+	</groupbox>
+	<separator bar="false"/>
     
     <vbox align="center">
     </vbox>
@@ -34,15 +56,10 @@
         <template name="model">
         <listitem >
         	<listcell>
-        		<button forward="onClick=listbox.onEdit" image="/img/pencil-16.png" width="36px" />
-              	<button forward="onClick=listbox.onDelete" image="/img/del_red_16.png" width="36px" />
-              	<!-- <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell>
-					<actionButton controller="${wList$composer}" 
-						editorPage="~./zul/pages/master/SystemParameterFormEditor.zul"
-						deleteMsg="Apakah anda yakin menghapus data page: ${each.pageCode} ?"/>
-				</listcell> -->
-        	</listcell>
+					<actionButton editorPage="~./zul/pages/master/SystemParameterFormEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
+						controller="${index$composer}"/>
+			</listcell>
             <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
             <listcell label="${each.id}" style="text-align:rigth"/>
             <listcell label="${each.valueRaw}" style="text-align:left"/>
@@ -51,9 +68,11 @@
              <listcell label="${each.editableFlag}" style="text-align:left"/>
         </listitem>
         </template>
+         		<listfoot>  
+                    <listfooter span="6" align="left"><button id="addButton">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
+                    
+                </listfoot>
     </listbox>
     
-     <vbox align="center">
-     	<button id="addButton" label="Tambah" />
-     </vbox>
+    
 </window>

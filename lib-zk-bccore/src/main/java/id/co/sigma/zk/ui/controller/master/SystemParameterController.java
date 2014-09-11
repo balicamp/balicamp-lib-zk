@@ -16,6 +16,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.security.domain.PageDefinition;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.common.data.app.SystemSimpleParameter;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
@@ -48,6 +49,13 @@ public class SystemParameterController extends BaseSimpleListController<SystemSi
 	    Button searchButton ;
 	    @Wire
 	    Listbox listbox ; 
+	    @Wire Button resetButton ;
+		@Wire Button addButton ; 
+
+		@Wire Button btnEdit ; 
+		@Wire Button btnHapus ;
+ 
+
 	
 	    @Autowired
 		IGeneralPurposeService generalPurposeService;
@@ -77,7 +85,7 @@ public class SystemParameterController extends BaseSimpleListController<SystemSi
 	    	EditorManager.getInstance().addNewData("~./zul/pages/master/SystemParameterFormEditor.zul", simpleParameter, this);
 	    }
 	    
-	    @Listen("onEdit=#listbox")
+	    /*@Listen("onEdit=#listbox")
 		public void onEdit(ForwardEvent event){
 			Button btn = (Button)event.getOrigin().getTarget();
 			Listitem item = (Listitem)btn.getParent().getParent();
@@ -103,13 +111,27 @@ public class SystemParameterController extends BaseSimpleListController<SystemSi
 				e.printStackTrace();
 				Messagebox.show("Gagal menghapus data!");
 			}
-		}
+		}*/
 	    
 	    
 		@Override
 		public void reload() {
 			invokeSearch();
 		}
+		
+		@Listen(value="onClick = #resetButton")
+		public void resetClick() {
+			keySearch.setValue("");
+			remarkSearch.setValue("");
+			invokeSearch();
+		};
+		
+		@Override
+		public void deleteData(SystemSimpleParameter data) {
+			deleteData(data, data.getId(), "id");
+			reload();
+		}
+
 	    
 	    
 }
