@@ -1,15 +1,21 @@
 package id.co.sigma.zk.ui.controller.security;
 
+import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.common.security.domain.Branch;
+import id.co.sigma.common.security.domain.User;
+import id.co.sigma.common.security.domain.UserGroup;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.zkoss.web.servlet.dsp.action.ForEach;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.metainfo.ComponentInfo;
-
-import id.co.sigma.common.security.domain.User;
-import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
 
 /**
  * 
@@ -19,6 +25,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(UserEditorController.class.getName());
 	
+	
 	@Override
 	public void insertData() throws Exception {
 		logger.info("Set application id");
@@ -26,31 +33,70 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		super.insertData();
 	}
 	
+	@Wire
+	private Bandbox bdBranch;
 	
+	@Wire
+	Listbox listBoxBandBox;
 	
-	private List<String[]> listBranch = getListBranchTmp();
+	private ListModel<UserGroup> listUserGroup;
+	
+	public ListModel<UserGroup> getListUserGroup() {
+		return listUserGroup;
+	}
+	
+	@Wire
+	Checkbox listBoxCheckList;
+	
+	private List<Branch> listBranchObject;
 
 	
-	public List<String[]> getListBranch() {
-		return listBranch;
+	public List<Branch> getListBranchObject() {
+		return listBranchObject;
 	}
 
-	private List<String[]> getListBranchTmp(){
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
+		listBranchObject = new ArrayList<Branch>();
 		
-		List<String[]> listBranchTmp = new ArrayList<String[]>();
-		for (int i = 0; i < 5; i++) {
-			listBranchTmp.add(getArrayBranch(i));
+		listBranchObject = getDataBranch();
+		if(listBranchObject!=null){
+			listBoxBandBox.setModel(new ListModelList<Branch>(listBranchObject));
 		}
-		return listBranchTmp;
+		
+		listUserGroup = new ListModelList<UserGroup>(getUserGroupList());
 	}
 	
-	private String[] getArrayBranch(int index){
-		String[] branch = new String[]{
-				"KDCB-"+index,
-				"Kantor Cabang-"+index
+	private List<Branch> getDataBranch(){
+		List<Branch> dataListBranch = new ArrayList<Branch>();
+		SimpleSortArgument[] sortArgs = {
+			new SimpleSortArgument("branchCode", true)
 		};
-		return branch;
+		try {
+			dataListBranch = generalPurposeDao.list(Branch.class, sortArgs);
+			System.out.println("jumlah List Branch : "+dataListBranch.size());
+			return dataListBranch;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Gagal membaca data sec_branch!, Error: " + e.getMessage(), e);
+			return null;
+		}
 	}
 	
+	private List<UserGroup> getUserGroupList(){
+		List<UserGroup> listUserGroup = new ArrayList<UserGroup>();
+		SimpleSortArgument[] sortArgs = {
+				new SimpleSortArgument("groupCode", true)
+		};
+		try {
+			listUserGroup = generalPurposeDao.list(UserGroup.class, sortArgs);
+			return listUserGroup;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Gagal membaca data Sec_group!, Error: " + e.getMessage(), e);
+			return null;
+		}
+	}
 	
 }

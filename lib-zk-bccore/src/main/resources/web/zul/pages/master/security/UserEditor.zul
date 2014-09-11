@@ -31,36 +31,40 @@
 			</row>
 			<row>
 				Branch
-				<bandbox id="bdBranch">
-				    <bandpopup>
-				        <vbox>
-				            <hbox>
-				                Search
-				                <textbox />
-				            </hbox>
-				            <listbox width="400px"
-				                onSelect="bdBranch.value=self.selectedItem.label;bdBranch.close();">
+				<bandbox id="defaultBranchCode" value="${userEditor$composer.editedData.defaultBranchCode}">
+		        <bandpopup>
+		            <vbox>
+		                <hbox>
+		                    Search
+		                    <textbox />
+		                </hbox>
+		                <listbox id="listBoxBandBox" width="400px"
+		                    onSelect="defaultBranchCode.value=self.selectedItem.label;defaultBranchCode.close();">
 				                <listhead>
 				                    <listheader label="Name" />
 				                    <listheader label="Description" />
 				                </listhead>
-				               	<listitem forEach="${userEditor$composer.listBranch}" >
-				                		<listcell label="${each[0]}" />
-				                    	<listcell label="${each[1]}" />
-				               	</listitem>
+				                <template name="model">
+				               		<listitem>
+				               			<listcell label="${each.branchCode}"/>
+				               			<listcell label="${each.branchName}"/>
+				               		</listitem>
+				                	
+				                </template>
 				            </listbox>
 				        </vbox>
 				    </bandpopup>
 				</bandbox>
 			</row>
-			<row>
-				<include src="~./zul/pages/master/security/incl/UserGroupList.zul"/>
-			</row>
+            <row>
+                <listbox id="listBoxCheckList" model="${userEditor$composer.listUserGroup}"
+                   		checkmark="true" multiple="true">
+	                    <template name="model">
+	                        <listitem label="${each.groupCode}" />
+	                    </template>
+           		</listbox>
+            </row>
 		</rows>
 	</grid>
-	
-	
-	
 </editorWindow>
-
 </zk>
