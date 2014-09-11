@@ -34,7 +34,7 @@
 				
 				<row width = "150%" visible="@{editorSystemParameter$SystemParameterEditorController.radiogrup, load-after='cmbType.onChange'}" >
 					<label value="Param Value" width="150px"/>
-					<radiogroup id="radioValue" selectedItem="${editorSystemParameter$composer.editedData.ValueRadio}" >	
+					<radiogroup id="radioValue" selectedItem="${editorSystemParameter$composer.valueRadio}" >	
 							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/> 
 							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
 					</radiogroup>
