@@ -10,7 +10,7 @@
 			<rows>
 				<row>
 					<label value="Param Key" width="150px" />
-					<textbox id="paramKey"
+					<textbox id="id"
 						value="${editorSystemParameter$composer.editedData.id}"
 						width="150px" />
 				</row>
@@ -27,14 +27,14 @@
 						width="150px" />
 				</row>
 				
-				<row visible="@{editorSystemParameter$SystemParameterEditorController.datepicker, load-after='cmbType.onChange'}">
+				 <row visible="@{editorSystemParameter$SystemParameterEditorController.datepicker, load-after='cmbType.onChange'}">
 					<label value="Param Value" width="150px"/>
 					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" value="${editorSystemParameter$composer.dtValue}"/>
-				</row> 
+				</row>
 				
 				<row width = "150%" visible="@{editorSystemParameter$SystemParameterEditorController.radiogrup, load-after='cmbType.onChange'}" >
 					<label value="Param Value" width="150px"/>
-					<radiogroup id="radioValue" selectedItem="${editorSystemParameter$SystemParameterEditorController.system.valueRaw}" >	
+					<radiogroup id="radioValue" selectedItem="${editorSystemParameter$composer.editedData.ValueRadio}" >	
 							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/> 
 							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
 					</radiogroup>
@@ -42,7 +42,7 @@
 				
 				<row>
 					<label value="Param Remark" width="150px" />
-					<textbox id="paramRemark"
+					<textbox id="remark"
 						value="${editorSystemParameter$composer.editedData.remark}"
 						width="150px" />
 					 
@@ -50,16 +50,13 @@
 				<row>
 					<cell>Edited Flag :</cell>
 					<cell>
-					<radiogroup id="editable" selectedItem="${editorSystemParameter$SystemParameterEditorController.system.editableFlag}" >	
-							<radio id="editY" value ="Yes" label="Yes" selected="true" radiogroup="editable"/> 
-							<radio id="editN" value ="No" label="No" radiogroup="editable"/> 
+					<radiogroup id="editableFlag" selectedItem="${editorSystemParameter$composer.editableRadio}" >	
+							<radio id="editableFlagY" value ="Yes" label="Yes" radiogroup="editableFlag"/> 
+							<radio id="editableFlagN" value ="No" label="No" radiogroup="editableFlag"/> 
 					</radiogroup>
 					</cell>
 				</row>
 			</rows>
 		</grid>
-<!-- 		<hlayout>
-		<button id="saveButton" label="Save"/>
-		<button id="btnCancel" label="Cancel"/>
-		</hlayout> -->
+
 </editorWindow>

@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.master;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,6 +26,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -42,14 +44,14 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 	
 	private static final Logger logger = LoggerFactory.getLogger(SystemParameterEditorController.class.getName()); 
 
-    @Wire Textbox paramKey ; 
+    @Wire Textbox id ; 
     @Wire Textbox paramType; 
-    @Wire Textbox paramRemark;
+    @Wire Textbox remark;
     @Wire Textbox paramValue ; 
     @Wire Combobox cmbType;
     @Wire Datebox dateValue;
     @Wire Radiogroup radioValue;
-    @Wire Radiogroup editable;
+    @Wire Radiogroup editableFlag;
   
 
 
@@ -58,13 +60,39 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     SystemSimpleParameter system;
     Window win;
     AnnotateDataBinder binder;
-    boolean textbox,datepicker, radiogrup;
+    boolean textbox, datepicker, radiogrup;
     
     
     private Date dtValue ;
+    private Radio editableRadio;
+    private Radio valueRadio;
     
 
 
+
+	public Radio getValueRadio() {
+		return valueRadio;
+	}
+
+	public void setValueRadio(Radio valueRadio) {
+		this.valueRadio = valueRadio;
+	}
+
+	public Radio getEditableRadio() {
+		return editableRadio;
+	}
+
+	public void setEditableRadio(Radio editableRadio) {
+		this.editableRadio = editableRadio;
+	}
+
+	public Textbox getRemark() {
+		return remark;
+	}
+
+	public void setRemark(Textbox remark) {
+		this.remark = remark;
+	}
 
 	public Date getDtValue() {
 		return dtValue;
@@ -74,12 +102,14 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 		this.dtValue = dtValue;
 	}
 
-	public Radiogroup getEditable() {
-		return editable;
+
+
+	public Radiogroup getEditableFlag() {
+		return editableFlag;
 	}
 
-	public void setEditable(Radiogroup editable) {
-		this.editable = editable;
+	public void setEditableFlag(Radiogroup editableFlag) {
+		this.editableFlag = editableFlag;
 	}
 
 	public boolean isRadiogrup() {
@@ -129,6 +159,8 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 	public void setListModelEditable(ListModelList<String> listModelEditable) {
 		this.listModelEditable = listModelEditable;
 	}
+	
+	
 
 	/*@Listen(value="onClick = #saveButton")
     public void simpanClick() {
@@ -155,7 +187,15 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 	
 	
 
-    @Listen("onClick=#btnCancel")
+    public Textbox getId() {
+		return id;
+	}
+
+	public void setId(Textbox id) {
+		this.id = id;
+	}
+
+	@Listen("onClick=#btnCancel")
     public void onCancel(){
         EditorManager.getInstance().closeCurrentEditorPanel();
     }
@@ -191,17 +231,17 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     	
     	
     	listModelParamtype= new ListModelList<String>();
-    	listModelParamtype.add("java.lang.Integer");
-    	listModelParamtype.add("java.lang.Long");
-    	listModelParamtype.add("java.lang.Float");
-    	listModelParamtype.add("java.lang.String");
-    	listModelParamtype.add("java.lang.BigInteger");
-    	listModelParamtype.add("java.util.Date");
-    	listModelParamtype.add("java.lang.Boolean");
+    	listModelParamtype.add(Integer.class.getName());
+    	listModelParamtype.add(Long.class.getName());
+    	listModelParamtype.add(Float.class.getName());
+    	listModelParamtype.add(String.class.getName());
+    	listModelParamtype.add(BigInteger.class.getName());
+    	listModelParamtype.add(Date.class.getName());
+    	listModelParamtype.add(Boolean.class.getName());
     	
-    	if ( Date.class.getName().equals(editedData.getParamType())){
-    		editedData.setValueRaw(dtValue.toString());
-    	}
+    /*	if (Date.class.getName().equals(editedData.getParamType())){
+    		editedData.setValueRaw(dateValue.getValue().toString());
+    	}*/
     }
     
     @Override
@@ -215,22 +255,30 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     @Override
     protected void parseEditedData(Component comp) {
     	super.parseEditedData(comp);
-    	editedData.setEditableFlag(editable!= null?"Y":"N");
+    	editableRadio = editableFlag.getSelectedItem();
+    	if(editableFlag!=null){
+    		editedData.setEditableFlag(editableRadio.getValue().toString());
+    	}   	
     	
+    
     	editedData.setParamType(cmbType.getValue());
-    	if (dateValue.isVisible()){
-    		//SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-            String date = dtValue.toString();
-    		editedData.setValueRaw(date);
-    	} else if (paramValue.isVisible()){
-    		editedData.setValueRaw(paramValue.getValue());
+    	if (Date.class.getName().equals(editedData.getParamType())){
+    		dtValue=dateValue.getValue();
+    		if(dtValue!=null){
+	    		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	            String date = DATE_FORMAT.format(dtValue);
+	    		editedData.setValueRaw(date);
+    		}
+    	} else if (Boolean.class.getName().equals(editedData.getParamType())){
+    		valueRadio = radioValue.getSelectedItem();
+        	if(radioValue!=null){
+        		editedData.setValueRaw(valueRadio.getValue().toString());
+        	}
     	} else {
-    		editedData.setValueRaw(radioValue!=null?"Y":"N");
+    		editedData.setValueRaw(paramValue.getValue());
     	}
 
     }
-    
-    
-    
+
 }
 
