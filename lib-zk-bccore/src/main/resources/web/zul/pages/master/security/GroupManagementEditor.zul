@@ -43,12 +43,12 @@
 					<treeitem value="${each}">
 						<treerow>
 							<treecell>
-								<checkbox value="${each.data.id}" checked="${each.data.isSelected}"></checkbox>
+								<checkbox value="${each.data.id}" checked="${each.data.selected}" forward="onClick=groupMgmTree.onCbTreeClick"></checkbox>
 								<space></space>
 								${each.data.functionCode}
 							</treecell>
 							<treecell>${each.data.functionLabel}</treecell>
-							<treecell>display zul path here!</treecell>
+							<treecell>${each.data.pageUrlStr}</treecell>
 						</treerow>
 					</treeitem>
 				</template>
