@@ -97,6 +97,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 			springWired = true ; 
 		} catch (Exception e) {
+			e.printStackTrace();
 			springWired = false ;
 		}
 	}
