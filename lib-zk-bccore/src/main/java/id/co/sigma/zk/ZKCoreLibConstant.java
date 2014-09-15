@@ -54,3 +54,4 @@ public final class ZKCoreLibConstant  {
 	public static final String MENUITEM_OBJECT_REF_KEY="menObjectRef";
 
 }
+

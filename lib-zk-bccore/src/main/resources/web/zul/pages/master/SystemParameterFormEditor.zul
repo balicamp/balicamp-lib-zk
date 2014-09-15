@@ -17,24 +17,31 @@
 				
 				<row>
 					<cell>Param Type :</cell>
-					<cell><combobox id="cmbType" model="@{editorSystemParameter$SystemParameterEditorController.listModelParamtype}" selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.paramType}"/></cell>
+					<cell>
+						<combobox id="cmbType" 
+							model="${editorSystemParameter$SystemParameterEditorController.listModelParamtype}"
+							value="${editorSystemParameter$SystemParameterEditorController.editedData.paramType}"/> 
+							<!-- selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.paramType}"/> -->
+					</cell>
 				</row>
 				
-				<row visible="@{editorSystemParameter$SystemParameterEditorController.textbox, load-after='cmbType.onChange'}" width="150%">
+				<row id="textParamType" visible="false" width="150%">
 					<label value="Param Value" width="150px"/>
 					<textbox id="paramValue"
 						value="${editorSystemParameter$composer.editedData.valueRaw}"
 						width="150px" />
 				</row>
 				
-				 <row visible="@{editorSystemParameter$SystemParameterEditorController.datepicker, load-after='cmbType.onChange'}">
+				 <row id="dateParamType" visible="false">
 					<label value="Param Value" width="150px"/>
-					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" value="${editorSystemParameter$composer.dtValue}"/>
+					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
+					 <!-- value="${editorSystemParameter$composer.dtValue}"/> -->
 				</row>
 				
-				<row width = "150%" visible="@{editorSystemParameter$SystemParameterEditorController.radiogrup, load-after='cmbType.onChange'}" >
+				<row id="boolParamType" width = "150%" visible="false" >
 					<label value="Param Value" width="150px"/>
-					<radiogroup id="radioValue" selectedItem="${editorSystemParameter$composer.valueRadio}" >	
+					<radiogroup id="radioValue">  
+						<!-- selectedItem="${editorSystemParameter$composer.valueRadio}" > -->	
 							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/> 
 							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
 					</radiogroup>
@@ -50,7 +57,8 @@
 				<row>
 					<cell>Edited Flag :</cell>
 					<cell>
-					<radiogroup id="editableFlag" selectedItem="${editorSystemParameter$composer.editableRadio}" >	
+					<radiogroup id="editableFlag"> 
+					<!-- selectedItem="${editorSystemParameter$composer.editableRadio}" > -->	
 							<radio id="editableFlagY" value ="Yes" label="Yes" radiogroup="editableFlag"/> 
 							<radio id="editableFlagN" value ="No" label="No" radiogroup="editableFlag"/> 
 					</radiogroup>

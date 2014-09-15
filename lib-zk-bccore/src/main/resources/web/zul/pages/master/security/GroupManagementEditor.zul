@@ -38,17 +38,17 @@
 					<treecol hflex="1" label="Kode Menu"/>
 					<treecol hflex="1" label="Label Menu"/>
 					<treecol hflex="1" label="Zul Path"/>
-					<treecol width="150px" label="Action"/>
 				</treecols>
 				<template name="model">
-					<treeitem>
+					<treeitem value="${each}">
 						<treerow>
-							<treecell>${each.data.functionCode}</treecell>
-							<treecell>${each.data.functionLabel}</treecell>
-							<treecell>display zul path here!</treecell>
 							<treecell>
-								<checkbox></checkbox>
+								<checkbox value="${each.data.id}" checked="${each.data.selected}" forward="onClick=groupMgmTree.onCbTreeClick"></checkbox>
+								<space></space>
+								${each.data.functionCode}
 							</treecell>
+							<treecell>${each.data.functionLabel}</treecell>
+							<treecell>${each.data.pageUrlStr}</treecell>
 						</treerow>
 					</treeitem>
 				</template>

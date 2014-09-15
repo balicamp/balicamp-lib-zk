@@ -28,6 +28,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -43,6 +44,8 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 	private static final long serialVersionUID = -496673852702964145L;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SystemParameterEditorController.class.getName()); 
+	
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Wire Textbox id ; 
     @Wire Textbox paramType; 
@@ -52,13 +55,22 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     @Wire Datebox dateValue;
     @Wire Radiogroup radioValue;
     @Wire Radiogroup editableFlag;
-  
+    
+    @Wire
+    Row textParamType;
+
+    @Wire
+    Row dateParamType;
+
+    @Wire
+    Row boolParamType;
 
 
     ListModelList<String> listModelEditable;
     ListModelList<String> listModelParamtype;
     SystemSimpleParameter system;
-    Window win;
+    
+/*    Window win;
     AnnotateDataBinder binder;
     boolean textbox, datepicker, radiogrup;
     
@@ -135,7 +147,7 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 	public void setDatepicker(boolean datepicker) {
 		this.datepicker = datepicker;
 	}
-
+*/
 	public ListModelList<String> getListModelParamtype() {
 		return listModelParamtype;
 	}
@@ -204,17 +216,32 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 	@Listen("onChange=#cmbType")
     public void onChange(Event event){
 		if(cmbType.getValue().equals("java.util.Date")){
-			setTextbox(false);
-			setDatepicker(true);
-			setRadiogrup(false);
+//			setTextbox(false);
+//			setDatepicker(true);
+//			setRadiogrup(false);
+			
+			textParamType.setVisible(false);
+			dateParamType.setVisible(true);
+			boolParamType.setVisible(false);
+			
 		}else if (cmbType.getValue().equals("java.lang.Boolean")){
-			setTextbox(false);
-		    setDatepicker(false);
-		    setRadiogrup(true);
+//			setTextbox(false);
+//		    setDatepicker(false);
+//		    setRadiogrup(true);
+
+			textParamType.setVisible(false);
+			dateParamType.setVisible(false);
+			boolParamType.setVisible(true);
+		    
 		}else {
-		    setTextbox(true);
-		    setDatepicker(false);
-		    setRadiogrup(false);
+//		    setTextbox(true);
+//		    setDatepicker(false);
+//		    setRadiogrup(false);
+			
+			textParamType.setVisible(true);
+			dateParamType.setVisible(false);
+			boolParamType.setVisible(false);
+			
 		}
     }
     
@@ -222,12 +249,13 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     public void doAfterCompose(Component comp) throws Exception {
     	// TODO Auto-generated method stub
     	super.doAfterCompose(comp);
-    	if(comp instanceof Window){
-    		win = (Window) comp;
-    		binder = new AnnotateDataBinder(win);
-    		System.out.println("WINDOW_ID : " + win.getId());
-            System.out.println("DESKTOP_ID : " + win.getDesktop().getId());
-    	}
+    	
+//    	if(comp instanceof Window){
+//    		win = (Window) comp;
+//    		binder = new AnnotateDataBinder(win);
+//    		System.out.println("WINDOW_ID : " + win.getId());
+//            System.out.println("DESKTOP_ID : " + win.getDesktop().getId());
+//    	}
     	
     	
     	listModelParamtype= new ListModelList<String>();
@@ -238,6 +266,33 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     	listModelParamtype.add(BigInteger.class.getName());
     	listModelParamtype.add(Date.class.getName());
     	listModelParamtype.add(Boolean.class.getName());
+    	
+    	cmbType.setModel(listModelParamtype);
+    	
+    	if(editedData != null) {
+    		if("java.util.Date".equals(editedData.getParamType())) {
+    			textParamType.setVisible(false);
+    			dateParamType.setVisible(true);
+    			boolParamType.setVisible(false);
+    			if(editedData.getValueRaw() != null) {
+    				try {
+    					dateValue.setValue(DATE_FORMAT.parse(editedData.getValueRaw()));
+					} catch (Exception e) {}
+    			}
+    		} else if ("java.lang.Boolean".equals(editedData.getParamType())) {
+    			textParamType.setVisible(false);
+    			dateParamType.setVisible(false);
+    			boolParamType.setVisible(true);
+    			Boolean bool = Boolean.valueOf(editedData.getValueRaw());
+    			radioValue.setSelectedIndex(bool ? 0 : 1);
+    		} else {
+    			textParamType.setVisible(true);
+    			dateParamType.setVisible(false);
+    			boolParamType.setVisible(false);
+    		}
+     	}
+    	
+    	editableFlag.setSelectedIndex(("Yes".equals(editedData.getEditableFlag()) || "Y".equals(editedData.getEditableFlag())) ? 0 : 1);
     	
     /*	if (Date.class.getName().equals(editedData.getParamType())){
     		editedData.setValueRaw(dateValue.getValue().toString());
@@ -255,7 +310,7 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     @Override
     protected void parseEditedData(Component comp) {
     	super.parseEditedData(comp);
-    	editableRadio = editableFlag.getSelectedItem();
+    	Radio editableRadio = editableFlag.getSelectedItem();
     	if(editableFlag!=null){
     		editedData.setEditableFlag(editableRadio.getValue().toString());
     	}   	
@@ -263,14 +318,14 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     
     	editedData.setParamType(cmbType.getValue());
     	if (Date.class.getName().equals(editedData.getParamType())){
-    		dtValue=dateValue.getValue();
+    		Date dtValue=dateValue.getValue();
     		if(dtValue!=null){
-	    		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+//	    		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	            String date = DATE_FORMAT.format(dtValue);
 	    		editedData.setValueRaw(date);
     		}
     	} else if (Boolean.class.getName().equals(editedData.getParamType())){
-    		valueRadio = radioValue.getSelectedItem();
+    		Radio valueRadio = radioValue.getSelectedItem();
         	if(radioValue!=null){
         		editedData.setValueRaw(valueRadio.getValue().toString());
         	}
