@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -65,7 +64,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		try {
 			getEditedData().setApplicationId(new Long(applicationId));
 			super.insertData(data);
-			saveMenuAssignment(data.getId()); // Menurut teori, setelah berhasil disimpan maka id sudah terisi
+			saveMenuAssignment(data.getId()); // Menurut teori, setelah data berhasil disimpan maka id (auto increment) sudah terisi :)
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -158,7 +157,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		return childMenus.get(idParent); 
 	}
 	
-	private void loadAllMenus () {
+	private void loadMenuData() {
 		if(getEditedData()!=null && getEditedData().getId()!=null){
 			List<ApplicationMenuAssignment> menuAss = getMenuAssignments(getEditedData().getId());
 			for (ApplicationMenuAssignment menuAs : menuAss) {
@@ -193,7 +192,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	public MenuTreeNode<SelectedApplicationMenu> getTreeNodes(){
 		//List<SelectedApplicationMenu> menus = getMenus();
 		
-		loadAllMenus();
+		loadMenuData();
 		if(rootMenus!=null && rootMenus.size() > 0){
 			MenuTreeNodeCollection<SelectedApplicationMenu> menuNodes = new MenuTreeNodeCollection<SelectedApplicationMenu>();
 			for (SelectedApplicationMenu menu : rootMenus) {
@@ -234,6 +233,11 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		}
 	}
 	
+	/**
+	 * Get menu assignments data by group ID
+	 * @param groupId - Group ID
+	 * @return
+	 */
 	private List<ApplicationMenuAssignment> getMenuAssignments(Long groupId){
 		// Filters
 		SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
@@ -255,6 +259,11 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		}
 	}
 	
+	/**
+	 * Get menu data by group ID
+	 * @param groupId - Group ID
+	 * @return
+	 */
 	private List<SelectedApplicationMenu> getMenus(Long groupId ){
 		Long appId = new Long(applicationId);
 		
