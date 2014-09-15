@@ -2,7 +2,7 @@
 <window id="form"
 	title="Menu Maintenance" border="normal"  apply="id.co.sigma.zk.ui.controller.security.ApplicationMenuListController">
 	<vlayout>
- 		<grid width="500px">
+ 		<!-- <grid width="500px">
 			<columns>
 				<column align="right" hflex="min"/>
 				<column/>
@@ -22,7 +22,7 @@
 			<button id="searchButton" label="Search" 
             onClick="@command('click')"/>
 			<button id="reset" label="Reset"/>
-		</hlayout>
+		</hlayout> -->
     <tree id="tree" hflex="1" model="${form$composer.treeModel}">
 		<treecols>
 			<treecol hflex="1" label="Kode Menu" />
@@ -33,16 +33,16 @@
 		<template name="model">
 	        <treeitem>
 	            <treerow>
-	                <treecell label="${each.data.functionCode}"/>
+	                <treecell label="${each.data.functionCode}" tooltiptext="${each.data.id}"/>
 	                <treecell label="${each.data.functionLabel}"/>
 	                <treecell label="${each.data.pageDefinition.pageUrl}"/>
 	                <treecell>
 	                	<hlayout>
-	                		<button forward="onClick=tree.onEdit"
-	                			image="/img/pencil-16.png" width="36px" />
-	                		<button forward="onClick=tree.onDelete"
-	                			image="/img/del_red_16.png" width="36px" />
-	                	</hlayout>
+	                		<actionButtonTree controller="${form$composer}" 
+	                	entityClass="${form$composer.entityClass}"
+						editorPage="~./zul/pages/master/security/MenuEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data page: ${each.data.id} ?"/>	  
+						</hlayout>
 	                </treecell>
 	            </treerow>
 	        </treeitem>

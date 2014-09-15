@@ -1,0 +1,70 @@
+<?page title="Edit Page" contentType="text/html;charset=UTF-8"?>
+<zk>
+<editorWindow id="menuEditor" captionLabel="Add/Edit Menu"
+	apply="id.co.sigma.zk.ui.controller.security.ApplicationMenuEditorController"
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+	confirmationMsg="Apakah anda akan menyimpan data ini ?">
+	<grid vflex="1">	
+		<columns>
+				<column width="150px" />
+				<column  />
+			</columns>
+		<rows>
+			<row>
+				Kode
+				<textbox id="functionCode"			
+					value="${menuEditor$composer.editedData.functionCode}">
+				</textbox>
+			</row>
+			<row>
+				Label
+				<textbox id="functionLabel"
+					value="${menuEditor$composer.editedData.functionLabel}"></textbox>
+			</row>
+			<row if="${menuEditor$composer.additionalData==null}">
+				Parent
+				<bandbox id="parentBox" mold="rounded" autodrop="true" value="" width="200px">
+					<bandpopup>
+						<listbox id="listParent" height="250px" width="450px">
+							<listhead>
+								<listheader label="Menu Code"/>
+								<listheader label="Menu Label"/>
+							</listhead>
+							<template name="model">
+								<listitem>
+									<listcell label="${each.functionCode}" />
+									<listcell label="${each.functionLabel}" />
+								</listitem>
+							</template>
+						</listbox>
+					</bandpopup>
+				</bandbox>
+			</row>
+			<row>
+				Url / Zul Path
+				<bandbox id="urlBox" mold="rounded" autodrop="true" value="${menuEditor$composer.editedData.pageDefinition.pageUrl}" width="200px">
+					<bandpopup>
+						<listbox id="list" height="250px" width="450px">
+							<listhead>
+								<listheader label="Page Code"/>
+								<listheader label="Page Url"/>
+							</listhead>
+							<template name="model">
+								<listitem>
+									<!-- <listcell label="${each.pageCode}" />
+									<listcell label="${each.pageUrl}" /> -->
+								</listitem>
+							</template>
+						</listbox>
+					</bandpopup>
+				</bandbox>
+			</row>
+			<row>
+				<longbox id="pageId" value="${menuEditor$composer.editedData.pageId}" visible="false" />
+				<longbox id="functionIdParent" value="${menuEditor$composer.editedData.functionIdParent}" visible="false" />
+				<intbox id="treeLevelPosition" value="${menuEditor$composer.editedData.treeLevelPosition}" visible="false" />
+			</row>
+		</rows>
+	</grid>
+</editorWindow>
+</zk>

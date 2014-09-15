@@ -143,6 +143,26 @@ public final class EditorManager {
 	
 	
 	/**
+	 * menampilkan editor data dengan data tambahan, keperluan tree
+	 * @param zulPath
+	 * @param appendedData
+	 * @param additionalData
+	 * @param caller
+	 */
+	public<DATA extends SingleKeyEntityData<?>> void addNewData ( String zulPath ,DATA appendedData , DATA additionalData, BaseSimpleController caller ) {
+		Map<String, Object> parameter = new HashMap<String, Object>() ; 
+		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 
+		parameter.put(ZKCoreLibConstant.ADDITIONAL_DATA_ATTRIBUTE_KEY, additionalData);
+		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.ADD_NEW); 
+		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller);
+		showHideLatestComponent(false);
+		includePanel.setVisible(false);
+		editorContainerWindow.setVisible(true); 
+		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+	}
+	
+	
+	/**
 	 * worker untuk menaruh editor panel
 	 * @param editor url yang perlu di taruh ke dalam editor
 	 */

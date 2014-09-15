@@ -15,6 +15,13 @@ public final class ZKCoreLibConstant  {
 	
 	
 	/**
+	 * key untuk passing data tambahan ke controller
+	 */
+	public static final String ADDITIONAL_DATA_ATTRIBUTE_KEY="additionalData";
+	
+	
+	
+	/**
 	 * container data.key
 	 */
 	public static final String EDITED_DATA_CLIENT_CONTAINER_KEY="editedDataContainer";

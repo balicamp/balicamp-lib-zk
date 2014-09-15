@@ -2,25 +2,17 @@ package id.co.sigma.zk.ui.controller.base;
 
 
 
-import id.co.sigma.common.data.SingleKeyEntityData;
-import id.co.sigma.common.security.domain.audit.BaseAuditedObject;
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.poi.hssf.record.DConRefRecord;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
@@ -30,6 +22,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.impl.InputElement;
@@ -55,6 +48,13 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * object yang di edit
 	 */
 	protected POJO editedData ; 
+	
+	
+	/**
+	 * object tambahan
+	 * ini keperluan ketika add tree
+	 */
+	protected POJO additionalData;
 	
 	
 	/**
@@ -131,6 +131,23 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		return editedData;
 	}
 	
+	
+	/**
+	 * object tambahan, keperluan di tree
+	 */
+	public POJO getAdditionalData() {
+		return additionalData;
+	}
+
+
+	/**
+	 * object tambahan, keperluan di tree
+	 */
+	public void setAdditionalData(POJO additionalData) {
+		this.additionalData = additionalData;
+	}
+
+
 	/**
 	 * parse data dari client	 
 	 * @param comp
@@ -182,6 +199,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				val = ((Doublebox)input).getValue();
 			} else if(input instanceof Textbox) {
 				val = ((Textbox)input).getValue();
+			} else if(input instanceof Longbox) {
+				val = ((Longbox)input).getValue();
 			}
 			
 			try {
@@ -255,6 +274,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		if ( passedParameter!= null ) {
 			if ( passedParameter.containsKey(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY)) {
 				editedData = (POJO) passedParameter.get(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY);
+			}
+			if(passedParameter.containsKey(ZKCoreLibConstant.ADDITIONAL_DATA_ATTRIBUTE_KEY)){
+				additionalData = (POJO) passedParameter.get(ZKCoreLibConstant.ADDITIONAL_DATA_ATTRIBUTE_KEY);
 			}
 			if ( passedParameter.containsKey(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY)  ) {
 				editorState = (ZKEditorState)passedParameter.get(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY);

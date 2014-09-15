@@ -16,9 +16,9 @@
     </component>	
 
 	<component>
-        <component-name>actionButton</component-name>
+        <component-name>actionButtonTree</component-name>
         <extends>div</extends>
-        <component-class>id.co.sigma.zk.ui.custom.component.ActionButton</component-class>
+        <component-class>id.co.sigma.zk.ui.custom.component.ActionButtonTree</component-class>
     </component>	
     
 </language-addon>
