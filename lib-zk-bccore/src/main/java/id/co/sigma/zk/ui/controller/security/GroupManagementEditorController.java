@@ -64,20 +64,27 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	protected void insertData(UserGroup data) throws Exception {
 		try {
 			getEditedData().setApplicationId(new Long(applicationId));
-			super.insertData(data);			
+			super.insertData(data);
+			saveMenuAssignment(data.getId()); // Menurut teori, setelah berhasil disimpan maka id sudah terisi
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	@Transactional(readOnly=false)
 	@Override
 	protected void updateData(UserGroup data) throws Exception {
 		Long groupId = getEditedData().getId();
 		
 		try {
 			super.updateData(data);
-			
+			saveMenuAssignment(groupId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveMenuAssignment(Long groupId){
+		try {
 			// delete all menu assignments data by groupId
 			List<ApplicationMenuAssignment> currAssigns = getMenuAssignments(groupId);
 			if(!currAssigns.isEmpty()){
