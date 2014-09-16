@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.DefaultTreeModel;
@@ -163,7 +164,18 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 
 	@Override
 	public void reload() {
-		invokeSearch();
+		//invokeSearch();
+		tree.clear();
+		tree.setModel(constructTree(getMenus()));
+	}
+
+
+	
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
+		tree.clear();
+		tree.setModel(constructTree(getMenus()));
 	}
 
 

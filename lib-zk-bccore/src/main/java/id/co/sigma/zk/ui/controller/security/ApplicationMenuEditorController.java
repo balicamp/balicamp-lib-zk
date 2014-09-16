@@ -8,6 +8,7 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 import java.util.List;
@@ -50,6 +51,8 @@ public class ApplicationMenuEditorController extends
 	
 	ListModelList<ApplicationMenu> listModelParent;
 	
+	
+	
 	@Wire
 	Listbox list;
 	
@@ -77,15 +80,15 @@ public class ApplicationMenuEditorController extends
 		Long appId = new Long(applicationId);
 		getEditedData().setApplicationId(appId);
 		getEditedData().setStatus("A");
-		if(getEditedData().getPageId()==0){
+		if(getEditedData().getPageId()==0 || urlBox.getValue().equals("") || urlBox.getValue()==null){
 			getEditedData().setPageId(null);
 		}
-		if(getEditedData().getFunctionIdParent()==0){
+		if(getEditedData().getFunctionIdParent()==0 || parentBox.getValue().equals("") || parentBox.getValue()==null){
 			getEditedData().setFunctionIdParent(null);
 		}
 		if(getAdditionalData()!=null){
 			Long parentId = getAdditionalData().getId();
-			getEditedData().setFunctionIdParent(getAdditionalData().getId());
+			getEditedData().setFunctionIdParent(parentId);
 			getEditedData().setTreeLevelPosition(getAdditionalData().getTreeLevelPosition()+1);
 			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
 					new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, parentId)
@@ -114,11 +117,86 @@ public class ApplicationMenuEditorController extends
 					getEditedData().setSiblingOrder(swap.intValue()+1);
 				}
 			}
-		}
-		
+		}		
 		super.insertData();
+		if(getEditedData().getTreeLevelPosition()==1){
+			getEditedData().setMenuTreeCode(String.valueOf(getEditedData().getId()));
+			super.updateData();
+		}else{
+			Long parentId = getEditedData().getFunctionIdParent();
+			ApplicationMenu app = generalPurposeDao.get(ApplicationMenu.class, parentId);
+			if(app!=null){
+				String menuTreeCode = app.getMenuTreeCode()+"."+String.valueOf(getEditedData().getId());
+				getEditedData().setMenuTreeCode(menuTreeCode);
+				super.updateData();
+			}
+		}
 	}
 
+	
+	
+	@Override
+	public void updateData() throws Exception {
+		
+		if(getEditedData().getPageId()==0 || urlBox.getValue().equals("") || urlBox.getValue()==null){
+			getEditedData().setPageId(null);
+		}
+		if(getEditedData().getFunctionIdParent()==0 || parentBox.getValue().equals("") || parentBox.getValue()==null){
+			getEditedData().setFunctionIdParent(null);
+		}
+		if(getEditedData().getFunctionIdParent()!=null){
+			Long idParent = getEditedData().getFunctionIdParent();
+			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+					new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, idParent)
+			};
+			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
+			if(swap!=null){
+				getEditedData().setSiblingOrder(swap.intValue()+1);
+			}
+			ApplicationMenu app = generalPurposeDao.get(ApplicationMenu.class, idParent);
+			if(app!=null){
+				getEditedData().setMenuTreeCode(app.getMenuTreeCode()+"."+getEditedData().getId());
+			}
+		}else{
+			getEditedData().setTreeLevelPosition(1);
+			getEditedData().setMenuTreeCode(String.valueOf(getEditedData().getId()));
+			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+					new SimpleQueryFilter("treeLevelPosition", SimpleQueryFilterOperator.equal, 1)
+			};
+			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
+			if(swap!=null){
+				getEditedData().setSiblingOrder(swap.intValue()+1);
+			}
+		}	
+		super.updateData();
+	}
+
+
+
+	/**
+	 * untuk mendapatkan menu label dari parent ketika proses edit
+	 * @return
+	 */
+	public String getLabelParent(){
+		if(ZKEditorState.EDIT.equals(getEditorState())){
+			Long parentId = getEditedData().getFunctionIdParent();
+			if(parentId!=null){
+				try {
+					ApplicationMenu parent = generalPurposeDao.get(ApplicationMenu.class, parentId);
+					if(parent!=null){
+						return parent.getFunctionLabel();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error("gagal membaca menu untuk app id : " + applicationId + " , error : " + e.getMessage() , e);
+				}
+			}else{
+				return "";
+			}
+		}
+		return "";
+	}
+	
 	protected List<PageDefinition> getPages () {
 		Long appId = new Long(applicationId);
 		SimpleQueryFilter[] flt = new SimpleQueryFilter[]{
@@ -144,7 +222,8 @@ public class ApplicationMenuEditorController extends
 				new SimpleQueryFilter("applicationId" , SimpleQueryFilterOperator.equal , appId)
 		};
 		try {
-			List l = generalPurposeDao.list( ApplicationMenu.class.getName() +" A left outer join fetch A.pageDefinition", "A", flt, DEF_SORTS,10000,0);
+			//return generalPurposeDao.list(ApplicationMenu.class, flt,DEF_SORTS);
+			List l = generalPurposeDao.list( ApplicationMenu.class.getName() +" A left outer join fetch A.application", "A", flt, DEF_SORTS,10000,0);
 			return (List<ApplicationMenu>)l;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -156,10 +235,10 @@ public class ApplicationMenuEditorController extends
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		//listModel = new ListModelList<>(getPages());
-		listModelParent = new ListModelList<>(getListMenu());
-	//	list.setModel(listModel);
-		listParent.setModel(listModelParent);
+		listModel = new ListModelList<>(getPages());
+		//listModelParent = new ListModelList<>(getListMenu());
+		list.setModel(listModel);
+		//listParent.setModel(listModelParent);
 	}
 	
 	@Listen("onSelect=#list")
