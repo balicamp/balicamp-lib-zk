@@ -175,7 +175,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				editedData = (POJO) passedParameter.get(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY);
 			}
 			if ( passedParameter.containsKey(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY)  ) {
-				editorState = (ZKEditorState)passedParameter.get(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY);
+				setEditorState(  (ZKEditorState)passedParameter.get(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY));
 			}
 			if( passedParameter.containsKey(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT)){
 				editorCallerReference = (BaseSimpleController) passedParameter.get(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT); 
@@ -188,7 +188,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	}
 	
 	
-	
+	public void setEditorState(ZKEditorState editorState) {
+		this.editorState = editorState;
+	}
 	
 	
 	

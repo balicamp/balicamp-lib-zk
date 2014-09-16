@@ -1,23 +1,25 @@
 package id.co.sigma.zk.ui.component;
 
-import org.zkoss.zhtml.Textarea;
+import org.zkoss.zul.Combobox;
 
 /**
  * 
  * @author <a href="mailto:gede.sutarsa@gmail.com">Gede Sutarsa</a>
  */
-public class TextareaBindable extends Textarea implements IBindableComponent{
+public class ComboboxBindable extends Combobox implements IBindableComponent{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5039658316141505415L;
+	private static final long serialVersionUID = 8831951787636242825L;
+
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
-			.getLogger(TextareaBindable.class.getName());
+			.getLogger(ComboboxBindable.class.getName());
 	
 	private String targetBindField ;
 	 
-	private String  binderClassFQCN ;  
-	 
+	private String  binderClassFQCN ;
+	
+	
 	@Override 
 	public String getTargetBindField() {
 		return targetBindField;

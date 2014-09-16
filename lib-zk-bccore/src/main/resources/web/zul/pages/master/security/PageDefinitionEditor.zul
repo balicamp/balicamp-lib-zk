@@ -14,15 +14,24 @@
 		<rows>
 			<row>
 				Code
-				<textbox id="pageCode"			
-					value="${pageDefEditor$composer.editedData.pageCode}">
-				</textbox>
+				
+				<bctextbox 
+					id="pageCode" 
+					targetBindField="pageCode" 
+					binderClassFQCN="id.co.sigma.itdc.web.component.MyBinder"
+					value="${pageDefEditor$composer.editedData.pageCode}"></bctextbox>
 			</row>
 			<row>
 				URL
-				<textbox id="pageUrl"
+				
+					
+				<textbox id="pageUrlAnnotated" 
+					disabled="${editStateEnabledFlag}"
 					value="${pageDefEditor$composer.editedData.pageUrl}"></textbox>
 			</row>
+			
+			
+			
 			<row>
 				Additional Data
 				<textbox id="additionalData"
@@ -32,6 +41,7 @@
 				Remark
 				<textbox id="remark"
 					value="${pageDefEditor$composer.editedData.remark}"></textbox>
+				<timebox></timebox>	
 			</row>
 		</rows>
 	</grid>

@@ -73,6 +73,13 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	
 	private final void saveData(final Event event) {
 		parseEditedData(event.getTarget());
+		try {
+			bindValueFromControl(getEditedData());
+		} catch (Exception e) {
+			 Messagebox.show("Gagal Bind data. error : " + e.getMessage(), "Gagal Bind Data", Messagebox.OK, Messagebox.ERROR);
+			return  ; 
+		}
+		
 		
 		if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
 			try {

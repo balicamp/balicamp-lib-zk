@@ -9,9 +9,12 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
 import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.zk.ui.annotations.ControlDataBinder;
+import id.co.sigma.zk.ui.component.TextboxBindable;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+import id.co.sigma.zk.ui.data.DefaultFormDataBinder;
 
 /**
  * editor page definition
@@ -28,6 +31,23 @@ public class PageDefintionEditorController extends BaseSimpleDirectToDBEditor<Pa
 	private static final Logger logger = LoggerFactory.getLogger(PageDefintionEditorController.class); 
 
 	
+	@Wire
+	@ControlDataBinder(targetField="pageUrl" , dataBinderClass=DefaultFormDataBinder.class)
+	private Textbox pageUrlAnnotated ; 
+	
+	
+	@Wire
+	@ControlDataBinder(targetField="pageCode" )
+	TextboxBindable pageCode ; 
+	
+	
+	
+	
+	
+	
+	
+	private boolean kelompok1Enabled  ;
+	private boolean kelompok2Enabled  ;
 //	@Wire
 //	private Button btnSimpan;
 //	@Wire
@@ -72,12 +92,32 @@ public class PageDefintionEditorController extends BaseSimpleDirectToDBEditor<Pa
 	
 	@Override
 	public void insertData() throws Exception {
+		
 		//FIXME: ini masih di hard code dulu
 		logger.info("Set application id");
 		getEditedData().setApplicationId(1L);
 		super.insertData();
 	}
 	
+	
+	
+	@Override
+	public void setEditorState(ZKEditorState editorState) {
+		
+		super.setEditorState(editorState);
+		if (ZKEditorState.ADD_NEW.equals(editorState)){
+			kelompok1Enabled = true ; 
+			kelompok1Enabled = true ; 
+		}else if ( ZKEditorState.EDIT.equals(editorState)){
+			kelompok1Enabled = false ; 
+			kelompok1Enabled = true ;
+		}
+		else {
+			kelompok1Enabled = false ; 
+			kelompok1Enabled = false ;
+		}
+		
+	}
 
 	
 	
