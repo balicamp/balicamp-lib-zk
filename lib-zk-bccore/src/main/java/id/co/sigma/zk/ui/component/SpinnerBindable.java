@@ -1,0 +1,41 @@
+package id.co.sigma.zk.ui.component;
+
+import org.zkoss.zul.Spinner;
+
+/**
+ * 
+ * @author <a href="mailto:gede.sutarsa@gmail.com">Gede Sutarsa</a>
+ */
+public class SpinnerBindable extends Spinner implements IBindableComponent{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1434294065649675306L;
+
+
+	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
+			.getLogger(SpinnerBindable.class.getName());
+	
+	
+	private String targetBindField ;
+	 
+	private String  binderClassFQCN ;  
+	 
+	@Override 
+	public String getTargetBindField() {
+		return targetBindField;
+	}
+	@Override
+	public void setTargetBindField(String targetBindField) {
+		this.targetBindField = targetBindField;
+	}
+	@Override
+	public void setBinderClassFQCN(String fqcn) {
+		this.binderClassFQCN = fqcn  ; 
+		
+	}
+	@Override
+	public String getBinderClassFQCN() {
+		return binderClassFQCN;
+	} 
+}
