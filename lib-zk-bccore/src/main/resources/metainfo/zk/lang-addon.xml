@@ -26,4 +26,61 @@
         <extends>div</extends>
         <component-class>id.co.sigma.zk.ui.custom.component.ActionButtonTree</component-class>
     </component>	
+    <component>
+    	<component-name>bctextbox</component-name>
+    	<extends>textbox</extends>
+    	<component-class>id.co.sigma.zk.ui.component.TextboxBindable</component-class>
+    </component>
+    <component>
+    	<component-name>bcintbox</component-name>
+    	<extends>intbox</extends>
+    	<component-name>id.co.sigma.zk.ui.component.IntboxBindable</component-name>
+    </component>
+
+	<component>
+		<component-name>bcbandbox</component-name>	    
+		<extends>bandbox</extends>	    
+		<component-class>BandboxBindable</component-class>	    
+	</component>
+	<component>		    
+		<component-name>bccombobox</component-name>		    
+		<extends>combobox</extends>		    
+		<component-class>ComboboxBindable</component-class>		    
+	</component>
+	<component>		    
+		<component-name>bcdatebox</component-name>		    
+		<extends>datebox</extends>		
+		<component-class>DateboxBindable</component-class>
+	</component>
+	<component>
+		<component-name>bcdecimalbox</component-name>		    
+		<extends>decimalbox</extends>		    
+		<component-class>DecimalboxBindable</component-class>		    
+	</component>
+	<component>		    
+		<component-name>bcdoublebox</component-name>		    
+		<extends>doublebox</extends>		    
+		<component-class>DoubleboxBindable</component-class>		    
+	</component>
+	<component>		
+		<component-name>bcintbox</component-name>		    
+		<extends>intbox</extends>		    
+		<component-class>IntboxBindable</component-class>		    
+	</component>
+	<component>
+		<component-name>bcspinner</component-name>		    
+		<extends>spinner</extends>		    
+		<component-class>SpinnerBindable</component-class>		    
+	</component>
+	<component>		    
+		<component-name>bctextbox</component-name>		    
+		<extends>textbox</extends>		    
+		<component-class>TextboxBindable</component-class>		    
+	</component>
+	<component>		    
+		<component-name>bctimebox</component-name>		    
+		<extends>timebox</extends>		    
+		<component-class>TimeboxBindable</component-class>		    
+	</component>
+    
 </language-addon>
