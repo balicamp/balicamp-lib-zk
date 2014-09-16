@@ -47,9 +47,9 @@
 					<treecol hflex="1" label="Zul Path"/>
 				</treecols>
 				<template name="model">
-					<treeitem value="${each}" selected="${each.data.selected}">
+					<treeitem value="${each}">
 						<treerow>
-							<treecell>
+							<treecell tooltiptext="${each.data.id}">
 								<checkbox value="${each.data.id}" checked="${each.data.selected}" forward="onClick=groupMgmTree.onCbTreeClick"></checkbox>
 								<space></space>
 								${each.data.functionCode}
