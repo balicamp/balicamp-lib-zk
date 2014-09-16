@@ -15,4 +15,15 @@
         <component-class>id.co.sigma.zk.ui.controller.base.window.EditorWindow</component-class>
     </component>	
     
+    <component>
+        <component-name>actionButton</component-name>
+        <extends>div</extends>
+        <component-class>id.co.sigma.zk.ui.custom.component.ActionButton</component-class>
+    </component>	
+
+	<component>
+        <component-name>actionButtonTree</component-name>
+        <extends>div</extends>
+        <component-class>id.co.sigma.zk.ui.custom.component.ActionButtonTree</component-class>
+    </component>	
 </language-addon>
