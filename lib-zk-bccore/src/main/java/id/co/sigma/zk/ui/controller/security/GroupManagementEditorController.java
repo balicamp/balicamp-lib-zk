@@ -14,8 +14,10 @@ import id.co.sigma.zk.ui.data.SelectedApplicationMenu;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,7 +29,9 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.DefaultTreeModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
 
 /**
  * Group management editor controller
@@ -45,6 +49,10 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	
 	@Wire Checkbox cbSuperGroup;
 	@Wire Textbox superGroup;
+	
+	@Wire Checkbox cbActiveFlag;
+	@Wire Textbox activeFlag;
+	
 	@Wire Tree groupMgmTree;
 	
 	private Map<Long, SelectedApplicationMenu> checkedMenus = new HashMap<>();
@@ -52,17 +60,59 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		if(checkedMenus.containsKey(menu.getId())){
 			checkedMenus.remove(menu.getId());
 		}
+		
+		// Removing parent if all children are unchecked
+		String menuTreeCode =  menu.getMenuTreeCode() ;
+		if ( menuTreeCode.contains(".")){
+			String parentCode = getParentTreeCodes(menuTreeCode); 
+			int nChild = 0;
+			for(SelectedApplicationMenu scn : checkedMenus.values()){
+				String scnMenuTreeCode = scn.getMenuTreeCode();
+				if( (scnMenuTreeCode.length() > 1) && scnMenuTreeCode.startsWith(parentCode) ){
+					nChild++;
+				}
+			}
+			if(nChild == 0){
+				checkedMenus.remove(menu.getFunctionIdParent());
+			}
+		}
+		
+		refreshCheckboxesOnTree();
 	}
+	
 	private void addToCheckedMenus(SelectedApplicationMenu menu){
 		if(!checkedMenus.containsKey(menu.getId())){
 			checkedMenus.put(menu.getId(), menu);
 		}
 	}
 	
+	private void refreshCheckboxesOnTree(){
+		Set<Treeitem> treeItems = (Set<Treeitem>) groupMgmTree.getItems();
+		for(Treeitem treeItem : treeItems){
+			Treerow row = treeItem.getTreerow();
+			Checkbox cb = (Checkbox) row.getFirstChild().getFirstChild();
+			System.out.println("CB is checked? = "+cb.isChecked());
+		}
+	}
+	
+	private String getParentTreeCodes(String menuTreeCode){
+		int lastDotPos = menuTreeCode.lastIndexOf(".");
+		int endIndex = ((lastDotPos-1)>0)? (lastDotPos-1) : 1;
+		String retval = menuTreeCode.substring(0, endIndex);
+		return retval;
+	}
+	
 	@Override
 	protected void insertData(UserGroup data) throws Exception {
 		try {
 			getEditedData().setApplicationId(new Long(applicationId));
+			if(getEditedData().getSuperGroup().isEmpty()){
+				getEditedData().setSuperGroup("N");
+			}
+			if(getEditedData().getActiveFlag().isEmpty()){
+				getEditedData().setActiveFlag("A");
+			}
+			
 			super.insertData(data);
 			saveMenuAssignment(data.getId()); // Menurut teori, setelah data berhasil disimpan maka id (auto increment) sudah terisi :)
 		} catch (Exception e) {
@@ -128,6 +178,12 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		String isSuperGroup = cbSuperGroup.isChecked()? "Y" : "N";
 		superGroup.setValue(isSuperGroup);
 	}
+	
+	@Listen("onCheck=#cbActiveFlag")
+	public void onActiveFlagChecked(){
+		String isActive = cbActiveFlag.isChecked()? "A" : "D";
+		activeFlag.setValue(isActive);
+	}
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
@@ -135,11 +191,11 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		
 		UserGroup data = getEditedData();
 		if(data != null){
-			boolean checked = false;
-			if(data.getSuperGroup()!=null){
-				checked = data.getSuperGroup().equalsIgnoreCase("Y");
-			}
+			boolean checked =  "Y".equalsIgnoreCase(data.getSuperGroup());
 			cbSuperGroup.setChecked(checked);
+			
+			boolean isActive = "A".equalsIgnoreCase(data.getActiveFlag());
+			cbActiveFlag.setChecked(isActive);
 		}		
 	}
 	
@@ -158,6 +214,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	}
 	
 	private void loadMenuData() {
+		selectedMenus.clear();
 		if(getEditedData()!=null && getEditedData().getId()!=null){
 			List<ApplicationMenuAssignment> menuAss = getMenuAssignments(getEditedData().getId());
 			for (ApplicationMenuAssignment menuAs : menuAss) {
