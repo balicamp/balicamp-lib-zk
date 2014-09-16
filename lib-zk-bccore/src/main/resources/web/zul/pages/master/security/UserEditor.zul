@@ -56,11 +56,17 @@
 				    </bandpopup>
 				</bandbox>
 			</row>
+			
+			<row>
+				<label>User Group</label>
+			</row>
             <row>
-                <listbox id="listBoxCheckList" model="${userEditor$composer.listUserGroup}"
-                   		checkmark="true" multiple="true">
+         		
+                <listbox id="listBoxCheckList">
 	                    <template name="model">
-	                        <listitem label="${each.groupCode}" />
+	                        <listitem selected="${each.selected}" value="${each}">
+	                        	<listcell label="${each.groupCode}" />
+	                        </listitem>
 	                    </template>
            		</listbox>
             </row>

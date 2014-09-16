@@ -2,23 +2,18 @@ package id.co.sigma.zk.ui.controller.security;
 
 
 
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.metainfo.ComponentInfo;
-import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Textbox;
-
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
-import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
-import id.co.sigma.zk.ui.controller.dualcontrol.BaseDualcontrolMasterDataListController;
+
+import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Textbox;
 
 /**
  * 
@@ -80,6 +75,10 @@ public class UserListController extends BaseSimpleListController<User> implement
 	@Override
 	public Listbox getListbox() {
 		return userListbox;
+	}
+	@Override
+	public void deleteData(User data) {
+		super.deleteData(data);
 	}
 	
 

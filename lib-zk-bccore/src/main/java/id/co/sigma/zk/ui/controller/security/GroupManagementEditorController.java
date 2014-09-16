@@ -10,15 +10,12 @@ import id.co.sigma.zk.tree.MenuTreeNode;
 import id.co.sigma.zk.tree.MenuTreeNodeCollection;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectedApplicationMenu;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.zk.ui.Component;
@@ -29,7 +26,6 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.DefaultTreeModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
-import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
@@ -55,49 +51,119 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	
 	@Wire Tree groupMgmTree;
 	
-	private Map<Long, SelectedApplicationMenu> checkedMenus = new HashMap<>();
+	// ini untuk menampung semua menu yg dicentang (checked)
+	private Map<Long, SelectedApplicationMenu> checkedMenus = new HashMap<>(); 
+	
+	// ini untuk menampung menu parent yg harus di-uncheck setelah tidak ada anak2nya yg dipilih
+	private List<String> parentCodesToClear = new ArrayList<String>();
+	
+	// semua data menu yg akan digunakan untuk keperluan ketika menu parent dicentang maka akan
+	// mencentang semua anak2nya
+	private List<String> childMenusToBeChecked = new ArrayList<String>();
+	
 	private void removeFromCheckedMenus(SelectedApplicationMenu menu){
+		if(!parentCodesToClear.isEmpty()){
+			parentCodesToClear.clear();
+		}
+		
 		if(checkedMenus.containsKey(menu.getId())){
 			checkedMenus.remove(menu.getId());
 		}
 		
 		// Removing parent if all children are unchecked
 		String menuTreeCode =  menu.getMenuTreeCode() ;
-		if ( menuTreeCode.contains(".")){
+		if(menuTreeCode!=null && menuTreeCode.contains(".")){
 			String parentCode = getParentTreeCodes(menuTreeCode); 
 			int nChild = 0;
 			for(SelectedApplicationMenu scn : checkedMenus.values()){
 				String scnMenuTreeCode = scn.getMenuTreeCode();
-				if( (scnMenuTreeCode.length() > 1) && scnMenuTreeCode.startsWith(parentCode) ){
+				if( (scnMenuTreeCode.length() > 1) && 
+					scnMenuTreeCode.startsWith(parentCode) &&
+					!scnMenuTreeCode.equals(parentCode)
+				){
 					nChild++;
 				}
 			}
+			
 			if(nChild == 0){
+				parentCodesToClear.add(parentCode);
 				checkedMenus.remove(menu.getFunctionIdParent());
+				refreshCheckboxesOnTree(true);
 			}
 		}
 		
-		refreshCheckboxesOnTree();
+		//TODO Jika yg di-uncheck adalah parent dan semua anak2nya checked, maka semua childnya harus ikut di-uncheck
 	}
 	
 	private void addToCheckedMenus(SelectedApplicationMenu menu){
+		if(!childMenusToBeChecked.isEmpty()){
+			childMenusToBeChecked.clear();
+		}
+		
 		if(!checkedMenus.containsKey(menu.getId())){
 			checkedMenus.put(menu.getId(), menu);
 		}
+		
+		// if current checked menu has children then add those children also
+		if(menuHasChild(menu.getId())){
+			String parentMenuTreeCode =  menu.getMenuTreeCode();
+			Collection<Treeitem> treeItems = getTreeItems();
+			for (Treeitem treeitem : treeItems) {
+				SelectedApplicationMenu sam = extractMenuDataFromTreeItem(treeitem);
+				String menuTreeCode = sam.getMenuTreeCode();
+				if(	menuTreeCode!=null && (menuTreeCode.length()>1) && 
+					parentMenuTreeCode!=null &&
+					menuTreeCode.startsWith(parentMenuTreeCode) &&
+					!menuTreeCode.equals(parentMenuTreeCode)
+				){
+					childMenusToBeChecked.add(menuTreeCode);
+					checkedMenus.put(sam.getId(), sam);
+				}
+			}
+			
+			if(!childMenusToBeChecked.isEmpty()){
+				refreshCheckboxesOnTree(false);
+			}
+		}
+		
+		//TODO Jika yg di-checked memiliki parent dan semua anak2nya sudah checked, maka parentnya harus ikut di-checked
 	}
 	
-	private void refreshCheckboxesOnTree(){
-		Set<Treeitem> treeItems = (Set<Treeitem>) groupMgmTree.getItems();
+	private Collection<Treeitem> getTreeItems(){
+		return groupMgmTree.getItems();
+	}
+	
+	private SelectedApplicationMenu extractMenuDataFromTreeItem(Treeitem ti){
+		MenuTreeNode<SelectedApplicationMenu> node = ti.getValue();
+		SelectedApplicationMenu sam = node.getData();
+		return sam;
+	}
+	
+	private void refreshCheckboxesOnTree(boolean isUnchecking){
+		Collection<Treeitem> treeItems = getTreeItems();
+		
 		for(Treeitem treeItem : treeItems){
+			SelectedApplicationMenu sam = extractMenuDataFromTreeItem(treeItem);
 			Treerow row = treeItem.getTreerow();
 			Checkbox cb = (Checkbox) row.getFirstChild().getFirstChild();
-			System.out.println("CB is checked? = "+cb.isChecked());
+			
+			if(isUnchecking){
+				if(parentCodesToClear.contains(sam.getMenuTreeCode())){
+					cb.setChecked(false);
+					System.out.println("Parent CB with menuTreeCode = " + sam.getMenuTreeCode() + " is unchecked");
+				}
+			}else{
+				if(childMenusToBeChecked.contains(sam.getMenuTreeCode())){
+					cb.setChecked(true);
+					System.out.println("Child CB with menuTreeCode = " + sam.getMenuTreeCode() + " is checked");
+				}
+			}
 		}
 	}
 	
 	private String getParentTreeCodes(String menuTreeCode){
 		int lastDotPos = menuTreeCode.lastIndexOf(".");
-		int endIndex = ((lastDotPos-1)>0)? (lastDotPos-1) : 1;
+		int endIndex = ((lastDotPos-1)>0)? lastDotPos : 1;
 		String retval = menuTreeCode.substring(0, endIndex);
 		return retval;
 	}

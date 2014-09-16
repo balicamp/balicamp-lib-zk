@@ -38,9 +38,11 @@
 		<template name="model">
 			<listitem >
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell><button 
-					tooltiptext="Edit data" forward="onClick=userListbox.onEditOnGridClick" 
-					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
+				<listcell>
+					<actionButton editorPage="~./zul/pages/master/security/UserEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data key: ${each.userCode}"
+						controller="${index$composer}"/>
+				</listcell>
 				<listcell label="${each.userCode}" style="text-align:left"/>
 				<listcell label="${each.realName}" style="text-align:left"/>
 			 	<listcell label="${each.email}" style="text-align:left"/>
