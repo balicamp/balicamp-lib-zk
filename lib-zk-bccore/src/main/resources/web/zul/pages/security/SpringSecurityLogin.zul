@@ -1,0 +1,10 @@
+<html:form id="f" name="f" action="j_spring_security_check" method="POST" xmlns:html="native">
+   <hlayout style="padding-top:20px;">
+       <label value="Kode User : "/>
+       <textbox id="nameTxb" name="j_username" value="" />
+       <label value="Password : "/>
+       <textbox id="passwordTxb" type="password" name="j_password" value=""/>
+       <button id="confirmBtn" type="submit" label="Login"  />
+       <label id="mesgLbl" />
+   </hlayout>
+ </html:form>      
