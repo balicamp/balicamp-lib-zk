@@ -11,12 +11,26 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.util.AntPathRequestMatcher;
-import org.springframework.security.web.util.RequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public class CustomInvocationSecurityMetadataSource implements
 		FilterInvocationSecurityMetadataSource {
 	
+	private static final String ROLE_NONE = "ROLE_NONE";
+	private static final String[] ANONYMOUS_RESOURCES = new String[]{
+		".wpd", 
+		".css", 
+		".wcs",
+		".gif",
+		".jpg",
+		".jpeg",
+		".png",
+		".bmp",
+		".js",
+		".less",
+		".dsp"
+		};
 	
 	Map<String, String> interceptPatternUrl = new HashMap<String, String>();
 	Map<RequestMatcher, String> reqsRole = new HashMap<RequestMatcher, String>();
@@ -61,7 +75,23 @@ public class CustomInvocationSecurityMetadataSource implements
 				roles.add(this.reqsRole.get(req));
 			}
 		}
+		if((roles.size() == 0) && (!isAnonymousAccess(fi.getRequestUrl()))) {
+			RequestMatcher key = new AntPathRequestMatcher(fi.getRequestUrl());
+			this.reqsRole.put(key, ROLE_NONE);
+			roles.add(this.reqsRole.get(key));
+		}
 		String[] strRoles = roles.toArray(new String[roles.size()]);
 		return strRoles;
+	}
+	
+	private boolean isAnonymousAccess(String url) {
+		
+		boolean skip = false;
+		for(String res : ANONYMOUS_RESOURCES) {
+			skip = skip || url.contains(res);
+			if(skip) break;
+		}
+		
+		return skip;
 	}
 }
