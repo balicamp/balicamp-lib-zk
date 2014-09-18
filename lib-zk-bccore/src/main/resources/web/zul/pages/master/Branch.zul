@@ -2,7 +2,7 @@
 <zk>
 <window 
 	id="listBranch"
-	title="User List" 
+	title="Branch List" 
 	border="none" 
 	apply="id.co.sigma.zk.ui.controller.master.BranchComposer">
 
