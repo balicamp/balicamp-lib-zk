@@ -1,7 +1,10 @@
 <?page title="Master Branch" contentType="text/html;charset=UTF-8"?>
-<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
 <zk>
-<window title="Master Branch" border="normal" apply="id.co.sigma.zk.ui.controller.master.BranchComposer">
+<window 
+	id="listBranch"
+	title="User List" 
+	border="none" 
+	apply="id.co.sigma.zk.ui.controller.master.BranchComposer">
 
 	<vbox align="center">
         <hbox>Kode :
@@ -15,7 +18,7 @@
         <button id="btnReset" label="Reset"/>
     </hbox>
     
-    <separator/>
+    <separator bar="false"/>
     
     <listbox 
         id="listbox"
@@ -34,17 +37,21 @@
         <template name="model">
 	        <listitem >
 	            <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-	            <listcell label="d/e" style="text-align:rigth"/>
+	            <listcell>
+	            	<actionButton 
+						editorPage="~./zul/pages/master/BranchEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data key: ${each.branchCode}"
+						controller="${listBranch$composer}"/>
+	            </listcell>
 	            <listcell label="${each.branchCode}" style="text-align:left"/>
 	            <listcell label="${each.branchName}" style="text-align:left"/>
 	            <listcell label="${each.branchAddress}" style="text-align:left"/>
 	            <listcell label="${each.description}" style="text-align:left"/>
 	        </listitem>
         </template>
+        <listfoot>  
+            <listfooter span="6" align="left"><button id="btnTambah">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
+        </listfoot>
     </listbox>
-    <separator/>		
-    <hbox>
-    	<button id="addButton" label="Tambah" image="/img/plus-16.png" ></button>
-    </hbox>
 </window>
 </zk>

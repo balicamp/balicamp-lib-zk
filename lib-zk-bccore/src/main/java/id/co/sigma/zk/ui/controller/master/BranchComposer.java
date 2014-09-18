@@ -2,12 +2,13 @@ package id.co.sigma.zk.ui.controller.master;
 
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.security.domain.Branch;
+import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
-import org.zkoss.zk.ui.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
@@ -24,6 +25,8 @@ public class BranchComposer extends BaseSimpleListController<Branch> implements 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Autowired
+	private IGeneralPurposeService generalPurposeService;
 
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(BranchComposer.class.getName());
@@ -37,14 +40,11 @@ public class BranchComposer extends BaseSimpleListController<Branch> implements 
 	@Wire
 	private Textbox txtCariNama;
 	
-	@Wire
-	private Button btnCari;
-	
-	@Wire
-	private Button btnReset;
-	
-	@Wire
-	private Button addButton;
+	@Wire Button btnCari ;
+	@Wire Button btnReset ; 
+	@Wire Button btnTambah ; 
+	@Wire Button btnEdit ; 
+	@Wire Button btnHapus ; 
 	
 	@Wire
 	private Listbox listbox;
@@ -54,11 +54,6 @@ public class BranchComposer extends BaseSimpleListController<Branch> implements 
 		return Branch.class;
 	}
 	
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-	}
-
 
 	@Listen(value="onClick = #btnCari")
     public void clickSearch() {
@@ -69,12 +64,13 @@ public class BranchComposer extends BaseSimpleListController<Branch> implements 
     public void clickReset() {
         txtCariKode.setValue("");
         txtCariNama.setValue("");
+        invokeSearch();
     };
     
-    @Listen(value="onClick = #addButton")
+    @Listen(value="onClick = #btnTambah")
     public void onClickAdd() {
-    	//Branch dataBranch = new Branch();
-    	//EditorManager.getInstance().addNewData("/master/BranchEditor.zul", dataBranch, this);
+    	Branch dataBranch = new Branch();
+    	EditorManager.getInstance().addNewData("~./zul/pages/master/BranchEditor.zul", dataBranch, this);
 
 	}
 
@@ -85,8 +81,17 @@ public class BranchComposer extends BaseSimpleListController<Branch> implements 
 
 	@Override
 	public void reload() {
-		clickSearch();
+		invokeSearch();
 	}
 	
+	@Override
+	public void deleteData(Branch data) {
+		try {
+			generalPurposeService.delete(Branch.class, data.getId(), "id");
+			invokeSearch();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }
