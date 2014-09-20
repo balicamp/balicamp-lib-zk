@@ -1,0 +1,32 @@
+<?page title="Menu Maintenance" contentType="text/html;charset=UTF-8"?>
+<window id="form"
+	title="Menu Maintenance" border="normal"  apply="id.co.sigma.zk.ui.controller.security.ApplicationMenuListController">
+	<vlayout>
+    <tree id="tree" hflex="1" model="${form$composer.treeModel}">
+		<treecols>
+			<treecol hflex="1" label="Kode Menu" />
+			<treecol hflex="1" label="Label Menu" />
+			<treecol hflex="1" label="Url /Zul Path" />
+			<treecol width="100px" label="Tindakan" />
+		</treecols>
+		<template name="model">
+	        <treeitem>
+	            <treerow>
+	                <treecell label="${each.data.functionCode}" tooltiptext="${each.data.id}"/>
+	                <treecell label="${each.data.functionLabel}"/>
+	                <treecell label="${each.data.pageDefinition.pageUrl}"/>
+	                <treecell>
+	                	<hlayout>
+	                		<actionButtonTree controller="${form$composer}" 
+	                	entityClass="${form$composer.entityClass}"
+						editorPage="~./zul/pages/master/security/MenuEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data page: ${each.data.id} ?"/>	  
+						</hlayout>
+	                </treecell>
+	            </treerow>
+	        </treeitem>
+    </template>
+	</tree>
+    <button id="btnAdd" label="Tambah"/>
+    </vlayout>	
+</window>

@@ -1,0 +1,57 @@
+<?page title="Branch Editor" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window id="branchEditorWin"
+		title="Branch Editor" 
+		border="normal"
+		width="500px" 
+		height="400px" 
+		apply="id.co.sigma.itdc.web.common.controller.master.BranchEditorComposer">
+
+	<panel>
+		<panelchildren>
+			<grid>
+				<rows>
+					<row>
+						<hlayout>
+							<label>Kode</label>
+						</hlayout>
+						<hlayout>
+							<textbox id="txtKode" value=""></textbox>
+						</hlayout>
+					</row>
+					<row>
+						<hlayout>
+							<label>Nama Cabang</label>
+						</hlayout>
+						<hlayout>
+							<textbox id="txtNamaCabang" value=""></textbox>
+						</hlayout>
+					</row>
+					<row>
+						<hlayout>
+							<label>Alamat</label>
+						</hlayout>
+						<hlayout>
+							<textbox id="txtAlamat" value=""></textbox>
+						</hlayout>
+					</row>
+					<row height="20">
+						<hlayout>
+							<label>Keterangan</label>
+						</hlayout>
+						<hlayout height="20">
+							<textbox rows="5" cols="40" id="txtKeterangan" value=""></textbox>
+						</hlayout>
+					</row>
+				</rows>
+			</grid>
+			<separator/>
+			<hbox>
+				<button id="btnSave" label="Save" />
+				<button id="btnCancel" label="Cancel" />
+			</hbox>
+		</panelchildren>
+	</panel>
+
+</window>
+</zk>

@@ -1,3 +1,4 @@
+
 package id.co.sigma.zk.ui.controller.base;
 
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
@@ -29,10 +30,10 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	private static final Logger logger = LoggerFactory.getLogger(BaseSimpleDirectToDBEditor.class);
 	
 	@Autowired
-	private IGeneralPurposeService generalPurposeService ;  
+	protected IGeneralPurposeService generalPurposeService ;  
 	
 	@Autowired
-	IGeneralPurposeDao  generalPurposeDao ; 
+	protected IGeneralPurposeDao  generalPurposeDao ; 
 	
 	
 	@Override
@@ -126,3 +127,4 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	}
 	
 }
+

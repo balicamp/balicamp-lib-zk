@@ -1,9 +1,5 @@
 package id.co.sigma.zk.ui.controller.base;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
@@ -11,13 +7,15 @@ import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -177,5 +175,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	}
 
 	public abstract Listbox getListbox()  ; 
+	
+	public void deleteData(DATA data) {
+		
+	}
 
 }

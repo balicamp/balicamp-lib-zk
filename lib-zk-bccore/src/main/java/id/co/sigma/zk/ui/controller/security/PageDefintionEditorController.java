@@ -2,19 +2,12 @@ package id.co.sigma.zk.ui.controller.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zhtml.Messagebox;
-import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
 import id.co.sigma.common.security.domain.PageDefinition;
 import id.co.sigma.zk.ui.annotations.ControlDataBinder;
-import id.co.sigma.zk.ui.component.TextboxBindable;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
-import id.co.sigma.zk.ui.data.DefaultFormDataBinder;
 
 /**
  * editor page definition
@@ -28,96 +21,23 @@ public class PageDefintionEditorController extends BaseSimpleDirectToDBEditor<Pa
 	private static final long serialVersionUID = -3648705442261546494L;
 	
 	
-	private static final Logger logger = LoggerFactory.getLogger(PageDefintionEditorController.class); 
-
+	
 	
 	@Wire
-	@ControlDataBinder(targetField="pageUrl" , dataBinderClass=DefaultFormDataBinder.class)
+	@ControlDataBinder(targetField="pageCode")
 	private Textbox pageUrlAnnotated ; 
 	
 	
-	@Wire
-	@ControlDataBinder(targetField="pageCode" )
-	TextboxBindable pageCode ; 
-	
-	
-	
-	
-	
-	
-	
-	private boolean kelompok1Enabled  ;
-	private boolean kelompok2Enabled  ;
-//	@Wire
-//	private Button btnSimpan;
-//	@Wire
-//	private Button btnBatal;
-//	
-//	
-//	@Wire Textbox txtPageCode ; 
-//	@Wire Textbox txtPageUrl; 
-//	@Wire Textbox txtPageRemark;
-//	@Wire Textbox txtAdditionalData ; 
-//
-//
-//	
-//	
-//	@Listen(value="onClick = #btnSimpan")
-//	public void simpanClick() {
-//		if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
-//			try {
-//				insertData();
-//			} catch (Exception e) {
-//				logger.error( "" + e.getMessage() , e);
-//				 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Tambah Data", Messagebox.OK, Messagebox.ERROR);
-//			}
-//			
-//		}else {
-//			try {
-//				updateData();
-//			} catch (Exception e) {
-//				logger.error("gagal update file. error : " + e.getMessage() , e);
-//				 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Simpan Data", Messagebox.OK, Messagebox.ERROR);
-//			}
-//			
-//		}
-//		
-//	}
-//	
-//	@Listen(value="onClick = #btnBatal")
-//	public void batalClick() {
-//		EditorManager.getInstance().closeCurrentEditorPanel();
-//	}
-	
+	private static final Logger logger = LoggerFactory.getLogger(PageDefintionEditorController.class); 
 	
 	@Override
 	public void insertData() throws Exception {
-		
 		//FIXME: ini masih di hard code dulu
 		logger.info("Set application id");
 		getEditedData().setApplicationId(1L);
 		super.insertData();
 	}
 	
-	
-	
-	@Override
-	public void setEditorState(ZKEditorState editorState) {
-		
-		super.setEditorState(editorState);
-		if (ZKEditorState.ADD_NEW.equals(editorState)){
-			kelompok1Enabled = true ; 
-			kelompok1Enabled = true ; 
-		}else if ( ZKEditorState.EDIT.equals(editorState)){
-			kelompok1Enabled = false ; 
-			kelompok1Enabled = true ;
-		}
-		else {
-			kelompok1Enabled = false ; 
-			kelompok1Enabled = false ;
-		}
-		
-	}
 
 	
 	

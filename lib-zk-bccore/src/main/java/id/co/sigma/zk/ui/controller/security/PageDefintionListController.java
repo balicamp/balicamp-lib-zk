@@ -94,26 +94,33 @@ public class PageDefintionListController extends BaseSimpleListController<PageDe
 		invokeSearch();
 		
 	}
-	
-	
-	@Listen("onEditData = #pageListBox")
-	public void clickEdit(ForwardEvent e) {
-		Component item = e.getOrigin().getTarget().getParent().getParent();
-		if(item instanceof Listitem) {
-			PageDefinition pDef = ((Listitem)item).getValue();
-			EditorManager.getInstance().editData("~./zul/pages/master/security/PageDefinitionEditor.zul", pDef, this);
-		}
+
+	@Override
+	public void deleteData(PageDefinition data) {
+		deleteData(data, data.getId(), "id");
+		reload();
 	}
+
 	
-	@Listen("onDeleteData = #pageListBox")
-	public void clickDelete(ForwardEvent e) {
-		Component item = e.getOrigin().getTarget().getParent().getParent();
-		if(item instanceof Listitem) {
-			PageDefinition pDef = ((Listitem)item).getValue();
-			deleteData(pDef, pDef.getId(), "id");
-			reload();
-		}
-	}
+	
+//	@Listen("onEditData = #pageListBox")
+//	public void clickEdit(ForwardEvent e) {
+//		Component item = e.getOrigin().getTarget().getParent().getParent();
+//		if(item instanceof Listitem) {
+//			PageDefinition pDef = ((Listitem)item).getValue();
+//			EditorManager.getInstance().editData("~./zul/pages/master/security/PageDefinitionEditor.zul", pDef, this);
+//		}
+//	}
+//	
+//	@Listen("onDeleteData = #pageListBox")
+//	public void clickDelete(ForwardEvent e) {
+//		Component item = e.getOrigin().getTarget().getParent().getParent();
+//		if(item instanceof Listitem) {
+//			PageDefinition pDef = ((Listitem)item).getValue();
+//			deleteData(pDef, pDef.getId(), "id");
+//			reload();
+//		}
+//	}
 	
 //	@Listen(value="onClick = #btnHapus")
 //	public void hapusClick() {

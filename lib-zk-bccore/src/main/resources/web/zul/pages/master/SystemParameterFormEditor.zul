@@ -1,0 +1,70 @@
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> 
+<editorWindow id="editorSystemParameter" apply="id.co.sigma.zk.ui.controller.master.SystemParameterEditorController" 
+				cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+					confirmationMsg="Apakah anda akan menyimpan data ini ?">
+		<grid vflex="1">
+			<columns>
+				<column width="150px" />
+				<column />
+			</columns>
+			<rows>
+				<row>
+					<label value="Param Key" width="150px" />
+					<textbox id="id"
+						value="${editorSystemParameter$composer.editedData.id}"
+						width="150px" />
+				</row>
+				
+				<row>
+					<cell>Param Type :</cell>
+					<cell>
+						<combobox id="cmbType" 
+							model="${editorSystemParameter$SystemParameterEditorController.listModelParamtype}"
+							value="${editorSystemParameter$SystemParameterEditorController.editedData.paramType}"/> 
+							<!-- selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.paramType}"/> -->
+					</cell>
+				</row>
+				
+				<row id="textParamType" visible="false" width="150%">
+					<label value="Param Value" width="150px"/>
+					<textbox id="paramValue"
+						value="${editorSystemParameter$composer.editedData.valueRaw}"
+						width="150px" />
+				</row>
+				
+				 <row id="dateParamType" visible="false">
+					<label value="Param Value" width="150px"/>
+					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
+					 <!-- value="${editorSystemParameter$composer.dtValue}"/> -->
+				</row>
+				
+				<row id="boolParamType" width = "150%" visible="false" >
+					<label value="Param Value" width="150px"/>
+					<radiogroup id="radioValue">  
+						<!-- selectedItem="${editorSystemParameter$composer.valueRadio}" > -->	
+							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/> 
+							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
+					</radiogroup>
+				</row>
+				
+				<row>
+					<label value="Param Remark" width="150px" />
+					<textbox id="remark"
+						value="${editorSystemParameter$composer.editedData.remark}"
+						width="150px" />
+					 
+				</row>
+				<row>
+					<cell>Edited Flag :</cell>
+					<cell>
+					<radiogroup id="editableFlag"> 
+					<!-- selectedItem="${editorSystemParameter$composer.editableRadio}" > -->	
+							<radio id="editableFlagY" value ="Yes" label="Yes" radiogroup="editableFlag"/> 
+							<radio id="editableFlagN" value ="No" label="No" radiogroup="editableFlag"/> 
+					</radiogroup>
+					</cell>
+				</row>
+			</rows>
+		</grid>
+
+</editorWindow>

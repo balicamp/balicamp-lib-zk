@@ -26,6 +26,7 @@
         <extends>div</extends>
         <component-class>id.co.sigma.zk.ui.custom.component.ActionButtonTree</component-class>
     </component>	
+
     <component>
     	<component-name>bctextbox</component-name>
     	<extends>textbox</extends>
@@ -83,4 +84,5 @@
 		<component-class>TimeboxBindable</component-class>		    
 	</component>
     
+
 </language-addon>

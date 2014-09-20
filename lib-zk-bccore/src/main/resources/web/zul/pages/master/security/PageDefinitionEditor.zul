@@ -1,3 +1,4 @@
+
 <?page title="Edit Page" contentType="text/html;charset=UTF-8"?>
 <!-- <?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> -->
 <zk>
@@ -16,7 +17,7 @@
 				Code
 				
 				<bctextbox 
-					id="pageCode" 
+					id="pageCodeByXml" 
 					targetBindField="pageCode" 
 					binderClassFQCN="id.co.sigma.itdc.web.component.MyBinder"
 					value="${pageDefEditor$composer.editedData.pageCode}"></bctextbox>
@@ -46,4 +47,5 @@
 		</rows>
 	</grid>
 </editorWindow>
+
 </zk>

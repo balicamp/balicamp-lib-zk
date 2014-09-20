@@ -2,10 +2,17 @@ package id.co.sigma.zk.ui.controller.base;
 
 
 
+import id.co.sigma.zk.ZKCoreLibConstant;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
+
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
@@ -15,14 +22,10 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
-
-import id.co.sigma.common.server.util.ExtendedBeanUtils;
-import id.co.sigma.zk.ZKCoreLibConstant;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.IReloadablePanel;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
+import org.zkoss.zul.impl.InputElement;
 
 
 
@@ -45,6 +48,13 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * object yang di edit
 	 */
 	protected POJO editedData ; 
+	
+	
+	/**
+	 * object tambahan
+	 * ini keperluan ketika add tree
+	 */
+	protected POJO additionalData;
 	
 	
 	/**
@@ -121,37 +131,128 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		return editedData;
 	}
 	
+	
+	/**
+	 * object tambahan, keperluan di tree
+	 */
+	public POJO getAdditionalData() {
+		return additionalData;
+	}
+
+
+	/**
+	 * object tambahan, keperluan di tree
+	 */
+	public void setAdditionalData(POJO additionalData) {
+		this.additionalData = additionalData;
+	}
+
+
 	/**
 	 * parse data dari client	 
 	 * @param comp
 	 */
 	protected void parseEditedData(Component comp) { 
-		Field[] fields = editedData.getClass().getDeclaredFields();
 		IdSpace idSpace = comp.getSpaceOwner();
-		for(Field field : fields) {
-			Component input = idSpace.getFellowIfAny(field.getName());
-			if(input != null) {
-				Object val = null; 
-				if(input instanceof Datebox) {
-					val = ((Datebox)input).getValue();
-				} else if(input instanceof Timebox) {
-					val = ((Timebox)input).getValue();
-				} else if(input instanceof Intbox) {
-					val = ((Intbox)input).getValue();
-				} else if(input instanceof Decimalbox) {
-					val = ((Decimalbox)input).getValue();
-				} else if(input instanceof Doublebox) {
-					val = ((Doublebox)input).getValue();
-				} else if(input instanceof Textbox) {
-					val = ((Textbox)input).getValue();
+		Collection<Component> fellows = idSpace.getFellows();
+		for(Component fComp : fellows) {
+			if(fComp instanceof InputElement) {
+				String fId = fComp.getId();
+				if(fId.contains(".")) {
+					String[] fields = fId.split("\\.");
+					Object currObj = editedData;
+					try {
+						for(int i = 0; i < fields.length - 1; i++) {
+							currObj = PropertyUtils.getProperty(currObj, fields[i]);
+						}
+						if(currObj != null) {
+							setProperty(fComp, currObj, fields[fields.length - 1]);
+						}
+					} catch (Exception e) {
+						setProperty(fComp, editedData, fId);
+					}
+				} else {
+					setProperty(fComp, editedData, fId);
 				}
-				
-				try {
-					
-					BeanUtils.setProperty(editedData, field.getName(), val);
-					
-				} catch (Exception e) {
+			}
+		}
+	}
+	
+	/**
+	 * Set data property dari input client
+	 * @param input
+	 * @param data
+	 * @param fieldName
+	 */
+	private void setProperty(Component input, Object data, String fieldName) {
+		if(input != null) {
+			Object val = null; 
+			if(input instanceof Datebox) {
+				val = ((Datebox)input).getValue();
+			} else if(input instanceof Timebox) {
+				val = ((Timebox)input).getValue();
+			} else if(input instanceof Intbox) {
+				val = ((Intbox)input).getValue();
+			} else if(input instanceof Decimalbox) {
+				val = ((Decimalbox)input).getValue();
+			} else if(input instanceof Doublebox) {
+				val = ((Doublebox)input).getValue();
+			} else if(input instanceof Textbox) {
+				val = ((Textbox)input).getValue();
+			} else if(input instanceof Longbox) {
+				val = ((Longbox)input).getValue();
+			}
+			
+			try {
+				BeanUtils.setProperty(data, fieldName, val);
+			} catch (Exception e) {
+			}
+		}
+	}
+	
+	/**
+	 * Set value property class
+	 * @param idSpace
+	 * @param field
+	 */
+	protected void setProperty(IdSpace idSpace, Field... fields){
+		StringBuffer buffer = new StringBuffer();
+		for(Field field : fields){
+			if(buffer.length()>0){
+				buffer.append("_");
+			}
+			buffer.append(field.getName());
+		}
+		Component input = idSpace.getFellowIfAny(buffer.toString());
+		if(input != null) {
+			Object val = null; 
+			if(input instanceof Datebox) {
+				val = ((Datebox)input).getValue();
+			} else if(input instanceof Timebox) {
+				val = ((Timebox)input).getValue();
+			} else if(input instanceof Intbox) {
+				val = ((Intbox)input).getValue();
+			} else if(input instanceof Decimalbox) {
+				val = ((Decimalbox)input).getValue();
+			} else if(input instanceof Doublebox) {
+				val = ((Doublebox)input).getValue();
+			} else if(input instanceof Textbox) {
+				val = ((Textbox)input).getValue();
+			}
+			
+			try {
+				if(fields.length>1){
+					Object currObject = editedData;
+					for(int i = 0; i < fields.length - 1; i++){
+						currObject = PropertyUtils.getProperty(currObject, fields[i].getName());
+					}
+					if(currObject != null) {
+						BeanUtils.setProperty(currObject, fields[fields.length-1].getName(), val);
+					}
+				}else{
+					BeanUtils.setProperty(editedData,fields[0].getName() , val);
 				}
+			} catch (Exception e) {
 			}
 		}
 	}
@@ -173,6 +274,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		if ( passedParameter!= null ) {
 			if ( passedParameter.containsKey(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY)) {
 				editedData = (POJO) passedParameter.get(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY);
+			}
+			if(passedParameter.containsKey(ZKCoreLibConstant.ADDITIONAL_DATA_ATTRIBUTE_KEY)){
+				additionalData = (POJO) passedParameter.get(ZKCoreLibConstant.ADDITIONAL_DATA_ATTRIBUTE_KEY);
 			}
 			if ( passedParameter.containsKey(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY)  ) {
 				setEditorState(  (ZKEditorState)passedParameter.get(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY));

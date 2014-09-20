@@ -18,6 +18,7 @@ public @interface ControlDataBinder {
 	
 	
 	
+	
 	/**
 	 * field tujuan, kemana data akan di set. ini bisa pakai .[dot] kalau field target nested<br/>
 	 * Misal class : 
@@ -45,6 +46,5 @@ public @interface ControlDataBinder {
 	public Class<? extends IFormDataBinder> dataBinderClass() default DefaultFormDataBinder.class ; 
 	
 	
-	
-
 }
+
