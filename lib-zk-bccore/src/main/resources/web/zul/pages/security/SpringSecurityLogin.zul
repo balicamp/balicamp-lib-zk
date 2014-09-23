@@ -1,9 +1,9 @@
 <html:form id="f" name="f" action="j_spring_security_check" method="POST" xmlns:html="native">
    <hlayout style="padding-top:20px;">
        <label value="Kode User : "/>
-       <textbox id="nameTxb" name="j_username" value="" />
+       <textbox id="nameTxb" name="j_username" value="" constraint="no empty"/>
        <label value="Password : "/>
-       <textbox id="passwordTxb" type="password" name="j_password" value=""/>
+       <textbox id="passwordTxb" type="password" name="j_password" value="" constraint="no empty"/>
        <button id="confirmBtn" type="submit" label="Login"  />
        <label id="mesgLbl" />
    </hlayout>

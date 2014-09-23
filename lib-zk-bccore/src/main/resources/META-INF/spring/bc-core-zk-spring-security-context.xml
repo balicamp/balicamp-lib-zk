@@ -34,7 +34,7 @@
    	<beans:bean id="springSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy">
         <beans:constructor-arg>
             <beans:list>
-                <filter-chain pattern="${login.page}" filters="none"/>
+                <filter-chain pattern="${default.security.loginUrl}" filters="none"/>
                 <filter-chain pattern="/**"                 
                     filters="securityContextFilter,    
                     logoutFilter,                                                
@@ -63,7 +63,7 @@
         <beans:constructor-arg>
             <beans:bean
                 class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-                <beans:constructor-arg value="${login.page}"/>                
+                <beans:constructor-arg value="${default.security.loginUrl}"/>                
             </beans:bean>
         </beans:constructor-arg>
         <beans:property name="accessDeniedHandler">
@@ -80,13 +80,13 @@
         <beans:property name="allowSessionCreation" value="true"/>
         <beans:property name="authenticationSuccessHandler">
             <beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
-                <beans:constructor-arg value="${main.page}"/>
+                <beans:constructor-arg value="${default.security.applicationUrl}"/>
                 <beans:property name="alwaysUseDefaultTargetUrl" value="true"/>
             </beans:bean>
         </beans:property>
         <beans:property name="authenticationFailureHandler">
             <beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
-                <beans:constructor-arg value="${login.page}?login_error=1"/>
+                <beans:constructor-arg value="${default.security.loginUrl}?login_error=1"/>
             </beans:bean>
         </beans:property>
 		<beans:property name="sessionAuthenticationStrategy">
@@ -119,9 +119,9 @@
 		<beans:constructor-arg>
 			<beans:map>
 				<beans:entry key="/zkau/**" value="IS_AUTHENTICATED_ANONYMOUSLY"/>
-				<beans:entry key="${login.page}" value="IS_AUTHENTICATED_ANONYMOUSLY"/>
+				<beans:entry key="${default.security.loginUrl}" value="IS_AUTHENTICATED_ANONYMOUSLY"/>
 				<beans:entry key="/j_spring_security_check" value="IS_AUTHENTICATED_ANONYMOUSLY"/>
-				<beans:entry key="${main.page}" value="ROLE_USER"/>
+				<beans:entry key="${default.security.applicationUrl}" value="ROLE_USER"/>
 			</beans:map>
 		</beans:constructor-arg>
 	</beans:bean>
@@ -144,7 +144,7 @@
     </beans:bean>
         
     <beans:bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
-        <beans:constructor-arg value="${login.page}"/>        
+        <beans:constructor-arg value="${default.security.loginUrl}"/>        
         <beans:constructor-arg>
             <beans:list>
                 <beans:bean class="org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler">
