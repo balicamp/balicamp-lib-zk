@@ -62,7 +62,6 @@ public class SecurityUtil {
 	 */
 	public static UserData getUser() {
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println("Auth: " + auth);
         if (auth != null) {
         	try{
         		Object p = auth.getPrincipal();
