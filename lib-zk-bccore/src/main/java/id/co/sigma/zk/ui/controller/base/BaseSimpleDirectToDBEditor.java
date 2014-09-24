@@ -11,6 +11,11 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -34,6 +39,11 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	
 	@Autowired
 	protected IGeneralPurposeDao  generalPurposeDao ; 
+	
+	
+	@Autowired
+	@Qualifier(value="transactionManager")
+	protected PlatformTransactionManager  transactionManager ; 
 	
 	
 	@Override
@@ -81,24 +91,46 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 			return  ; 
 		}
 		
+		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 		
-		if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
-			try {
-				insertData();
-			} catch (Exception e) {
-				logger.error( "" + e.getMessage() , e);
-				 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Tambah Data", Messagebox.OK, Messagebox.ERROR);
+		tmpl.execute(new TransactionCallback<Integer>() {
+			@Override
+			public Integer doInTransaction(TransactionStatus stts) {
+				Object obj =  stts.createSavepoint();
+				boolean saveCommit = true ; 
+				
+				
+				if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
+					try {
+						insertData();
+					} catch (Exception e) {
+						saveCommit = false ; 
+						logger.error( "" + e.getMessage() , e);
+						 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Tambah Data", Messagebox.OK, Messagebox.ERROR);
+					}
+				}else {
+					try {
+						updateData();
+					} catch (Exception e) {
+						saveCommit = false ; 
+						logger.error("gagal update file. error : " + e.getMessage() , e);
+						 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Simpan Data", Messagebox.OK, Messagebox.ERROR);
+					}
+					
+				}
+				
+				if ( saveCommit){
+					stts.releaseSavepoint(obj);
+				}
+				else {
+					stts.rollbackToSavepoint(obj);
+				}
+				return 1;
 			}
-			
-		}else {
-			try {
-				updateData();
-			} catch (Exception e) {
-				logger.error("gagal update file. error : " + e.getMessage() , e);
-				 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Simpan Data", Messagebox.OK, Messagebox.ERROR);
-			}
-			
-		}
+		});
+		
+		
+		
 		
 	}
 	

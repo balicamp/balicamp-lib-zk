@@ -27,7 +27,7 @@
 			<row>
 				Email
 				<textbox id="email"
-					value="${userEditor$composer.editedData.email}"></textbox>
+					value="${userEditor$composer.editedData.email}" constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address"></textbox>
 			</row>
 			<row>
 				Branch
