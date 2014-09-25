@@ -28,9 +28,22 @@
 				<row id="textParamType" visible="false" width="150%">
 					<label value="Param Value" width="150px"/>
 					<textbox id="paramValue"
-						value="${editorSystemParameter$composer.editedData.valueRaw}"
 						width="150px" />
 				</row>
+				
+				<row id="decParamType" visible="false" width="150%">
+					<label value="Param Value" width="150px"/>
+					<decimalbox id="decparamValue"
+						width="150px" />
+				</row>
+				
+				<row id="intParamType" visible="false" width="150%">
+					<label value="Param Value" width="150px"/>
+					<intbox id="intparamValue"
+						width="150px" />
+				</row>
+				
+				<!-- value="${editorSystemParameter$composer.editedData.valueRaw}" -->
 				
 				 <row id="dateParamType" visible="false">
 					<label value="Param Value" width="150px"/>
@@ -66,5 +79,4 @@
 				</row>
 			</rows>
 		</grid>
-
 </editorWindow>
