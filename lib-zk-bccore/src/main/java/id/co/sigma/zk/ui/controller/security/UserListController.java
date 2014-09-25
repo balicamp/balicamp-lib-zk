@@ -3,12 +3,16 @@ package id.co.sigma.zk.ui.controller.security;
 
 
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.User;
+import id.co.sigma.common.security.domain.UserGroupAssignment;
+import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
@@ -22,10 +26,14 @@ import org.zkoss.zul.Textbox;
 public class UserListController extends BaseSimpleListController<User> implements IReloadablePanel{
 
 	
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6628279768995608470L;
+	@Autowired
+	private IGeneralPurposeService generalPurposeService ;  
+	
 	@Wire
 	Listbox userListbox ;
 	
@@ -43,6 +51,7 @@ public class UserListController extends BaseSimpleListController<User> implement
 	@Wire Button btnTambah ; 
 	@Wire Button btnEdit ; 
 	@Wire Button btnHapus ; 
+	
 	
 	@Listen(value="onClick = #btnCari")
 	public void searchClick() {
@@ -78,8 +87,20 @@ public class UserListController extends BaseSimpleListController<User> implement
 	}
 	@Override
 	public void deleteData(User data) {
-		super.deleteData(data);
+		System.out.println("Yg dihapus Id :");
+		try {
+			SimpleSortArgument[] sortArgs = {
+					new SimpleSortArgument("userId", true)
+				};
+			if(generalPurposeDao.list(UserGroupAssignment.class, sortArgs).size()>0){
+				generalPurposeService.delete(UserGroupAssignment.class, data.getId(), "userId");
+			}
+			generalPurposeService.delete(User.class, data.getId(), "id");
+			invokeSearch();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-
+	
 }

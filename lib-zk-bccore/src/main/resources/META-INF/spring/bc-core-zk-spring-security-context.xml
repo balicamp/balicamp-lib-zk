@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <beans:bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <beans:property name="providers">
+            <beans:list>
+                <beans:ref bean="authenticationProvider" />
+                <beans:ref bean="anonymousProvider" />
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+	
+    <beans:bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="passwordEncoder">
+            <beans:bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+        </beans:property>
+        <beans:property name="userDetailsService" ref="customUserDetailsService" />
+    </beans:bean>
+	
+    <beans:bean id="anonymousProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
+        <beans:property name="key" value="bc-zk-application-v.0.0.1" />
+    </beans:bean>
+	
+	<beans:bean id="customUserDetailsService" 
+		class="id.co.sigma.zk.spring.security.service.CustomUserDetailsService"/>
+
+   	<beans:bean id="springSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy">
+        <beans:constructor-arg>
+            <beans:list>
+                <filter-chain pattern="${default.security.loginUrl}" filters="none"/>
+                <filter-chain pattern="/**"                 
+                    filters="securityContextFilter,    
+                    logoutFilter,                                                
+                    formLoginFilter,     
+                    requestCacheFilter,  
+                    servletApiFilter,
+                    anonFilter,      
+                    sessionMgmtFilter,                                       
+                    formLoginExceptionTranslationFilter,
+                    filterSecurityInterceptor" />
+            </beans:list>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+	<beans:bean id="securityContextFilter"
+        class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+        <beans:property name="securityContextRepository" ref="securityContextRepository" />
+    </beans:bean>
+
+	<beans:bean id="securityContextRepository" class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+		<beans:property name="allowSessionCreation" value="true"/>
+	</beans:bean>
+    
+    <beans:bean id="formLoginExceptionTranslationFilter"
+        class="org.springframework.security.web.access.ExceptionTranslationFilter">
+        <beans:constructor-arg>
+            <beans:bean
+                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+                <beans:constructor-arg value="${default.security.loginUrl}"/>                
+            </beans:bean>
+        </beans:constructor-arg>
+        <beans:property name="accessDeniedHandler">
+            <beans:bean
+                class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+                <beans:property name="errorPage" value="/exception" />
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="formLoginFilter"
+        class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="allowSessionCreation" value="true"/>
+        <beans:property name="authenticationSuccessHandler">
+            <beans:bean class="id.co.sigma.zk.spring.security.CustomUrlAuthenticationSuccessHandler">
+                <beans:constructor-arg value="${default.security.applicationUrl}"/>
+                <beans:property name="alwaysUseDefaultTargetUrl" value="true"/>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="authenticationFailureHandler">
+            <beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+                <beans:constructor-arg value="${default.security.loginUrl}?login_error=1"/>
+            </beans:bean>
+        </beans:property>
+		<beans:property name="sessionAuthenticationStrategy">
+			<beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" />
+		</beans:property>
+    </beans:bean>
+
+	<beans:bean id="requestCacheFilter" class="org.springframework.security.web.savedrequest.RequestCacheAwareFilter" />
+	
+	<beans:bean id="servletApiFilter" class="org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter" />
+	
+	<beans:bean id="anonFilter" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter" >
+		<beans:property name="key" value="bc-zk-application-v.0.0.1" />
+		<beans:property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS" />
+	</beans:bean>
+	
+	<beans:bean id="sessionMgmtFilter" class="org.springframework.security.web.session.SessionManagementFilter" >
+		<beans:constructor-arg ref="securityContextRepository" />
+	</beans:bean>
+	
+    <beans:bean id="filterSecurityInterceptor"
+        class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <beans:property name="accessDecisionManager" ref="accessDecisionManager" />
+        <beans:property name="runAsManager" ref="runAsManager" />
+        <beans:property name="securityMetadataSource" ref="customSecurityMetadataSource"/>
+    </beans:bean>
+
+	<beans:bean id="customSecurityMetadataSource" class="id.co.sigma.zk.spring.security.CustomInvocationSecurityMetadataSource">
+		<beans:constructor-arg>
+			<beans:map>
+				<beans:entry key="/zkau/**" value="IS_AUTHENTICATED_ANONYMOUSLY"/>
+				<beans:entry key="${default.security.loginUrl}" value="IS_AUTHENTICATED_ANONYMOUSLY"/>
+				<beans:entry key="/j_spring_security_check" value="IS_AUTHENTICATED_ANONYMOUSLY"/>
+				<beans:entry key="${default.security.applicationUrl}" value="ROLE_USER"/>
+			</beans:map>
+		</beans:constructor-arg>
+	</beans:bean>
+
+    <beans:bean id="accessDecisionManager"
+        class="org.springframework.security.access.vote.AffirmativeBased">
+        <beans:constructor-arg>
+            <beans:list>
+            	<beans:bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+                <beans:bean class="org.springframework.security.access.vote.RoleVoter"/>
+                <beans:bean class="org.springframework.security.web.access.expression.WebExpressionVoter"/>
+            </beans:list>
+        </beans:constructor-arg>
+        <beans:property name="allowIfAllAbstainDecisions" value="false"/>
+    </beans:bean>
+
+    <beans:bean id="runAsManager"
+        class="org.springframework.security.access.intercept.RunAsManagerImpl">
+        <beans:property name="key" value="RUN_AS_SPRINGSECDEMO"/>
+    </beans:bean>
+        
+    <beans:bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+        <beans:constructor-arg value="${default.security.loginUrl}"/>        
+        <beans:constructor-arg>
+            <beans:list>
+            	<beans:bean class="id.co.sigma.zk.spring.security.SignonHistoryLogoutHandler"/>
+                <beans:bean class="org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler">
+                    <beans:constructor-arg>
+                        <beans:list>
+                            <beans:value>JSESSIONID</beans:value>
+                        </beans:list>                        
+                    </beans:constructor-arg>
+                </beans:bean>
+                <beans:bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+            </beans:list>
+        </beans:constructor-arg>
+    </beans:bean> 
+</beans:beans>

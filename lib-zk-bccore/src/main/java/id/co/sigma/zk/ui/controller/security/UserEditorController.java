@@ -7,6 +7,7 @@ import id.co.sigma.common.security.domain.Branch;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectedUserGroup;
 
@@ -20,6 +21,7 @@ import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 /**
@@ -43,6 +45,9 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	@Wire
 	Textbox email;
 	
+	@Wire
+	Textbox userCode;
+	
 	public Listbox getListBoxCheckList() {
 		return listBoxCheckList;
 	}
@@ -54,28 +59,47 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		return listBranchObject;
 	}
 
+	private boolean isAddNewState;
+	
+	public boolean isAddNewState() {
+		return isAddNewState;
+	}
+	
 	@Override
 	protected void insertData(User data) throws Exception {
 		// TODO Auto-generated method stub
 		try {
-			super.insertData(data);
-			saveUserGroupAssignment(data.getId());
+			if(validationForm()){
+				super.insertData(data);
+				saveUserGroupAssignment(data.getId());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 	}
 	
+	
 	@Override
 	protected void updateData(User data) throws Exception {
 		// TODO Auto-generated method stub
 		try {
-			super.updateData(data);
-			saveUserGroupAssignment(editedData.getId());
+			if(validationForm()){
+				super.updateData(data);
+				saveUserGroupAssignment(editedData.getId());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+	}
+	private boolean validationForm(){
+		if(email.isValid()){
+			return true;
+		}else{
+			Messagebox.show("Email tidak valid");
+			return false;
+		}
 	}
 	
 	private void saveUserGroupAssignment(Long idUser){
@@ -86,7 +110,6 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 					generalPurposeService.delete(uga);
 				}
 			}
-			
 			Set<Listitem> li = listBoxCheckList.getSelectedItems();
 			
 			List<SelectedUserGroup> listUserGroup = new ArrayList<SelectedUserGroup>();
@@ -132,12 +155,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			listBoxCheckList.setCheckmark(true);
 		}
 		
+		userCode.setReadonly(getEditorState().equals(ZKEditorState.EDIT));
 		
-		
-		
-		/*List<UserGroup> dataUserGroup = new ArrayList<UserGroup>();
-		dataUserGroup = getUserGroupList();
-		listUserGroup = new ListModelList<UserGroup>(dataUserGroup);*/
 	}
 	
 	private List<SelectedUserGroup> listSelectedUserGroup(Long userId){

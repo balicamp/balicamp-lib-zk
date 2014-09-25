@@ -1,3 +1,4 @@
+
 package id.co.sigma.zk.ui.controller.base;
 
 import java.lang.reflect.Field;
@@ -13,6 +14,7 @@ import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.lov.ILOVProviderService;
 import id.co.sigma.zk.service.IZKCommonService;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
+import id.co.sigma.zk.ui.data.FormDataBinderUtil;
 import id.co.sigma.zk.ui.lov.CommonLOVWithRenderer;
 import id.co.sigma.zk.ui.lov.DefaultLOVRenderer;
 
@@ -22,6 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -57,6 +60,13 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	protected IZKCommonService zkCommonService ; 
 	
 	
+	
+	/**
+	 * id space. ini untuk akses ke element dari componen
+	 */
+	private IdSpace idspace ; 
+	
+	
 	/**
 	 * general purpose dao. untuk akses ke database yang tidak perlu spesifik
 	 */
@@ -80,6 +90,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 		fillLOVControls();
+		idspace = comp.getSpaceOwner(); 
 	}
 	@Override
 	public ComponentInfo doBeforeCompose(Page page, Component parent,
@@ -97,8 +108,8 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 			springWired = true ; 
 		} catch (Exception e) {
-			e.printStackTrace();
 			springWired = false ;
+			logger.error("gagal wire spring. error : " + e.getMessage() , e);
 		}
 	}
 	
@@ -195,6 +206,19 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			cmb.setModel(models);
 			
 		}
+	}
+	
+	
+	
+	
+	/**
+	 * bind data dengan XML tag dan annotation
+	 */
+	protected void bindValueFromControl (Object targetToBindData) throws Exception {
+		// bind dengan xml param
+		FormDataBinderUtil.getInstance().bindDataFromControl(targetToBindData,idspace);
+		FormDataBinderUtil.getInstance().bindDataFromControl(targetToBindData  , this); 
+		
 	}
 	
 }

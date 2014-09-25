@@ -1,14 +1,12 @@
 package id.co.sigma.zk.ui.controller.master;
 
 import id.co.sigma.common.security.domain.Branch;
-import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
-import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zhtml.Del;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 /**
@@ -19,8 +17,24 @@ public class BranchEditorComposer extends BaseSimpleDirectToDBEditor<Branch> {
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(BranchEditorComposer.class.getName());
 	
-	
 	@Wire
+	Textbox branchCode;
+	
+	private boolean isAddNewState;
+	
+	public boolean isAddNewState() {
+		return isAddNewState;
+	}
+	
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		// TODO Auto-generated method stub
+		super.doAfterCompose(comp);
+		branchCode.setReadonly(getEditorState().equals(ZKEditorState.EDIT));
+	}
+	
+
+	/*@Wire
 	private Textbox txtKode;
 	
 	@Wire
@@ -36,9 +50,9 @@ public class BranchEditorComposer extends BaseSimpleDirectToDBEditor<Branch> {
 	private Button btnSave;
 	
 	@Wire
-	private Button btnCancel;
+	private Button btnCancel;*/
 
-	@Listen(value="onClick = #btnSave")
+	/*@Listen(value="onClick = #btnSave")
 	public void onClickSave(){
 		if(ZKEditorState.ADD_NEW.equals(getEditorState())){
 			try {
@@ -61,7 +75,7 @@ public class BranchEditorComposer extends BaseSimpleDirectToDBEditor<Branch> {
 			
 			}
 		}
-	}
+	}*/
 		
 	
 }
