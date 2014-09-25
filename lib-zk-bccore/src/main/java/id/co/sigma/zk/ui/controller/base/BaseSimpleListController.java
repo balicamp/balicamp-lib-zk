@@ -177,7 +177,12 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	public abstract Listbox getListbox()  ; 
 	
 	public void deleteData(DATA data) {
-		
+		try {
+			generalPurposeService.delete(data);
+		} catch (Exception e) {
+			logger.error("gagal menghapus data " + e.getMessage() , e);
+			e.printStackTrace();
+		}
 	}
 
 }

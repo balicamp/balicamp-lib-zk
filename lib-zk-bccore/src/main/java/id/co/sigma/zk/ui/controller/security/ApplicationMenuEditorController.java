@@ -8,6 +8,8 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.zk.common.util.Messages;
+import id.co.sigma.zk.common.util.Validator;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
@@ -16,6 +18,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
@@ -23,6 +26,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
+import org.zkoss.zul.Textbox;
 
 /**
  * 
@@ -73,6 +77,12 @@ public class ApplicationMenuEditorController extends
 	
 	@Wire
 	Intbox treeLevelPosition;
+	
+	@Wire
+	Textbox functionCode;
+	
+	@Wire
+	Textbox functionLabel;
 
 
 	@Override
@@ -140,6 +150,7 @@ public class ApplicationMenuEditorController extends
 		
 		if(getEditedData().getPageId()==0 || urlBox.getValue().equals("") || urlBox.getValue()==null){
 			getEditedData().setPageId(null);
+			getEditedData().setPageDefinition(null);
 		}
 		if(getEditedData().getFunctionIdParent()==0 || parentBox.getValue().equals("") || parentBox.getValue()==null){
 			getEditedData().setFunctionIdParent(null);
@@ -216,6 +227,7 @@ public class ApplicationMenuEditorController extends
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	protected List<ApplicationMenu> getListMenu () {
 		Long appId = new Long(applicationId);
 		SimpleQueryFilter[] flt = new SimpleQueryFilter[]{

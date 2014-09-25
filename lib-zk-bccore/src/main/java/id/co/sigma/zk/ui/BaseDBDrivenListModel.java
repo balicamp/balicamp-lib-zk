@@ -82,6 +82,7 @@ public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DAT
 	public void removeListDataListener(ListDataListener listener) {
 		// TODO Auto-generated method stub
 		
+		
 	}
 	
 	

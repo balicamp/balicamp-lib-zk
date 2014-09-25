@@ -159,4 +159,3 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	}
 	
 }
-
