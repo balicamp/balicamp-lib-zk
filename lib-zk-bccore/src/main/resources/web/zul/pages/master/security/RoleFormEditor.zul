@@ -1,0 +1,27 @@
+<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> 
+<editorWindow id="editorRole" apply="id.co.sigma.zk.ui.controller.security.RoleEditorController" 
+				cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+					confirmationMsg="Apakah anda akan menyimpan data ini ?">
+		<grid vflex="1">
+			<columns>
+				<column width="150px" />
+				<column />
+			</columns>
+			<rows>
+				<row>
+					<label value="Role Code" width="150px" />
+					<textbox id="roleCode"
+						value="${editorRole$composer.editedData.roleCode}"
+						width="150px" />
+				</row>
+				
+				<row>
+					<label value="Role Description" width="150px" />
+					<textbox id="roleDesc"
+						value="${editorRole$composer.editedData.roleDesc}"
+						width="300px" rows="2" multiline="true" cols="2" height="150px"/>
+				</row>
+			
+			</rows>
+		</grid>
+</editorWindow>
