@@ -58,7 +58,7 @@ public final class FormDataBinderUtil {
 			String key = binderCls.getName() ; 
 			if ( !cachedBinders.containsKey(key)){
 				
-				IFormDataBinder f =  BeanUtils.instantiate(binderCls);
+				IFormDataBinder f =  (IFormDataBinder)BeanUtils.instantiate(binderCls);
 				cachedBinders.put(key, f); 
 			}
 			cachedBinders.get(key).bindDataFromControl(ctrl, targetForBind, fld);
