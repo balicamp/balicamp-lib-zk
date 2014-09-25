@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.master;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +24,8 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -55,6 +58,8 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     @Wire Datebox dateValue;
     @Wire Radiogroup radioValue;
     @Wire Radiogroup editableFlag;
+    @Wire Intbox intparamValue;
+    @Wire Decimalbox decparamValue;
     
     @Wire
     Row textParamType;
@@ -64,6 +69,12 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 
     @Wire
     Row boolParamType;
+    
+    @Wire
+    Row decParamType;
+    
+    @Wire
+    Row intParamType;
 
 
     ListModelList<String> listModelEditable;
@@ -219,26 +230,36 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 //			setTextbox(false);
 //			setDatepicker(true);
 //			setRadiogrup(false);
-			
+			intParamType.setVisible(false);
 			textParamType.setVisible(false);
 			dateParamType.setVisible(true);
 			boolParamType.setVisible(false);
-			
+			decParamType.setVisible(false);
 		}else if (cmbType.getValue().equals("java.lang.Boolean")){
 //			setTextbox(false);
 //		    setDatepicker(false);
 //		    setRadiogrup(true);
-
+			intParamType.setVisible(false);
 			textParamType.setVisible(false);
 			dateParamType.setVisible(false);
 			boolParamType.setVisible(true);
-		    
-		}else {
-//		    setTextbox(true);
-//		    setDatepicker(false);
-//		    setRadiogrup(false);
-			
+			decParamType.setVisible(false);
+		} else if (cmbType.getValue().equals(Float.class.getName())){
+			intParamType.setVisible(false);
+			textParamType.setVisible(false);
+			dateParamType.setVisible(false);
+			boolParamType.setVisible(false);
+			decParamType.setVisible(true);
+		}else if (cmbType.getValue().equals(String.class.getName())){
+			intParamType.setVisible(false);
 			textParamType.setVisible(true);
+			dateParamType.setVisible(false);
+			boolParamType.setVisible(false);
+			decParamType.setVisible(false);
+		}else {
+			intParamType.setVisible(true);
+			decParamType.setVisible(false);
+			textParamType.setVisible(false);
 			dateParamType.setVisible(false);
 			boolParamType.setVisible(false);
 			
@@ -268,29 +289,51 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     	listModelParamtype.add(Boolean.class.getName());
     	
     	cmbType.setModel(listModelParamtype);
-    	
-    	if(editedData != null) {
-    		if("java.util.Date".equals(editedData.getParamType())) {
-    			textParamType.setVisible(false);
-    			dateParamType.setVisible(true);
-    			boolParamType.setVisible(false);
-    			if(editedData.getValueRaw() != null) {
-    				try {
-    					dateValue.setValue(DATE_FORMAT.parse(editedData.getValueRaw()));
-					} catch (Exception e) {}
-    			}
-    		} else if ("java.lang.Boolean".equals(editedData.getParamType())) {
-    			textParamType.setVisible(false);
-    			dateParamType.setVisible(false);
-    			boolParamType.setVisible(true);
-    			Boolean bool = Boolean.valueOf(editedData.getValueRaw());
-    			radioValue.setSelectedIndex(bool ? 0 : 1);
-    		} else {
-    			textParamType.setVisible(true);
-    			dateParamType.setVisible(false);
-    			boolParamType.setVisible(false);
-    		}
-     	}
+    	if(getEditorState().equals(ZKEditorState.EDIT)){
+	    	if(editedData != null) {
+	    		if("java.util.Date".equals(editedData.getParamType())) {
+	    			textParamType.setVisible(false);
+	    			dateParamType.setVisible(true);
+	    			boolParamType.setVisible(false);
+	    			decParamType.setVisible(false);
+	    			intParamType.setVisible(false);
+	    			if(editedData.getValueRaw() != null) {
+	    				try {
+	    					dateValue.setValue(DATE_FORMAT.parse(editedData.getValueRaw()));
+						} catch (Exception e) {}
+	    			}
+	    		} else if ("java.lang.Boolean".equals(editedData.getParamType())) {
+	    			textParamType.setVisible(false);
+	    			dateParamType.setVisible(false);
+	    			boolParamType.setVisible(true);
+	    			decParamType.setVisible(false);
+	    			intParamType.setVisible(false);
+	    			Boolean bool = Boolean.valueOf(editedData.getValueRaw());
+	    			radioValue.setSelectedIndex(bool ? 0 : 1);
+	    		}else if (Float.class.getName().equals(editedData.getParamType())){
+	    			textParamType.setVisible(false);
+	    			dateParamType.setVisible(false);
+	    			boolParamType.setVisible(false);
+	    			decParamType.setVisible(true);
+	    			intParamType.setVisible(false);
+	    			decparamValue.setValue(new BigDecimal(editedData.getValueRaw()));
+	    		} else if (String.class.getName().equals(editedData.getParamType())){
+	    			textParamType.setVisible(true);
+	    			dateParamType.setVisible(false);
+	    			boolParamType.setVisible(false);
+	    			decParamType.setVisible(false);
+	    			intParamType.setVisible(false);
+	    			paramValue.setValue(editedData.getValueRaw());
+	    		} else {
+	    			textParamType.setVisible(false);
+	    			dateParamType.setVisible(false);
+	    			boolParamType.setVisible(false);
+	    			decParamType.setVisible(false);
+	    			intParamType.setVisible(true);
+	    			intparamValue.setValue(new Integer(editedData.getValueRaw()));
+	    		}
+	     	}
+    	}
     	
     	editableFlag.setSelectedIndex(("Yes".equals(editedData.getEditableFlag()) || "Y".equals(editedData.getEditableFlag())) ? 0 : 1);
     	
@@ -314,8 +357,6 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     	if(editableFlag!=null){
     		editedData.setEditableFlag(editableRadio.getValue().toString());
     	}   	
-    	
-    
     	editedData.setParamType(cmbType.getValue());
     	if (Date.class.getName().equals(editedData.getParamType())){
     		Date dtValue=dateValue.getValue();
@@ -329,11 +370,18 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
         	if(radioValue!=null){
         		editedData.setValueRaw(valueRadio.getValue().toString());
         	}
-    	} else {
+    	} else if (Float.class.getName().equals(editedData.getParamType())){
+    		BigDecimal floatValue= decparamValue.getValue();
+    		if(floatValue!=null){
+    			editedData.setValueRaw(floatValue.toString());
+    		}
+    	} else if (String.class.getName().equals(editedData.getParamType())){
     		editedData.setValueRaw(paramValue.getValue());
+    	} else {
+    		Integer integer = intparamValue.getValue();
+    		if(integer!=null){
+    			editedData.setValueRaw(String.valueOf(integer));
+    		}
     	}
-
     }
-
 }
-
