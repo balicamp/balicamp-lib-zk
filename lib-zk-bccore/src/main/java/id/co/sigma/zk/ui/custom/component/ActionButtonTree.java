@@ -117,7 +117,7 @@ public class ActionButtonTree extends Div implements IdSpace, AfterCompose {
 				
 				Component comp = event.getTarget().getParent().getParent().getParent().getParent().getParent();
 				Treeitem item = (Treeitem)comp;
-				final TreeNode<SingleKeyEntityData<Long>> treeNode = item.getValue();
+				final TreeNode<Serializable> treeNode = item.getValue();
 				
 				if(deleteMsg == null || deleteMsg.trim().length() == 0) {
 					deleteMsg = "Apakah anda yakin akan menghapus data ?";
@@ -129,7 +129,7 @@ public class ActionButtonTree extends Div implements IdSpace, AfterCompose {
 					public void onEvent(Event event) throws Exception {
 						switch(((Integer)event.getData()).intValue()) {
 						case Messagebox.YES:
-							controller.deleteData(treeNode.getData());
+							controller.deleteNodeFromTree(treeNode);
 							break;
 						case Messagebox.NO:
 							break;

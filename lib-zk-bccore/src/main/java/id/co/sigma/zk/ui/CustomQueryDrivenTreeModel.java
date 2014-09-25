@@ -3,11 +3,11 @@
  */
 package id.co.sigma.zk.ui;
 
+import java.util.List;
+
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -74,10 +74,22 @@ public abstract class CustomQueryDrivenTreeModel<DATA> extends BaseDBDrivenListM
 		return swap == null ? null : swap.intValue() ; 
 	}
 
-	@Override
+/*	@Override
 	public List<DATA> selectFromDB(int pageSize, int firstRowPosition) {
 		try {
 			return generalPurposeDao.list(getCustomQuery(),getInitial(), getFilters() , getSorts()  , pageSize, firstRowPosition);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("gagal membaca data untuk model list. error : " + e.getMessage() , e);
+			return null ; 
+		}
+		
+	}*/
+	
+	@Override
+	public List<DATA> selectFromDB(int pageSize, int firstRowPosition) {
+		try {
+			return generalPurposeDao.list( getHandledClass(), getFilters() , getSorts()  , pageSize, firstRowPosition);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("gagal membaca data untuk model list. error : " + e.getMessage() , e);

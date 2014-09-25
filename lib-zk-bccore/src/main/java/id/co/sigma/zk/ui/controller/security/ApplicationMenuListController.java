@@ -6,6 +6,7 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.tree.MenuTreeNode;
 import id.co.sigma.zk.tree.MenuTreeNodeCollection;
 import id.co.sigma.zk.ui.CustomQueryDrivenTreeModel;
@@ -48,6 +49,34 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 		}; 
 			
 	
+	private List<ApplicationMenu> listApplicationMenus;
+	
+	private Map<Long, List<TreeNode<ApplicationMenu>>> mapsOfNodeCollection;
+	
+	@Autowired
+	private IGeneralPurposeService generalPurposeService ; 
+	
+	public List<ApplicationMenu> getListApplicationMenus() {
+		return listApplicationMenus;
+	}
+
+	public void setListApplicationMenus(List<ApplicationMenu> listApplicationMenus) {
+		this.listApplicationMenus = listApplicationMenus;
+	}
+	
+
+	public Map<Long, List<TreeNode<ApplicationMenu>>> getMapsOfNodeCollection() {
+		return mapsOfNodeCollection;
+	}
+
+	public void setMapsOfNodeCollection(
+			Map<Long, List<TreeNode<ApplicationMenu>>> mapsOfNodeCollection) {
+		this.mapsOfNodeCollection = mapsOfNodeCollection;
+	}
+
+
+
+
 	@Wire
 	Tree tree;
 	
@@ -106,7 +135,7 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
 			}
 		}
-		
+		setMapsOfNodeCollection(mapsOfChildCol);
 		return new DefaultTreeModel<ApplicationMenu>(new MenuTreeNode<ApplicationMenu>(null, col));
 		
 	}
@@ -120,6 +149,7 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 		};
 		try {
 			List l = generalPurposeDao.list( ApplicationMenu.class.getName() +" A left outer join fetch A.pageDefinition", "A", flt, DEF_SORTS,10000,0);
+			setListApplicationMenus(l);
 			return (List<ApplicationMenu>)l;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -164,23 +194,19 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 
 	@Override
 	public void reload() {
-		//invokeSearch();
-		tree.clear();
-		tree.setModel(constructTree(getMenus()));
+		invokeSearch();
 	}
 
 
-	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		tree.clear();
 		tree.setModel(constructTree(getMenus()));
 	}
 
 
 	@Override
-	protected CustomQueryDrivenTreeModel<ApplicationMenu> generateTreeModel(
+	public CustomQueryDrivenTreeModel<ApplicationMenu> generateTreeModel(
 			final SimpleQueryFilter[] filters,final  SimpleSortArgument[] sorts) {
 		final String customQuery = getCustomQuery();
 		final String initial = getInitial();
@@ -208,15 +234,17 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 			@Override
 			public List<ApplicationMenu> selectFromDB(int pageSize,
 					int firstRowPosition) {
-				// TODO Auto-generated method stub
 				List<ApplicationMenu> swap  =  super.selectFromDB(pageSize, firstRowPosition);
+				setListApplicationMenus(swap);
 				if ( swap != null && !swap.isEmpty()){
 					Map<Long , ArrayList<ApplicationMenu>> idxMenus = new HashMap<>();
 					for (ApplicationMenu scn : swap ){
-						if ( !idxMenus.containsKey(scn.getPageId())){
-							idxMenus.put(scn.getPageId() , new ArrayList<ApplicationMenu>());
+						if(scn.getPageId()!=null){
+							if ( !idxMenus.containsKey(scn.getPageId())){
+								idxMenus.put(scn.getPageId() , new ArrayList<ApplicationMenu>());
+							}
+							idxMenus.get(scn.getPageId()).add(scn);
 						}
-						idxMenus.get(scn.getPageId()).add(scn);
 					}
 					
 					Number[] n = new Number[idxMenus.size()]; 
@@ -253,5 +281,48 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 			
 		};
 	}
+
+
+	@Override
+	public void deleteData(ApplicationMenu data) {
+		if(menuHasChild(data.getId(), getListApplicationMenus())){
+			Long parentId = data.getId();
+			generalPurposeService.delete(ApplicationMenu.class, parentId, "functionIdParent");
+			try {
+				ApplicationMenu menu = generalPurposeDao.get(ApplicationMenu.class, data.getId());
+				super.deleteData(menu);
+			} catch (Exception e) {
+				logger.error("Gagal hapus data,"+e.getMessage(),e);
+			}
+		}else{
+			try {
+				ApplicationMenu menu = generalPurposeDao.get(ApplicationMenu.class, data.getId());
+				super.deleteData(menu);
+			} catch (Exception e) {
+				logger.error("Gagal baca ApplicationMenu,"+e.getMessage(),e);
+				e.printStackTrace();
+			}
+			
+		}
+	}
+
+
+	@Override
+	public void deleteNodeFromTree(TreeNode<ApplicationMenu> node) {
+		TreeModel<TreeNode<ApplicationMenu>> model = tree.getModel();
+		MenuTreeNode<ApplicationMenu> root = (MenuTreeNode<ApplicationMenu>)model.getRoot();
+		List<TreeNode<ApplicationMenu>> child = root.getChildren();
+		ApplicationMenu menu = node.getData();
+	
+			if(menu.getTreeLevelPosition()==1){
+				child.remove(node);
+			}else{
+				getMapsOfNodeCollection().get(menu.getFunctionIdParent()).remove(node);
+			}
+		
+		tree.invalidate();
+		deleteData(menu);
+	}
+
 	
 }

@@ -3,9 +3,11 @@
  */
 package id.co.sigma.zk.ui.controller.base;
 
+import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.zk.tree.MenuTreeNode;
 import id.co.sigma.zk.ui.CustomQueryDrivenTreeModel;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 
@@ -61,8 +63,8 @@ public abstract class BaseSimpleTreeController<DATA extends Serializable> extend
 	public void invokeSearch(final SimpleQueryFilter[] filters,
 			final SimpleSortArgument[] sorts) {
 		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
-		final String customQuery = getCustomQuery();
-		final String initial = getInitial();
+		//final String customQuery = getCustomQuery();
+		//final String initial = getInitial();
 		
 		dataModel  = generateTreeModel(filters,sorts);
 		Tree tree = getTree(); 
@@ -74,39 +76,12 @@ public abstract class BaseSimpleTreeController<DATA extends Serializable> extend
 			}
 		}
 		tree.setModel(constructTree(retVal));
+		tree.invalidate();
 	}
 	
 	
-	protected CustomQueryDrivenTreeModel<DATA> generateTreeModel (final SimpleQueryFilter[] filters,
-			final SimpleSortArgument[] sorts) {
-		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
-		final String customQuery = getCustomQuery();
-		final String initial = getInitial();
-		return new CustomQueryDrivenTreeModel<DATA>() {
-			@Override
-			public Class<? extends DATA> getHandledClass() {
-				return dt;
-			}
-			@Override
-			protected SimpleQueryFilter[] getFilters() {
-				return filters;
-			}
-			@Override
-			protected SimpleSortArgument[] getSorts() {
-				return sorts;
-			}
-			@Override
-			protected String getCustomQuery() {
-				return customQuery;
-			}
-			@Override
-			protected String getInitial() {
-				return initial;
-			}
-		};
-	}
-	
-	
+	public abstract CustomQueryDrivenTreeModel<DATA> generateTreeModel (final SimpleQueryFilter[] filters,
+			final SimpleSortArgument[] sorts);
 	
 	public abstract TreeModel<TreeNode<DATA>> constructTree(List<DATA> data);
 	
@@ -158,6 +133,6 @@ public abstract class BaseSimpleTreeController<DATA extends Serializable> extend
 		return sorts;
 	}
 	
+	public abstract void deleteNodeFromTree(TreeNode<DATA> node);
 	
-
 }

@@ -3,6 +3,7 @@ package id.co.sigma.zk.ui.controller.base;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import org.zkoss.zk.ui.select.annotation.Listen;
  * 
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
+
 public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> extends BaseSimpleEditor<POJO>{
 
 	/**
@@ -32,7 +34,7 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	protected IGeneralPurposeService generalPurposeService ;  
 	
 	@Autowired
-	protected IGeneralPurposeDao  generalPurposeDao ; 
+	protected IGeneralPurposeDao generalPurposeDao ; 
 	
 	
 	@Override
@@ -109,6 +111,10 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 					switch(((Integer)event.getData()).intValue()) {
 					case Messagebox.YES:
 						EditorManager.getInstance().closeCurrentEditorPanel();
+						/*if ( getEditorCallerReference() != null && getEditorCallerReference() instanceof IReloadablePanel) {
+							((IReloadablePanel)getEditorCallerReference()).reload();
+						}
+						EditorManager.getInstance().closeCurrentEditorPanel();*/
 						break;
 					case Messagebox.NO:
 						break;

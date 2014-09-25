@@ -12,13 +12,13 @@
 		<rows>
 			<row>
 				Kode
-				<textbox id="functionCode"			
+				<textbox id="functionCode" 		
 					value="${menuEditor$composer.editedData.functionCode}">
 				</textbox>
 			</row>
 			<row>
 				Label
-				<textbox id="functionLabel"
+				<textbox id="functionLabel" 
 					value="${menuEditor$composer.editedData.functionLabel}"></textbox>
 			</row>
 			<row if="${menuEditor$composer.additionalData==null}">
