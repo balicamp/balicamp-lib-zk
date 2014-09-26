@@ -1,5 +1,16 @@
 <?page title="Group Management Editor" contentType="text/html;charset=UTF-8"?>
-<zk>
+
+<zk xmlns:w="client">
+
+<script type="text/javascript" defer="true">
+<![CDATA[
+	zk.afterMount(function(){
+		var treeData = zk.Widget.$("$treeData").getValue();
+		grpMnu_initJsTree(treeData);
+	});
+]]>
+</script>
+
 <editorWindow id="groupMgmEditorWin" captionLabel="Edit Page"
 	apply="id.co.sigma.zk.ui.controller.security.GroupManagementEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
@@ -40,28 +51,14 @@
 		<separator />
 		
 		<div>
-			<tree id="groupMgmTree" model="${groupMgmEditorWin$composer.treeModel}">
-				<treecols>
-					<treecol hflex="1" label="Kode Menu"/>
-					<treecol hflex="1" label="Label Menu"/>
-					<treecol hflex="1" label="Zul Path"/>
-				</treecols>
-				<template name="model">
-					<treeitem value="${each}">
-						<treerow>
-							<treecell tooltiptext="${each.data.id}">
-								<checkbox value="${each.data.id}" checked="${each.data.selected}" forward="onClick=groupMgmTree.onCbTreeClick"></checkbox>
-								<space></space>
-								${each.data.functionCode}
-							</treecell>
-							<treecell>${each.data.functionLabel}</treecell>
-							<treecell>${each.data.pageUrlStr}</treecell>
-						</treerow>
-					</treeitem>
-				</template>
-			</tree>
+			<div id="groupMgmTree" width="100%"></div>
+			<textbox id="treeData" visible="false" value="${groupMgmEditorWin$composer.treeData}"></textbox>
+			<textbox id="selectedMenus" value="" visible="false">
+				<custom-attributes org.zkoss.zk.ui.updateByClient="true"/>
+			</textbox>
 		</div>
 	</groupbox>
 	
 </editorWindow>
+
 </zk>
