@@ -10,15 +10,13 @@
 			<rows>
 				<row>
 					<label value="Role Code" width="150px" />
-					<textbox id="roleCode"
-						value="${editorRole$composer.editedData.roleCode}"
+					<textbox id="roleCode" value="${editorRole$composer.editedData.roleCode}" constraint="no empty, /^[a-zA-Z]+\s?[a-zA-Z]+$/"
 						width="150px" />
 				</row>
 				
 				<row>
 					<label value="Role Description" width="150px" />
-					<textbox id="roleDesc"
-						value="${editorRole$composer.editedData.roleDesc}"
+					<textbox id="roleDesc"	value="${editorRole$composer.editedData.roleDesc}" constraint="no empty, /^[a-zA-Z]+\s?[a-zA-Z]+$/"
 						width="300px" rows="2" multiline="true" cols="2" height="150px"/>
 				</row>
 			
