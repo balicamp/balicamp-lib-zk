@@ -1,7 +1,7 @@
 package id.co.sigma.zk.ui.controller.security;
 
-import id.co.sigma.common.security.domain.Role;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.security.domain.Role;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;

@@ -6,6 +6,7 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
@@ -40,7 +41,6 @@ public class RoleEditorController extends BaseSimpleDirectToDBEditor<Role>{
 		// TODO Auto-generated method stub
 		super.parseEditedData(comp);
 		editedData.setIsPredefined("N");
-		
 	}
 	
 }
