@@ -1,5 +1,7 @@
 package id.co.sigma.zk.ui.custom.component;
 
+import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
+
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -17,6 +19,16 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private String editorPage;
+	
+	private String deleteMsg;
+	
+	private BaseSimpleController controller;
+	
+	private boolean deletable = true;
+	
+	private boolean editable = true;
+	
 	public ActionRow() {
 		Executions.createComponents("~./zul/pages/common/ActionRow.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -37,8 +49,65 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 			children.add(cmp);
 		}
 		for(Component cmp : defaults) {
+			if(cmp instanceof ActionButton) {
+				initActionButton((ActionButton)cmp);
+			}
 			children.add(cmp);
 		}
 	}
 
+	public String getEditorPage() {
+		return editorPage;
+	}
+
+	public void setEditorPage(String editorPage) {
+		this.editorPage = editorPage;
+	}
+
+	public String getDeleteMsg() {
+		return deleteMsg;
+	}
+
+	public void setDeleteMsg(String deleteMsg) {
+		this.deleteMsg = deleteMsg;
+	}
+
+	public BaseSimpleController getController() {
+		return controller;
+	}
+
+	public void setController(BaseSimpleController controller) {
+		this.controller = controller;
+	}
+
+	public boolean isDeletable() {
+		return deletable;
+	}
+
+	public void setDeletable(boolean deletable) {
+		this.deletable = deletable;
+	}
+
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
+	/**
+	 * init action button
+	 * @param actBtn
+	 */
+	private void initActionButton(ActionButton actBtn) {
+		actBtn.setEdit(Boolean.toString(editable));
+		actBtn.setDelete(Boolean.toString(deletable));
+		actBtn.setController(controller);
+		actBtn.setDeleteMsg(deleteMsg);
+		actBtn.setEditorPage(editorPage);
+		actBtn.getChildren().get(ActionButton.EDIT_BUTTON).setVisible(editable);
+		actBtn.getChildren().get(ActionButton.DELETE_BUTTON).setVisible(deletable);
+	}
+	
 }
