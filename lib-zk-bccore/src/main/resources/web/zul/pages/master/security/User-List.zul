@@ -30,26 +30,21 @@
 	<listbox id="userListbox" height="300px"
 		mold="paging"
 		pageSize="10" >
-		<listhead>
+		<actionListhead>
 			<listheader label="No" width="50px" align="center"/>
-			<listheader label="Action" width="150px" align="center"/>
 			<listheader label="Username" width="200px" align="center"/>
 			<listheader label="Real Name" width="250px" align="center"/>
 			<listheader label="email" width="200px" align="center"/>
-		</listhead>
+		</actionListhead>
 		<template name="model">
-			<listitem >
-				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell>
-					<actionButton 
-						editorPage="~./zul/pages/master/security/UserEditor.zul"
+			<actionListitem editorPage="~./zul/pages/master/security/UserEditor.zul"
 						deleteMsg="Apakah anda yakin menghapus data key: ${each.userCode}"
-						controller="${listUser$composer}"/>
-				</listcell>
+						controller="${listUser$composer}">
+				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
 				<listcell label="${each.userCode}" style="text-align:left"/>
 				<listcell label="${each.realName}" style="text-align:left"/>
 			 	<listcell label="${each.email}" style="text-align:left"/>
-			</listitem>
+			</actionListitem>
 		</template>
 		<listfoot>  
             <listfooter span="6" align="left"><button id="btnTambah">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>

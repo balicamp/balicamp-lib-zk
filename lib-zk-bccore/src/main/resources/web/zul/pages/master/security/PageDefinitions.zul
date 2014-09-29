@@ -37,28 +37,24 @@
 		height="300px"
 		mold="paging"
 		pageSize="10" >
-		<listhead>
-			<listheader label="No" width="50px" align="center"/>
-			<listheader label="Action" width="150px" align="center"/>
-			<listheader label="Code" width="250px" align="center"/>
-			<listheader label="URL" width="300px" align="center"/>
-			<listheader label="Remark" width="300px" align="center"/>
-			<listheader label="Additional Data" width="200px" align="center"/>
-		</listhead>
+		<actionListhead>
+			<listheader label="No" width="2%" align="center"/>
+			<listheader label="Code" width="20%" align="center"/>
+			<listheader label="URL" width="25%" align="center"/>
+			<listheader label="Remark" width="33%" align="center"/>
+			<listheader label="Additional Data" width="20%" align="center"/>
+		</actionListhead>
 		<template 
 			name="model">
-			<listitem >
+			<actionListitem editorPage="~./zul/pages/master/security/PageDefinitionEditor.zul"
+				deleteMsg="Apakah anda yakin menghapus data page: ${each.pageCode}"
+				controller="${pListWin$composer}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell>
-					<actionButton editorPage="~./zul/pages/master/security/PageDefinitionEditor.zul"
-						deleteMsg="Apakah anda yakin menghapus data page: ${each.pageCode}"
-						controller="${pListWin$composer}"/>
-				</listcell>
 				<listcell label="${each.pageCode}" style="text-align:left"/>
 				<listcell label="${each.pageUrl}" style="text-align:left"/>
 				<listcell label="${each.remark}" style="text-align:left"/>
 				<listcell label="${each.additionalData}" style="text-align:left"/>
-			</listitem>
+			</actionListitem>
 		</template>		
 		<listfoot>  
                     <listfooter span="6" align="left"><button id="btnTambah">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
