@@ -1,6 +1,5 @@
 package id.co.sigma.zk.ui.annotations;
 
-import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
