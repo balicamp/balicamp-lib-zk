@@ -1,68 +1,63 @@
 <?page title="Lookup Header Editor" contentType="text/html;charset=UTF-8"?>
-<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
 <zk>
-<window title="Lookup Header Editor" 
-border="normal" 
-	id="lookupHeader" 
-	apply="id.co.sigma.zk.ui.controller.master.LookupHeaderEditorController">
-	<grid >
+<editorWindow captionLabel="Lookup Header Editor" border="normal" 
+	id="lookupHeader" apply="id.co.sigma.zk.ui.controller.master.LookupHeaderEditorController"
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+	confirmationMsg="Apakah anda akan menyimpan data ini ?">
+	
+	<grid>
 		<columns>
 			<column label="Type" width="150px" />
 			<column label="Content" />
 		</columns>
 		<rows>
 			<row>
-				ID
-				<textbox id="txtIdLov" maxlength="32"></textbox>
+				ID :
+				<textbox id="txtIdLov" maxlength="32" value="${lookupHeader$composer.editedData.id}"></textbox>
 			</row>
 			<row>
-				Catatan
-				<textbox id="txtRemark" maxlength="128"></textbox>
+				Internalization :
+				<textbox id="txtI18Key" maxlength="32" value="${lookupHeader$composer.editedData.i18Key}"></textbox>
 			</row>
 			<row>
-				Versi
-				<textbox id="txtVersion" maxlength="16"></textbox>
+				Catatan :
+				<textbox id="txtRemark" maxlength="128" value="${lookupHeader$composer.editedData.remark}"></textbox>
+			</row>
+			<row>
+				Versi :
+				<textbox id="txtVersion" maxlength="16" value="${lookupHeader$composer.editedData.version}"></textbox>
 			</row>
 		</rows>
 	</grid>	
 	
-	
-		
-	
-	
-	<listbox
-	id="lsbLookupDetails"
-		height="300px">
-		<listhead>
-			<listheader label="No" width="50px" align="center"/>
-			<listheader label="Action" width="150px" align="center"/>
-			<listheader label="Locale" width="100px" align="center"/>
-			<listheader label="Kode" width="150px" align="center"/>
-			<listheader label="Label" width="200px" align="center"/>
-			<listheader label="Ext Field 1" width="100px" align="center"/>
-			<listheader label="Ext Field 2" width="100px" align="center"/>
-		</listhead>
+	<listbox id="lsbLookupDetails" height="300px" width="100%" >
+		<actionListhead>
+			<listheader label="No" width="2%" align="center"/>
+			<listheader id="i18Key" label="Locale" width="10%" align="center"/>
+			<listheader id="detailCode" label="Kode" width="10%" align="center"/>
+			<listheader id="label" label="Label" width="20%" align="center"/>
+			<listheader id="extField1" label="Ext Field 1" width="10%" align="center"/>
+			<listheader id="extField2" label="Ext Field 2" width="10%" align="center"/>
+			<listheader id="sequence" label="Sequence" width="10%" align="center"/>
+		</actionListhead>
 		<template 
 			name="model">
-			<listitem >
+			<actionListitem value="${each}" editable="false"
+				deleteMsg="Apakah anda yakin menghapus data key: ${each.detailCode}"
+				controller="${lookupHeader$composer}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell><button 
-					tooltiptext="Edit data" forward="onClick=pageListBox.onEditOnGridClick" 
-					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
-				<listcell label="${each.i18Key}" style="text-align:left"/>
-				<listcell label="${each.detailCode}" style="text-align:left"/>
-				<listcell label="${each.label}" style="text-align:left"/>
-				<listcell label="${each.extField1}" style="text-align:left"/>
-				<listcell label="${each.extField2}" style="text-align:left"/>
-				<listcell label="${each.sequence}" style="text-align:right"/>
-			</listitem>
+				<listcell style="text-align:left"><textbox inplace="true" value="${each.i18Key}" readonly="true"/></listcell>
+				<listcell style="text-align:left"><textbox inplace="true" value="${each.detailCode}"/></listcell>
+				<listcell style="text-align:left"><textbox inplace="true" value="${each.label}"/></listcell>
+				<listcell style="text-align:left"><textbox inplace="true" value="${each.extField1}"/></listcell>
+				<listcell style="text-align:left"><textbox inplace="true" value="${each.extField2}"/></listcell>
+				<listcell style="text-align:right"><intbox inplace="true" value="${each.sequence}"/></listcell>
+			</actionListitem>
 		</template>		
 		<listfoot>  
 			<listfooter span="8" align="left"><button id="btnAdd">Tambah</button></listfooter>
 		</listfoot>
 	</listbox>	
-			
-			
-	<button id="btnSave">Simpan</button><button id="btnClose">Batal</button>		
-</window>
+
+</editorWindow>
 </zk>

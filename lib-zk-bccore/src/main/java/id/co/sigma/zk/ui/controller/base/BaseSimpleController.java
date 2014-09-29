@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.IdSpace;
@@ -57,6 +58,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	
 	
 	@Autowired
+	@Qualifier(value="zkCommonServiceBean")
 	protected IZKCommonService zkCommonService ; 
 	
 	

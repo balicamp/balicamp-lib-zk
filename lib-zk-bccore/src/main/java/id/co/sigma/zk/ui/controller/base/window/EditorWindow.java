@@ -18,6 +18,11 @@ public class EditorWindow extends Window implements AfterCompose {
 	 */
 	private static final long serialVersionUID = 4855931629516556573L;
 	
+	/**
+	 * jumlah child component window template 
+	 */
+	private int childrenCount = 5;
+	
 	@Wire
 	private Panelchildren panelEditor;
 	
@@ -33,6 +38,7 @@ public class EditorWindow extends Window implements AfterCompose {
 		Selectors.wireComponents(this, this, false);
 		Selectors.wireVariables(this, this, null);
 		Selectors.wireEventListeners(this, this);
+		childrenCount = this.getChildren().size(); 
 	}
 
 	public void setCaptionLabel(String caption) {
@@ -46,8 +52,9 @@ public class EditorWindow extends Window implements AfterCompose {
 	@Override
 	public void afterCompose() {
 		List<Component> children = getChildren();
-		if(children.size() > 0) {
-			Component child = children.get(children.size()-1);
+		int dynaChildren = children.size() - childrenCount;
+		for(int i = 0; i < dynaChildren; i++) {
+			Component child = children.get(childrenCount);
 			panelEditor.appendChild(child);
 		}
 

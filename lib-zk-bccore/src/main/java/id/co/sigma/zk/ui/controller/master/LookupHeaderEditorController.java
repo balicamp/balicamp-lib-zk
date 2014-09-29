@@ -1,23 +1,26 @@
 package id.co.sigma.zk.ui.controller.master;
 
+import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.common.security.domain.lov.LookupDetail;
+import id.co.sigma.common.security.domain.lov.LookupHeader;
+import id.co.sigma.zk.ui.annotations.ChildGridData;
+import id.co.sigma.zk.ui.annotations.ControlDataBinder;
+import id.co.sigma.zk.ui.annotations.JoinKey;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
-
-import id.co.sigma.common.data.query.SimpleSortArgument;
-import id.co.sigma.common.security.domain.lov.LookupDetail;
-import id.co.sigma.common.security.domain.lov.LookupHeader;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
-import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
-import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 /**
  * controller lookup header
@@ -36,14 +39,31 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 		new SimpleSortArgument("sequence", true) ,
 	}; 
 	
+	@ControlDataBinder(targetField="id")
 	@Wire Textbox txtIdLov ; 
+	
+	@ControlDataBinder(targetField="i18Key")
+	@Wire
+	Textbox txtI18Key;
+	
+	@ControlDataBinder(targetField="remark")
 	@Wire Textbox txtRemark ; 
+	
+	@ControlDataBinder(targetField="version")
 	@Wire Textbox txtVersion; 
+	
 	@Wire Listbox lsbLookupDetails ;  
 	@Wire Button  btnAdd ; 
 	@Wire Button  btnSave;
 	@Wire Button  btnClose;
 	
+	@ChildGridData(entity = LookupDetail.class, 
+			gridId="lsbLookupDetails",
+			joinKeys={
+				@JoinKey(parentKey="id", childKey="headerId"),
+				@JoinKey(parentKey="i18Key", childKey="i18Key")
+			})
+	List<LookupDetail> lookupDetails;
 	
 	private ZKClientSideListDataEditorContainer<LookupDetail> clientDataContainer ; 
 	
@@ -52,13 +72,14 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 			ZKEditorState editorState, Map<?,?>   rawDataParameter) {
 		super.runAditionalTaskOnDataRevieved(editedData, editorState, rawDataParameter);
 		if (ZKEditorState.EDIT.equals(editorState)  || ZKEditorState.VIEW_READONLY.equals(editorState)) {
+			System.out.println(this.zkCommonService + ", " + editedData + ", " + this.lovProviderService);
 			clientDataContainer =  this.zkCommonService.getDataDetails(LookupDetail.class, editedData.getId(), DEFAULT_SORTS, "id.lovID") ;
 		}else {
 			clientDataContainer = new ZKClientSideListDataEditorContainer<LookupDetail>(); 
 			clientDataContainer.initiateAndFillData(new ArrayList<LookupDetail>());
 		}
 		
-		
+		lookupDetails = clientDataContainer.getAllStillExistData();
 	}
 	
 	
@@ -66,12 +87,17 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 	public void closeClick() { 
 		EditorManager.getInstance().closeCurrentEditorPanel();
 	};
+	
 	@Listen(value="onClick = #btnAdd")
 	public void addClick() { 
-		LookupDetail d = new LookupDetail(); 
-		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul",this.clientDataContainer ,  d, this);
+		LookupDetail d = new LookupDetail();
+		d.setI18Key(txtI18Key.getValue());
+		clientDataContainer.getAllStillExistData().add(d);
+		lsbLookupDetails.setModel(clientDataContainer);
+//		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul",this.clientDataContainer ,  d, this);
 	}
-	@Listen(value="onClick = #btnSave")
+	
+/*	@Listen(value="onClick = #btnSave")
 	public void saveClick() { 
 		if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
 			try {
@@ -91,7 +117,7 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 		}
 		
 	};
-	
+*/	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		// TODO Auto-generated method stub

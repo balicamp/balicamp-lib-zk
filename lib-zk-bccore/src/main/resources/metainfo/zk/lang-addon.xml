@@ -21,6 +21,30 @@
         <component-class>id.co.sigma.zk.ui.custom.component.ActionButton</component-class>
     </component>	
 
+    <component>
+        <component-name>actionColumns</component-name>
+        <extends>columns</extends>
+        <component-class>id.co.sigma.zk.ui.custom.component.ActionColumns</component-class>
+    </component>	
+
+    <component>
+        <component-name>actionRow</component-name>
+        <extends>row</extends>
+        <component-class>id.co.sigma.zk.ui.custom.component.ActionRow</component-class>
+    </component>	
+
+    <component>
+        <component-name>actionListhead</component-name>
+        <extends>listhead</extends>
+        <component-class>id.co.sigma.zk.ui.custom.component.ActionListhead</component-class>
+    </component>	
+
+    <component>
+        <component-name>actionListitem</component-name>
+        <extends>listitem</extends>
+        <component-class>id.co.sigma.zk.ui.custom.component.ActionListitem</component-class>
+    </component>	
+
 	<component>
         <component-name>actionButtonTree</component-name>
         <extends>div</extends>

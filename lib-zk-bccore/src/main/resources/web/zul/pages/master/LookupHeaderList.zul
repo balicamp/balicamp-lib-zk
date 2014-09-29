@@ -1,10 +1,13 @@
 <?page title="Lookup Header Editor" contentType="text/html;charset=UTF-8"?>
-<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
 <zk>
 <window title="Daftar Lookup Header" 
-border="normal" 
+	border="none"
+	height="100%"
+	width="100%" 
 	id="lookupHeaderList" 
 	apply="id.co.sigma.zk.ui.controller.master.LookupHeaderListController">
+	
+	<vlayout>
 	
 	<grid vflex="1">
 	
@@ -23,37 +26,44 @@ border="normal"
 		</row>
 		</rows>
 	</grid>	
-	<button id="btnSearch">Cari</button><button id="btnReset">Reset</button>
+	
+	<separator></separator>
+	
+	<hlayout>
+	<button id="btnSearch" label="Cari"/>
+	<button id="btnReset" label="Reset"/>
+	</hlayout>
 	
 	<separator></separator>
 	<listbox
 	id="lsbLookupHeader"
-		height="300px"
+		height="350px"
 		mold="paging"
-		pageSize="10" >
-		<listhead>
-			<listheader label="No" width="50px" align="center"/>
-			<listheader label="Action" width="150px" align="center"/>
-			<listheader label="ID" width="250px" align="center"/>
-			<listheader label="Catatan" width="300px" align="center"/>
-			<listheader label="Versi" width="300px" align="center"/>
-		</listhead>
+		pageSize="10" width="100%">
+		<actionListhead>
+			<listheader label="No" width="2%" align="center"/>
+			<listheader label="ID" width="20%" align="center"/>
+			<listheader label="Catatan" width="60%" align="center"/>
+			<listheader label="Versi" width="10%" align="center"/>
+		</actionListhead>
 		<template 
 			name="model">
-			<listitem >
+			<actionListitem value="${each}" editorPage="~./zul/pages/master/LookupHeaderEditor.zul"
+				deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
+				controller="${lookupHeaderList$composer}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell><button 
-					tooltiptext="Edit data" forward="onClick=pageListBox.onEditOnGridClick" 
-					image="/web/zul/img/ctrlimages/maintenance16.png"></button><button tooltiptext="Hapus data" image="/web/zul/img/ctrlimages/Folder-Delete16.png"></button></listcell>
 				<listcell label="${each.id}" style="text-align:left"/>
 				<listcell label="${each.remark}" style="text-align:left"/>
 				<listcell label="${each.version}" style="text-align:left"/>
-			</listitem>
+			</actionListitem>
 		</template>		
-		<listfoot>  
+<!-- 		<listfoot>  
 			<listfooter span="5" align="left"><button id="btnAdd">Tambah</button></listfooter>
-		</listfoot>
+		</listfoot> -->
 	</listbox>
-			
+	<hlayout>
+		<button id="btnAdd" label="Tambah"/>
+	</hlayout>
+	</vlayout>		
 </window>
 </zk>

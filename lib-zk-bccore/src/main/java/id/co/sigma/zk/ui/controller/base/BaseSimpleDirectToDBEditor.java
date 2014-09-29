@@ -40,7 +40,6 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	@Autowired
 	protected IGeneralPurposeDao  generalPurposeDao ; 
 	
-	
 	@Autowired
 	@Qualifier(value="transactionManager")
 	protected PlatformTransactionManager  transactionManager ; 
@@ -96,7 +95,14 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 		tmpl.execute(new TransactionCallback<Integer>() {
 			@Override
 			public Integer doInTransaction(TransactionStatus stts) {
-				Object obj =  stts.createSavepoint();
+				
+				Object obj = null;
+				try {
+					obj = stts.createSavepoint();
+				} catch (Exception e) {
+					logger.warn(e.getMessage());
+				}
+				
 				boolean saveCommit = true ; 
 				
 				
@@ -119,12 +125,19 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 					
 				}
 				
-				if ( saveCommit){
-					stts.releaseSavepoint(obj);
+				if(obj != null) { //jika support savepoint
+					if ( saveCommit){
+						stts.releaseSavepoint(obj);
+					}
+					else {
+						stts.rollbackToSavepoint(obj);
+					}
+				} else { //jika tidak support savepoint
+					if(!saveCommit) {
+						stts.setRollbackOnly();
+					}
 				}
-				else {
-					stts.rollbackToSavepoint(obj);
-				}
+				
 				return 1;
 			}
 		});
@@ -159,3 +172,4 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	}
 	
 }
+

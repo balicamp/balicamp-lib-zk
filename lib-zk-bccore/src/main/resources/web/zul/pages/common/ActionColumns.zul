@@ -1,0 +1,4 @@
+<zk>
+	<column label="Action" width="50px"/>
+	<column label="*" width="15px"/>
+</zk>

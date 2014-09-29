@@ -2,6 +2,8 @@ package id.co.sigma.zk.ui.custom.component;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 import java.io.Serializable;
@@ -17,6 +19,7 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
 
 public class ActionButton extends Div implements IdSpace, AfterCompose {
 
@@ -28,7 +31,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	public static final Integer EDIT_BUTTON = 0;
 	public static final Integer DELETE_BUTTON = 1;
 	
-	private BaseSimpleListController<Serializable> controller;
+	private BaseSimpleController controller;
 	
 	private String editEvent;
 	private String deleteEvent;
@@ -38,25 +41,31 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	
 	private String deleteMsg;
 	
+	private boolean delete = true;
+	private boolean edit = true;
+	
 	public ActionButton() {
 		Executions.createComponents("~./zul/pages/common/ActionButton.zul", this, null);
 		Selectors.wireComponents(this, this, false);
 		Selectors.wireEventListeners(this, this);		
 	}
 
-	public BaseSimpleListController<Serializable> getController() {
+	public BaseSimpleController getController() {
 		return controller;
 	}
 
-	public void setController(BaseSimpleListController<Serializable> controller) {
+	public void setController(BaseSimpleController controller) {
 		this.controller = controller;
 	}
 
 	@Override
 	public void afterCompose() {
+		
 		List<Component> children = getChildren();
 		Component editComp = children.get(EDIT_BUTTON);
 		Component delComp = children.get(DELETE_BUTTON);
+		editComp.setVisible(edit);
+		delComp.setVisible(delete);
 		
 		editComp.addEventListener("onClick", new EventListener<Event>() {
 
@@ -64,10 +73,19 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 			public void onEvent(Event event) throws Exception {
 				
 				Component comp = event.getTarget().getParent().getParent().getParent();
-				Listitem item = (Listitem)comp;
-				SingleKeyEntityData<Serializable> data =  item.getValue();
 				
-				EditorManager.getInstance().editData(editorPage, data, controller);
+				SingleKeyEntityData<Serializable> data = null;
+				
+				if(comp instanceof Listitem) {
+					Listitem item = (Listitem)comp;
+					data =  item.getValue();
+				} else if(comp instanceof Row) {
+					data = ((Row)comp).getValue();
+				}
+				
+				if(data != null) {
+					EditorManager.getInstance().editData(editorPage, data, controller);
+				}
 			}
 			
 		});
@@ -78,28 +96,45 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 			public void onEvent(Event event) throws Exception {
 				
 				Component comp = event.getTarget().getParent().getParent().getParent();
-				Listitem item = (Listitem)comp;
-				final SingleKeyEntityData<Serializable> data =  item.getValue();
 				
-				if(deleteMsg == null || deleteMsg.trim().length() == 0) {
-					deleteMsg = "Apakah anda yakin akan menghapus data ?";
+				Object o = null;
+
+				if(comp instanceof Listitem) {	//listbox			
+					Listitem item = (Listitem)comp;					
+					o = item.getValue();				
+				} else if(comp instanceof Row) { //grid
+					Row row = (Row)comp;
+					o = row.getValue();
 				}
 				
-				Messagebox.show(deleteMsg, "Delete Confirmation", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
-
-					@Override
-					public void onEvent(Event event) throws Exception {
-						switch(((Integer)event.getData()).intValue()) {
-						case Messagebox.YES:
-							controller.deleteData(data);
-							break;
-						case Messagebox.NO:
-							break;
-						}
+				if(o != null) {
+					final Object data =  o;
+					
+					if(deleteMsg == null || deleteMsg.trim().length() == 0) {
+						deleteMsg = "Apakah anda yakin akan menghapus data ?";
 					}
 					
-				});
-				
+					Messagebox.show(deleteMsg, "Delete Confirmation", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+	
+						@SuppressWarnings("unchecked")
+						@Override
+						public void onEvent(Event event) throws Exception {
+							switch(((Integer)event.getData()).intValue()) {
+							case Messagebox.YES:
+								if(controller instanceof BaseSimpleListController) {
+									((BaseSimpleListController<Serializable>)controller).deleteData((SingleKeyEntityData<?>)data);
+								} else if(controller instanceof BaseSimpleDirectToDBEditor) {
+									
+								}
+								break;
+							case Messagebox.NO:
+								break;
+							}
+						}
+						
+					});
+					
+				}
 			}
 			
 		});
@@ -144,6 +179,22 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 
 	public void setDeleteMsg(String deleteMsg) {
 		this.deleteMsg = deleteMsg;
+	}
+
+	public boolean isDelete() {
+		return delete;
+	}
+
+	public void setDelete(String delete) {
+		this.delete = Boolean.valueOf(delete);
+	}
+
+	public boolean isEdit() {
+		return edit;
+	}
+
+	public void setEdit(String edit) {		
+		this.edit = Boolean.valueOf(edit);
 	}
 	
 	
