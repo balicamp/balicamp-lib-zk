@@ -34,21 +34,21 @@
 		pageSize="10" >
 		<listhead>
 			<listheader label="No" width="50px" align="center"/>
-			<listheader label="Action" width="150px" align="center"/>
 			<listheader label="Code" hflex="1" align="center"/>
 			<listheader label="Name" hflex="1" align="center"/>
+			<listheader label="Action" width="150px" align="center"/>
 		</listhead>
 		<template 
 			name="model">
 			<listitem >
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell label="${each.groupCode}" style="text-align:left"/>
+				<listcell label="${each.groupName}" style="text-align:left"/>
 				<listcell>
 					<actionButton editorPage="~./zul/pages/master/security/GroupManagementEditor.zul"
 						deleteMsg="Apakah anda yakin menghapus data group: ${each.groupCode}"
 						controller="${groupMgmWin$composer}" />
 				</listcell>
-				<listcell label="${each.groupCode}" style="text-align:left"/>
-				<listcell label="${each.groupName}" style="text-align:left"/>
 			</listitem>
 		</template>		
 		<listfoot>  
