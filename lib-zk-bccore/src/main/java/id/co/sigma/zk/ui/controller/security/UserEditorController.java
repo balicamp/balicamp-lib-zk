@@ -401,16 +401,16 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	private List<UserRole> getRoleByUserId(Long userId){
 		List<UserRole> listUserRole = new ArrayList<UserRole>();
 		
-		/*SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+		SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
 				new SimpleQueryFilter("userId", SimpleQueryFilterOperator.equal, userId)
 		};
 		
 		SimpleSortArgument[] sortArgs ={
 				new SimpleSortArgument("roleId", true)
-			};*/
+			};
 		try {
-			/*listUserRole = generalPurposeDao.list(UserRole.class, filters, sortArgs);*/
-			listUserRole = userService.getUserRoleByUserId(userId);
+			listUserRole = generalPurposeDao.list(UserRole.class, filters, sortArgs);
+			/*listUserRole = userService.getUserRoleByUserId(userId);*/
 			return listUserRole;
 		} catch (Exception e) {
 			e.printStackTrace();
