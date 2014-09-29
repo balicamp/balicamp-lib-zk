@@ -3,14 +3,15 @@ package id.co.sigma.zk.ui.controller.security;
 
 
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
-import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.User;
-import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
+import id.co.sigma.security.server.service.impl.UserServiceImpl;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+
+import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -25,6 +26,8 @@ import org.zkoss.zul.Textbox;
  */
 public class UserListController extends BaseSimpleListController<User> implements IReloadablePanel{
 
+	@Autowired
+	UserServiceImpl userService;
 	
 	
 	/**
@@ -86,21 +89,26 @@ public class UserListController extends BaseSimpleListController<User> implement
 		return userListbox;
 	}
 	@Override
-	public void deleteData(User data) {
-		System.out.println("Yg dihapus Id :");
+	public void deleteData(User data){
 		try {
-			SimpleSortArgument[] sortArgs = {
-					new SimpleSortArgument("userId", true)
-				};
-			if(generalPurposeDao.list(UserGroupAssignment.class, sortArgs).size()>0){
-				generalPurposeService.delete(UserGroupAssignment.class, data.getId(), "userId");
-			}
-			generalPurposeService.delete(User.class, data.getId(), "id");
+			userService.deleteUser(data);
+			invokeSearch();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Override
+	protected void deleteData(User data, Serializable pk, String pkFieldName) {
+		// TODO Auto-generated method stub
+		/*super.deleteData(data, pk, pkFieldName);*/
+		try {
+			userService.remove(data.getId());
 			invokeSearch();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
 	
 }

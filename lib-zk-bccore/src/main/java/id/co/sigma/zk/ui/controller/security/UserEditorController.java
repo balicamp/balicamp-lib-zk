@@ -4,18 +4,25 @@ import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.Branch;
+import id.co.sigma.common.security.domain.Role;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
+import id.co.sigma.common.security.domain.UserRole;
+import id.co.sigma.security.server.service.IUserService;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+import id.co.sigma.zk.ui.data.SelectedRole;
 import id.co.sigma.zk.ui.data.SelectedUserGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.ListModelList;
@@ -32,6 +39,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(UserEditorController.class.getName());
 	
+	@Autowired
+	IUserService userService;
 	
 	@Wire
 	private Bandbox bdBranch;
@@ -43,6 +52,9 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	Listbox listBoxCheckList;
 	
 	@Wire
+	Listbox listBoxCheckListRole;
+	
+	@Wire
 	Textbox email;
 	
 	@Wire
@@ -50,6 +62,10 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	
 	public Listbox getListBoxCheckList() {
 		return listBoxCheckList;
+	}
+	
+	public Listbox getListBoxCheckListRole() {
+		return listBoxCheckListRole;
 	}
 	
 	private List<Branch> listBranchObject;
@@ -66,32 +82,112 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	}
 	
 	@Override
-	protected void insertData(User data) throws Exception {
-		// TODO Auto-generated method stub
-		try {
-			if(validationForm()){
-				super.insertData(data);
-				saveUserGroupAssignment(data.getId());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+	public void insertData() throws Exception {
+		/*// TODO Auto-generated method stub
+		super.insertData();*/
+		System.out.println("Masuk tanpa parameter");
 	}
 	
+	@Override
+	@Listen("onClick = #btnSave")
+	public void saveClick(Event evt) {
+		parseEditedData(evt.getTarget());
+		User data = getEditedData();
+		if(validationForm()){
+			
+			Set<Listitem> li = listBoxCheckList.getSelectedItems();
+			
+			Set<Listitem> liRole = listBoxCheckListRole.getSelectedItems();
+			
+			List<SelectedUserGroup> selectedListUserGroup = new ArrayList<SelectedUserGroup>();
+			List<SelectedRole> selectedListRole = new ArrayList<SelectedRole>();
+			
+			List<UserGroupAssignment> listGroup = new ArrayList<UserGroupAssignment>();
+			List<UserRole> listUserRole = new ArrayList<UserRole>();
+			
+			for (Listitem listitem : li) {
+				selectedListUserGroup.add((SelectedUserGroup) listitem.getValue());
+			}
+			
+			for (Listitem listitem : liRole) {
+				selectedListRole.add((SelectedRole) listitem.getValue());
+			}
+			
+			for (SelectedUserGroup selectedUserGroup : selectedListUserGroup) {
+				UserGroupAssignment dataInsert = new UserGroupAssignment();
+				dataInsert.setGroupId(selectedUserGroup.getId());
+				if(ZKEditorState.EDIT.equals(getEditorState())){
+					dataInsert.setUserId(editedData.getId());
+				}
+				listGroup.add(dataInsert);
+			}
+		
+			
+			for (SelectedRole selectedRole : selectedListRole) {
+				UserRole dataUserRole = new UserRole();
+				dataUserRole.setRoleId(selectedRole.getId());
+				if(ZKEditorState.EDIT.equals(getEditorState())){
+					dataUserRole.setUserId(editedData.getId());
+				}
+				listUserRole.add(dataUserRole);
+				
+			}
+			
+			try {
+				userService.insertDataUser(data, listGroup, listUserRole);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	@Override
+	protected void insertData(User data) throws Exception {
+		if(validationForm()){
+			
+			Set<Listitem> li = listBoxCheckList.getSelectedItems();
+			
+			Set<Listitem> liRole = listBoxCheckListRole.getSelectedItems();
+			
+			List<SelectedUserGroup> selectedListUserGroup = new ArrayList<SelectedUserGroup>();
+			List<SelectedRole> selectedListRole = new ArrayList<SelectedRole>();
+			
+			List<UserGroupAssignment> listGroup = new ArrayList<UserGroupAssignment>();
+			List<UserRole> listUserRole = new ArrayList<UserRole>();
+			
+			for (Listitem listitem : li) {
+				selectedListUserGroup.add((SelectedUserGroup) listitem.getValue());
+			}
+			
+			for (Listitem listitem : liRole) {
+				selectedListRole.add((SelectedRole) listitem.getValue());
+			}
+			
+			for (SelectedUserGroup selectedUserGroup : selectedListUserGroup) {
+				UserGroupAssignment dataInsert = new UserGroupAssignment();
+				dataInsert.setGroupId(selectedUserGroup.getId());
+				dataInsert.setUserId(editedData.getId());
+				listGroup.add(dataInsert);
+			}
+		
+			for (SelectedRole selectedRole : selectedListRole) {
+				UserRole dataUserRole = new UserRole();
+				dataUserRole.setRoleId(selectedRole.getId());
+				dataUserRole.setUserId(selectedRole.getId());
+				listUserRole.add(dataUserRole);
+				
+			}
+			
+			userService.insertDataUser(data, listGroup, listUserRole);
+		}
+	}
 	
 	@Override
 	protected void updateData(User data) throws Exception {
 		// TODO Auto-generated method stub
-		try {
-			if(validationForm()){
-				super.updateData(data);
-				saveUserGroupAssignment(editedData.getId());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(validationForm()){
+			/*saveUserGroupAssignment(editedData.getId(), data);*/
 		}
-		
 	}
 	private boolean validationForm(){
 		if(email.isValid()){
@@ -102,36 +198,76 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		}
 	}
 	
-	private void saveUserGroupAssignment(Long idUser){
-		try {
+	/*private void saveUserGroupAssignment(Long idUser, User data){
+			if(getEditorState().equals(ZKEditorState.ADD_NEW)){
+				try {
+					super.insertData(data);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			if(getEditorState().equals(ZKEditorState.EDIT)){
+				try {
+					super.updateData(data);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
 			List<UserGroupAssignment> userGroupAssignment = getUserGroupAssignmentByUserId(idUser);
 			if(!userGroupAssignment.isEmpty()){
 				for (UserGroupAssignment uga : userGroupAssignment) {
-					generalPurposeService.delete(uga);
+					try {
+						generalPurposeService.delete(uga);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
 				}
 			}
 			Set<Listitem> li = listBoxCheckList.getSelectedItems();
 			
+			Set<Listitem> liRole = listBoxCheckListRole.getSelectedItems();
+			
 			List<SelectedUserGroup> listUserGroup = new ArrayList<SelectedUserGroup>();
+			List<SelectedRole> listRole = new ArrayList<SelectedRole>();
 			
 			for (Listitem listitem : li) {
 				listUserGroup.add((SelectedUserGroup) listitem.getValue());
+			}
+			
+			for (Listitem listitem : liRole) {
+				listRole.add((SelectedRole) listitem.getValue());
 			}
 			
 			for (SelectedUserGroup selectedUserGroup : listUserGroup) {
 				UserGroupAssignment dataInsert = new UserGroupAssignment();
 				dataInsert.setGroupId(selectedUserGroup.getId());
 				dataInsert.setUserId(editedData.getId());
-				generalPurposeService.insert(dataInsert);
+				try {
+					generalPurposeService.insert(dataInsert);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Gagal insert user_group assignment!, Error: " + e.getMessage(), e);
-		}
+		
+			for (SelectedRole selectedRole : listRole) {
+				UserRole dataUserRole = new UserRole();
+				dataUserRole.setRoleId(selectedRole.getId());
+				dataUserRole.setUserId(selectedRole.getId());
+				try {
+					generalPurposeService.insert(dataUserRole);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
 		
 		
-		
-	}
+	}*/
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
@@ -140,20 +276,31 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		super.doAfterCompose(comp);
 		listBranchObject = new ArrayList<Branch>();
 		
+		List<SelectedUserGroup> selectedUserGroup = new ArrayList<SelectedUserGroup>();
+		
+				
+		List<SelectedRole> selectedUserRole = new ArrayList<SelectedRole>();
+			
+		
 		listBranchObject = getDataBranch();
 		if(listBranchObject!=null){
 			listBoxBandBox.setModel(new ListModelList<Branch>(listBranchObject));
 		}
 		
 		if(editedData.getId()!=null){
-			listBoxCheckList.setModel(new ListModelList<SelectedUserGroup>(listSelectedUserGroup(editedData.getId())));
-			listBoxCheckList.setMultiple(true);
-			listBoxCheckList.setCheckmark(true);
+			selectedUserRole = listSelectedUserRole(editedData.getId());
+			selectedUserGroup = listSelectedUserGroup(editedData.getId());
 		}else{
-			listBoxCheckList.setModel(new ListModelList<SelectedUserGroup>(getUserGroupList()));
-			listBoxCheckList.setMultiple(true);
-			listBoxCheckList.setCheckmark(true);
+			selectedUserRole = getUserRoleSelected();
+			selectedUserGroup = getUserGroupList();
 		}
+		listBoxCheckList.setModel(new ListModelList<SelectedUserGroup>(selectedUserGroup));
+		listBoxCheckList.setMultiple(true);
+		listBoxCheckList.setCheckmark(true);
+		
+		listBoxCheckListRole.setModel(new ListModelList<SelectedRole>(selectedUserRole));
+		listBoxCheckListRole.setMultiple(true);
+		listBoxCheckListRole.setCheckmark(true);
 		
 		userCode.setReadonly(getEditorState().equals(ZKEditorState.EDIT));
 		
@@ -165,12 +312,10 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		
 		List<SelectedUserGroup> listDataTampil = new ArrayList<SelectedUserGroup>();
 		
-		if(editedData.getId()!=null){
-			listUserGroupAssignment = getUserGroupAssignmentByUserId(userId);
-		}
-		
-		
 		if(listUserGroup!=null && !listUserGroup.isEmpty()){
+			if(editedData.getId()!=null){
+				listUserGroupAssignment = getUserGroupAssignmentByUserId(userId);
+			}
 			for (SelectedUserGroup selectedUserGroup : listUserGroup) {
 				if(listUserGroupAssignment != null && !listUserGroupAssignment.isEmpty()){
 					for (UserGroupAssignment userGroupAssignment : listUserGroupAssignment) {
@@ -252,4 +397,74 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		
 	}
 	
+	
+	private List<UserRole> getRoleByUserId(Long userId){
+		List<UserRole> listUserRole = new ArrayList<UserRole>();
+		
+		/*SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+				new SimpleQueryFilter("userId", SimpleQueryFilterOperator.equal, userId)
+		};
+		
+		SimpleSortArgument[] sortArgs ={
+				new SimpleSortArgument("roleId", true)
+			};*/
+		try {
+			/*listUserRole = generalPurposeDao.list(UserRole.class, filters, sortArgs);*/
+			listUserRole = userService.getUserRoleByUserId(userId);
+			return listUserRole;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private List<SelectedRole> getUserRoleSelected(){
+		List<Role> listRole = new ArrayList<Role>();
+		List<SelectedRole> listSelectedRole = new ArrayList<SelectedRole>();
+		
+		SimpleSortArgument[] sortArgs = {
+				new SimpleSortArgument("roleCode", true)
+		};
+		try {
+			listRole = generalPurposeDao.list(Role.class, sortArgs);
+			if(listRole!=null && !listRole.isEmpty()){
+				for (Role data : listRole) {
+					listSelectedRole.add(new SelectedRole(data));
+				}
+			}
+			return listSelectedRole;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Gagal membaca data Sec_group!, Error: " + e.getMessage(), e);
+			return null;
+		}
+	}
+	
+	private List<SelectedRole> listSelectedUserRole(Long userId){
+		List<SelectedRole> listUserRoleSelected =getUserRoleSelected();
+		List<UserRole> listUserRole = null;
+		
+		List<SelectedRole> listDataTampil = new ArrayList<SelectedRole>();
+		
+		if(listUserRoleSelected!=null && !listUserRoleSelected.isEmpty()){
+			if(editedData.getId()!=null){
+				listUserRole = getRoleByUserId(userId);
+			}
+			for (SelectedRole selectedUserRole : listUserRoleSelected) {
+				if(listUserRole != null && !listUserRole.isEmpty()){
+					for (UserRole dataUserRole : listUserRole) {
+						if(selectedUserRole.getId().compareTo(dataUserRole.getId())== 0){
+							selectedUserRole.setSelected(true);
+							break;
+						}
+					}
+				}else{
+					selectedUserRole.setSelected(false);
+				}
+				
+				listDataTampil.add(selectedUserRole);
+			}
+		}
+		return listDataTampil;
+	}
 }
