@@ -8,7 +8,16 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HeaderBinder {
 	
+	/**
+	 * header id di UI
+	 * @return
+	 */
 	public String headerId();
+	
+	/**
+	 * target field pojo
+	 * @return
+	 */
 	public String targetField();
 	
 }

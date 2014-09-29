@@ -21,7 +21,15 @@ public @interface ChildGridData {
 	 */
 	public String gridId();
 	
+	/**
+	 * bind header id UI dengan field pojo
+	 * @return
+	 */
 	public HeaderBinder[] headerBinder() default {};
 	
+	/**
+	 * join key master-detail
+	 * @return
+	 */
 	public JoinKey[] joinKeys(); 
 }
