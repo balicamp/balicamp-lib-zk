@@ -2,7 +2,7 @@
 <zk>
 	<panel>
 		<panelchildren>
-			<div style="display:block; margin:10px 0; padding:10px; background-color:#f90; color:white;">
+			<div class="page-title">
 				<label id="caption" style="font-weight:bold;" />
 			</div>
 		</panelchildren>

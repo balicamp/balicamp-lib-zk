@@ -38,12 +38,15 @@
 						<cell><combobox id="cmbStatus" /></cell>
 					</row>
 				</rows>	
-			</grid>	
-			<button id="btnCari">Cari</button>
-			<space></space>
-			<button id="btnReset">Reset</button>
-			<space></space>
-			<button id="btnCreateNew">Buat Baru</button>
+			</grid>
+			<separator />
+			<hbox>
+				<button id="btnCari">Cari</button>
+				<space></space>
+				<button id="btnReset">Reset</button>
+				<space></space>
+				<button id="btnCreateNew">Buat Baru</button>
+			</hbox>
 		</groupbox>
 		<separator bar="false"/>
 		
