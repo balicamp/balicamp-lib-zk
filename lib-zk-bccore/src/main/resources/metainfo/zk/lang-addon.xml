@@ -92,20 +92,10 @@ penambahan component form dengan tag binding
 		<extends>doublebox</extends>		    
 		<component-class>id.co.sigma.zk.ui.component.DoubleboxBindable</component-class>		    
 	</component>
-	<component>		
-		<component-name>bcintbox</component-name>		    
-		<extends>intbox</extends>		    
-		<component-class>id.co.sigma.zk.ui.component.IntboxBindable</component-class>		    
-	</component>
 	<component>
 		<component-name>bcspinner</component-name>		    
 		<extends>spinner</extends>		    
 		<component-class>id.co.sigma.zk.ui.component.SpinnerBindable</component-class>		    
-	</component>
-	<component>		    
-		<component-name>bctextbox</component-name>		    
-		<extends>textbox</extends>		    
-		<component-class>TextboxBindable</component-class>		    
 	</component>
 	<component>		    
 		<component-name>bctimebox</component-name>		    
