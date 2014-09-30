@@ -5,7 +5,7 @@ package id.co.sigma.zk.ui.controller.security;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
-import id.co.sigma.security.server.service.impl.UserServiceImpl;
+import id.co.sigma.security.server.service.IUserService;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
@@ -27,7 +27,7 @@ import org.zkoss.zul.Textbox;
 public class UserListController extends BaseSimpleListController<User> implements IReloadablePanel{
 
 	@Autowired
-	UserServiceImpl userService;
+	IUserService userService;
 	
 	
 	/**
