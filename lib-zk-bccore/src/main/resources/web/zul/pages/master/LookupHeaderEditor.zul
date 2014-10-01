@@ -1,30 +1,30 @@
 <?page title="Lookup Header Editor" contentType="text/html;charset=UTF-8"?>
 <zk>
-<editorWindow captionLabel="Lookup Header Editor" border="normal" 
+<editorWindow captionLabel="Lookup Header Editor" border="none" 
 	id="lookupHeader" apply="id.co.sigma.zk.ui.controller.master.LookupHeaderEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
 	
 	<grid>
 		<columns>
-			<column label="Type" width="150px" />
-			<column label="Content" />
+			<column label="${labels.field.type}" width="150px" />
+			<column label="${labels.field.content}" />
 		</columns>
 		<rows>
 			<row>
-				ID :
+				${labels.field.id}:
 				<textbox id="txtIdLov" maxlength="32" value="${lookupHeader$composer.editedData.id}"></textbox>
 			</row>
 			<row>
-				Internalization :
+				${labels.field.locale}:
 				<textbox id="txtI18Key" maxlength="32" value="${lookupHeader$composer.editedData.i18Key}"></textbox>
 			</row>
 			<row>
-				Catatan :
+				${labels.field.remark}:
 				<textbox id="txtRemark" maxlength="128" value="${lookupHeader$composer.editedData.remark}"></textbox>
 			</row>
 			<row>
-				Versi :
+				${labels.field.version}:
 				<textbox id="txtVersion" maxlength="16" value="${lookupHeader$composer.editedData.version}"></textbox>
 			</row>
 		</rows>
@@ -32,10 +32,10 @@
 	
 	<listbox id="lsbLookupDetails" height="300px" width="100%" >
 		<actionListhead>
-			<listheader label="No" width="2%" align="center"/>
-			<listheader id="i18Key" label="Locale" width="10%" align="center"/>
-			<listheader id="detailCode" label="Kode" width="10%" align="center"/>
-			<listheader id="label" label="Label" width="20%" align="center"/>
+			<listheader label="${labels.field.no}" width="2%" align="center"/>
+			<listheader id="i18Key" label="${labels.field.locale}" width="10%" align="center"/>
+			<listheader id="detailCode" label="${labels.field.code}" width="10%" align="center"/>
+			<listheader id="label" label="${labels.field.label}" width="20%" align="center"/>
 			<listheader id="extField1" label="Ext Field 1" width="10%" align="center"/>
 			<listheader id="extField2" label="Ext Field 2" width="10%" align="center"/>
 			<listheader id="sequence" label="Sequence" width="10%" align="center"/>
@@ -46,16 +46,16 @@
 				deleteMsg="Apakah anda yakin menghapus data key: ${each.detailCode}"
 				controller="${lookupHeader$composer}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell style="text-align:left"><textbox inplace="true" value="${each.i18Key}" readonly="true"/></listcell>
-				<listcell style="text-align:left"><textbox inplace="true" value="${each.detailCode}"/></listcell>
-				<listcell style="text-align:left"><textbox inplace="true" value="${each.label}"/></listcell>
-				<listcell style="text-align:left"><textbox inplace="true" value="${each.extField1}"/></listcell>
-				<listcell style="text-align:left"><textbox inplace="true" value="${each.extField2}"/></listcell>
-				<listcell style="text-align:right"><intbox inplace="true" value="${each.sequence}"/></listcell>
+				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.i18Key}" readonly="true"/></listcell>
+				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.detailCode}"/></listcell>
+				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.label}"/></listcell>
+				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField1}"/></listcell>
+				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField2}"/></listcell>
+				<listcell style="text-align:right"><intbox width="100%" inplace="true" value="${each.sequence}"/></listcell>
 			</actionListitem>
 		</template>		
 		<listfoot>  
-			<listfooter span="8" align="left"><button id="btnAdd">Tambah</button></listfooter>
+			<listfooter span="8" align="left"><button id="btnAdd" label="${labels.action.button.add}"/></listfooter>
 		</listfoot>
 	</listbox>	
 

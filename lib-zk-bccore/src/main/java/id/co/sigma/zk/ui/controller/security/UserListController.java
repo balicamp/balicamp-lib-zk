@@ -6,7 +6,6 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.security.server.service.IUserService;
-import id.co.sigma.security.server.service.impl.UserServiceImpl;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
