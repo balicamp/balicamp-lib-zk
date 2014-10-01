@@ -14,17 +14,17 @@
 			</columns>
 		<rows>
 			<row>
-				User Name
+				${labels.field.username}
 				<textbox id="userCode"			
 					value="${userEditor$composer.editedData.userCode}">
 				</textbox>
 			</row>
 			 <row>
-                Password
+                ${labels.field.password}
                 <textbox id="chipperText" width="150px" type="password" c:onChanging="meterUpdate(event)" />
             </row>
             <row>
-                Password Strength
+                ${labels.field.passwordstrength} 
                 <vlayout>
                     <div id="meter" sclass="meter" width="240px">
                         <div sclass="meter-inner"></div>
@@ -33,34 +33,34 @@
                 </vlayout>
             </row>
             <row>
-                Confirm Password
+                ${labels.field.passwordconfirm}
                 <textbox id="confirmChipperText" width="150px" type="password" />
             </row>
 			<row>
-				Real Name
+				${labels.field.realname}
 				<textbox id="realName"
 					value="${userEditor$composer.editedData.realName}"></textbox>
 			</row>
 			<row>
-				Email
+				${labels.field.email}
 				<textbox id="email"
 					value="${userEditor$composer.editedData.email}" constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address"></textbox>
 			</row>
 			<row>
-				Status Active
+				${labels.field.status}
 				<checkbox id="status"></checkbox>
 			</row>
 			<row>
-				Super Admin
+				${labels.field.superadmin}
 				<checkbox id="superAdmin"></checkbox>
 			</row>
 			<row>
-				Branch
+				${labels.field.branch}
 				<bandbox id="defaultBranchCode" value="${userEditor$composer.editedData.defaultBranchCode}">
 		        <bandpopup>
 		            <vbox>
 		                <hbox>
-		                    Search
+		                    ${labels.action.button.search}
 		                    <textbox />
 		                </hbox>
 		                <listbox id="listBoxBandBox" width="400px"
@@ -91,7 +91,7 @@
 		<grid>
 			<rows>
 				<row>
-				<label>User Group</label>
+				<label>${labels.field.usergroup}</label>
 				</row>
 	            <row>
 	                <listbox id="listBoxCheckList">
@@ -113,7 +113,7 @@
 		<grid>
 			<rows>
 				<row>
-					<label>User Role</label>
+					<label>${labels.field.userrole}</label>
 				</row>
 	            <row>
 	         		
