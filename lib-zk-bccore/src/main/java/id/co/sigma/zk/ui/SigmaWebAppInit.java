@@ -11,7 +11,6 @@ public class SigmaWebAppInit implements WebAppInit {
 	@Override
 	public void init(WebApp wapp) throws Exception {
 		Labels.register(new CustomLabelLocator("/metainfo/labels/common-label.properties"));
-		System.out.println("Label: " + Labels.getLabel("action.button.edit.label"));
 	}
 
 }
