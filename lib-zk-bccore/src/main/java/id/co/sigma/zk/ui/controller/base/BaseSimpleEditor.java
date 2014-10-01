@@ -107,6 +107,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 */
 	protected abstract void insertData (POJO data ) throws Exception ;
 	
+	public void deleteData(POJO data) throws Exception {
+		throw new Exception("Method not supported.");
+	}
+	
 	/**
 	 * delete child data, jika enity ini adalah merupakan master-detail
 	 * @param clazz
