@@ -108,7 +108,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	private void moveListboxItem(Listbox source, Listbox dest, boolean moveAll){
 		if(moveAll){
-			for (int i = 0; i < source.getItemCount(); i++) {
+			// FIXME ini masih error "java.util.ConcurrentModificationException "
+			int j = source.getItems().size();			
+			for (int i = 0; i < j; i++) {
 				source.setSelectedItem(source.getItemAtIndex(i));
 				dest.getItems().add(source.getSelectedItem());
 			}
@@ -117,7 +119,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				dest.getItems().add(source.getSelectedItem());
 			}else{
 				source.setSelectedItem(source.getItemAtIndex(0));
-				dest.appendChild(source.getSelectedItem());
+				dest.getItems().add(source.getSelectedItem());
 			}			
 		}
 	}
