@@ -12,11 +12,43 @@
 				<rows>
 					<row>
 						<cell width="200px">Delegasi Dari (user)</cell>
-						<cell><textbox id="sourceUserId" value="${userDelegationEditorWin$composer.editedData.sourceUserId}" /></cell>
+						<cell>
+							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true">
+								<bandpopup>
+									<vbox>
+										<hbox>
+											Search
+											<textbox id="bnbxDelegateFromUserSearchText" width="150px" />
+										</hbox>
+										<listbox id="bnbxDelegateFromUserList" width="200px" mold="paging" pageSize="10" 
+											model="${userDelegationEditorWin$composer.userList}">
+											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
+										</listbox>
+									</vbox>
+								</bandpopup>
+							</bandbox>								
+							<longbox id="sourceUserId" visible="false" />
+						</cell>
 					</row>
 					<row>
 						<cell>Delegasi Ke (user)</cell>
-						<cell><textbox id="destUserId" value="${userDelegationEditorWin$composer.editedData.destUserId}" /></cell>
+						<cell>
+							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true">
+								<bandpopup>
+									<vbox>
+										<hbox>
+											Search
+											<textbox id="bnbxDelegateToUserSearchText" width="150px" />
+										</hbox>
+										<listbox id="bnbxDelegateToUserList" width="200px" 
+											model="${userDelegationEditorWin$composer.userList}" mold="paging" pageSize="10">
+											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
+										</listbox>
+									</vbox>
+								</bandpopup>
+							</bandbox>
+							<longbox id="destUserId" visible="false" />
+						</cell>
 					</row>
 					<row>
 						<cell>Tanggal Mulai</cell>

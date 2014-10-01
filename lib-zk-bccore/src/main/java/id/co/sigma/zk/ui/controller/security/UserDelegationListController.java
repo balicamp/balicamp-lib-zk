@@ -23,7 +23,6 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
-import org.zkoss.zul.Textbox;
 
 /**
  * User Delegation list controller
