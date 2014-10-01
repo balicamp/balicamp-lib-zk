@@ -35,7 +35,7 @@ public class UserListController extends BaseSimpleListController<User> implement
 	 */
 	private static final long serialVersionUID = 6628279768995608470L;
 	@Autowired
-	private IGeneralPurposeService generalPurposeService ;  
+	IGeneralPurposeService generalPurposeService ;  
 	
 	@Wire
 	Listbox userListbox ;

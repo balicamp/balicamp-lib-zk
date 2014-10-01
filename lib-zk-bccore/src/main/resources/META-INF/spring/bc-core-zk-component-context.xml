@@ -20,8 +20,8 @@
                             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 	<bean id="zkCommonServiceBean" class="id.co.sigma.zk.service.impl.ZKCommonServiceImpl" 
-		name="zk-app-common-service">
-		<description>Bean provider common thing di ZK</description>	
-	</bean>
+	  name="zk-app-common-service">
+	  <description>Bean provider common thing di ZK</description> 
+	 </bean>
 		
 </beans>

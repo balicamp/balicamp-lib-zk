@@ -10,6 +10,7 @@ import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
 import id.co.sigma.security.server.service.IUserService;
+import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectedRole;
@@ -22,9 +23,11 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -60,6 +63,18 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	@Wire
 	Textbox userCode;
 	
+	@Wire
+	Checkbox superAdmin;
+	
+	@Wire
+	Checkbox status;
+	
+	@Wire
+	Textbox confirmChipperText;
+	
+	/*@Wire
+	Textbox chipperText;*/
+	
 	public Listbox getListBoxCheckList() {
 		return listBoxCheckList;
 	}
@@ -90,10 +105,54 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	
 	@Override
 	@Listen("onClick = #btnSave")
-	public void saveClick(Event evt) {
+	public void saveClick(final Event evt) {
+		
+		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
+		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
+			
+			Messagebox.show(confirmMsg, "Prompt", 
+					Messagebox.YES|Messagebox.NO, 
+					Messagebox.QUESTION, 
+			new EventListener<Event>() {
+				
+				@Override
+				public void onEvent(Event event) throws Exception {
+					switch(((Integer)event.getData()).intValue()) {
+					case Messagebox.YES:
+						saveData(evt);
+						break;
+					case Messagebox.NO:
+						break;
+					}
+				}
+			});				
+		} else saveData(evt); 
+		
+		
+	}
+	
+	
+	private final void saveData(final Event evt) {
 		parseEditedData(evt.getTarget());
 		User data = getEditedData();
-		if(validationForm()){
+		if(validationForm(data)){
+			
+			if(ZKEditorState.EDIT.equals(getEditorState())){
+				if(data.getChipperText().equalsIgnoreCase("")){
+					data.setChipperText(editedData.getChipperText());
+				}
+			}
+			
+			if(superAdmin.isChecked()){
+				data.setSuperAdmin("Y");
+			}else{
+				data.setSuperAdmin("N");
+			}
+			if(status.isChecked()){
+				data.setStatus("Y");
+			}else{
+				data.setStatus("N");
+			}
 			
 			Set<Listitem> li = listBoxCheckList.getSelectedItems();
 			
@@ -135,13 +194,13 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			
 			try {
 				userService.insertDataUser(data, listGroup, listUserRole);
+				EditorManager.getInstance().closeCurrentEditorPanel();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	@Override
+	/*@Override
 	protected void insertData(User data) throws Exception {
 		if(validationForm()){
 			
@@ -179,23 +238,48 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			}
 			
 			userService.insertDataUser(data, listGroup, listUserRole);
+			
 		}
-	}
+	}*/
 	
 	@Override
 	protected void updateData(User data) throws Exception {
 		// TODO Auto-generated method stub
-		if(validationForm()){
-			/*saveUserGroupAssignment(editedData.getId(), data);*/
-		}
+		/*if(validationForm()){
+			saveUserGroupAssignment(editedData.getId(), data);
+		}*/
 	}
-	private boolean validationForm(){
-		if(email.isValid()){
-			return true;
-		}else{
-			Messagebox.show("Email tidak valid");
-			return false;
+	private boolean validationForm(User data){
+		List<String> notValidFiled = new ArrayList<String>();
+		
+		if(ZKEditorState.ADD_NEW.equals(getEditorState())){
+			if(data.getChipperText().equalsIgnoreCase("")){
+				notValidFiled.add("Password is empty");
+			}
 		}
+		
+		if(!data.getChipperText().equals(confirmChipperText.getValue())){
+			notValidFiled.add("Password confirmation is incorrect");
+		}
+		if(!email.isValid()){
+			notValidFiled.add("Invalid Email Address");
+		}
+		
+		if(notValidFiled.size()>0){
+			String error = "";
+			for (String string : notValidFiled) {
+				if(error.equals("")){
+					error = string+" \n";
+				}else{
+					error += string+" \n";
+				}
+			}
+			Messagebox.show("Error Message : \n"+error);
+			return false;
+		}else{
+			return true;
+		}
+		
 	}
 	
 	/*private void saveUserGroupAssignment(Long idUser, User data){
@@ -290,8 +374,19 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		if(editedData.getId()!=null){
 			selectedUserRole = listSelectedUserRole(editedData.getId());
 			selectedUserGroup = listSelectedUserGroup(editedData.getId());
+			if(editedData.getSuperAdmin()!=null && editedData.getSuperAdmin().equals("Y")){
+				superAdmin.setChecked(true);
+			}else{
+				superAdmin.setChecked(false);
+			}
+			
+			if(editedData.getStatus()!=null && editedData.getStatus().equals("Y")){
+				status.setChecked(true);
+			}else{
+				status.setChecked(false);
+			}
 		}else{
-			selectedUserRole = getUserRoleSelected();
+			selectedUserRole = getAllRole();
 			selectedUserGroup = getUserGroupList();
 		}
 		listBoxCheckList.setModel(new ListModelList<SelectedUserGroup>(selectedUserGroup));
@@ -418,7 +513,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		}
 	}
 	
-	private List<SelectedRole> getUserRoleSelected(){
+	private List<SelectedRole> getAllRole(){
 		List<Role> listRole = new ArrayList<Role>();
 		List<SelectedRole> listSelectedRole = new ArrayList<SelectedRole>();
 		
@@ -441,7 +536,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	}
 	
 	private List<SelectedRole> listSelectedUserRole(Long userId){
-		List<SelectedRole> listUserRoleSelected =getUserRoleSelected();
+		List<SelectedRole> listUserRoleSelected =getAllRole();
 		List<UserRole> listUserRole = null;
 		
 		List<SelectedRole> listDataTampil = new ArrayList<SelectedRole>();
@@ -453,7 +548,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			for (SelectedRole selectedUserRole : listUserRoleSelected) {
 				if(listUserRole != null && !listUserRole.isEmpty()){
 					for (UserRole dataUserRole : listUserRole) {
-						if(selectedUserRole.getId().compareTo(dataUserRole.getId())== 0){
+						if(selectedUserRole.getId().compareTo(dataUserRole.getRoleId())== 0){
 							selectedUserRole.setSelected(true);
 							break;
 						}
