@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
@@ -80,10 +81,19 @@ public class ApplicationMenuEditorController extends
 	
 	@Wire
 	Textbox functionLabel;
+	
+	@Wire
+	Label code;
+	
 
 
 	@Override
 	public void insertData() throws Exception {
+		/*if(getEditedData().getFunctionCode()==null || getEditedData().getFunctionCode().equals("")){
+			//code.setValue("Field code harus diisi");
+			functionCode.setConstraint("Test");
+			return;
+		}*/
 		Long appId = new Long(applicationId);
 		getEditedData().setApplicationId(appId);
 		getEditedData().setStatus("A");
