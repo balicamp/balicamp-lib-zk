@@ -42,10 +42,15 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 		Component[] dynamics = new Component[children.size()-2];
 		Component[] defaults = new Component[2];
 		Component[] alls = children.toArray(new Component[children.size()]);
+		
 		System.arraycopy(alls, 0, defaults, 0, 2);
 		System.arraycopy(alls, 2, dynamics, 0, children.size()-2);
 		children.clear();
+		
+		defaults[1].setId(defaults[1].getUuid());
+		
 		for(Component cmp : dynamics) {
+			ActionUtils.registerClientEventListner(cmp.getChildren(), defaults[1].getUuid());
 			children.add(cmp);
 		}
 		for(Component cmp : defaults) {
