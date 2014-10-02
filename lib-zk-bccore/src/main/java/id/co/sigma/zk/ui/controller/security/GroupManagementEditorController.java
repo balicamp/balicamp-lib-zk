@@ -226,7 +226,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 					ApplicationMenuAssignment assign = new ApplicationMenuAssignment();
 					assign.setFunctionId(mnuId);
 					assign.setGroupId(groupId);
-					assign.setCreatedBy("GSR"); // << Nanti harus diisi dengan user yg login
+					assign.setCreatedBy("GSR"); // FIXME Nanti harus diisi dengan user yg login
 					assign.setCreatedOn(new Date());
 					
 					generalPurposeService.insert(assign);

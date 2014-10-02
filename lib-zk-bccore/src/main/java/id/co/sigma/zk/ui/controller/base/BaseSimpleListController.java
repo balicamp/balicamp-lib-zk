@@ -10,10 +10,18 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.impl.InputElement;
@@ -51,8 +59,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	private DATA selectedItem ; 
 	
 	
-	
-	 
+	@Autowired
+	@Qualifier(value="transactionManager")
+	protected PlatformTransactionManager  transactionManager ; 
 	
 	
 	/**
@@ -93,16 +102,72 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		
 	}
 	
-	
-	protected void deleteData(DATA data, Serializable pk, String pkFieldName) {
-		try {
-			generalPurposeService.delete(data.getClass(), pk, pkFieldName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	/**
+	 * delete data
+	 * @param data
+	 * @param pk
+	 * @param pkFieldName
+	 */
+	protected void deleteData(final DATA data, final Serializable pk, final String pkFieldName) {
+		
+		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
+
+		tmpl.execute(new TransactionCallback<Integer>() {
+
+			@Override
+			public Integer doInTransaction(TransactionStatus status) {
+				Object obj = null;
+				try {
+					obj = status.createSavepoint();
+				} catch (Exception e) {
+					logger.warn(e.getMessage());
+				}
+				
+				boolean saveCommit = true ;
+				
+				try {
+					Map<String, Class<?>> children = getChildrenParentKeyAndEntiy();
+					if(children != null && !children.isEmpty()) {
+						String[] prntKeys = children.keySet().toArray(new String[children.keySet().size()]);
+						for(String pKey : prntKeys) {
+							Class<?> clazz = children.get(pKey);
+							generalPurposeService.delete(clazz, pk, pKey);
+						}
+					}
+					generalPurposeService.delete(data.getClass(), pk, pkFieldName);
+				} catch (Exception e) {
+					saveCommit = false ;
+					logger.error(e.getMessage(), e);
+					Messagebox.show("Gagal Hapus Data. error : " + e.getMessage(), 
+							"Gagal Hapus Data", Messagebox.OK, 
+							Messagebox.ERROR);
+				}
+				
+				if(obj != null) {
+					if(saveCommit) {
+						status.releaseSavepoint(obj);
+					} else {
+						status.rollbackToSavepoint(obj);
+					}
+				} else {
+					if(!saveCommit) {
+						status.setRollbackOnly();
+					}
+				}
+				
+				return 1;
+			}
+		});
+		
 	}
 	
-	
+	/**
+	 * get child/detail data info parent key dan child class
+	 * @return
+	 */
+	protected Map<String, Class<?>> getChildrenParentKeyAndEntiy() {
+		return null;
+	}
 	
 	
 	/**
@@ -177,12 +242,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	public abstract Listbox getListbox()  ; 
 	
 	public void deleteData(DATA data) {
-		try {
-			generalPurposeService.delete(data);
-		} catch (Exception e) {
-			logger.error("gagal menghapus data " + e.getMessage() , e);
-			e.printStackTrace();
-		}
+		throw new RuntimeException("Method not supported.");
 	}
 
 }

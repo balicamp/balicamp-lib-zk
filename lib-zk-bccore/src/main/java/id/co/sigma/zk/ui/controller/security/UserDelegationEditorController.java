@@ -5,19 +5,24 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.security.domain.UserDelegation;
+import id.co.sigma.common.security.domain.UserDelegationGroup;
+import id.co.sigma.common.security.domain.UserDelegationRole;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
+import id.co.sigma.security.server.service.IUserDelegationService;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -49,6 +54,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	@Wire
 	private Longbox destUserId;
+	
+	@Autowired
+	private IUserDelegationService userDelegationService;
 	
 	// User roles stuff
 	@Wire private Listbox lbAvailableRoles;
@@ -230,6 +238,59 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	public List<UserGroupAssignment> getUserGroupListModel(){
 		return new ListModelList<>(getUserGroups());
+	}
+
+	@Override
+	protected void insertData(UserDelegation data) throws Exception {
+		try {
+			userDelegationService.insert(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	protected void updateData(UserDelegation data) throws Exception {
+		try {
+			userDelegationService.update(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private List<UserDelegationRole> getDelegatedRolesFromListbox(){
+		int itemCount = lbDelegatedRoles.getItems().size();
+		List<UserDelegationRole> retval = null;
+		if(itemCount > 0){
+			retval = new ArrayList<UserDelegationRole>();
+			for(Listitem li : lbDelegatedRoles.getItems()){
+				UserRole userRole = li.getValue();
+				UserDelegationRole role = new UserDelegationRole(userRole);
+				retval.add(role);
+			}
+		}
+		return retval;
+	}
+	
+	private List<UserDelegationGroup> getDelegatedGroupsFromListbox(){
+		int itemCount = lbDelegatedGroups.getItems().size();
+		List<UserDelegationGroup> retval = null;
+		if(itemCount > 0){
+			retval = new ArrayList<UserDelegationGroup>();
+			for(Listitem li : lbDelegatedGroups.getItems()){
+				UserGroupAssignment grpAsg = li.getValue();
+				UserDelegationGroup group = new UserDelegationGroup(grpAsg);
+				retval.add(group);
+			}
+		}
+		return retval;
+	}
+	
+	@Listen("onSelect=#dataStatus")
+	public void onDataStatusSelected(){
+		Comboitem item = dataStatus.getSelectedItem();
+		System.out.println("Comboitem.value=" + item.getValue());
+		System.out.println("Comboitem.label=" + item.getLabel());
 	}
 	
 }
