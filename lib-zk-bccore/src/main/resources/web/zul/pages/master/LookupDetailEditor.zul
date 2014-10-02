@@ -1,44 +1,44 @@
 <?page title="Editor Lookup Detail" contentType="text/html;charset=UTF-8"?>
-<?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?>
 <zk>
-<window title="Editor Lookup Detail" border="normal" id="lookupDetail" 
-	apply="id.co.sigma.zk.ui.controller.master.LookupDetailEditorController">
+<editorWindow title="Editor Lookup Detail" border="none" id="lookupDetail" 
+	apply="id.co.sigma.zk.ui.controller.master.LookupDetailEditorController"
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+	confirmationMsg="Apakah anda akan menyimpan data ini ?">
 <grid vflex="1">
 	
 		<columns>
 				<column width="150px" />
 				<column  />
 			</columns>
-		<rows>
+		<rows> 
 		<row>
 			Locale
-			<textbox id="txtI18n" ></textbox>
+			<textbox id="txtI18n" value="${lookupDetail$composer.editedData.i18Key}" readonly="true"/>
 		</row>
 		<row>
-			Kode
-			<textbox id="txtCode"></textbox>
+			${labels.field.code}
+			<textbox id="txtCode"  value="${lookupDetail$composer.editedData.detailCode}" readonly="true"/>
 		</row>
 		<row>
 			Label
-			<textbox id="txtLabel"></textbox>
+			<textbox id="txtLabel"  value="${lookupDetail$composer.editedData.label}"/>
 		</row>
 		<row>
 			additional data 1
-			<textbox id="txtAdditionalData1"></textbox>
+			<textbox id="txtAdditionalData1"  value="${lookupDetail$composer.editedData.extField1}"/>
 		</row>
 		<row>
 			additional data 2
-			<textbox id="txtAdditionalData2"></textbox>
+			<textbox id="txtAdditionalData2"  value="${lookupDetail$composer.editedData.extField2}"/>
 		</row>
 		
 		<row>
 			Sequence
-			<intbox id="txtSequence"></intbox>
+			<intbox id="txtSequence"  value="${lookupDetail$composer.editedData.sequence}"/>
 		</row>
 		
 		
 		</rows>
 	</grid>
-	<button id="btnSave">Simpan</button><button id="btnCancel">Batal</button>
-</window>
+</editorWindow>
 </zk>
