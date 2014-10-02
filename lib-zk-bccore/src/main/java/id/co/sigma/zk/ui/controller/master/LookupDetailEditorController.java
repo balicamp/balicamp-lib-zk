@@ -1,17 +1,15 @@
 package id.co.sigma.zk.ui.controller.master;
 
 
-import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Textbox;
-
 import id.co.sigma.common.security.domain.lov.LookupDetail;
 import id.co.sigma.zk.ui.annotations.ControlDataBinder;
-import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleNoDirectToDBEditor;
+
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Textbox;
 
 /**
  * editor Lookup detail
@@ -26,45 +24,31 @@ public class LookupDetailEditorController extends BaseSimpleNoDirectToDBEditor<L
 			.getLogger(LookupDetailEditorController.class.getName());
 	
 	@ControlDataBinder(targetField="i18Key")
-	@Wire Textbox txtI18n ; 
+	@Wire Textbox txtI18n ;
+	
+	@ControlDataBinder(targetField="detailCode")
 	@Wire Textbox txtCode ;
+	
+	@ControlDataBinder(targetField="label")
 	@Wire Textbox txtLabel;
+	
+	@ControlDataBinder(targetField="extField1")
 	@Wire Textbox txtAdditionalData1 ;
+	
+	@ControlDataBinder(targetField="extField2")
 	@Wire Textbox txtAdditionalData2;
+	
+	@ControlDataBinder(targetField="sequence")
 	@Wire Intbox txtSequence ;
-	@Wire Button btnSave;
-	@Wire Button btnCancel;
 	
-	
-	@Listen(value="onClick = #btnSave")
-	public void saveClick() { 
-		editedData.setDetailCode(txtCode.getValue());
-		editedData.setExtField1(txtAdditionalData1.getValue());
-		editedData.setExtField2(txtAdditionalData2.getValue());
-		editedData.setI18Key(txtI18n.getValue());
-		editedData.setLabel(txtLabel.getValue());
-		
-		
-		
-		try {
-			if ( ZKEditorState.ADD_NEW.equals(  getEditorState())){
-				insertData();
-			}else if ( ZKEditorState.EDIT.equals(  getEditorState())){
-				updateData();
-			}
-		} catch (Exception e) {
-			logger.error("gagal save/insert data.error : " + e.getMessage() );
+	@Override	
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
+		if(ZKEditorState.ADD_NEW.equals(getEditorState())) {
+			txtCode.setReadonly(false);
 		}
-		
-		/**/
-		
 	}
-	
-	
-	@Listen(value="onClick = #btnCancel")
-	public void cancelClick() { 
-		EditorManager.getInstance().closeCurrentEditorPanel();
-	}
+
 	
 	
 }
