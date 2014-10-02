@@ -427,7 +427,15 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				}
 				
 				for(int i = 0; i < parentKey.length; i++) {
-					ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
+					if(parentKey[i] != null) {
+						if(parentKey[i] instanceof String) {
+							if(((String)parentKey[i]).trim().length() > 0) {
+								ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
+							}
+						} else {
+							ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
+						}
+					}
 				}
 				
 			}
@@ -487,7 +495,15 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					}
 					
 					for(int i = 0; i < parentKey.length; i++) {
-						ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
+						if(parentKey[i] != null) {
+							if(parentKey[i] instanceof String) {
+								if(((String)parentKey[i]).trim().length() > 0) {
+									ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
+								}
+							} else {
+								ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
+							}
+						}
 					}
 				}
 			}
