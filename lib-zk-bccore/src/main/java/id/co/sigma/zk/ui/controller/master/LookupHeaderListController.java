@@ -1,19 +1,21 @@
 package id.co.sigma.zk.ui.controller.master;
 
-import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.security.domain.lov.LookupDetail;
+import id.co.sigma.common.security.domain.lov.LookupHeader;
+import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
-
-import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
-import id.co.sigma.common.security.domain.lov.LookupHeader;
-import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.IReloadablePanel;
-import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 /**
  * list untuk lookup header 
@@ -76,6 +78,14 @@ public class LookupHeaderListController extends BaseSimpleListController<LookupH
 	@Override
 	public void reload() {
 		invokeSearch();
+	}
+
+	
+	@Override
+	protected Map<String, Class<?>> getChildrenParentKeyAndEntiy() {
+		Map<String, Class<?>> childClasses = new HashMap<String, Class<?>>();
+		childClasses.put("headerId", LookupDetail.class);
+		return childClasses;
 	}
 
 	@Override

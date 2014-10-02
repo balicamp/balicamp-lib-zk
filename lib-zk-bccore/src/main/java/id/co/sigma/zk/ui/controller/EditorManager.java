@@ -88,7 +88,7 @@ public final class EditorManager {
 		showHideLatestComponent(false);
 		includePanel.setVisible(false);
 		editorContainerWindow.setVisible(true); 
-		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+		Executions.createComponents(zulPath, editorContainerWindow, parameter);
 	}
 	
 	/**
