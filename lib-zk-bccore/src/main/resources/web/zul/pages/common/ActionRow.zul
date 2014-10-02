@@ -1,4 +1,6 @@
 <zk>
 	<actionButton />
-	<label value=""/>
+	<label value="">
+		<custom-attributes org.zkoss.zk.ui.updateByClient="true"/>
+	</label>
 </zk>

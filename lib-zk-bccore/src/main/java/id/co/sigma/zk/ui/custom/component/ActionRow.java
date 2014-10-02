@@ -1,6 +1,7 @@
 package id.co.sigma.zk.ui.custom.component;
 
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Row;
 
 public class ActionRow extends Row implements IdSpace, AfterCompose {
@@ -31,6 +34,8 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 	
 	private int childIndex = 0;
 	
+	private boolean child = false;
+	
 	public ActionRow() {
 		Executions.createComponents("~./zul/pages/common/ActionRow.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -50,6 +55,21 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 		children.clear();
 		
 		defaults[1].setId(defaults[1].getUuid());
+		
+		if(isChild()) {
+			ListModel<Object> model = getGrid().getModel();
+			int existing = 1; //0: new, 1: existing, 2: edited
+			if(model instanceof ZKClientSideListDataEditorContainer) {
+				ZKClientSideListDataEditorContainer<Object> cModel = (ZKClientSideListDataEditorContainer<Object>)model;
+				Object data = getValue();
+				existing = cModel.isNewObject(data) ? 0 : 1;
+				if(existing == 1 && cModel.getEditedData() != null) {
+					existing = cModel.getEditedData().contains(data) ? 2 : existing;
+				}
+			}
+			
+			((Label)defaults[1]).setValue(existing == 1 ? "": (existing == 2 ? "*" : "+"));
+		}
 		
 		for(Component cmp : dynamics) {
 			ActionUtils.registerClientEventListner(cmp, defaults[1].getUuid());
@@ -109,6 +129,14 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 
 	public void setChildIndex(String childIndex) {
 		this.childIndex = Integer.valueOf(childIndex);
+	}
+	
+	public boolean isChild() {
+		return child;
+	}
+
+	public void setChild(String child) {
+		this.child = Boolean.valueOf(child);
 	}
 
 	/**

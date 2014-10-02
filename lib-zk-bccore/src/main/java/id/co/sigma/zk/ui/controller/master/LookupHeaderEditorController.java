@@ -11,9 +11,7 @@ import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -65,8 +63,6 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 				@JoinKey(parentKey="id", childKey="headerId"),
 				@JoinKey(parentKey="i18Key", childKey="i18Key")
 			})
-	List<LookupDetail> lookupDetails;
-	
 	private ZKClientSideListDataEditorContainer<LookupDetail> clientDataContainer ; 
 	
 	@Override
@@ -74,14 +70,11 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 			ZKEditorState editorState, Map<?,?>   rawDataParameter) {
 		super.runAditionalTaskOnDataRevieved(editedData, editorState, rawDataParameter);
 		if (ZKEditorState.EDIT.equals(editorState)  || ZKEditorState.VIEW_READONLY.equals(editorState)) {
-			System.out.println(this.zkCommonService + ", " + editedData + ", " + this.lovProviderService);
 			clientDataContainer =  this.zkCommonService.getDataDetails(LookupDetail.class, editedData.getId(), DEFAULT_SORTS, "id.lovID") ;
 		}else {
 			clientDataContainer = new ZKClientSideListDataEditorContainer<LookupDetail>(); 
 			clientDataContainer.initiateAndFillData(new ArrayList<LookupDetail>());
 		}
-		
-		lookupDetails = clientDataContainer.getAllStillExistData();
 	}
 	
 	
@@ -92,22 +85,21 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 	
 	@Listen(value="onClick = #btnAdd")
 	public void addClick() { 
+		reloadChildGridData();
 		LookupDetail d = new LookupDetail();
 		d.setI18Key(txtI18Key.getValue());
-//		clientDataContainer.getAllStillExistData().add(d);
-//		lsbLookupDetails.setModel(clientDataContainer);
-		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul", this.clientDataContainer ,  d, this);
+		clientDataContainer.appendNewItem(d);
+		lsbLookupDetails.setModel(clientDataContainer);
+//		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul", this.clientDataContainer ,  d, this);
 	}
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		try {
-			lsbLookupDetails.setModel(clientDataContainer);
-		} catch (Exception e) {
-		}
+		lsbLookupDetails.setModel(clientDataContainer);
 	}
 
+	
 
 	@Override
 	public void deleteChildrenData(List<?> childrenData) throws Exception {
@@ -117,17 +109,4 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 	}
 
 
-	@Override
-	public ZKClientSideListDataEditorContainer<?> getChildrenContainer(int index) {
-		return clientDataContainer;
-	}
-
-	@Override
-	public void deleteChildData(Object data) {
-		clientDataContainer.eraseData((LookupDetail)data);
-		lsbLookupDetails.setModel(clientDataContainer);
-	}
-	
-	
-	
 }

@@ -22,13 +22,19 @@ public final class ActionUtils {
 			if(isGrid) {
 				com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
 						+ "var lO = zk.Widget.$('$"+uuid+"');"
-						+ "lO.setValue('+');"
-						+ "lO.smartUpdate('value','+');");
+						+ "var _s=lO.getValue();"
+						+ "var _l='+';"
+						+ "if((_s=='') || (_s == '*')){_l='*';}"
+						+ "lO.setValue(_l);"
+						+ "lO.smartUpdate('value',_l);");
 			} else {
 				com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
 						+ "var lO = zk.Widget.$('$"+uuid+"');"
-						+ "lO.setLabel('+');"
-						+ "lO.smartUpdate('label','+');");
+						+ "var _s=lO.getLabel();"
+						+ "var _l='+';"
+						+ "if((_s=='') || (_s == '*')){_l='*';}"
+						+ "lO.setLabel(_l);"
+						+ "lO.smartUpdate('label',_l);");
 			}
 		}
 	}
