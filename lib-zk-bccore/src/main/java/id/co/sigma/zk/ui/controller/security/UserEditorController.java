@@ -9,6 +9,7 @@ import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
+import id.co.sigma.security.server.service.IApplicationService;
 import id.co.sigma.security.server.service.IUserService;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -41,6 +43,12 @@ import org.zkoss.zul.Textbox;
 public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(UserEditorController.class.getName());
+	
+	@Qualifier(value="securityApplicationId")
+	@Autowired
+	private String applicationId;
+	@Autowired
+	IApplicationService appService;
 	
 	@Autowired
 	IUserService userService;
@@ -135,6 +143,10 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	private final void saveData(final Event evt) {
 		parseEditedData(evt.getTarget());
 		User data = getEditedData();
+		
+		data.setDefaultApplicationId(Integer.parseInt(applicationId));
+		data.setDefaultApplication(appService.getCurrentAppDetailData());
+		
 		if(validationForm(data)){
 			
 			if(ZKEditorState.EDIT.equals(getEditorState())){
@@ -149,9 +161,9 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 				data.setSuperAdmin("N");
 			}
 			if(status.isChecked()){
-				data.setStatus("Y");
+				data.setStatus("A");
 			}else{
-				data.setStatus("N");
+				data.setStatus("D");
 			}
 			
 			Set<Listitem> li = listBoxCheckList.getSelectedItems();
@@ -380,7 +392,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 				superAdmin.setChecked(false);
 			}
 			
-			if(editedData.getStatus()!=null && editedData.getStatus().equals("Y")){
+			if(editedData.getStatus()!=null && editedData.getStatus().equals("A")){
 				status.setChecked(true);
 			}else{
 				status.setChecked(false);
