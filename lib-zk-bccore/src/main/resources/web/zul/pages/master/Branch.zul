@@ -7,15 +7,15 @@
 	apply="id.co.sigma.zk.ui.controller.master.BranchComposer">
 
 	<vbox align="center">
-        <hbox>Kode :
+        <hbox>${labels.field.code}
         <textbox id="txtCariKode" /></hbox>
-        <hbox>Nama :
+        <hbox>${labels.field.name}
         <textbox id="txtCariNama" /></hbox>
     </vbox>
     <separator/>
     <hbox align="center">
-    	<button id="btnCari" label="Cari"/>
-        <button id="btnReset" label="Reset"/>
+    	<button id="btnCari" label="${labels.action.button.search}"/>
+        <button id="btnReset" label="${labels.action.button.reset}"/>
     </hbox>
     
     <separator bar="false"/>
@@ -26,27 +26,26 @@
         pageSize="10" 
         >   
         <listhead>
-            <listheader label="No" width="50px" align="center"/>
-            <listheader label="Edit" width="100px" align="center"/>
-            <listheader label="Kode" width="250px"  align="center"/>
-            <listheader label="Nama Cabang" width="250px" align="center"/>
-             <listheader label="Alamat" width="300px"  align="center"/>
-            <listheader label="Keterangan" width="250px" align="center"/>
+            <listheader label="${labels.field.no}" width="50px" align="center"/>
+            <listheader label="${labels.field.code}" width="250px"  align="center"/>
+            <listheader label="${labels.field.name} Cabang" width="250px" align="center"/>
+             <listheader label="${labels.field.address}" width="300px"  align="center"/>
+            <listheader label="${labels.field.description}" width="250px" align="center"/>
 
         </listhead>
         <template name="model">
 	        <listitem >
-	            <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-	            <listcell>
-	            	<actionButton 
-						editorPage="~./zul/pages/master/BranchEditor.zul"
+	        	<actionListitem editorPage="~./zul/pages/master/BranchEditor.zul"
 						deleteMsg="Apakah anda yakin menghapus data key: ${each.branchCode}"
-						controller="${listBranch$composer}"/>
-	            </listcell>
-	            <listcell label="${each.branchCode}" style="text-align:left"/>
-	            <listcell label="${each.branchName}" style="text-align:left"/>
-	            <listcell label="${each.branchAddress}" style="text-align:left"/>
-	            <listcell label="${each.description}" style="text-align:left"/>
+						controller="${listBranch$composer}">
+					<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+	            	<listcell label="${each.branchCode}" style="text-align:left"/>
+	            	<listcell label="${each.branchName}" style="text-align:left"/>
+	            	<listcell label="${each.branchAddress}" style="text-align:left"/>
+	            	<listcell label="${each.description}" style="text-align:left"/>
+						
+				</actionListitem>
+	            
 	        </listitem>
         </template>
         <listfoot>  

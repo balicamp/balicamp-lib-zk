@@ -12,7 +12,7 @@
 				<rows>
 					<row>
 						<hlayout>
-							<label>Kode</label>
+							<label>${labels.field.code}</label>
 						</hlayout>
 						<hlayout>
 							<textbox id="branchCode" 
@@ -21,7 +21,7 @@
 					</row>
 					<row>
 						<hlayout>
-							<label>Nama Cabang</label>
+							<label>${labels.field.name} Cabang</label>
 						</hlayout>
 						<hlayout>
 							<textbox id="branchName" 
@@ -30,7 +30,7 @@
 					</row>
 					<row>
 						<hlayout>
-							<label>Alamat</label>
+							<label>${labels.field.address}</label>
 						</hlayout>
 						<hlayout>
 							<textbox id="branchAddress" value="${branchEditor$composer.editedData.branchAddress}"/>
@@ -38,7 +38,7 @@
 					</row>
 					<row height="20">
 						<hlayout>
-							<label>Keterangan</label>
+							<label>${labels.each.description}</label>
 						</hlayout>
 						<hlayout height="20">
 							<textbox rows="5" cols="40" id="description" value="${branchEditor$composer.editedData.description}"/>
