@@ -5,13 +5,11 @@ import java.util.ArrayList;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.AbstractListModel;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 
-import id.co.sigma.common.data.lov.CommonLOV;
+
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.lov.CommonLOVWithRenderer;
