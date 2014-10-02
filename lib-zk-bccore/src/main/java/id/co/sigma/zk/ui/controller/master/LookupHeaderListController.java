@@ -78,5 +78,11 @@ public class LookupHeaderListController extends BaseSimpleListController<LookupH
 		invokeSearch();
 	}
 
+	@Override
+	public void deleteData(LookupHeader data) {
+		deleteData(data, data.getId(), "id");
+		reload();
+	}
+
 	
 }

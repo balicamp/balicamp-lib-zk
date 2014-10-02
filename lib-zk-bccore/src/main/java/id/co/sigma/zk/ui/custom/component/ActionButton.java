@@ -5,6 +5,7 @@ import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.io.Serializable;
 import java.util.List;
@@ -44,6 +45,8 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	private boolean delete = true;
 	private boolean edit = true;
 	
+	private int childIndex = 0;
+	
 	public ActionButton() {
 		Executions.createComponents("~./zul/pages/common/ActionButton.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -69,6 +72,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 		
 		editComp.addEventListener("onClick", new EventListener<Event>() {
 
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public void onEvent(Event event) throws Exception {
 				
@@ -84,7 +88,12 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 				}
 				
 				if(data != null) {
-					EditorManager.getInstance().editData(editorPage, data, controller);
+					if(controller instanceof BaseSimpleListController) {
+						EditorManager.getInstance().editData(editorPage, data, controller);
+					} else if(controller instanceof BaseSimpleDirectToDBEditor) {
+						ZKClientSideListDataEditorContainer container = ((BaseSimpleDirectToDBEditor) controller).getChildrenContainer(childIndex);
+						EditorManager.getInstance().editData(editorPage, container, data, controller);
+					}
 				}
 			}
 			
@@ -116,7 +125,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 					
 					Messagebox.show(deleteMsg, "Delete Confirmation", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
 	
-						@SuppressWarnings("unchecked")
+						@SuppressWarnings({ "unchecked", "rawtypes" })
 						@Override
 						public void onEvent(Event event) throws Exception {
 							switch(((Integer)event.getData()).intValue()) {
@@ -124,7 +133,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 								if(controller instanceof BaseSimpleListController) {
 									((BaseSimpleListController<Serializable>)controller).deleteData((SingleKeyEntityData<?>)data);
 								} else if(controller instanceof BaseSimpleDirectToDBEditor) {
-									
+									((BaseSimpleDirectToDBEditor)controller).deleteChildData(data);
 								}
 								break;
 							case Messagebox.NO:
@@ -195,6 +204,14 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 
 	public void setEdit(String edit) {		
 		this.edit = Boolean.valueOf(edit);
+	}
+
+	public int getChildIndex() {
+		return childIndex;
+	}
+
+	public void setChildIndex(String childIndex) {
+		this.childIndex = Integer.valueOf(childIndex);
 	}
 	
 	

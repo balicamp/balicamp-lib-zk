@@ -4,18 +4,50 @@
 	  width="100%"
 	  title="User Delegation" 
 	  border="normal" 
-	  apply="id.co.sigma.itdc.web.controller.security.user_delegation.UserDelegationListController">
+	  apply="id.co.sigma.zk.ui.controller.security.UserDelegationListController">
 		
 		<groupbox id="searchBox" mold="3d" width="100%">
 			<grid >
 				<rows>
 					<row>
 						<cell width="200px">Delegasi Dari (user)</cell>
-						<cell><textbox id="txtDelegateFromUser"></textbox></cell>
+						<cell>
+							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true">
+								<bandpopup>
+									<vbox>
+										<hbox>
+											Search
+											<textbox id="bnbxDelegateFromUserSearchText" width="150px" />
+										</hbox>
+										<listbox id="bnbxDelegateFromUserList" width="200px" mold="paging" pageSize="10" 
+											model="${userDelegationWin$composer.userList}">
+											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
+										</listbox>
+									</vbox>
+								</bandpopup>
+							</bandbox>								
+							<longbox id="txtIdDelegateFromUser" visible="false" />
+						</cell>
 					</row>
 					<row>
 						<cell>Delegasi Ke (user)</cell>
-						<cell><textbox id="txtDelegateToUser"></textbox></cell>
+						<cell>
+							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true">
+								<bandpopup>
+									<vbox>
+										<hbox>
+											Search
+											<textbox id="bnbxDelegateToUserSearchText" width="150px" />
+										</hbox>
+										<listbox id="bnbxDelegateToUserList" width="200px" 
+											model="${userDelegationWin$composer.userList}" mold="paging" pageSize="10">
+											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
+										</listbox>
+									</vbox>
+								</bandpopup>
+							</bandbox>
+							<longbox id="txtIdDelegateToUser" visible="false" />
+						</cell>
 					</row>
 					<row>
 						<cell>Tanggal Mulai</cell>
@@ -35,15 +67,20 @@
 					</row>
 					<row>
 						<cell>Status</cell>
-						<cell><textbox id="txtStatus"></textbox></cell>
+						<cell>
+							<combobox id="cmbStatus"/>
+						</cell>
 					</row>
 				</rows>	
-			</grid>	
-			<button id="btnCari">Cari</button>
-			<space></space>
-			<button id="btnReset">Reset</button>
-			<space></space>
-			<button id="btnCreateNew">Buat Baru</button>
+			</grid>
+			<separator />
+			<hbox>
+				<button id="btnCari">Cari</button>
+				<space></space>
+				<button id="btnReset">Reset</button>
+				<space></space>
+				<button id="btnCreateNew">Buat Baru</button>
+			</hbox>
 		</groupbox>
 		<separator bar="false"/>
 		
@@ -53,7 +90,8 @@
 			width="100%"
 			height="300px"
 			mold="paging"
-			pageSize="10" >
+			pageSize="10" 
+			emptyMessage="NO RECORD FOUND">
 			<listhead>
 				<listheader label="No" width="50px" align="center"/>
 				<listheader label="Delegasi Dari (user)" hflex="1" align="center"/>
@@ -63,19 +101,18 @@
 				<listheader label="Status" hflex="1" align="center"/>
 				<listheader label="Action" width="150px" align="center"/>
 			</listhead>
-			<template 
-				name="model">
+			<template name="model">
 				<listitem >
 					<listcell label="${forEachStatus.index+1}" style="text-align:right;"/>
 					<listcell label="${each.sourceUser.realName}" style="text-align:left;"/>
 					<listcell label="${each.destUser.realName}" style="text-align:left;"/>
 					<listcell label="${each.startDate}" style="text-align:left;"/>
 					<listcell label="${each.endDate}" style="text-align:left;"/>
-					<listcell label="${each.dataStatus}" style="text-align:left;"/>
+					<listcell label="${each.dataStatusAlias}" style="text-align:left;"/>
 					<listcell>
-						<actionButton editorPage="/zul/security/UserDelegationEditor.zul"
-							deleteMsg="Apakah anda yakin menghapus data group: ${each.groupCode}"
-							controller="${groupMgmWin$composer}" />
+						<actionButton editorPage="~./zul/pages/master/security/UserDelegationEditor.zul"
+							deleteMsg="Apakah anda yakin menghapus data user delegation ini"
+							controller="${userDelegationWin$composer}" />
 					</listcell>
 				</listitem>
 			</template>
@@ -83,4 +120,5 @@
 		<separator bar="false"/>
 		
 	</window>
+
 </zk>

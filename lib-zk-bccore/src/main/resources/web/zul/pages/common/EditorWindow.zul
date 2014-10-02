@@ -2,9 +2,9 @@
 <zk>
 	<panel>
 		<panelchildren>
-			<groupbox>
-				<label id="caption"/>
-			</groupbox>
+			<div class="page-title">
+				<label id="caption" style="font-weight:bold;" />
+			</div>
 		</panelchildren>
 	</panel>
 	<separator/>

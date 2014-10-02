@@ -1,0 +1,151 @@
+<?page title="User Delegation Editor" contentType="text/html;charset=UTF-8"?>
+<zk xmlns:n="native">
+	<editorWindow id="userDelegationEditorWin" 
+		width="100%" 
+		captionLabel="User Delegation Editor" 
+		cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?" 
+		confirmationMsg="Apakah anda akan menyimpan data ini ?" 
+		apply="id.co.sigma.zk.ui.controller.security.UserDelegationEditorController">
+		
+		<groupbox id="searchBox" mold="3d" width="100%">
+			<grid >
+				<rows>
+					<row>
+						<cell width="200px">Delegasi Dari (user)</cell>
+						<cell>
+							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true">
+								<bandpopup>
+									<vbox>
+										<hbox>
+											Search
+											<textbox id="bnbxDelegateFromUserSearchText" width="150px" />
+										</hbox>
+										<listbox id="bnbxDelegateFromUserList" width="200px" mold="paging" pageSize="10" 
+											model="${userDelegationEditorWin$composer.userList}">
+											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
+										</listbox>
+									</vbox>
+								</bandpopup>
+							</bandbox>								
+							<longbox id="sourceUserId" visible="false" />
+						</cell>
+					</row>
+					<row>
+						<cell>Delegasi Ke (user)</cell>
+						<cell>
+							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true">
+								<bandpopup>
+									<vbox>
+										<hbox>
+											Search
+											<textbox id="bnbxDelegateToUserSearchText" width="150px" />
+										</hbox>
+										<listbox id="bnbxDelegateToUserList" width="200px" 
+											model="${userDelegationEditorWin$composer.userList}" mold="paging" pageSize="10">
+											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
+										</listbox>
+									</vbox>
+								</bandpopup>
+							</bandbox>
+							<longbox id="destUserId" visible="false" />
+						</cell>
+					</row>
+					<row>
+						<cell>Tanggal Mulai</cell>
+						<cell>
+							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" />
+						</cell>
+					</row>
+					<row>
+						<cell>Tanggal Akhir</cell>
+						<cell>
+							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" />
+						</cell>
+					</row>
+					<row>
+						<cell>Keterangan</cell>
+						<cell>
+							<textbox id="remark" width="300px" height="100px" cols="50" rows="5" value="${userDelegationEditorWin$composer.editedData.remark}" />
+						</cell>
+					</row>
+					<row>
+						<cell>Status</cell>
+						<cell><combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" /></cell>
+					</row>
+				</rows>	
+			</grid>
+			
+			<separator bar="true"/>
+		
+			<n:table style="width:100%;">
+				<n:tr>
+					<n:td width="40%" valign="top">
+						<n:h5>Role yang dimiliki</n:h5>
+						<div style="padding:3px; border:1px solid #666;">
+							<listbox id="lbAvailableRoles" rows="10" multiple="true">
+								<listitem label="Role 1" value="R1" />
+								<listitem label="Role 2" value="R2" />
+								<listitem label="Role 3" value="R3" />
+								<listitem label="Role 4" value="R4" />
+								<listitem label="Role 5" value="R5" />
+							</listbox>
+						</div>
+					</n:td>
+					<n:td width="20%">
+						<vbox width="100%" align="center">
+							<button id="btnAddAllRoles" label="All &gt;&gt;" />
+							<button id="btnAddSingleRole" label="&gt;" />
+							<button id="btnRemoveSingleRole" label="&lt;" />
+							<button id="btnRemoveAllRoles" label="&lt;&lt; All" />
+						</vbox>
+					</n:td>
+					<n:td width="40%" valign="top">
+						<n:h5>Role yang didelegasikan</n:h5>
+						<div style="padding:3px; border:1px solid #666;">
+							<listbox id="lbDelegatedRoles" rows="10" multiple="true">
+								<listitem label="Role 6" value="R6" />
+							</listbox>
+						</div>
+					</n:td>
+				</n:tr>
+			</n:table>
+			
+			<separator bar="true"/>
+		
+			<n:table style="width:100%;">
+				<n:tr>
+					<n:td width="40%" valign="top">
+						<n:h5>Group Menu yang dimiliki</n:h5>
+						<div style="padding:3px; border:1px solid #666;">
+							<listbox id="lbAvailableGroups" rows="10" multiple="true">
+								<listitem label="Group 1" value="G1" />
+								<listitem label="Group 2" value="G2" />
+								<listitem label="Group 3" value="G3" />
+								<listitem label="Group 4" value="G4" />
+								<listitem label="Group 5" value="G5" />
+							</listbox>
+						</div>
+					</n:td>
+					<n:td width="20%" >
+						<vbox width="100%" align="center">
+							<button id="btnAddAllGroups" label="All &gt;&gt;" />
+							<button id="btnAddSingleGroup" label="&gt;" />
+							<button id="btnRemoveSingleGroup" label="&lt;" />
+							<button id="btnRemoveAllGroups" label="&lt;&lt; All" />
+						</vbox>
+					</n:td>
+					<n:td width="40%" valign="top">
+						<n:h5>Group Menu yang didelegasikan</n:h5>
+						<div style="padding:3px; border:1px solid #666;">
+							<listbox id="lbDelegatedGroups" rows="10" multiple="true">
+								<listitem label="Group 6" value="G6" />
+							</listbox>
+						</div>
+					</n:td>
+				</n:tr>
+			</n:table>
+			
+		</groupbox>
+		
+	</editorWindow>
+</zk>

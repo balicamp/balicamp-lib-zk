@@ -13,17 +13,17 @@
 			</columns>
 			<rows>
 			<row>
-				Kode
+				${labels.field.code}
 				<textbox id="txtUserCode"></textbox>
 			</row>
 			<row>
-				Real Name
+				${labels.field.realname}
 				<textbox id="txtRealName"></textbox>
 			</row>
 			</rows>	
 		</grid>	
-		<button id="btnCari">Cari</button>
-		<button id="btnReset">Reset</button>
+		<button id="btnCari">${labels.action.button.search}</button>
+		<button id="btnReset">${labels.action.button.reset}</button>
 	</groupbox>
 	<separator bar="false"/>
 	
@@ -31,10 +31,10 @@
 		mold="paging"
 		pageSize="10" >
 		<actionListhead>
-			<listheader label="No" width="50px" align="center"/>
-			<listheader label="Username" width="200px" align="center"/>
-			<listheader label="Real Name" width="250px" align="center"/>
-			<listheader label="email" width="200px" align="center"/>
+			<listheader label="${labels.field.no}" width="50px" align="center"/>
+			<listheader label="${labels.field.username}" width="200px" align="center"/>
+			<listheader label="${labels.field.realname}" width="250px" align="center"/>
+			<listheader label="${labels.field.email}" width="200px" align="center"/>
 		</actionListhead>
 		<template name="model">
 			<actionListitem editorPage="~./zul/pages/master/security/UserEditor.zul"
