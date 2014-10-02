@@ -1,25 +1,28 @@
 package id.co.sigma.zk.ui.controller.security;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Bandbox;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Longbox;
-
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.security.domain.UserDelegation;
+import id.co.sigma.common.security.domain.UserGroupAssignment;
+import id.co.sigma.common.security.domain.UserRole;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Longbox;
 
 /**
  * User delegation editor controller
@@ -47,19 +50,24 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	@Wire
 	private Longbox destUserId;
 	
-	@Wire
-	private Listbox lbAvailableRoles;
+	// User roles stuff
+	@Wire private Listbox lbAvailableRoles;
+	@Wire private Listbox lbDelegatedRoles;
+	@Wire private Button btnAddAllRoles;
+	@Wire private Button btnAddSingleRole;
+	@Wire private Button btnRemoveSingleRole;
+	@Wire private Button btnRemoveAllRoles;
 	
-	@Wire
-	private Listbox lbDelegatedRoles;
-	
-	@Wire
-	private Listbox lbAvailableGroups;
-	
-	@Wire
-	private Listbox lbDelegatedGroups;
+	// User groups stuff
+	@Wire private Listbox lbAvailableGroups;
+	@Wire private Listbox lbDelegatedGroups;
+	@Wire private Button btnAddAllGroups;
+	@Wire private Button btnAddSingleGroup;
+	@Wire private Button btnRemoveSingleGroup;
+	@Wire private Button btnRemoveAllGroups;
 	
 	@Wire private Listbox bnbxDelegateFromUserList;
+	@SuppressWarnings("unchecked")
 	@Listen("onSelect=#bnbxDelegateFromUserList")
 	public void onBnbxDelegateFromUserListSelected(){
 		try {
@@ -67,6 +75,8 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			sourceUserId.setValue(user.getId());
 			bnbxDelegateFromUser.setValue(user.getRealName());
 			bnbxDelegateFromUser.close();
+			lbAvailableRoles.setModel((ListModel<UserRole>) getUserRoleListModel());
+			lbAvailableGroups.setModel((ListModel<UserGroupAssignment>) getUserGroupListModel());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -74,7 +84,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	@Wire private Listbox bnbxDelegateToUserList;
 	@Listen("onSelect=#bnbxDelegateToUserList")
-	public void onBnbxDelegateToUserListSelect(){
+	public void onBnbxDelegateToUserListSelected(){
 		try {
 			User user = bnbxDelegateToUserList.getSelectedItem().getValue();
 			destUserId.setValue(user.getId());
@@ -106,13 +116,15 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		}
 	}
 	
-	private void moveListboxItem(Listbox source, Listbox dest, boolean moveAll){
+	private void moveListboxItem(Listbox source, Listbox dest, boolean moveAll, boolean isMovingRoles, boolean ltr){
 		if(moveAll){
-			// FIXME ini masih error "java.util.ConcurrentModificationException "
-			int j = source.getItems().size();			
-			for (int i = 0; i < j; i++) {
-				source.setSelectedItem(source.getItemAtIndex(i));
-				dest.getItems().add(source.getSelectedItem());
+			int j = source.getItems().size();
+			if(j > 0){
+				List<Listitem> copy = new ArrayList<Listitem>(source.getItems());
+				for (Listitem item : copy) {
+					dest.getItems().add(item);
+				}
+				source.getItems().clear();
 			}
 		}else{
 			if(source.getSelectedItem() != null){
@@ -122,46 +134,102 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				dest.getItems().add(source.getSelectedItem());
 			}			
 		}
+		
+		updateGroupsAndRolesButtonState(source, isMovingRoles, ltr);
+	}
+	
+	private void updateGroupsAndRolesButtonState(Listbox source, boolean isRoleButtons, boolean ltr){
+		int listCount = source.getItems().size();
+		
+		if(isRoleButtons){
+			btnAddAllRoles.setDisabled(listCount == 0 && ltr);
+			btnAddSingleRole.setDisabled(listCount == 0 && ltr);
+			btnRemoveSingleRole.setDisabled(listCount == 0 && !ltr);
+			btnRemoveAllRoles.setDisabled(listCount == 0 && !ltr);
+		}else{
+			btnAddAllGroups.setDisabled(listCount == 0 && ltr);
+			btnAddSingleGroup.setDisabled(listCount == 0 && ltr);
+			btnRemoveSingleGroup.setDisabled(listCount == 0 && !ltr);
+			btnRemoveAllGroups.setDisabled(listCount == 0 && !ltr);
+		}
 	}
 	
 	@Listen("onClick=#btnAddAllRoles")
 	public void btnAddAllRoles_click(){
-		moveListboxItem(lbAvailableRoles, lbDelegatedRoles, true);
+		moveListboxItem(lbAvailableRoles, lbDelegatedRoles, true, true, true);
 	}
 	
 	@Listen("onClick=#btnAddSingleRole")
 	public void btnAddSingleRole_click(){
-		moveListboxItem(lbAvailableRoles, lbDelegatedRoles, false);
+		moveListboxItem(lbAvailableRoles, lbDelegatedRoles, false, true, true);
 	}
 	
 	@Listen("onClick=#btnRemoveSingleRole")
 	public void btnRemoveSingleRole_click(){
-		moveListboxItem(lbDelegatedRoles, lbAvailableRoles, false);
+		moveListboxItem(lbDelegatedRoles, lbAvailableRoles, false, true, false);
 	}
 	
 	@Listen("onClick=#btnRemoveAllRoles")
 	public void btnRemoveAllRoles_click(){
-		moveListboxItem(lbDelegatedRoles, lbAvailableRoles, true);
+		moveListboxItem(lbDelegatedRoles, lbAvailableRoles, true, true, false);
 	}
 	
 	@Listen("onClick=#btnAddAllGroups")
 	public void btnAddAllGroups_click(){
-		moveListboxItem(lbAvailableGroups, lbDelegatedGroups, true);
+		moveListboxItem(lbAvailableGroups, lbDelegatedGroups, true, false, true);
 	}
 	
 	@Listen("onClick=#btnAddSingleGroup")
 	public void btnAddSingleGroup_click(){
-		moveListboxItem(lbAvailableGroups, lbDelegatedGroups, false);
+		moveListboxItem(lbAvailableGroups, lbDelegatedGroups, false, false, true);
 	}
 	
 	@Listen("onClick=#btnRemoveSingleGroup")
 	public void btnRemoveSingleGroup_click(){
-		moveListboxItem(lbDelegatedGroups, lbAvailableGroups, false);
+		moveListboxItem(lbDelegatedGroups, lbAvailableGroups, false, false, false);
 	}
 	
 	@Listen("onClick=#btnRemoveAllGroups")
 	public void btnRemoveAllGroups_click(){
-		moveListboxItem(lbDelegatedGroups, lbAvailableGroups, true);
+		moveListboxItem(lbDelegatedGroups, lbAvailableGroups, true, false, false);
+	}
+	
+	private List<UserRole> getUserRoles(){
+		Long userId = sourceUserId.getValue();
+		
+		SimpleQueryFilter[] filters = {
+			new SimpleQueryFilter("userId", SimpleQueryFilterOperator.equal, userId)	
+		};
+		
+		try {
+			return generalPurposeDao.list(UserRole.class, filters, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private List<UserGroupAssignment> getUserGroups(){
+		Long userId = sourceUserId.getValue();
+		
+		SimpleQueryFilter[] filters = {
+			new SimpleQueryFilter("userId", SimpleQueryFilterOperator.equal, userId)	
+		};
+		
+		try {
+			return generalPurposeDao.list(UserGroupAssignment.class, filters, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<UserRole> getUserRoleListModel(){
+		return new ListModelList<>(getUserRoles());
+	}
+	
+	public List<UserGroupAssignment> getUserGroupListModel(){
+		return new ListModelList<>(getUserGroups());
 	}
 	
 }

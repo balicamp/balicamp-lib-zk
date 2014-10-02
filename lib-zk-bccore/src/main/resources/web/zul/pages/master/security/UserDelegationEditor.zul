@@ -81,13 +81,12 @@
 				<n:tr>
 					<n:td width="40%" valign="top">
 						<n:h5>Role yang dimiliki</n:h5>
-						<div style="padding:3px; border:1px solid #666;">
-							<listbox id="lbAvailableRoles" rows="10" multiple="true">
-								<listitem label="Role 1" value="R1" />
-								<listitem label="Role 2" value="R2" />
-								<listitem label="Role 3" value="R3" />
-								<listitem label="Role 4" value="R4" />
-								<listitem label="Role 5" value="R5" />
+						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
+							<listbox id="lbAvailableRoles" rows="10" multiple="true" 
+							emptyMessage="User tidak memiliki role">
+								<template name="model">
+									<listitem value="${each}" label="${each.role.roleDesc}"/>
+								</template>
 							</listbox>
 						</div>
 					</n:td>
@@ -101,10 +100,9 @@
 					</n:td>
 					<n:td width="40%" valign="top">
 						<n:h5>Role yang didelegasikan</n:h5>
-						<div style="padding:3px; border:1px solid #666;">
-							<listbox id="lbDelegatedRoles" rows="10" multiple="true">
-								<listitem label="Role 6" value="R6" />
-							</listbox>
+						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
+							<listbox id="lbDelegatedRoles" rows="10" multiple="true" 
+							emptyMessage="Pilih dari daftar role di sebelah kiri" />
 						</div>
 					</n:td>
 				</n:tr>
@@ -116,13 +114,12 @@
 				<n:tr>
 					<n:td width="40%" valign="top">
 						<n:h5>Group Menu yang dimiliki</n:h5>
-						<div style="padding:3px; border:1px solid #666;">
-							<listbox id="lbAvailableGroups" rows="10" multiple="true">
-								<listitem label="Group 1" value="G1" />
-								<listitem label="Group 2" value="G2" />
-								<listitem label="Group 3" value="G3" />
-								<listitem label="Group 4" value="G4" />
-								<listitem label="Group 5" value="G5" />
+						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
+							<listbox id="lbAvailableGroups" rows="10" multiple="true" 
+							emptyMessage="User tidak memiliki group">
+								<template name="model">
+									<listitem value="${each}" label="${each.userGroup.groupName}" />
+								</template>
 							</listbox>
 						</div>
 					</n:td>
@@ -136,10 +133,9 @@
 					</n:td>
 					<n:td width="40%" valign="top">
 						<n:h5>Group Menu yang didelegasikan</n:h5>
-						<div style="padding:3px; border:1px solid #666;">
-							<listbox id="lbDelegatedGroups" rows="10" multiple="true">
-								<listitem label="Group 6" value="G6" />
-							</listbox>
+						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
+							<listbox id="lbDelegatedGroups" rows="10" multiple="true" 
+							emptyMessage="Pilih dari daftar group di sebelah kiri" />
 						</div>
 					</n:td>
 				</n:tr>
