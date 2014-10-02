@@ -5,6 +5,7 @@ import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.io.Serializable;
 
@@ -170,6 +171,13 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 			});				
 		} else EditorManager.getInstance().closeCurrentEditorPanel();
 	}
-	
+
+	/**
+	 * delete data dari child/detail container
+	 * @param data
+	 */
+	public void deleteChildData(Object data) {
+		throw new RuntimeException("Method not supported");
+	}
 }
 

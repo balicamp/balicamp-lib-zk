@@ -42,7 +42,7 @@
 		</actionListhead>
 		<template 
 			name="model">
-			<actionListitem value="${each}" editable="false"
+			<actionListitem value="${each}" editable="true" editorPage="~./zul/pages/master/LookupDetailEditor.zul"
 				deleteMsg="Apakah anda yakin menghapus data key: ${each.detailCode}"
 				controller="${lookupHeader$composer}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>

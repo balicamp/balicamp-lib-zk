@@ -28,6 +28,8 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 	
 	private boolean editable = true;
 	
+	private int childIndex = 0;
+	
 	public ActionListitem() {
 		Executions.createComponents("~./zul/pages/common/ActionListitem.zul", this, null);
 		
@@ -101,6 +103,15 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 
 	public void setEditable(String editable) {
 		this.editable = Boolean.valueOf(editable);
+	}
+
+	
+	public int getChildIndex() {
+		return childIndex;
+	}
+
+	public void setChildIndex(String childIndex) {
+		this.childIndex = Integer.valueOf(childIndex);
 	}
 
 	/**

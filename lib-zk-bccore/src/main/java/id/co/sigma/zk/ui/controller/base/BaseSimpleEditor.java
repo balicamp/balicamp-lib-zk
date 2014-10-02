@@ -10,6 +10,7 @@ import id.co.sigma.zk.ui.annotations.JoinKey;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -77,10 +78,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * state editor
 	 */
 	private ZKEditorState editorState ; 
-
-	
-	
-	
 	
 	/**
 	 * reference ke pemanggil dari component
@@ -93,14 +90,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 */
 	protected abstract void updateData (POJO data ) throws Exception ; 
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * insert data ke dalam database. 
 	 * override ini kalau anda memerlukan code tersendiri untuk ini
@@ -109,6 +98,39 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	
 	public void deleteData(POJO data) throws Exception {
 		throw new Exception("Method not supported.");
+	}
+	
+	/**
+	 * delete child/detail data
+	 * @throws Exception
+	 */
+	public void deleteChildrenData(List<?> childrenData) throws Exception {
+		throw new Exception("Method not supported");
+	}
+
+	/**
+	 * insert child/detail data
+	 * @throws Exception
+	 */
+	public void insertChildrenData(List<?> childrenData) throws Exception {
+		throw new Exception("Method not supported");
+	}
+
+	/**
+	 * update child/detail data
+	 * @throws Exception
+	 */
+	public void updateChildrenData(List<?> childrenData) throws Exception {
+		throw new Exception("Method not supported");
+	}
+	
+	/**
+	 * get child/detail container
+	 * @param index
+	 * @return
+	 */
+	public ZKClientSideListDataEditorContainer<?> getChildrenContainer(int index) {
+		throw new RuntimeException("Method not supported");
 	}
 	
 	/**
@@ -146,21 +168,22 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		//insert child data (master-detail)
 		Object[] parentKeyVals = new Object[]{};
 		String[] foreingKeys = new String[]{};
-		List<List<Serializable>> children = parseChildGridData(foreingKeys, parentKeyVals);
+		List<ZKClientSideListDataEditorContainer<?>> children = parseChildGridData(foreingKeys, parentKeyVals);
 		if((children != null) && (children.size() > 0)) {
 			
-			for(List<Serializable> child : children) {
+			for(ZKClientSideListDataEditorContainer<?> child : children) {
 				
-				if((child != null) && (child.size() > 0)) {
-					Serializable first = child.get(0);
+				if(child != null) {
 					
-					//hapus semua data detail sebelum diinsert ulang berdasarkan parent id
-					deleteChildrenData(first.getClass(), parentKeyVals, foreingKeys);
-					
-					for(Serializable data: child) {
+					for(Object data: child.getNewlyAppendedData()) {
 						insertData((POJO)data);
 					}
-					
+
+					for(Object data: child.getEditedData()) {
+						updateData((POJO)data);
+					}
+
+					deleteChildrenData(child.getErasedData());
 				}
 				
 			}
@@ -183,15 +206,15 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		String[] foreingKeys = new String[]{};
 
 		//insert child data (master-detail)
-		List<List<Serializable>> children = parseChildGridData(foreingKeys, parentKeyVals);
+		List<ZKClientSideListDataEditorContainer<?>> children = parseChildGridData(foreingKeys, parentKeyVals);
 		
 		if((children != null) && (children.size() > 0)) {
 			
-			for(List<Serializable> child : children) {
+			for(ZKClientSideListDataEditorContainer<?> child : children) {
 				
-				if((child != null) && (child.size() > 0)) {
+				if(child != null) {
 					
-					for(Serializable data: child) {
+					for(Object data: child.getNewlyAppendedData()) {
 						
 						insertData((POJO)data);
 						
@@ -274,10 +297,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private List<List<Serializable>> parseChildGridData(String[] foreingKeys, Object[] parentKeyVals) {
+	private List<ZKClientSideListDataEditorContainer<?>> parseChildGridData(String[] foreingKeys, Object[] parentKeyVals) {
 		Field[] fields = getClass().getDeclaredFields();
-		List<List<Serializable>> lists = new ArrayList<List<Serializable>>();
+		List<ZKClientSideListDataEditorContainer<?>> lists = new ArrayList<ZKClientSideListDataEditorContainer<?>>();
 		ExtendedBeanUtils beanUtils = ExtendedBeanUtils.getInstance();
+		int childIndex = 0;
 		for(Field f: fields) {
 			if(f.isAnnotationPresent(ChildGridData.class)) {
 				ChildGridData ann = f.getAnnotation(ChildGridData.class);
@@ -307,7 +331,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					
 					List<Serializable> children = (List<Serializable>)f.get(this);
 					
-					lists.add(children);
+					lists.add(getChildrenContainer(childIndex));
 					
 					Component grid = getChildGrid(gridId, fields);
 					if(grid instanceof Grid) {
@@ -318,6 +342,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					
 				} catch (Exception e) {
 				}
+				
+				childIndex++;
 				
 			}
 		}
@@ -356,12 +382,14 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			int r = 0;
 			for(Row row : rows) {
 				
-				if(r > children.size()) {
-					Serializable data = (Serializable)org.springframework.beans.BeanUtils.instantiate(eClass);
-					children.add(data);
-				}
+//				if(r > children.size()) {
+//					Serializable data = (Serializable)org.springframework.beans.BeanUtils.instantiate(eClass);
+//					children.add(data);
+//				}
 				
-				Serializable data = children.get(r);
+//				Serializable data = children.get(r);
+				
+				Serializable data = row.getValue();
 				List<Component> cells = row.getChildren();
 				
 				int c = 0;							
@@ -405,12 +433,14 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				int r = 0;
 				for(Listitem item: items) {
 					
-					if(r >= children.size()) {
-						Serializable data = (Serializable)org.springframework.beans.BeanUtils.instantiate(eClass);
-						children.add(data);
-					}
+//					if(r >= children.size()) {
+//						Serializable data = (Serializable)org.springframework.beans.BeanUtils.instantiate(eClass);
+//						children.add(data);
+//					}
 					
-					Serializable data = children.get(r);
+//					Serializable data = children.get(r);
+					
+					Serializable data = item.getValue();
 					
 					int c = 0;
 					

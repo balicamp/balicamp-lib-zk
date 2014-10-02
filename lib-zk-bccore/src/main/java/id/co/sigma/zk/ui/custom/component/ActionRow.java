@@ -29,6 +29,8 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 	
 	private boolean editable = true;
 	
+	private int childIndex = 0;
+	
 	public ActionRow() {
 		Executions.createComponents("~./zul/pages/common/ActionRow.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -89,16 +91,24 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 		return deletable;
 	}
 
-	public void setDeletable(boolean deletable) {
-		this.deletable = deletable;
+	public void setDeletable(String deletable) {
+		this.deletable = Boolean.valueOf(deletable);
 	}
 
 	public boolean isEditable() {
 		return editable;
 	}
 
-	public void setEditable(boolean editable) {
-		this.editable = editable;
+	public void setEditable(String editable) {
+		this.editable = Boolean.valueOf(editable);
+	}
+
+	public int getChildIndex() {
+		return childIndex;
+	}
+
+	public void setChildIndex(String childIndex) {
+		this.childIndex = Integer.valueOf(childIndex);
 	}
 
 	/**

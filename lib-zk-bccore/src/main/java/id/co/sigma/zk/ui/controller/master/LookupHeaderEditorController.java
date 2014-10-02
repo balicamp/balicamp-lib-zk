@@ -11,7 +11,9 @@ import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -92,42 +94,40 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 	public void addClick() { 
 		LookupDetail d = new LookupDetail();
 		d.setI18Key(txtI18Key.getValue());
-		clientDataContainer.getAllStillExistData().add(d);
-		lsbLookupDetails.setModel(clientDataContainer);
-//		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul",this.clientDataContainer ,  d, this);
+//		clientDataContainer.getAllStillExistData().add(d);
+//		lsbLookupDetails.setModel(clientDataContainer);
+		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul", this.clientDataContainer ,  d, this);
 	}
 	
-/*	@Listen(value="onClick = #btnSave")
-	public void saveClick() { 
-		if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
-			try {
-				insertData();
-			} catch (Exception e) {
-				Messagebox.show("Gagal menyimpan lookup header. error :  " + e.getMessage() ); 
-				return ; 
-			}
-			EditorManager.getInstance().closeCurrentEditorPanel();
-		}else if ( ZKEditorState.EDIT.equals(getEditorState())) {
-			try {
-				updateData();
-			} catch (Exception e) {
-				Messagebox.show("Gagal update lookup header. error :  " + e.getMessage() ); 
-				return ; 
-			}
-		}
-		
-	};
-*/	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
-		// TODO Auto-generated method stub
 		super.doAfterCompose(comp);
 		try {
 			lsbLookupDetails.setModel(clientDataContainer);
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 	}
+
+
+	@Override
+	public void deleteChildrenData(List<?> childrenData) throws Exception {
+		for(Object del : childrenData) {
+			generalPurposeService.delete(del.getClass(), ((LookupDetail)del).getId(), "id");
+		}
+	}
+
+
+	@Override
+	public ZKClientSideListDataEditorContainer<?> getChildrenContainer(int index) {
+		return clientDataContainer;
+	}
+
+	@Override
+	public void deleteChildData(Object data) {
+		clientDataContainer.eraseData((LookupDetail)data);
+		lsbLookupDetails.setModel(clientDataContainer);
+	}
+	
 	
 	
 }
