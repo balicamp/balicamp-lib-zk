@@ -31,5 +31,5 @@ public @interface ChildGridData {
 	 * join key master-detail
 	 * @return
 	 */
-	public JoinKey[] joinKeys(); 
+	public JoinKey[] joinKeys();	
 }

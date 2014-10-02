@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
@@ -33,6 +35,7 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listhead;
@@ -60,6 +63,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	private static final long serialVersionUID = -3872226585911174479L;
 	
 	
+	private static final Logger logger = LoggerFactory.getLogger(BaseSimpleEditor.class);
 	
 	/**
 	 * object yang di edit
@@ -125,15 +129,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	}
 	
 	/**
-	 * get child/detail container
-	 * @param index
-	 * @return
-	 */
-	public ZKClientSideListDataEditorContainer<?> getChildrenContainer(int index) {
-		throw new RuntimeException("Method not supported");
-	}
-	
-	/**
 	 * delete child data, jika enity ini adalah merupakan master-detail
 	 * @param clazz
 	 * @param parentId
@@ -166,15 +161,15 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		updateData(getEditedData());
 		
 		//insert child data (master-detail)
-		Object[] parentKeyVals = new Object[]{};
-		String[] foreingKeys = new String[]{};
-		List<ZKClientSideListDataEditorContainer<?>> children = parseChildGridData(foreingKeys, parentKeyVals);
+		List<ZKClientSideListDataEditorContainer<Object>> children = parseChildGridData();
 		if((children != null) && (children.size() > 0)) {
 			
 			for(ZKClientSideListDataEditorContainer<?> child : children) {
 				
 				if(child != null) {
 					
+					deleteChildrenData(child.getErasedData());
+
 					for(Object data: child.getNewlyAppendedData()) {
 						insertData((POJO)data);
 					}
@@ -183,7 +178,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 						updateData((POJO)data);
 					}
 
-					deleteChildrenData(child.getErasedData());
 				}
 				
 			}
@@ -202,11 +196,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	public void insertData ()  throws Exception {
 		insertData(getEditedData());
 		
-		Object[] parentKeyVals = new Object[]{};
-		String[] foreingKeys = new String[]{};
-
 		//insert child data (master-detail)
-		List<ZKClientSideListDataEditorContainer<?>> children = parseChildGridData(foreingKeys, parentKeyVals);
+		List<ZKClientSideListDataEditorContainer<Object>> children = parseChildGridData();
 		
 		if((children != null) && (children.size() > 0)) {
 			
@@ -261,7 +252,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		this.additionalData = additionalData;
 	}
 
-
 	/**
 	 * parse data dari client	 
 	 * @param comp
@@ -293,61 +283,86 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	}
 	
 	/**
+	 * re-load child/detail data 
+	 */
+	protected void reloadChildGridData() {
+		parseChildGridData();
+	}
+	
+	/**
 	 * parse child grid data
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private List<ZKClientSideListDataEditorContainer<?>> parseChildGridData(String[] foreingKeys, Object[] parentKeyVals) {
+	private List<ZKClientSideListDataEditorContainer<Object>> parseChildGridData() {
 		Field[] fields = getClass().getDeclaredFields();
-		List<ZKClientSideListDataEditorContainer<?>> lists = new ArrayList<ZKClientSideListDataEditorContainer<?>>();
-		ExtendedBeanUtils beanUtils = ExtendedBeanUtils.getInstance();
-		int childIndex = 0;
+		List<ZKClientSideListDataEditorContainer<Object>> lists = new ArrayList<ZKClientSideListDataEditorContainer<Object>>();
 		for(Field f: fields) {
 			if(f.isAnnotationPresent(ChildGridData.class)) {
-				ChildGridData ann = f.getAnnotation(ChildGridData.class);
-				
-				Class<?> eClass = ann.entity();
-				String gridId = ann.gridId();
-				JoinKey[] joinKeys = ann.joinKeys();
-				
-				
-				HeaderBinder[] hann = ann.headerBinder();
-				Map<String, String> hMap = new HashMap<String, String>();
-				for(HeaderBinder h : hann) {
-					hMap.put(h.headerId(), h.targetField());
-				}
-				
-				parentKeyVals = new Object[joinKeys.length];
-				foreingKeys = new String[joinKeys.length];
-				
-				if(!f.isAccessible()) f.setAccessible(true);
-				
+
 				try {
-					
-					for(int i = 0; i < joinKeys.length; i++) {
-						parentKeyVals[i] = beanUtils.getProperty(editedData, joinKeys[i].parentKey());
-						foreingKeys[i] = joinKeys[i].childKey();
+
+					if(!f.isAccessible()) {
+						f.setAccessible(true);
 					}
 					
-					List<Serializable> children = (List<Serializable>)f.get(this);
+					ZKClientSideListDataEditorContainer<Object> container = (ZKClientSideListDataEditorContainer<Object>)f.get(this);
 					
-					lists.add(getChildrenContainer(childIndex));
+					parseChildGrid(fields, f, container);
 					
-					Component grid = getChildGrid(gridId, fields);
-					if(grid instanceof Grid) {
-						parseChildGridData((Grid)grid, children, eClass, hMap, parentKeyVals, joinKeys);
-					} else if(grid instanceof Listbox) {
-						parseListboxGridData((Listbox)grid, children, eClass, hMap, parentKeyVals, joinKeys);
-					}
+					lists.add(container);
 					
 				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 				}
-				
-				childIndex++;
 				
 			}
 		}
 		return lists;
+	}
+	
+	/**
+	 * parse child/detail data
+	 * @param fields
+	 * @param f
+	 */
+	private void parseChildGrid(Field[] fields, Field f, ZKClientSideListDataEditorContainer<Object> container) {
+
+		ExtendedBeanUtils beanUtils = ExtendedBeanUtils.getInstance();
+		
+		ChildGridData ann = f.getAnnotation(ChildGridData.class);
+		
+		Class<?> eClass = ann.entity();
+		String gridId = ann.gridId();
+		JoinKey[] joinKeys = ann.joinKeys();
+		
+		
+		HeaderBinder[] hann = ann.headerBinder();
+		Map<String, String> hMap = new HashMap<String, String>();
+		for(HeaderBinder h : hann) {
+			hMap.put(h.headerId(), h.targetField());
+		}
+		
+		Object[] parentKeyVals = new Object[joinKeys.length];
+		String[] foreingKeys = new String[joinKeys.length];
+		
+		try {
+			
+			for(int i = 0; i < joinKeys.length; i++) {
+				parentKeyVals[i] = beanUtils.getProperty(editedData, joinKeys[i].parentKey());
+				foreingKeys[i] = joinKeys[i].childKey();
+			}
+			
+			Component grid = getChildGrid(gridId, fields);
+			if(grid instanceof Grid) {
+				parseChildGridData((Grid)grid, eClass, hMap, parentKeyVals, joinKeys, container);
+			} else if(grid instanceof Listbox) {
+				parseListboxGridData((Listbox)grid, eClass, hMap, parentKeyVals, joinKeys, container);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -371,23 +386,17 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		return null;
 	}
 	
-	private void parseChildGridData(Grid grid, List<Serializable> children, Class<?> eClass, 
-			Map<String, String> hdrBinder, Object[] parentKey, JoinKey[] joinKeys) throws Exception {
+	private void parseChildGridData(Grid grid, Class<?> eClass, 
+			Map<String, String> hdrBinder, Object[] parentKey, JoinKey[] joinKeys, 
+			ZKClientSideListDataEditorContainer<Object> container) throws Exception {
 		
 		if(grid != null) {
 			
-			List<Row> rows = grid.getRows().getChildren();
+			List<Row> orgRows = grid.getRows().getChildren();
+			List<Row> rows = new ArrayList<Row>(orgRows);
 			List<Column> cols = grid.getColumns().getChildren();
 			
-			int r = 0;
 			for(Row row : rows) {
-				
-//				if(r > children.size()) {
-//					Serializable data = (Serializable)org.springframework.beans.BeanUtils.instantiate(eClass);
-//					children.add(data);
-//				}
-				
-//				Serializable data = children.get(r);
 				
 				Serializable data = row.getValue();
 				List<Component> cells = row.getChildren();
@@ -408,19 +417,28 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					c++;
 				}
 				
+				
+				Component label = row.getLastChild();
+				if(label instanceof Label) {
+					String sLbl = ((Label)label).getValue();
+					if("*".equals(sLbl)) {
+						container.modifyItem(data);
+					}
+				}
+				
 				for(int i = 0; i < parentKey.length; i++) {
 					ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
 				}
 				
-				r++;
 			}
 			
 		}
 		
 	}
 
-	private void parseListboxGridData(Listbox listbox, List<Serializable> children, Class<?> eClass, 
-			Map<String, String> hdrBinder, Object[] parentKey, JoinKey[] joinKeys) throws Exception {
+	private void parseListboxGridData(Listbox listbox, Class<?> eClass, 
+			Map<String, String> hdrBinder, Object[] parentKey, JoinKey[] joinKeys,
+			ZKClientSideListDataEditorContainer<Object> container) throws Exception {
 		if(listbox != null) {
 			Collection<Component> headers = listbox.getHeads();
 			if(headers.size() > 0) {
@@ -428,17 +446,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				Listhead hds = (Listhead)heads[0];
 				
 				List<Listheader> hrds = hds.getChildren();
-				List<Listitem> items = listbox.getItems();
+				List<Listitem> items = new ArrayList<Listitem>(listbox.getItems());
 				
-				int r = 0;
 				for(Listitem item: items) {
-					
-//					if(r >= children.size()) {
-//						Serializable data = (Serializable)org.springframework.beans.BeanUtils.instantiate(eClass);
-//						children.add(data);
-//					}
-					
-//					Serializable data = children.get(r);
 					
 					Serializable data = item.getValue();
 					
@@ -467,11 +477,18 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 						c++;
 					}
 					
+					Component cell = item.getLastChild();
+					if(cell instanceof Listcell) {
+						String sLabel = ((Listcell)cell).getLabel();
+						if("*".equals(sLabel)) {
+							container.modifyItem(data);
+						}
+						
+					}
+					
 					for(int i = 0; i < parentKey.length; i++) {
 						ExtendedBeanUtils.getInstance().setProperty(data, parentKey[i], joinKeys[i].childKey());
 					}
-					
-					r++;
 				}
 			}
 		}

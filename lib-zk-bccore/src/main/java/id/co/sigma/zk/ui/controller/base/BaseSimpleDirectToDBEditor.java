@@ -176,8 +176,8 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	 * delete data dari child/detail container
 	 * @param data
 	 */
-	public void deleteChildData(Object data) {
-		throw new RuntimeException("Method not supported");
+	public void deleteChildData(Object data, ZKClientSideListDataEditorContainer<Object> container) {
+		container.eraseData(data);
 	}
 }
 

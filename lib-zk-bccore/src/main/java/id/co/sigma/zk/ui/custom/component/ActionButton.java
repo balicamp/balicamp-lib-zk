@@ -18,6 +18,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -79,19 +80,27 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 				Component comp = event.getTarget().getParent().getParent().getParent();
 				
 				SingleKeyEntityData<Serializable> data = null;
+				ZKClientSideListDataEditorContainer container = null;
 				
 				if(comp instanceof Listitem) {
 					Listitem item = (Listitem)comp;
 					data =  item.getValue();
+					ListModel<Object> model = item.getListbox().getModel();
+					if(model instanceof ZKClientSideListDataEditorContainer) {
+						container = (ZKClientSideListDataEditorContainer)model;
+					}
 				} else if(comp instanceof Row) {
 					data = ((Row)comp).getValue();
+					ListModel<Object> model = ((Row)comp).getGrid().getModel();
+					if(model instanceof ZKClientSideListDataEditorContainer) {
+						container = (ZKClientSideListDataEditorContainer)model;
+					}
 				}
 				
 				if(data != null) {
 					if(controller instanceof BaseSimpleListController) {
 						EditorManager.getInstance().editData(editorPage, data, controller);
 					} else if(controller instanceof BaseSimpleDirectToDBEditor) {
-						ZKClientSideListDataEditorContainer container = ((BaseSimpleDirectToDBEditor) controller).getChildrenContainer(childIndex);
 						EditorManager.getInstance().editData(editorPage, container, data, controller);
 					}
 				}
@@ -101,31 +110,43 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 		
 		delComp.addEventListener("onClick", new EventListener<Event>() {
 
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onEvent(Event event) throws Exception {
 				
 				Component comp = event.getTarget().getParent().getParent().getParent();
 				
 				Object o = null;
-
+				ZKClientSideListDataEditorContainer<Object> container = null;
+				
 				if(comp instanceof Listitem) {	//listbox			
 					Listitem item = (Listitem)comp;					
-					o = item.getValue();				
+					o = item.getValue();			
+
+					ListModel<Object> model = item.getListbox().getModel();
+					if(model instanceof ZKClientSideListDataEditorContainer) {
+						container = (ZKClientSideListDataEditorContainer<Object>)model;
+					}
+					
 				} else if(comp instanceof Row) { //grid
 					Row row = (Row)comp;
 					o = row.getValue();
+					ListModel<Object> model = ((Row)comp).getGrid().getModel();
+					if(model instanceof ZKClientSideListDataEditorContainer) {
+						container = (ZKClientSideListDataEditorContainer<Object>)model;
+					}					
 				}
 				
 				if(o != null) {
 					final Object data =  o;
-					
+					final ZKClientSideListDataEditorContainer<Object> cntr = container;
 					if(deleteMsg == null || deleteMsg.trim().length() == 0) {
 						deleteMsg = "Apakah anda yakin akan menghapus data ?";
 					}
 					
 					Messagebox.show(deleteMsg, "Delete Confirmation", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
 	
-						@SuppressWarnings({ "unchecked", "rawtypes" })
+						@SuppressWarnings({ "unchecked"})
 						@Override
 						public void onEvent(Event event) throws Exception {
 							switch(((Integer)event.getData()).intValue()) {
@@ -133,7 +154,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 								if(controller instanceof BaseSimpleListController) {
 									((BaseSimpleListController<Serializable>)controller).deleteData((SingleKeyEntityData<?>)data);
 								} else if(controller instanceof BaseSimpleDirectToDBEditor) {
-									((BaseSimpleDirectToDBEditor)controller).deleteChildData(data);
+									((BaseSimpleDirectToDBEditor)controller).deleteChildData(data, cntr);
 								}
 								break;
 							case Messagebox.NO:

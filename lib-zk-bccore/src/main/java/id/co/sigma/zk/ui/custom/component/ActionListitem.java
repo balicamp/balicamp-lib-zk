@@ -1,6 +1,7 @@
 package id.co.sigma.zk.ui.custom.component;
 
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 
 public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
@@ -30,6 +33,8 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 	
 	private int childIndex = 0;
 	
+	private boolean child = false;
+	
 	public ActionListitem() {
 		Executions.createComponents("~./zul/pages/common/ActionListitem.zul", this, null);
 		
@@ -40,6 +45,7 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 
 	@Override
 	public void afterCompose() {
+		
 		List<Component> children = getChildren();
 		Component[] dynamics = new Component[children.size()-2];
 		Component[] defaults = new Component[2];
@@ -50,6 +56,22 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 		children.clear();
 		
 		defaults[1].setId(defaults[1].getUuid());
+		
+		if(isChild()) {
+			ListModel<Object> model = getListbox().getModel();
+			int existing = 1; //0: new, 1: existing, 2: edited
+			if(model instanceof ZKClientSideListDataEditorContainer) {
+				ZKClientSideListDataEditorContainer<Object> cModel = (ZKClientSideListDataEditorContainer<Object>)model;
+				Object data = getValue();
+				existing = cModel.isNewObject(data) ? 0 : 1;
+				if(existing == 1 && cModel.getEditedData() != null) {
+					existing = cModel.getEditedData().contains(data) ? 2 : existing;
+				}
+			}
+			
+			((Listcell)defaults[1]).setLabel(existing == 1 ? "": (existing == 2 ? "*" : "+"));
+			
+		}
 		
 		for(Component cmp : dynamics) {
 			ActionUtils.registerClientEventListner(cmp.getChildren(), defaults[1].getUuid());
@@ -114,6 +136,14 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 		this.childIndex = Integer.valueOf(childIndex);
 	}
 
+	public boolean isChild() {
+		return child;
+	}
+
+	public void setChild(String child) {
+		this.child = Boolean.valueOf(child);
+	}
+
 	/**
 	 * init action button
 	 * @param actBtn
@@ -126,5 +156,6 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 		actBtn.setEditorPage(editorPage);
 		actBtn.getChildren().get(ActionButton.EDIT_BUTTON).setVisible(editable);
 		actBtn.getChildren().get(ActionButton.DELETE_BUTTON).setVisible(deletable);
+		actBtn.setChildIndex(String.valueOf(childIndex));
 	}
 }

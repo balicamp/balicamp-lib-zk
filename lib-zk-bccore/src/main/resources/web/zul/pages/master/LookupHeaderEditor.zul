@@ -44,10 +44,10 @@
 			name="model">
 			<actionListitem value="${each}" editable="true" editorPage="~./zul/pages/master/LookupDetailEditor.zul"
 				deleteMsg="Apakah anda yakin menghapus data key: ${each.detailCode}"
-				controller="${lookupHeader$composer}">
+				controller="${lookupHeader$composer}" child="true">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
 				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.i18Key}" readonly="true"/></listcell>
-				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.detailCode}"/></listcell>
+				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.detailCode}" readonly="${not empty each.detailCode}"/></listcell>
 				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.label}"/></listcell>
 				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField1}"/></listcell>
 				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField2}"/></listcell>
