@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.security;
 
+import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
@@ -14,9 +15,12 @@ import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
@@ -28,6 +32,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Longbox;
+import org.zkoss.zul.Textbox;
 
 /**
  * User delegation editor controller
@@ -41,7 +46,12 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	@Wire
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
-	private Combobox dataStatus;
+	private Combobox cmbDataStatus;
+	
+	@Wire
+	private Textbox dataStatus;
+	
+	private final String defaultDataStatus = "A";
 	
 	@Wire
 	private Bandbox bnbxDelegateFromUser;
@@ -203,7 +213,11 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	private List<UserRole> getUserRoles(){
-		Long userId = sourceUserId.getValue();
+		Long userId = isEditing()? getEditedData().getSourceUserId() : sourceUserId.getValue();
+		
+		if(userId==null){
+			return null;
+		}
 		
 		SimpleQueryFilter[] filters = {
 			new SimpleQueryFilter("userId", SimpleQueryFilterOperator.equal, userId)	
@@ -217,8 +231,21 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		}
 	}
 	
+	private List<UserDelegationRole> getDelegatedRoles(){
+		try {
+			return userDelegationService.getRoles(getEditedData().getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	private List<UserGroupAssignment> getUserGroups(){
-		Long userId = sourceUserId.getValue();
+		Long userId = isEditing()? getEditedData().getSourceUserId() : sourceUserId.getValue();
+		
+		if(userId==null){
+			return null;
+		}
 		
 		SimpleQueryFilter[] filters = {
 			new SimpleQueryFilter("userId", SimpleQueryFilterOperator.equal, userId)	
@@ -232,12 +259,69 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		}
 	}
 	
+	private List<UserDelegationGroup> getDelegatedGroups(){
+		try {
+			return userDelegationService.getGroups(getEditedData().getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public List<UserRole> getUserRoleListModel(){
 		return new ListModelList<>(getUserRoles());
 	}
 	
+	public List<UserRole> getDelegatedUserRoleListModel(){
+		List<UserDelegationRole> currentRoles = getDelegatedRoles();
+		Map<Long, UserDelegationRole> currentRolesMap = new HashMap<>();
+		if(currentRoles!=null && !currentRoles.isEmpty()){
+			for(UserDelegationRole delegRole : currentRoles){
+				currentRolesMap.put(delegRole.getRoleId(), delegRole);
+			}
+		}else{
+			return new ListModelList<>();
+		}
+		
+		List<UserRole> retval = new ArrayList<>();
+		List<UserRole> userRoles = getUserRoles();
+		if(userRoles!=null){
+			for (UserRole userRole : userRoles) {
+				if(currentRolesMap.containsKey(userRole.getRoleId())){
+					retval.add(userRole);
+				}
+			}
+		}
+		
+		return new ListModelList<>(retval);
+	}
+	
 	public List<UserGroupAssignment> getUserGroupListModel(){
 		return new ListModelList<>(getUserGroups());
+	}
+	
+	public List<UserGroupAssignment> getDelegatedUserGroupListModel(){
+		List<UserDelegationGroup> currentGroups = getDelegatedGroups();
+		Map<Long, UserDelegationGroup> currentGroupsMap = new HashMap<>();
+		if(currentGroups!=null && !currentGroups.isEmpty()){
+			for(UserDelegationGroup group : getDelegatedGroups()){
+				currentGroupsMap.put(group.getGroupId(), group);
+			}
+		}else{
+			return new ListModelList<>();
+		}
+		
+		List<UserGroupAssignment> retval = new ArrayList<>();
+		List<UserGroupAssignment> userGroups = getUserGroups();
+		if(userGroups!=null){
+			for(UserGroupAssignment grpAss : userGroups){
+				if(currentGroupsMap.containsKey(grpAss.getGroupId())){
+					retval.add(grpAss);
+				}
+			}
+		}
+		
+		return new ListModelList<>(retval);
 	}
 
 	@Override
@@ -286,11 +370,63 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		return retval;
 	}
 	
-	@Listen("onSelect=#dataStatus")
-	public void onDataStatusSelected(){
-		Comboitem item = dataStatus.getSelectedItem();
-		System.out.println("Comboitem.value=" + item.getValue());
-		System.out.println("Comboitem.label=" + item.getLabel());
+	@Listen("onSelect=#cmbDataStatus")
+	public void onCmbDataStatusSelected(){
+		Comboitem ci = cmbDataStatus.getSelectedItem();
+		if(ci!=null){
+			CommonLOV lov = ci.getValue();
+			dataStatus.setValue(lov.getAdditionalData1());
+			System.out.println("Status = " + dataStatus.getValue());
+		}else{
+			dataStatus.setValue(defaultDataStatus);
+			System.out.println("Status = " + dataStatus.getValue());
+		}
+	}
+	
+	private void setComboValueByRealData(Combobox cmb, String data){
+		ListModelList<Object> model = (ListModelList<Object>) cmb.getModel();
+		if(model.getSize() > 0){
+			for(Object o : model){
+				CommonLOV lov = (CommonLOV) o;
+				if(lov.getAdditionalData1().equalsIgnoreCase(data)){
+					cmb.setValue(lov.getLabel());
+					break;
+				}
+			}
+		}
+	}
+	
+	private boolean isEditing(){
+		return (getEditedData().getId()!=null);
+	}
+	
+	private void updateEditorFields(){
+		if(isEditing()){
+			// Set value combo data status sesuai dgn data dari db
+			if(!getEditedData().getDataStatus().isEmpty()){
+				setComboValueByRealData(cmbDataStatus, getEditedData().getDataStatus());
+			}
+			
+			// Show delegated roles
+			if(getDelegatedRoles()!=null){
+				lbDelegatedRoles.setModel((ListModel<?>) getDelegatedUserRoleListModel());
+			}else{
+				lbDelegatedRoles.setModel(new ListModelList<>());
+			}
+			
+			// Show delegated groups
+			if(getDelegatedGroups()!=null){
+				lbDelegatedGroups.setModel((ListModel<?>) getDelegatedUserGroupListModel());
+			}else{
+				lbDelegatedGroups.setModel(new ListModelList<>());
+			}
+		}
+	}
+	
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
+		updateEditorFields();
 	}
 	
 }
