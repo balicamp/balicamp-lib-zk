@@ -111,8 +111,9 @@
 					<listcell label="${each.dataStatusAlias}" style="text-align:left;"/>
 					<listcell>
 						<actionButton editorPage="~./zul/pages/master/security/UserDelegationEditor.zul"
-							deleteMsg="Apakah anda yakin menghapus data user delegation ini"
-							controller="${userDelegationWin$composer}" />
+							deleteMsg="${labels.msg.questions.confirm_delete}"
+							controller="${userDelegationWin$composer}"
+							delete="false" />
 					</listcell>
 				</listitem>
 			</template>

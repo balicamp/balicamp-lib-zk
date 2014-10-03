@@ -3,8 +3,8 @@
 	<editorWindow id="userDelegationEditorWin" 
 		width="100%" 
 		captionLabel="User Delegation Editor" 
-		cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?" 
-		confirmationMsg="Apakah anda akan menyimpan data ini ?" 
+		cancellationMsg="${labels.msg.questions.cancel_process}" 
+		confirmationMsg="${labels.msg.questions.confirm_save}" 
 		apply="id.co.sigma.zk.ui.controller.security.UserDelegationEditorController">
 		
 		<groupbox id="searchBox" mold="3d" width="100%">
