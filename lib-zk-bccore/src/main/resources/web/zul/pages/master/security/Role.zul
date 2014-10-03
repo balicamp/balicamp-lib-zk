@@ -9,17 +9,17 @@
 			</columns>
 			<rows>
 			<row>
-				${field.rolecode}
+				${labels.field.rolecode}
 				<textbox id="codeSearch"></textbox>
 			</row>
 			<row>
-				${field.roledesc}
+				${labels.field.roledesc}
 				<textbox id="descSearch"></textbox>
 			</row>
 			</rows>	
 		</grid>	
-		<button id="searchButton" label="${action.button.search}"/>
-		<button id="resetButton" label="${action.button.reset}"/>
+		<button id="searchButton" label="${labels.action.button.search}"/>
+		<button id="resetButton" label="${labels.action.button.reset}"/>
 	</groupbox>
 	<separator bar="false"/>
     
@@ -32,10 +32,10 @@
         pageSize="10" 
         >   
         <actionListhead>
-            <listheader label="${field.no}" width="50px" align="center"/>
-            <listheader label="${field.rolecode}" width="100px" align="center"/>
-            <listheader label="${field.roledesc}" width="250px"  align="center"/>
-            <listheader label="${field.rolepredefined}" width="250px"  align="center"/>
+            <listheader label="${labels.field.no}" width="50px" align="center"/>
+            <listheader label="${labels.field.rolecode}" width="100px" align="center"/>
+            <listheader label="${labels.field.roledesc}" width="250px"  align="center"/>
+            <listheader label="${labels.field.rolepredefined}" width="250px"  align="center"/>
         </actionListhead>
         <template name="model">
         <actionListitem editorPage="~./zul/pages/master/security/RoleFormEditor.zul"
@@ -49,7 +49,7 @@
         </template>
    		<listfoot>  
             <listfooter span="6" align="left">
-            	<button id="addButton" label="${action.button.add}"/>
+            	<button id="addButton" label="${labels.action.button.add}"/>
             </listfooter>
          </listfoot>
     </listbox>
