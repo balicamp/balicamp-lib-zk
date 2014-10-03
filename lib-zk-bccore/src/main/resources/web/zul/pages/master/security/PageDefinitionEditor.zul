@@ -42,7 +42,6 @@
 				Remark
 				<textbox id="remark"
 					value="${pageDefEditor$composer.editedData.remark}"></textbox>
-				<timebox></timebox>	
 			</row>
 		</rows>
 	</grid>

@@ -33,11 +33,11 @@
 	<listbox id="lsbLookupDetails" height="300px" width="100%" >
 		<actionListhead>
 			<listheader label="${labels.field.no}" width="2%" align="center"/>
-			<listheader id="i18Key" label="${labels.field.locale}" width="10%" align="center"/>
-			<listheader id="detailCode" label="${labels.field.code}" width="10%" align="center"/>
+			<listheader id="i18Key" label="${labels.field.locale}" width="12%" align="center"/>
+			<listheader id="detailCode" label="${labels.field.code}" width="20%" align="center"/>
 			<listheader id="label" label="${labels.field.label}" width="20%" align="center"/>
-			<listheader id="extField1" label="Ext Field 1" width="10%" align="center"/>
-			<listheader id="extField2" label="Ext Field 2" width="10%" align="center"/>
+			<listheader id="extField1" label="Ext Field 1" width="15%" align="center"/>
+			<listheader id="extField2" label="Ext Field 2" width="15%" align="center"/>
 			<listheader id="sequence" label="Sequence" width="10%" align="center"/>
 		</actionListhead>
 		<template 

@@ -54,6 +54,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 @SuppressWarnings("rawtypes")
 public class SecurityUtil {
@@ -62,6 +63,7 @@ public class SecurityUtil {
 	 */
 	public static UserData getUser() {
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println("Details: " + auth.getDetails());
         if (auth != null) {
         	try{
         		Object p = auth.getPrincipal();
@@ -73,6 +75,22 @@ public class SecurityUtil {
         }
         return null;
 	}
+	
+	public static WebAuthenticationDetails getAuthDetails() {
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null) {
+        	try{
+        		Object p = auth.getDetails();
+        		if(p instanceof WebAuthenticationDetails) 
+        			return (WebAuthenticationDetails) p;	
+        	}catch(RuntimeException e){
+        		e.printStackTrace();
+        		throw e;
+        	}
+		}
+		return null;
+	}
+	
 	/**
 	 * Return true if the authenticated principal is granted NONE of the roles 
 	 * specified in authorities.

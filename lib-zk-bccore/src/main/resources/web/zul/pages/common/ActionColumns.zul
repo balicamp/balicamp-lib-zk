@@ -1,4 +1,4 @@
 <zk>
-	<column label="Action" width="5%" align="center"/>
+	<column label="${labels.field.action}" width="5%" align="center"/>
 	<column label="*" width="1%" align="center"/>
 </zk>
