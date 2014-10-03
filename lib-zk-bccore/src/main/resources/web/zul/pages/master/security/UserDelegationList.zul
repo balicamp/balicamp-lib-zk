@@ -10,13 +10,13 @@
 			<grid >
 				<rows>
 					<row>
-						<cell width="200px">Delegasi Dari (user)</cell>
+						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
 							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true">
 								<bandpopup>
 									<vbox>
 										<hbox>
-											Search
+											${labels.action.button.search}
 											<textbox id="bnbxDelegateFromUserSearchText" width="150px" />
 										</hbox>
 										<listbox id="bnbxDelegateFromUserList" width="200px" mold="paging" pageSize="10" 
@@ -30,13 +30,13 @@
 						</cell>
 					</row>
 					<row>
-						<cell>Delegasi Ke (user)</cell>
+						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
 							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true">
 								<bandpopup>
 									<vbox>
 										<hbox>
-											Search
+											${labels.action.button.search}
 											<textbox id="bnbxDelegateToUserSearchText" width="150px" />
 										</hbox>
 										<listbox id="bnbxDelegateToUserList" width="200px" 
@@ -50,7 +50,7 @@
 						</cell>
 					</row>
 					<row>
-						<cell>Tanggal Mulai</cell>
+						<cell>${labels.field.date_start}</cell>
 						<cell>
 							<datebox id="txtStartDateBegin" format="dd-MMM-yyyy" />
 							<space/>s/d<space/>
@@ -58,7 +58,7 @@
 						</cell>
 					</row>
 					<row>
-						<cell>Tanggal Akhir</cell>
+						<cell>${labels.field.date_end}</cell>
 						<cell>
 							<datebox id="txtEndDateBegin" format="dd-MMM-yyyy" />
 							<space/>s/d<space/>
@@ -66,7 +66,7 @@
 						</cell>
 					</row>
 					<row>
-						<cell>Status</cell>
+						<cell>${labels.action.button.search}</cell>
 						<cell>
 							<combobox id="cmbStatus"/>
 						</cell>
@@ -75,11 +75,11 @@
 			</grid>
 			<separator />
 			<hbox>
-				<button id="btnCari">Cari</button>
+				<button id="btnCari">${labels.action.button.search}</button>
 				<space></space>
-				<button id="btnReset">Reset</button>
+				<button id="btnReset">${labels.action.button.reset}</button>
 				<space></space>
-				<button id="btnCreateNew">Buat Baru</button>
+				<button id="btnCreateNew">${labels.action.button.add}</button>
 			</hbox>
 		</groupbox>
 		<separator bar="false"/>
@@ -94,11 +94,11 @@
 			emptyMessage="NO RECORD FOUND">
 			<listhead>
 				<listheader label="No" width="50px" align="center"/>
-				<listheader label="Delegasi Dari (user)" hflex="1" align="center"/>
-				<listheader label="Delegasi Ke (user)" hflex="1" align="center"/>
-				<listheader label="Tanggal Mulai" hflex="1" align="center"/>
-				<listheader label="Tanggal Akhir" hflex="1" align="center"/>
-				<listheader label="Status" hflex="1" align="center"/>
+				<listheader label="${labels.field.delegate_from_user}" hflex="1" align="center"/>
+				<listheader label="${labels.field.delegate_to_user}" hflex="1" align="center"/>
+				<listheader label="${labels.field.date_start}" hflex="1" align="center"/>
+				<listheader label="${labels.field.date_end}" hflex="1" align="center"/>
+				<listheader label="${labels.field.status}" hflex="1" align="center"/>
 				<listheader label="Action" width="150px" align="center"/>
 			</listhead>
 			<template name="model">
