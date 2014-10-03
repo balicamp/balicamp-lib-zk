@@ -9,17 +9,17 @@
 			</columns>
 			<rows>
 			<row>
-				Role Code
+				${field.rolecode}
 				<textbox id="codeSearch"></textbox>
 			</row>
 			<row>
-				Role Description
+				${field.roledesc}
 				<textbox id="descSearch"></textbox>
 			</row>
 			</rows>	
 		</grid>	
-		<button id="searchButton">Search</button>
-		<button id="resetButton">Reset</button>
+		<button id="searchButton" label="${action.button.search}"/>
+		<button id="resetButton" label="${action.button.reset}"/>
 	</groupbox>
 	<separator bar="false"/>
     
@@ -33,10 +33,10 @@
         pageSize="10" 
         >   
         <listhead>
-            <listheader label="No" width="50px" align="center"/>
-            <listheader label="Role Code" width="100px" align="center"/>
-            <listheader label="Role Description" width="250px"  align="center"/>
-             <listheader label="Predifined Role" width="250px"  align="center"/>
+            <listheader label="${field.no}" width="50px" align="center"/>
+            <listheader label="${field.rolecode}" width="100px" align="center"/>
+            <listheader label="${field.roledesc}" width="250px"  align="center"/>
+             <listheader label="${field.rolepredefined}" width="250px"  align="center"/>
              <listheader label="Action" width="100px" align="center"/>
         </listhead>
         <template name="model">
@@ -53,7 +53,7 @@
         </listitem>
         </template>
          		<listfoot>  
-                    <listfooter span="6" align="left"><button id="addButton">Add</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
+                    <listfooter span="6" align="left"><button id="addButton" label="${action.button.add}"><button id="btnEdit" label="${action.button.edit}" visible="false"><button id="btnHapus" label="${action.button.delete}" visible="false"></listfooter>
                     
                 </listfoot>
     </listbox>
