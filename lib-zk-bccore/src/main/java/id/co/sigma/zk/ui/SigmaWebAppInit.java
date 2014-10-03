@@ -12,6 +12,7 @@ public class SigmaWebAppInit implements WebAppInit {
 	public void init(WebApp wapp) throws Exception {
 		Labels.register(new CustomLabelLocator("/metainfo/labels/common-label.properties"));
 		Labels.register(new CustomLabelLocator("/metainfo/labels/common-messages.properties"));
+		Labels.register(new CustomLabelLocator("/metainfo/labels/menu-label.properties"));
 	}
 
 }
