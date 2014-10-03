@@ -535,11 +535,17 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			} else if(input instanceof Combobox)  {
 				
 				int idx = ((Combobox)input).getSelectedIndex();
-				Object cdata = ((Combobox)input).getModel().getElementAt(idx);
+				Object cdata = null;
+				if(idx >= 0) {
+					cdata = ((Combobox)input).getModel().getElementAt(idx);
+				}
 				if(cdata instanceof CommonLOV) {
 					val = ((CommonLOV)cdata).getDataValue();
 				} else {
-					val = ((Combobox)input).getValue();
+					Comboitem citem = ((Combobox)input).getSelectedItem();
+					if(citem != null) {
+						val = citem.getValue();
+					}
 				}
 				
 			}else if(input instanceof Textbox) {
