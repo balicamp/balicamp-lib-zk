@@ -32,6 +32,8 @@ public class SignonHistoryLogoutHandler implements LogoutHandler {
 	public void logout(HttpServletRequest request,
 			HttpServletResponse response, Authentication authentication) {
 		
+		if(SecurityUtil.getUser() == null) return;
+		
 		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
 		User user = SecurityUtil.getUser().getApplicationUser();
 		
