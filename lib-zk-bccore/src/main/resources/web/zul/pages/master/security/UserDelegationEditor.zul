@@ -11,13 +11,13 @@
 			<grid >
 				<rows>
 					<row>
-						<cell width="200px">Delegasi Dari (user)</cell>
+						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
 							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true">
 								<bandpopup>
 									<vbox>
 										<hbox>
-											Search
+											${labels.action.button.search}
 											<textbox id="bnbxDelegateFromUserSearchText" width="150px" />
 										</hbox>
 										<listbox id="bnbxDelegateFromUserList" width="200px" mold="paging" pageSize="10" 
@@ -31,13 +31,13 @@
 						</cell>
 					</row>
 					<row>
-						<cell>Delegasi Ke (user)</cell>
+						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
 							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true">
 								<bandpopup>
 									<vbox>
 										<hbox>
-											Search
+											${labels.action.button.search}
 											<textbox id="bnbxDelegateToUserSearchText" width="150px" />
 										</hbox>
 										<listbox id="bnbxDelegateToUserList" width="200px" 
@@ -51,25 +51,25 @@
 						</cell>
 					</row>
 					<row>
-						<cell>Tanggal Mulai</cell>
+						<cell>${labels.field.date_start}</cell>
 						<cell>
 							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" />
 						</cell>
 					</row>
 					<row>
-						<cell>Tanggal Akhir</cell>
+						<cell>${labels.field.date_end}</cell>
 						<cell>
 							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" />
 						</cell>
 					</row>
 					<row>
-						<cell>Keterangan</cell>
+						<cell>${labels.field.description}</cell>
 						<cell>
 							<textbox id="remark" width="300px" height="100px" cols="50" rows="5" value="${userDelegationEditorWin$composer.editedData.remark}" />
 						</cell>
 					</row>
 					<row>
-						<cell>Status</cell>
+						<cell>${labels.field.status}</cell>
 						<cell><combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" /></cell>
 					</row>
 				</rows>	
@@ -80,7 +80,7 @@
 			<n:table style="width:100%;">
 				<n:tr>
 					<n:td width="40%" valign="top">
-						<n:h5>Role yang dimiliki</n:h5>
+						<n:h5>${labels.field.owned_roles}</n:h5>
 						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
 							<listbox id="lbAvailableRoles" rows="10" multiple="true" 
 							emptyMessage="User tidak memiliki role">
@@ -99,7 +99,7 @@
 						</vbox>
 					</n:td>
 					<n:td width="40%" valign="top">
-						<n:h5>Role yang didelegasikan</n:h5>
+						<n:h5>${labels.field.delegated_roles}</n:h5>
 						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
 							<listbox id="lbDelegatedRoles" rows="10" multiple="true" 
 							emptyMessage="Pilih dari daftar role di sebelah kiri" />
@@ -113,7 +113,7 @@
 			<n:table style="width:100%;">
 				<n:tr>
 					<n:td width="40%" valign="top">
-						<n:h5>Group Menu yang dimiliki</n:h5>
+						<n:h5>${labels.field.owned_groups}</n:h5>
 						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
 							<listbox id="lbAvailableGroups" rows="10" multiple="true" 
 							emptyMessage="User tidak memiliki group">
@@ -132,7 +132,7 @@
 						</vbox>
 					</n:td>
 					<n:td width="40%" valign="top">
-						<n:h5>Group Menu yang didelegasikan</n:h5>
+						<n:h5>${labels.field.delegated_groups}</n:h5>
 						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
 							<listbox id="lbDelegatedGroups" rows="10" multiple="true" 
 							emptyMessage="Pilih dari daftar group di sebelah kiri" />

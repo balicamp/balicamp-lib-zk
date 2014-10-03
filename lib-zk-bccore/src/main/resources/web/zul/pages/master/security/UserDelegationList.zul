@@ -93,7 +93,7 @@
 			pageSize="10" 
 			emptyMessage="NO RECORD FOUND">
 			<listhead>
-				<listheader label="No" width="50px" align="center"/>
+				<listheader label="${labels.field.no}" width="50px" align="center"/>
 				<listheader label="${labels.field.delegate_from_user}" hflex="1" align="center"/>
 				<listheader label="${labels.field.delegate_to_user}" hflex="1" align="center"/>
 				<listheader label="${labels.field.date_start}" hflex="1" align="center"/>
