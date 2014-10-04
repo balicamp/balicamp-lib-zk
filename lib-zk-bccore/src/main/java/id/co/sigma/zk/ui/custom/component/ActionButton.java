@@ -77,7 +77,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				
-				Component comp = event.getTarget().getParent().getParent().getParent();
+				Component comp = getParent(event.getTarget());
 				
 				SingleKeyEntityData<Serializable> data = null;
 				ZKClientSideListDataEditorContainer container = null;
@@ -114,7 +114,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 			@Override
 			public void onEvent(Event event) throws Exception {
 				
-				Component comp = event.getTarget().getParent().getParent().getParent();
+				Component comp = getParent(event.getTarget());
 				
 				Object o = null;
 				ZKClientSideListDataEditorContainer<Object> container = null;
@@ -235,5 +235,11 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 		this.childIndex = Integer.valueOf(childIndex);
 	}
 	
-	
+	private Component getParent(Component comp) {
+		Component prnt = comp;
+		while(!((prnt instanceof Listitem) || (prnt instanceof Row))) {
+			prnt = prnt.getParent();
+		}
+		return prnt;
+	}
 }

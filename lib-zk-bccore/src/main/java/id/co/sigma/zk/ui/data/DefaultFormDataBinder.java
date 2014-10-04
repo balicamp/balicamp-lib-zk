@@ -6,7 +6,6 @@ import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Doublebox;
@@ -31,11 +30,16 @@ public class DefaultFormDataBinder<DATA> implements IFormDataBinder<AbstractComp
 			Combobox txt = (Combobox) controlSource;
 			
 			int idx = txt.getSelectedIndex();
-			Object cdata = txt.getModel().getElementAt(idx);
+			Object cdata = null;
+			if(idx >= 0) {
+				cdata = txt.getModel().getElementAt(idx);
+			}
 			if(cdata instanceof CommonLOV) {
 				val = ((CommonLOV)cdata).getDataValue();
 			} else {
-				val = txt.getValue();
+				if(txt.getSelectedItem() != null) {
+					val = txt.getSelectedItem().getValue();
+				}
 			}
 		}
 		else if ( controlSource instanceof Intbox) {
