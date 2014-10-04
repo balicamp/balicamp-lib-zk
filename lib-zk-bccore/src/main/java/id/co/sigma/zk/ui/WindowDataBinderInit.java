@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.web.servlet.dsp.action.Page;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Initiator;
@@ -16,6 +15,7 @@ import org.zkoss.zul.Window;
  * 
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
+@SuppressWarnings("deprecation")
 public class WindowDataBinderInit implements Initiator, InitiatorExt {
 
 	

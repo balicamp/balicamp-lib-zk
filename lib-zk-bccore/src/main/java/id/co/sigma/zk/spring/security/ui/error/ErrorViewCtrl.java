@@ -16,6 +16,12 @@ import org.zkoss.zul.Label;
  *
  */
 public class ErrorViewCtrl extends SelectorComposer<Component> {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	@Wire
 	private Html traceHtml;
 	@Wire
