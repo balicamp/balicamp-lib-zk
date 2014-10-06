@@ -17,8 +17,8 @@
 		<panelchildren>
 			<groupbox>
 				<hlayout>
-					<button id="btnSave" label="Simpan"/>
-					<button id="btnCancel" label="Cancel"/>
+					<button id="btnSave" label="${labels.action.button.save}"/>
+					<button id="btnCancel" label="${labels.action.button.cancel}"/>
 				</hlayout>
 			</groupbox>
 		</panelchildren>

@@ -1,0 +1,25 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<hlayout height="300px" style="padding:2px">
+		<listbox id="candidate" hflex="1" vflex="true" multiple="true" rows="8">
+			<template name="model">
+				<listitem value="${each}"/>
+			</template>
+		</listbox>
+		<vbox spacing="10px" width="50px" align="center">
+<!-- 			<image style="cursor:pointer"/>
+			<image style="cursor:pointer"/>
+			<image style="cursor:pointer"/>
+			<image style="cursor:pointer"/> -->
+			<button id="moveRightAll" label="&gt;&gt;"/>
+			<button id="moveRight" label="&gt;"/>
+			<button id="moveLeft" label="&lt;"/>
+			<button id="moveLeftAll" label="&lt;&lt;"/>
+		</vbox>
+		<listbox id="choosendata" hflex="1" vflex="true" multiple="true" emptyMessage="belum ada data yang diselect" rows="8">
+			<template name="model">
+				<listitem value="${each}"/>
+			</template>
+		</listbox>
+	</hlayout>
+</zk>
