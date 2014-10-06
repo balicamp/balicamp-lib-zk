@@ -272,6 +272,32 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		return new ListModelList<>(getUserRoles());
 	}
 	
+	public List<UserRole> getRemainingUserRoleListModel(){
+		// delegated roles
+		List<UserDelegationRole> delegatedRoles = getDelegatedRoles();
+		Map<Long, UserDelegationRole> delegatedRolesMap = new HashMap<>();
+		if(delegatedRoles!=null && !delegatedRoles.isEmpty()){
+			for(UserDelegationRole delegatedRole : delegatedRoles){
+				delegatedRolesMap.put(delegatedRole.getRoleId(), delegatedRole);
+			}
+		}
+		
+		// all user roles
+		List<UserRole> retval = new ArrayList<>();
+		List<UserRole> allRoles = getUserRoles();
+		if(allRoles!=null && !allRoles.isEmpty()){
+			for(UserRole urole : allRoles){
+				if(!delegatedRolesMap.containsKey(urole.getRoleId())){
+					retval.add(urole);
+				}
+			}
+		}else{
+			return new ListModelList<>();
+		}
+		
+		return new ListModelList<>(retval);
+	}
+	
 	public List<UserRole> getDelegatedUserRoleListModel(){
 		List<UserDelegationRole> currentRoles = getDelegatedRoles();
 		Map<Long, UserDelegationRole> currentRolesMap = new HashMap<>();
@@ -298,6 +324,32 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	public List<UserGroupAssignment> getUserGroupListModel(){
 		return new ListModelList<>(getUserGroups());
+	}
+	
+	public List<UserGroupAssignment> getRemainingUserGroupListModel(){
+		// delegated groups
+		List<UserDelegationGroup> delegatedGroups = getDelegatedGroups();
+		Map<Long, UserDelegationGroup> delegatedGroupsMap = new HashMap<>();
+		if(delegatedGroups!=null && !delegatedGroups.isEmpty()){
+			for(UserDelegationGroup group : getDelegatedGroups()){
+				delegatedGroupsMap.put(group.getGroupId(), group);
+			}
+		}
+		
+		// all user groups
+		List<UserGroupAssignment> retval = new ArrayList<>();
+		List<UserGroupAssignment> userGroups = getUserGroups();
+		if(userGroups!=null){
+			for(UserGroupAssignment grpAss : userGroups){
+				if(!delegatedGroupsMap.containsKey(grpAss.getGroupId())){
+					retval.add(grpAss);
+				}
+			}
+		}else{
+			return new ListModelList<>();
+		}
+		
+		return new ListModelList<>(retval);
 	}
 	
 	public List<UserGroupAssignment> getDelegatedUserGroupListModel(){
@@ -407,12 +459,18 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				setComboValueByRealData(cmbDataStatus, getEditedData().getDataStatus());
 			}
 			
+			// Show available roles (remaining only)
+			lbAvailableRoles.setModel((ListModel<?>) getRemainingUserRoleListModel());
+			
 			// Show delegated roles
 			if(getDelegatedRoles()!=null){
 				lbDelegatedRoles.setModel((ListModel<?>) getDelegatedUserRoleListModel());
 			}else{
 				lbDelegatedRoles.setModel(new ListModelList<>());
 			}
+			
+			// TODO Show available groups (remaining only)
+			lbAvailableGroups.setModel((ListModel<?>) getRemainingUserGroupListModel());
 			
 			// Show delegated groups
 			if(getDelegatedGroups()!=null){

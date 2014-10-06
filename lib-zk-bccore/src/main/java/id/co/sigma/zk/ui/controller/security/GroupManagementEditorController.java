@@ -212,10 +212,12 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	public void saveMenuAssignment(Long groupId){
 		try {
 			// delete all menu assignments data by groupId
-			List<ApplicationMenuAssignment> currAssigns = getMenuAssignments(groupId);
-			if(!currAssigns.isEmpty()){
-				for (ApplicationMenuAssignment scn : currAssigns) {
-					generalPurposeService.delete(scn);
+			if(groupId!=null){
+				List<ApplicationMenuAssignment> currAssigns = getMenuAssignments(groupId);
+				if(currAssigns!=null && !currAssigns.isEmpty()){
+					for (ApplicationMenuAssignment scn : currAssigns) {
+						generalPurposeService.delete(scn);
+					}
 				}
 			}
 			
