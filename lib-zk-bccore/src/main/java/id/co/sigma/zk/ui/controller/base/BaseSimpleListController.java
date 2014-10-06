@@ -136,6 +136,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 						}
 					}
 					generalPurposeService.delete(data.getClass(), pk, pkFieldName);
+					
+					Messagebox.show("Hapus data berhasil", "Hapus Data", Messagebox.OK, Messagebox.INFORMATION);
+					
 				} catch (Exception e) {
 					saveCommit = false ;
 					logger.error(e.getMessage(), e);
