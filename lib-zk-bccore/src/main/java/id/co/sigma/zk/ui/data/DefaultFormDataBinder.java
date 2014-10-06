@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.data;
 
+import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
 
 import org.zkoss.zhtml.Textarea;
@@ -25,9 +26,21 @@ public class DefaultFormDataBinder<DATA> implements IFormDataBinder<AbstractComp
 	public void bindDataFromControl(AbstractComponent controlSource, DATA target,
 			String targetFieldName) throws Exception{
 		Object val = null ; 
-		if ( controlSource instanceof Textbox) {
-			Textbox txt = (Textbox) controlSource; 
-			val = txt.getValue(); 
+		if ( controlSource instanceof Combobox) {
+			Combobox txt = (Combobox) controlSource;
+			
+			int idx = txt.getSelectedIndex();
+			Object cdata = null;
+			if(idx >= 0) {
+				cdata = txt.getModel().getElementAt(idx);
+			}
+			if(cdata instanceof CommonLOV) {
+				val = ((CommonLOV)cdata).getDataValue();
+			} else {
+				if(txt.getSelectedItem() != null) {
+					val = txt.getSelectedItem().getValue();
+				}
+			}
 		}
 		else if ( controlSource instanceof Intbox) {
 			Intbox txt = (Intbox) controlSource;
@@ -49,9 +62,9 @@ public class DefaultFormDataBinder<DATA> implements IFormDataBinder<AbstractComp
 			Spinner txt = (Spinner) controlSource;
 			val = txt.getValue();
 		}
-		else if ( controlSource instanceof Combobox) {
-			Combobox txt = (Combobox) controlSource;
-			val = txt.getValue();
+		else if ( controlSource instanceof Textbox) {
+			Textbox txt = (Textbox) controlSource; 
+			val = txt.getValue(); 
 		}
 		else if ( controlSource instanceof Doublebox ) {
 			Doublebox txt = (Doublebox) controlSource;

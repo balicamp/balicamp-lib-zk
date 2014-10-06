@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +55,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	
 	
 	
+	@SuppressWarnings("unused")
 	private DATA selectedItem ; 
 	
 	
@@ -80,6 +80,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		invokeSearch(filters, sorts);
 	}
 	
+	@SuppressWarnings({ "unchecked", "serial" })
 	public void invokeSearch (final SimpleQueryFilter[] filters ,final   SimpleSortArgument[] sorts) {
 		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
 		dataModel  = new SimpleQueryDrivenListModel<DATA>() {
@@ -135,6 +136,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 						}
 					}
 					generalPurposeService.delete(data.getClass(), pk, pkFieldName);
+					
+					Messagebox.show("Hapus data berhasil", "Hapus Data", Messagebox.OK, Messagebox.INFORMATION);
+					
 				} catch (Exception e) {
 					saveCommit = false ;
 					logger.error(e.getMessage(), e);

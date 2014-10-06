@@ -126,6 +126,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	/**
 	 * mengisi semua control dengan annotation {@link LookupEnabledControl}
 	 */
+	@SuppressWarnings("unchecked")
 	protected void fillLOVControls () {
 		Field[] flds =  this.getClass().getDeclaredFields();
 		 
@@ -194,23 +195,38 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		Object swp =  field.get(this);
 		if ( swp instanceof Combobox) {
 			Combobox cmb = (Combobox)swp ; 
-			ListModelList<CommonLOVWithRenderer> models = new ListModelList<CommonLOVWithRenderer>(); 
+			ListModelList<CommonLOVWithRenderer> models = new ListModelList<CommonLOVWithRenderer>();
+			int selectedIdx = -1;
 			if ( header.getDetails()!= null ) {
 				ArrayList<CommonLOVWithRenderer> contents = new ArrayList<CommonLOVWithRenderer>() ;
-				
+				int i = 0;
+				String val = getSelectedLOV(cmb);
 				for ( CommonLOV scn : header.getDetails() ) {
 					CommonLOVWithRenderer w = new CommonLOVWithRenderer(scn, dataRenderer) ; 
 					contents.add(w) ; 
-					
+					if(val != null) {
+						if(scn.getDataValue().equals(val)) {
+							selectedIdx = i;
+						}
+					}
+					i++;
 				}
 				models.addAll(contents); 
 			}
 			cmb.setModel(models);
-			
+			if(selectedIdx >= 0) {
+				cmb.setSelectedIndex(selectedIdx);
+			}
 		}
 	}
 	
-	
+	/**
+	 * get selected combobox value
+	 * @return
+	 */
+	protected String getSelectedLOV(Combobox cmb) {
+		return null;
+	}
 	
 	
 	/**

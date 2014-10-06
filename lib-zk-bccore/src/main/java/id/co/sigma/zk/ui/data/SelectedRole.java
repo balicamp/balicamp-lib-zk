@@ -9,6 +9,11 @@ import javax.persistence.Transient;
  * @author <a href="mailto:gusti.darmawan@sigma.co.id">Eka Darmawan</a>
  */
 public class SelectedRole extends Role{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(SelectedRole.class.getName());
 	

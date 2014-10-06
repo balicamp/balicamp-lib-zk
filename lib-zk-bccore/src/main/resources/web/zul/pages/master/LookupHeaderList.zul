@@ -44,7 +44,7 @@
 			<listheader label="No" width="2%" align="center"/>
 			<listheader label="ID" width="20%" align="center"/>
 			<listheader label="Catatan" width="60%" align="center"/>
-			<listheader label="Versi" width="10%" align="center"/>
+			<listheader label="Versi" width="12%" align="center"/>
 		</actionListhead>
 		<template 
 			name="model">

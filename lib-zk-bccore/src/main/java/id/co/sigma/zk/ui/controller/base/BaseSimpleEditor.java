@@ -2,6 +2,7 @@ package id.co.sigma.zk.ui.controller.base;
 
 
 
+import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.annotations.ChildGridData;
@@ -30,6 +31,8 @@ import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zul.Column;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Doublebox;
@@ -529,7 +532,23 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				val = ((Decimalbox)input).getValue();
 			} else if(input instanceof Doublebox) {
 				val = ((Doublebox)input).getValue();
-			} else if(input instanceof Textbox) {
+			} else if(input instanceof Combobox)  {
+				
+				int idx = ((Combobox)input).getSelectedIndex();
+				Object cdata = null;
+				if(idx >= 0) {
+					cdata = ((Combobox)input).getModel().getElementAt(idx);
+				}
+				if(cdata instanceof CommonLOV) {
+					val = ((CommonLOV)cdata).getDataValue();
+				} else {
+					Comboitem citem = ((Combobox)input).getSelectedItem();
+					if(citem != null) {
+						val = citem.getValue();
+					}
+				}
+				
+			}else if(input instanceof Textbox) {
 				val = ((Textbox)input).getValue();
 			} else if(input instanceof Longbox) {
 				val = ((Longbox)input).getValue();

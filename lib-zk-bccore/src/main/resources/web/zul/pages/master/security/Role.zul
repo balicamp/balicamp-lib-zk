@@ -9,17 +9,17 @@
 			</columns>
 			<rows>
 			<row>
-				${field.rolecode}
+				${labels.field.rolecode}
 				<textbox id="codeSearch"></textbox>
 			</row>
 			<row>
-				${field.roledesc}
+				${labels.field.roledesc}
 				<textbox id="descSearch"></textbox>
 			</row>
 			</rows>	
 		</grid>	
-		<button id="searchButton" label="${action.button.search}"/>
-		<button id="resetButton" label="${action.button.reset}"/>
+		<button id="searchButton" label="${labels.action.button.search}"/>
+		<button id="resetButton" label="${labels.action.button.reset}"/>
 	</groupbox>
 	<separator bar="false"/>
     
@@ -28,34 +28,30 @@
     <listbox 
         height="400px" 
         id="listbox"
-
         mold="paging"
         pageSize="10" 
         >   
-        <listhead>
-            <listheader label="${field.no}" width="50px" align="center"/>
-            <listheader label="${field.rolecode}" width="100px" align="center"/>
-            <listheader label="${field.roledesc}" width="250px"  align="center"/>
-             <listheader label="${field.rolepredefined}" width="250px"  align="center"/>
-             <listheader label="Action" width="100px" align="center"/>
-        </listhead>
+        <actionListhead>
+            <listheader label="${labels.field.no}" width="50px" align="center"/>
+            <listheader label="${labels.field.rolecode}" width="100px" align="center"/>
+            <listheader label="${labels.field.roledesc}" width="250px"  align="center"/>
+            <listheader label="${labels.field.rolepredefined}" width="250px"  align="center"/>
+        </actionListhead>
         <template name="model">
-        <listitem >
+        <actionListitem editorPage="~./zul/pages/master/security/RoleFormEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
+						controller="${role$composer}">
             <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
             <listcell label="${each.roleCode}" style="text-align:left"/>
             <listcell label="${each.roleDesc}" style="text-align:left"/>
-             <listcell label="${each.isPredefined}" style="text-align:left"/>
-             <listcell>
-					<actionButton editorPage="~./zul/pages/master/security/RoleFormEditor.zul"
-						deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
-						controller="${role$composer}"/>
-			</listcell>
-        </listitem>
+            <listcell label="${each.isPredefined}" style="text-align:left"/>
+        </actionListitem>
         </template>
-         		<listfoot>  
-                    <listfooter span="6" align="left"><button id="addButton" label="${action.button.add}"><button id="btnEdit" label="${action.button.edit}" visible="false"><button id="btnHapus" label="${action.button.delete}" visible="false"></listfooter>
-                    
-                </listfoot>
+   		<listfoot>  
+            <listfooter span="6" align="left">
+            	<button id="addButton" label="${labels.action.button.add}"/>
+            </listfooter>
+         </listfoot>
     </listbox>
 </window>
 </zk>

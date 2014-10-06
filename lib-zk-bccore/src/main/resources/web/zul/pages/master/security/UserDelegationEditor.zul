@@ -13,7 +13,8 @@
 					<row>
 						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true">
+							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" 
+							value="${userDelegationEditorWin$composer.editedData.sourceUser.realName}">
 								<bandpopup>
 									<vbox>
 										<hbox>
@@ -33,7 +34,8 @@
 					<row>
 						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true">
+							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" 
+							value="${userDelegationEditorWin$composer.editedData.destUser.realName}">
 								<bandpopup>
 									<vbox>
 										<hbox>
@@ -70,7 +72,10 @@
 					</row>
 					<row>
 						<cell>${labels.field.status}</cell>
-						<cell><combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" /></cell>
+						<cell>
+							<combobox id="cmbDataStatus" />
+							<textbox id="dataStatus" visible="false" value="${userDelegationEditorWin$composer.editedData.dataStatus}" />
+						</cell>
 					</row>
 				</rows>	
 			</grid>
@@ -102,7 +107,11 @@
 						<n:h5>${labels.field.delegated_roles}</n:h5>
 						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
 							<listbox id="lbDelegatedRoles" rows="10" multiple="true" 
-							emptyMessage="Pilih dari daftar role di sebelah kiri" />
+							emptyMessage="Pilih dari daftar role di sebelah kiri">
+								<template name="model">
+									<listitem value="${each}" label="${each.role.roleDesc}"/>
+								</template>
+							</listbox>
 						</div>
 					</n:td>
 				</n:tr>
@@ -135,7 +144,11 @@
 						<n:h5>${labels.field.delegated_groups}</n:h5>
 						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
 							<listbox id="lbDelegatedGroups" rows="10" multiple="true" 
-							emptyMessage="Pilih dari daftar group di sebelah kiri" />
+							emptyMessage="Pilih dari daftar group di sebelah kiri">
+								<template name="model">
+									<listitem value="${each}" label="${each.userGroup.groupName}" />
+								</template>
+							</listbox>
 						</div>
 					</n:td>
 				</n:tr>

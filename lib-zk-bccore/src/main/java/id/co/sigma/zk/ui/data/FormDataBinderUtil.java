@@ -69,6 +69,7 @@ public final class FormDataBinderUtil {
 	/**
 	 * bind value dari control yang di extends
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void bindDataFromControl (Object targetForBind , IdSpace idSpace )  throws Exception{
 		Collection<Component> allComps =  idSpace.getFellows();
 		for ( Component scn : allComps ) {

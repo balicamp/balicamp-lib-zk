@@ -109,7 +109,11 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 				
 				if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
 					try {
+						
 						insertData();
+						
+						Messagebox.show("Tambah data berhasil disimpan", "Tambah Data", Messagebox.OK, Messagebox.INFORMATION);
+						
 					} catch (Exception e) {
 						saveCommit = false ; 
 						logger.error( "" + e.getMessage() , e);
@@ -117,7 +121,11 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 					}
 				}else {
 					try {
+						
 						updateData();
+						
+						Messagebox.show("Perubahan data berhasil disimpan", "Tambah Data", Messagebox.OK, Messagebox.INFORMATION);
+						
 					} catch (Exception e) {
 						saveCommit = false ; 
 						logger.error("gagal update file. error : " + e.getMessage() , e);

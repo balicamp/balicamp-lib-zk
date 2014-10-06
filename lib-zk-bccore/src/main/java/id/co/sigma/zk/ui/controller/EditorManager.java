@@ -2,11 +2,14 @@ package id.co.sigma.zk.ui.controller;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.zk.ZKCoreLibConstant;
+import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.controller.base.IEditorPanel;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,18 +28,42 @@ public final class EditorManager {
 	
 	private Include includePanel ; 
 	
+	private Long createdTime = Calendar.getInstance().getTimeInMillis();
+	
 	private EditorManager() {}
 	
 	
-	private static EditorManager instance ; 
+	private static Map<String, EditorManager> instances ; 
 	
 	public static EditorManager getInstance() {
-		if ( instance== null)
-			instance = new EditorManager(); 
+		String sessionId = SecurityUtil.getAuthDetails().getSessionId();
+		if(instances == null) {
+			instances = new HashMap<String, EditorManager>();
+		} else {
+			checkExpiredInstances();
+		}
+		EditorManager instance = instances.get(sessionId);
+		if ( instance== null) {
+			instance = new EditorManager();			
+			instances.put(sessionId, instance);			
+		}
 		return instance;
 	}
 	
-	
+	private static void checkExpiredInstances() {
+		if(instances != null && instances.isEmpty()) {
+			Iterator<EditorManager> iters = instances.values().iterator();
+			for(;iters.hasNext();) {
+				EditorManager manager = iters.next();
+				Long liveTime = Calendar.getInstance().getTimeInMillis() - manager.createdTime;
+				
+				if(liveTime > (24*60*60)) {
+					instances.remove(manager);
+					manager = null;
+				}
+			}
+		}
+	}
 	
 	private void showHideLatestComponent (boolean show ) {
 		List<Component> components =  editorContainerWindow.getChildren();
@@ -57,11 +84,14 @@ public final class EditorManager {
 		if (! components.isEmpty()){
 			for  (int i = components.size()-1 ; i>= 0 ; i++) {
 				Component cmpn = editorContainerWindow.getLastChild() ;
-				if ( cmpn!= null)
-					editorContainerWindow.removeChild(cmpn); 
+				if ( cmpn!= null) {
+					cmpn.detach();
+					editorContainerWindow.removeChild(cmpn);
+				}
 			}
 		}
 		editorContainerWindow.setVisible(false); 
+		includePanel.setSclass(null);
 		includePanel.setVisible(true);
 		includePanel.setSrc(zulPath);
 		Executions.getCurrent().getSession().setAttribute(ZKCoreLibConstant.PREV_PAGE, includePanel.getSrc());

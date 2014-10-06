@@ -3,11 +3,9 @@
  */
 package id.co.sigma.zk.ui.controller.base;
 
-import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
-import id.co.sigma.zk.tree.MenuTreeNode;
 import id.co.sigma.zk.ui.CustomQueryDrivenTreeModel;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 
@@ -62,7 +60,7 @@ public abstract class BaseSimpleTreeController<DATA extends Serializable> extend
 	@Override
 	public void invokeSearch(final SimpleQueryFilter[] filters,
 			final SimpleSortArgument[] sorts) {
-		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
+//		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
 		//final String customQuery = getCustomQuery();
 		//final String initial = getInitial();
 		
@@ -70,11 +68,11 @@ public abstract class BaseSimpleTreeController<DATA extends Serializable> extend
 		Tree tree = getTree(); 
 		dataModel.initiate(tree.getPageSize());
 		List<DATA> retVal = dataModel.getHoldedData();
-		if(retVal!=null){
-			for(DATA data : retVal){
-				System.out.println(data.toString());
-			}
-		}
+//		if(retVal!=null){
+//			for(DATA data : retVal){
+//				System.out.println(data.toString());
+//			}
+//		}
 		tree.setModel(constructTree(retVal));
 		tree.invalidate();
 	}

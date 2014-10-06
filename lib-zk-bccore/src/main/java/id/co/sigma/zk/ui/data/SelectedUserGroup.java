@@ -8,6 +8,7 @@ import javax.persistence.Transient;
  * 
  * @author <a href="mailto:gusti.darmawan@sigma.co.id">Eka Darmawan</a>
  */
+@SuppressWarnings("serial")
 public class SelectedUserGroup extends UserGroup {
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(SelectedUserGroup.class.getName());
