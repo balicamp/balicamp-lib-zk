@@ -56,23 +56,14 @@ public class LookupHeaderListController extends BaseSimpleListController<LookupH
 	public Listbox getListbox() {
 		return lsbLookupHeader;
 	}
+
 	
-	@Listen(value="onClick = #btnSearch")
-	public void searchClick() {
-		invokeSearch();
-	};
-	
-	@Listen(value="onClick = #btnReset")
-	public void resetClick() {
-		txtKode.setValue("");
-		txtRemark.setValue("");
-//		invokeSearch();
-	};
-	
-	@Listen(value="onClick = #btnAdd")
-	public void addClick() {
-		LookupHeader dataBaru = new LookupHeader(); 
-		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupHeaderEditor.zul", dataBaru, this);
+	/* (non-Javadoc)
+	 * @see id.co.sigma.zk.ui.controller.base.BaseSimpleListController#addNewData()
+	 */
+	@Override
+	public LookupHeader addNewData() {
+		return new LookupHeader();
 	}
 
 	@Override

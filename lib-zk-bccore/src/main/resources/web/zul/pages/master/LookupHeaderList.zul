@@ -1,13 +1,12 @@
 <?page title="Lookup Header Editor" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window title="Daftar Lookup Header" 
+<listWindow title="Daftar Lookup Header" 
 	border="none"
 	height="100%"
 	width="100%" 
 	id="lookupHeaderList" 
-	apply="id.co.sigma.zk.ui.controller.master.LookupHeaderListController">
-	
-	<vlayout>
+	apply="id.co.sigma.zk.ui.controller.master.LookupHeaderListController"
+	editorPage="~./zul/pages/master/LookupHeaderEditor.zul">
 	
 	<grid vflex="1">
 	
@@ -17,34 +16,26 @@
 			</columns>
 		<rows>
 		<row>
-			Kode
+			${labels.field.code}
 			<textbox id="txtKode"></textbox>
 		</row>
 		<row>
-			Catatan
+			${labels.field.remark}
 			<textbox id="txtRemark"></textbox>
 		</row>
 		</rows>
 	</grid>	
 	
-	<separator></separator>
-	
-	<hlayout>
-	<button id="btnSearch" label="Cari"/>
-	<button id="btnReset" label="Reset"/>
-	</hlayout>
-	
-	<separator></separator>
 	<listbox
-	id="lsbLookupHeader"
+		id="lsbLookupHeader"
 		height="350px"
 		mold="paging"
 		pageSize="10" width="100%">
 		<actionListhead>
-			<listheader label="No" width="2%" align="center"/>
-			<listheader label="ID" width="20%" align="center"/>
-			<listheader label="Catatan" width="60%" align="center"/>
-			<listheader label="Versi" width="12%" align="center"/>
+			<listheader label="${labels.field.no}" width="2%" align="center"/>
+			<listheader label="${labels.field.code}" width="20%" align="center"/>
+			<listheader label="${labels.field.remark}" width="60%" align="center"/>
+			<listheader label="${labels.field.version}" width="12%" align="center"/>
 		</actionListhead>
 		<template 
 			name="model">
@@ -57,13 +48,6 @@
 				<listcell label="${each.version}" style="text-align:left"/>
 			</actionListitem>
 		</template>		
-<!-- 		<listfoot>  
-			<listfooter span="5" align="left"><button id="btnAdd">Tambah</button></listfooter>
-		</listfoot> -->
 	</listbox>
-	<hlayout>
-		<button id="btnAdd" label="Tambah"/>
-	</hlayout>
-	</vlayout>		
-</window>
+</listWindow>
 </zk>
