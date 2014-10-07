@@ -20,9 +20,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.impl.InputElement;
 
@@ -138,14 +138,23 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 					}
 					generalPurposeService.delete(data.getClass(), pk, pkFieldName);
 					
-					Messagebox.show("Hapus data berhasil", "Hapus Data", Messagebox.OK, Messagebox.INFORMATION);
+					Messagebox.show(Labels.getLabel("msg.save.delete.success"), 
+							Labels.getLabel("title.msgbox.information"),
+							new Messagebox.Button[]{Messagebox.Button.OK},
+							new String[]{Labels.getLabel("action.button.ok")},
+							Messagebox.INFORMATION,
+							Messagebox.Button.OK, null);
 					
 				} catch (Exception e) {
 					saveCommit = false ;
 					logger.error(e.getMessage(), e);
-					Messagebox.show("Gagal Hapus Data. error : " + e.getMessage(), 
-							"Gagal Hapus Data", Messagebox.OK, 
-							Messagebox.ERROR);
+
+					Messagebox.show(Labels.getLabel("msg.save.delete.fail"), 
+							Labels.getLabel("title.msgbox.error"),
+							new Messagebox.Button[]{Messagebox.Button.OK},
+							new String[]{Labels.getLabel("action.button.ok")},
+							Messagebox.ERROR,
+							Messagebox.Button.OK, null);
 				}
 				
 				if(obj != null) {

@@ -10,6 +10,7 @@ import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 import java.io.Serializable;
 import java.util.List;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
@@ -144,21 +145,22 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 						deleteMsg = "Apakah anda yakin akan menghapus data ?";
 					}
 					
-					Messagebox.show(deleteMsg, "Delete Confirmation", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+					Messagebox.show(deleteMsg, Labels.getLabel("title.msgbox.confirmation"), 
+							new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
+							new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
+							Messagebox.QUESTION, 
+							Messagebox.Button.YES,
+							new EventListener<Messagebox.ClickEvent>() {
 	
 						@SuppressWarnings({ "unchecked"})
 						@Override
-						public void onEvent(Event event) throws Exception {
-							switch(((Integer)event.getData()).intValue()) {
-							case Messagebox.YES:
+						public void onEvent(Messagebox.ClickEvent event) throws Exception {
+							if(Messagebox.Button.YES.equals(event.getButton())){
 								if(controller instanceof BaseSimpleListController) {
 									((BaseSimpleListController<Serializable>)controller).deleteData((SingleKeyEntityData<?>)data);
 								} else if(controller instanceof BaseSimpleDirectToDBEditor) {
 									((BaseSimpleDirectToDBEditor)controller).deleteChildData(data, cntr);
 								}
-								break;
-							case Messagebox.NO:
-								break;
 							}
 						}
 						

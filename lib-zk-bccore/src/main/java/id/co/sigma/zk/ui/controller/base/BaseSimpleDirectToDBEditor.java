@@ -17,6 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -65,19 +66,17 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
 		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
 			
-			Messagebox.show(confirmMsg, "Prompt", 
-					Messagebox.YES|Messagebox.NO, 
-					Messagebox.QUESTION, 
-			new EventListener<Event>() {
+			Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.confirmation"),
+					new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
+					new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
+					Messagebox.QUESTION,
+					Messagebox.Button.YES,
+					new EventListener<Messagebox.ClickEvent>() {
 				
 				@Override
-				public void onEvent(Event event) throws Exception {
-					switch(((Integer)event.getData()).intValue()) {
-					case Messagebox.YES:
+				public void onEvent(Messagebox.ClickEvent event) throws Exception {
+					if(Messagebox.Button.YES.equals(event.getButton())) {
 						saveData(evt);
-						break;
-					case Messagebox.NO:
-						break;
 					}
 				}
 			});				
@@ -114,24 +113,46 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 						
 						insertData();
 						
-						Messagebox.show("Tambah data berhasil disimpan", "Tambah Data", Messagebox.OK, Messagebox.INFORMATION);
+						Messagebox.show(Labels.getLabel("msg.save.add.success"), 
+								Labels.getLabel("title.msgbox.information"),
+								new Messagebox.Button[]{Messagebox.Button.OK},
+								new String[]{Labels.getLabel("action.button.ok")},
+								Messagebox.INFORMATION,
+								Messagebox.Button.OK, null);
 						
 					} catch (Exception e) {
 						saveCommit = false ; 
 						logger.error( "" + e.getMessage() , e);
-						 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Tambah Data", Messagebox.OK, Messagebox.ERROR);
+
+						Messagebox.show(Labels.getLabel("msg.save.add.fail"), 
+								Labels.getLabel("title.msgbox.error"),
+								new Messagebox.Button[]{Messagebox.Button.OK},
+								new String[]{Labels.getLabel("action.button.ok")},
+								Messagebox.ERROR,
+								Messagebox.Button.OK, null);
 					}
 				}else {
 					try {
 						
 						updateData();
 						
-						Messagebox.show("Perubahan data berhasil disimpan", "Tambah Data", Messagebox.OK, Messagebox.INFORMATION);
+						Messagebox.show(Labels.getLabel("msg.save.edit.success"), 
+								Labels.getLabel("title.msgbox.information"),
+								new Messagebox.Button[]{Messagebox.Button.OK},
+								new String[]{Labels.getLabel("action.button.ok")},
+								Messagebox.INFORMATION,
+								Messagebox.Button.OK, null);
 						
 					} catch (Exception e) {
 						saveCommit = false ; 
 						logger.error("gagal update file. error : " + e.getMessage() , e);
-						 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Simpan Data", Messagebox.OK, Messagebox.ERROR);
+
+						Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
+								Labels.getLabel("title.msgbox.error"),
+								new Messagebox.Button[]{Messagebox.Button.OK},
+								new String[]{Labels.getLabel("action.button.ok")},
+								Messagebox.ERROR,
+								Messagebox.Button.OK, null);
 					}
 					
 				}
@@ -163,19 +184,17 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 		String cancelMsg = (String)getSelf().getAttribute("cancellationMsg");
 		if(cancelMsg != null && cancelMsg.trim().length() > 0) {
 			
-			Messagebox.show(cancelMsg, "Prompt", 
-					Messagebox.YES|Messagebox.NO, 
-					Messagebox.QUESTION, 
-			new EventListener<Event>() {
+			Messagebox.show(cancelMsg, Labels.getLabel("title.msgbox.confirmation"),
+					new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
+					new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
+					Messagebox.QUESTION,
+					Messagebox.Button.YES,
+					new EventListener<Messagebox.ClickEvent>() {
 				
 				@Override
-				public void onEvent(Event event) throws Exception {
-					switch(((Integer)event.getData()).intValue()) {
-					case Messagebox.YES:
+				public void onEvent(Messagebox.ClickEvent event) throws Exception {
+					if(Messagebox.Button.YES.equals(event.getButton())) {
 						EditorManager.getInstance().closeCurrentEditorPanel();
-						break;
-					case Messagebox.NO:
-						break;
 					}
 				}
 			});				
