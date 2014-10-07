@@ -13,13 +13,13 @@
 			<row>
 				${labels.field.code}
 				<textbox id="functionCode" 		
-					value="${menuEditor$composer.editedData.functionCode}">
+					value="${menuEditor$composer.editedData.functionCode}" constraint="no empty:${labels.field.code} harus diisi !!!">
 				</textbox>
 			</row>
 			<row>
 				${labels.field.label}
 				<textbox id="functionLabel" 
-					value="${menuEditor$composer.editedData.functionLabel}"></textbox>
+					value="${menuEditor$composer.editedData.functionLabel}" constraint="no empty:${labels.field.label} harus diisi !!!"></textbox>
 			</row>
 			<row if="${menuEditor$composer.additionalData==null}">
 				${labels.field.parent}
@@ -42,7 +42,7 @@
 			</row>
 			<row>
 				${labels.field.url}
-				<bandbox id="urlBox" mold="rounded" autodrop="true" value="${menuEditor$composer.editedData.pageDefinition.pageUrl}" width="200px">
+				<bandbox id="urlBox" mold="rounded" autodrop="true" value="${menuEditor$composer.editedData.pageDefinition.pageUrl}" width="300px">
 					<bandpopup>
 						<listbox id="list" height="250px" width="450px">
 							<listhead>
