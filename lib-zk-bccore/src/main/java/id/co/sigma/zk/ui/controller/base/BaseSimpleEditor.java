@@ -101,8 +101,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * insert data ke dalam database. 
 	 * override ini kalau anda memerlukan code tersendiri untuk ini
 	 */
-	@SuppressWarnings("unchecked")
-	protected abstract void insertData (POJO... data ) throws Exception ;
+	protected abstract void insertData (Object... data ) throws Exception ;
 	
 	public void deleteData(POJO data) throws Exception {
 		throw new Exception("Method not supported.");
@@ -186,11 +185,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				
 			}
 		}
-		
-		if ( this.editorCallerReference != null && this.editorCallerReference instanceof IReloadablePanel) {
-			((IReloadablePanel)editorCallerReference).reload();
-		}
-		EditorManager.getInstance().closeCurrentEditorPanel();
+		closeCurrentEditorPanel();
 	}
 	
 	/**
@@ -199,7 +194,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	@SuppressWarnings("unchecked")
 	public void insertData ()  throws Exception {
 		
-		Object[] pojo = new Object[]{getEditedData()};
+		Serializable[] pojo = new Serializable[]{(Serializable)getEditedData()};
 		
 		insertData((POJO[])pojo);
 		
@@ -223,11 +218,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			}
 			
 		}
-		
-		if ( this.editorCallerReference != null && this.editorCallerReference instanceof IReloadablePanel) {
-			((IReloadablePanel)editorCallerReference).reload();
-		}
-		EditorManager.getInstance().closeCurrentEditorPanel();
+		closeCurrentEditorPanel();
 	}
 	
 	/**
@@ -259,6 +250,16 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		this.additionalData = additionalData;
 	}
 
+	/**
+	 * close current editor
+	 */
+	protected final void closeCurrentEditorPanel() {
+		if ( this.editorCallerReference != null && this.editorCallerReference instanceof IReloadablePanel) {
+			((IReloadablePanel)editorCallerReference).reload();
+		}
+		EditorManager.getInstance().closeCurrentEditorPanel();
+	}
+	
 	/**
 	 * parse data dari client	 
 	 * @param comp

@@ -43,9 +43,10 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 		dataContainer.modifyItem(data);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	protected void insertData(POJO... data) throws Exception {
-		dataContainer.appendNewItem(data[0]);
+	protected void insertData(Object... data) throws Exception {
+		dataContainer.appendNewItem((POJO)data[0]);
 		
 	}
 

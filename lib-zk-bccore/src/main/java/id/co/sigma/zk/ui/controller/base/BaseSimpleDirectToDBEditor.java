@@ -46,11 +46,10 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	protected PlatformTransactionManager  transactionManager ; 
 	
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void insertData(POJO... data) throws Exception {
+	protected void insertData(Object... data) throws Exception {
 		if(data != null && data.length > 0){
-			data[0] = (POJO)generalPurposeService.merge(data[0]);
+			data[0] = generalPurposeService.merge((Serializable)data[0]);
 		}
 		
 	}
