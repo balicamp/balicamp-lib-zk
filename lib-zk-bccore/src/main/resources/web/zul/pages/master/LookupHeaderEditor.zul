@@ -7,8 +7,8 @@
 	
 	<grid>
 		<columns>
-			<column label="${labels.field.type}" width="150px" />
-			<column label="${labels.field.content}" />
+			<column width="150px" />
+			<column />
 		</columns>
 		<rows>
 			<row>
@@ -29,35 +29,40 @@
 			</row>
 		</rows>
 	</grid>	
-	
-	<listbox id="lsbLookupDetails" height="300px" width="100%" >
-		<actionListhead>
-			<listheader label="${labels.field.no}" width="2%" align="center"/>
-			<listheader id="i18Key" label="${labels.field.locale}" width="12%" align="center"/>
-			<listheader id="detailCode" label="${labels.field.code}" width="20%" align="center"/>
-			<listheader id="label" label="${labels.field.label}" width="20%" align="center"/>
-			<listheader id="extField1" label="Ext Field 1" width="15%" align="center"/>
-			<listheader id="extField2" label="Ext Field 2" width="15%" align="center"/>
-			<listheader id="sequence" label="Sequence" width="10%" align="center"/>
-		</actionListhead>
-		<template 
-			name="model">
-			<actionListitem value="${each}" editable="true" editorPage="~./zul/pages/master/LookupDetailEditor.zul"
-				deleteMsg="Apakah anda yakin menghapus data key: ${each.detailCode}"
-				controller="${lookupHeader$composer}" child="true">
-				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
-				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.i18Key}" readonly="true"/></listcell>
-				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.detailCode}" readonly="${not empty each.detailCode}"/></listcell>
-				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.label}"/></listcell>
-				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField1}"/></listcell>
-				<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField2}"/></listcell>
-				<listcell style="text-align:right"><intbox width="100%" inplace="true" value="${each.sequence}"/></listcell>
-			</actionListitem>
-		</template>		
-		<listfoot>  
-			<listfooter span="8" align="left"><button id="btnAdd" label="${labels.action.button.add}"/></listfooter>
-		</listfoot>
-	</listbox>	
-
+	<separator/>
+	<groupbox closable="false" mold="3d">
+		<caption>Lookup Detail</caption>
+		<vlayout>
+		<button id="btnAdd" label="${labels.action.button.add}"/>
+		<listbox id="lsbLookupDetails" height="300px" width="100%" >
+			<actionListhead>
+				<listheader label="${labels.field.no}" width="2%" align="center"/>
+				<listheader id="i18Key" label="${labels.field.locale}" width="12%" align="center"/>
+				<listheader id="detailCode" label="${labels.field.code}" width="20%" align="center"/>
+				<listheader id="label" label="${labels.field.label}" width="20%" align="center"/>
+				<listheader id="extField1" label="Ext Field 1" width="15%" align="center"/>
+				<listheader id="extField2" label="Ext Field 2" width="15%" align="center"/>
+				<listheader id="sequence" label="Sequence" width="10%" align="center"/>
+			</actionListhead>
+			<template 
+				name="model">
+				<actionListitem value="${each}" editable="true" editorPage="~./zul/pages/master/LookupDetailEditor.zul"
+					deleteMsg="Apakah anda yakin menghapus data key: ${each.detailCode}"
+					controller="${lookupHeader$composer}" child="true">
+					<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.i18Key}" readonly="true"/></listcell>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.detailCode}" readonly="${not empty each.detailCode}"/></listcell>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.label}"/></listcell>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField1}"/></listcell>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField2}"/></listcell>
+					<listcell style="text-align:right"><intbox width="100%" inplace="true" value="${each.sequence}"/></listcell>
+				</actionListitem>
+			</template>		
+<!-- 			<listfoot>  
+				<listfooter span="8" align="left"><button id="btnAdd" label="${labels.action.button.add}"/></listfooter>
+			</listfoot> -->
+		</listbox>	
+		</vlayout>
+	</groupbox>
 </editorWindow>
 </zk>
