@@ -11,10 +11,13 @@ import id.co.sigma.common.security.domain.UserDelegationRole;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
 import id.co.sigma.security.server.service.IUserDelegationService;
+import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +29,11 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Longbox;
-import org.zkoss.zul.Textbox;
 
 /**
  * User delegation editor controller
@@ -46,12 +47,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	@Wire
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
-	private Combobox cmbDataStatus;
+	private Combobox dataStatus;
 	
-	@Wire
-	private Textbox dataStatus;
-	
-	private final String defaultDataStatus = "A";
+	//private final String defaultDataStatus = "A";
 	
 	@Wire
 	private Bandbox bnbxDelegateFromUser;
@@ -84,6 +82,13 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	@Wire private Button btnRemoveSingleGroup;
 	@Wire private Button btnRemoveAllGroups;
 	
+	private void clearListbox(Listbox lb){
+		lb.getItems().clear();
+	}
+	
+	/**
+	 * Bandbox delegate from user onSelect handler
+	 */
 	@Wire private Listbox bnbxDelegateFromUserList;
 	@SuppressWarnings("unchecked")
 	@Listen("onSelect=#bnbxDelegateFromUserList")
@@ -94,12 +99,17 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			bnbxDelegateFromUser.setValue(user.getRealName());
 			bnbxDelegateFromUser.close();
 			lbAvailableRoles.setModel((ListModel<UserRole>) getUserRoleListModel());
+			clearListbox(lbDelegatedRoles);
 			lbAvailableGroups.setModel((ListModel<UserGroupAssignment>) getUserGroupListModel());
+			clearListbox(lbDelegatedGroups);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Bandbox delegate to user onSelect handler
+	 */
 	@Wire private Listbox bnbxDelegateToUserList;
 	@Listen("onSelect=#bnbxDelegateToUserList")
 	public void onBnbxDelegateToUserListSelected(){
@@ -378,6 +388,8 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 
 	@Override
 	protected void insertData(Object... data) throws Exception {
+		getEditedData().setCreatedBy(SecurityUtil.getUser().getUsername());
+		getEditedData().setCreatedOn(new Date());
 		userDelegationService.insert(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
 	}
 
@@ -414,19 +426,6 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		return retval;
 	}
 	
-	@Listen("onSelect=#cmbDataStatus")
-	public void onCmbDataStatusSelected(){
-		Comboitem ci = cmbDataStatus.getSelectedItem();
-		if(ci!=null){
-			CommonLOV lov = ci.getValue();
-			dataStatus.setValue(lov.getAdditionalData1());
-			System.out.println("Status = " + dataStatus.getValue());
-		}else{
-			dataStatus.setValue(defaultDataStatus);
-			System.out.println("Status = " + dataStatus.getValue());
-		}
-	}
-	
 	private void setComboValueByRealData(Combobox cmb, String data){
 		ListModelList<Object> model = (ListModelList<Object>) cmb.getModel();
 		if(model.getSize() > 0){
@@ -441,14 +440,14 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	private boolean isEditing(){
-		return (getEditedData().getId()!=null);
+		return (ZKEditorState.EDIT.equals(getEditorState()));
 	}
 	
 	private void updateEditorFields(){
 		if(isEditing()){
 			// Set value combo data status sesuai dgn data dari db
 			if(!getEditedData().getDataStatus().isEmpty()){
-				setComboValueByRealData(cmbDataStatus, getEditedData().getDataStatus());
+				setComboValueByRealData(dataStatus, getEditedData().getDataStatus());
 			}
 			
 			// Show available roles (remaining only)
@@ -461,7 +460,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				lbDelegatedRoles.setModel(new ListModelList<>());
 			}
 			
-			// TODO Show available groups (remaining only)
+			// Show available groups (remaining only)
 			lbAvailableGroups.setModel((ListModel<?>) getRemainingUserGroupListModel());
 			
 			// Show delegated groups

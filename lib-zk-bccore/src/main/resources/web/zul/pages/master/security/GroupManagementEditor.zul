@@ -22,17 +22,10 @@
 						<cell><textbox id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}"></textbox></cell>
 					</row>
 					<row>
-						<cell>Active?</cell>
+						<cell>Active</cell>
 						<cell>
 							<checkbox id="cbActiveFlag"></checkbox>
 							<textbox id="activeFlag" value="${groupMgmEditorWin$composer.editedData.activeFlag}" visible="false" />
-						</cell>
-					</row>
-					<row>
-						<cell>Super Group?</cell>
-						<cell>
-							<checkbox id="cbSuperGroup"></checkbox>
-							<textbox id="superGroup" value="${groupMgmEditorWin$composer.editedData.superGroup}" visible="false" />
 						</cell>
 					</row>
 				</rows>	

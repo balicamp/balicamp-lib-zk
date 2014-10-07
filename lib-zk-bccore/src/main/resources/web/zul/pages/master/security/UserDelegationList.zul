@@ -66,7 +66,7 @@
 						</cell>
 					</row>
 					<row>
-						<cell>${labels.action.button.search}</cell>
+						<cell>${labels.field.status}</cell>
 						<cell>
 							<combobox id="cmbStatus"/>
 						</cell>
@@ -84,7 +84,6 @@
 		</groupbox>
 		<separator bar="false"/>
 		
-		
 		<listbox 
 			id="searchResult" 
 			width="100%"
@@ -99,7 +98,7 @@
 				<listheader label="${labels.field.date_start}" hflex="1" align="center"/>
 				<listheader label="${labels.field.date_end}" hflex="1" align="center"/>
 				<listheader label="${labels.field.status}" hflex="1" align="center"/>
-				<listheader label="Action" width="150px" align="center"/>
+				<listheader label="${labels.field.action}" width="150px" align="center"/>
 			</listhead>
 			<template name="model">
 				<listitem >
