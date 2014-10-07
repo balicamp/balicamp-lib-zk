@@ -1,11 +1,12 @@
 <?page title="" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="role" apply="id.co.sigma.zk.ui.controller.security.RoleController">
- <groupbox id="searchBox" mold="3d" width="500px">
-     <grid >
+<listWindow title="Daftar Role" id="role" 
+	apply="id.co.sigma.zk.ui.controller.security.RoleController"
+	editorPage="~./zul/pages/master/security/RoleFormEditor.zul">
+     <grid vflex="1" height="100px">
 			<columns>
-				<column label="Type" width="150px" />
-				<column label="Content" />
+				<column width="150px" />
+				<column/>
 			</columns>
 			<rows>
 			<row>
@@ -18,14 +19,8 @@
 			</row>
 			</rows>	
 		</grid>	
-		<button id="searchButton" label="${labels.action.button.search}"/>
-		<button id="resetButton" label="${labels.action.button.reset}"/>
-	</groupbox>
-	<separator bar="false"/>
-    
-    <vbox align="center">
-    </vbox>
-    <listbox 
+		
+		<listbox 
         height="400px" 
         id="listbox"
         mold="paging"
@@ -47,11 +42,6 @@
             <listcell label="${each.isPredefined}" style="text-align:left"/>
         </actionListitem>
         </template>
-   		<listfoot>  
-            <listfooter span="6" align="left">
-            	<button id="addButton" label="${labels.action.button.add}"/>
-            </listfooter>
-         </listfoot>
     </listbox>
-</window>
+</listWindow>
 </zk>
