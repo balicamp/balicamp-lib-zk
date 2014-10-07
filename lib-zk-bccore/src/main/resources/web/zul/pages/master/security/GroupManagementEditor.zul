@@ -2,15 +2,6 @@
 
 <zk xmlns:w="client">
 
-<script type="text/javascript" defer="true">
-<![CDATA[
-	zk.afterMount(function(){
-		var treeData = zk.Widget.$("$treeData").getValue();
-		grpMnu_initJsTree(treeData);
-	});
-]]>
-</script>
-
 <editorWindow id="groupMgmEditorWin" captionLabel="Edit Page"
 	apply="id.co.sigma.zk.ui.controller.security.GroupManagementEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
@@ -58,6 +49,15 @@
 			</textbox>
 		</div>
 	</groupbox>
+
+	<script type="text/javascript" defer="true">
+	<![CDATA[
+		zk.afterMount(function(){
+			var treeData = zk.Widget.$("$treeData").getValue();
+			grpMnu_initJsTree(treeData);
+		});
+	]]>
+	</script>
 	
 </editorWindow>
 

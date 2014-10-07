@@ -377,21 +377,13 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 
 	@Override
-	protected void insertData(UserDelegation data) throws Exception {
-		try {
-			userDelegationService.insert(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	protected void insertData(Object... data) throws Exception {
+		userDelegationService.insert(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
 	}
 
 	@Override
 	protected void updateData(UserDelegation data) throws Exception {
-		try {
-			userDelegationService.update(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		userDelegationService.update(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
 	}
 	
 	private List<UserDelegationRole> getDelegatedRolesFromListbox(){

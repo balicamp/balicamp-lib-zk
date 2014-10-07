@@ -6,6 +6,7 @@ import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.ApplicationMenuAssignment;
 import id.co.sigma.common.security.domain.UserGroup;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectableApplicationMenu;
 
@@ -51,6 +52,8 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	
 	@Wire Textbox selectedMenus;
 	
+	@Wire Textbox groupCode;
+	
 	private String treeData;
 
 	public String getTreeData() {
@@ -75,6 +78,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 			cbActiveFlag.setChecked("A".equalsIgnoreCase(getEditedData().getActiveFlag()));
 			cbSuperGroup.setChecked("Y".equalsIgnoreCase(getEditedData().getSuperGroup()));
 		}
+		groupCode.setReadonly(ZKEditorState.EDIT.equals(getEditorState()));
 	}
 
 	private JSONArray allMenus = new JSONArray();
@@ -182,22 +186,24 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		activeFlag.setValue(isActive);
 	}
 
-	@Override
-	protected void insertData(UserGroup data) throws Exception {
-		try {
-			getEditedData().setApplicationId(new Long(applicationId));
-			if(getEditedData().getSuperGroup().isEmpty()){
-				getEditedData().setSuperGroup("N");
-			}
-			if(getEditedData().getActiveFlag().isEmpty()){
-				getEditedData().setActiveFlag("A");
-			}
-			super.insertData(data);
-			saveMenuAssignment(data.getId()); // Menurut teori, setelah data berhasil disimpan maka id (auto increment) sudah terisi :)
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
+	
+//	@Override
+//	protected void insertData(UserGroup... data) throws Exception {
+//		try {
+//			getEditedData().setApplicationId(new Long(applicationId));
+//			if(getEditedData().getSuperGroup().isEmpty()){
+//				getEditedData().setSuperGroup("N");
+//			}
+//			if(getEditedData().getActiveFlag().isEmpty()){
+//				getEditedData().setActiveFlag("A");
+//			}
+//			super.insertData(data);
+//			saveMenuAssignment(data[0].getId()); // Menurut teori, setelah data berhasil disimpan maka id (auto increment) sudah terisi :)
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	@Override
 	protected void updateData(UserGroup data) throws Exception {
@@ -244,6 +250,21 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	public void saveClick(Event evt) {
 		Clients.evalJavaScript("grpMnu_getSelectedCbs();");
 		super.saveClick(evt);
+	}
+
+	@Override
+	public void insertData() throws Exception {
+		getEditedData().setApplicationId(new Long(applicationId));
+		if(getEditedData().getSuperGroup().isEmpty()){
+			getEditedData().setSuperGroup("N");
+		}
+		if(getEditedData().getActiveFlag().isEmpty()){
+			getEditedData().setActiveFlag("A");
+		}
+		UserGroup[] data = new UserGroup[]{getEditedData()};
+		insertData(data);
+		saveMenuAssignment(data[0].getId());
+		closeCurrentEditorPanel();
 	}
 	
 }
