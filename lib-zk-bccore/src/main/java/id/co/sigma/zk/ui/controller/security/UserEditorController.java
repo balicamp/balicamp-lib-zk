@@ -206,6 +206,13 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			
 			try {
 				userService.insertDataUser(data, listGroup, listUserRole);
+				String msg = "";
+				if(ZKEditorState.ADD_NEW.equals(getEditorState())){
+					msg = "tambah data baru";
+				}else{
+					msg = "update data";
+				}
+				Messagebox.show("Sukses "+msg);
 				EditorManager.getInstance().closeCurrentEditorPanel();
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -44,9 +44,6 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	
 	@Wire private Div groupMgmTree;
 	
-	@Wire Checkbox cbSuperGroup;
-	@Wire Textbox superGroup;
-	
 	@Wire Checkbox cbActiveFlag;
 	@Wire Textbox activeFlag;
 	
@@ -76,7 +73,6 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		super.doAfterCompose(comp);
 		if(getEditedData()!=null){
 			cbActiveFlag.setChecked("A".equalsIgnoreCase(getEditedData().getActiveFlag()));
-			cbSuperGroup.setChecked("Y".equalsIgnoreCase(getEditedData().getSuperGroup()));
 		}
 		groupCode.setReadonly(ZKEditorState.EDIT.equals(getEditorState()));
 	}
@@ -87,28 +83,23 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		List<ApplicationMenu> menus = getMenuData();
 		Long groupId = getEditedData().getId();
 		
-		if(groupId==null){
-			for (ApplicationMenu menu : menus) {
-				SelectableApplicationMenu swap = new SelectableApplicationMenu(menu, false);
-				allMenus.add(swap);
-			}
-		}else{
-			Map<Long, SelectableApplicationMenu> tempMenus = new HashMap<Long, SelectableApplicationMenu>();
-			for (ApplicationMenu menu : menus) {
-				SelectableApplicationMenu swap = new SelectableApplicationMenu(menu, false);
-				tempMenus.put(swap.getId(), swap);
-			}
-			
+		Map<Long, SelectableApplicationMenu> tempMenus = new HashMap<Long, SelectableApplicationMenu>();
+		for (ApplicationMenu menu : menus) {
+			SelectableApplicationMenu swap = new SelectableApplicationMenu(menu, false);
+			tempMenus.put(swap.getId(), swap);
+		}
+		
+		if(groupId != null){
 			List<ApplicationMenuAssignment> menuAssigns = getMenuAssignments(groupId);
 			for (ApplicationMenuAssignment menuAssign : menuAssigns) {
 				if(tempMenus.containsKey(menuAssign.getFunctionId())){
 					tempMenus.get(menuAssign.getFunctionId()).getState().setSelected(true);
 				}
 			}
-			
-			for(SelectableApplicationMenu sam : tempMenus.values()){
-				allMenus.add(sam);
-			}
+		}
+		
+		for(SelectableApplicationMenu sam : tempMenus.values()){
+			allMenus.add(sam);
 		}
 	}
 	
@@ -126,7 +117,6 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		};
 		
 		try {
-			System.out.println("---Read from DB---");
 			List<ApplicationMenu> menuAll =generalPurposeDao.list(ApplicationMenu.class, filtersMenus, sortArgs); 
 			if ( menuAll== null || menuAll.isEmpty()){
 				return null;
@@ -155,7 +145,6 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		};
 		
 		try {
-			System.out.println("---Read from DB---");
 			return generalPurposeDao.list(ApplicationMenuAssignment.class, filters, sortArgs);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -174,36 +163,11 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		return retval;
 	}
 	
-	@Listen("onCheck=#cbSuperGroup")
-	public void onSuperGroupChecked(){
-		String isSuperGroup = cbSuperGroup.isChecked()? "Y" : "N";
-		superGroup.setValue(isSuperGroup);
-	}
-	
 	@Listen("onCheck=#cbActiveFlag")
 	public void onActiveFlagChecked(){
 		String isActive = cbActiveFlag.isChecked()? "A" : "D";
 		activeFlag.setValue(isActive);
 	}
-
-	
-	
-//	@Override
-//	protected void insertData(UserGroup... data) throws Exception {
-//		try {
-//			getEditedData().setApplicationId(new Long(applicationId));
-//			if(getEditedData().getSuperGroup().isEmpty()){
-//				getEditedData().setSuperGroup("N");
-//			}
-//			if(getEditedData().getActiveFlag().isEmpty()){
-//				getEditedData().setActiveFlag("A");
-//			}
-//			super.insertData(data);
-//			saveMenuAssignment(data[0].getId()); // Menurut teori, setelah data berhasil disimpan maka id (auto increment) sudah terisi :)
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 	@Override
 	protected void updateData(UserGroup data) throws Exception {
@@ -254,17 +218,31 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 
 	@Override
 	public void insertData() throws Exception {
-		getEditedData().setApplicationId(new Long(applicationId));
+		preSaveData();
+		Object[] data = new Object[]{getEditedData()};
+		insertData(data);
+		UserGroup group = (UserGroup) data[0];
+		saveMenuAssignment(group.getId());
+		closeCurrentEditorPanel();
+	}
+	
+	private void preSaveData(){
+		if(getEditedData().getApplicationId()==null){
+			getEditedData().setApplicationId(new Long(applicationId));
+		}
+		
+		if(!getEditedData().getGroupCode().isEmpty()){
+			String capitalizedGroupCode = getEditedData().getGroupCode().toUpperCase();
+			getEditedData().setGroupCode(capitalizedGroupCode);
+		}
+		
 		if(getEditedData().getSuperGroup().isEmpty()){
 			getEditedData().setSuperGroup("N");
 		}
+		
 		if(getEditedData().getActiveFlag().isEmpty()){
 			getEditedData().setActiveFlag("A");
 		}
-		UserGroup[] data = new UserGroup[]{getEditedData()};
-		insertData(data);
-		saveMenuAssignment(data[0].getId());
-		closeCurrentEditorPanel();
 	}
 	
 }

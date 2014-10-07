@@ -5,6 +5,7 @@ import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
+import id.co.sigma.common.security.domain.ApplicationMenuAssignment;
 import id.co.sigma.common.security.domain.PageDefinition;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.tree.MenuTreeNode;
@@ -14,6 +15,7 @@ import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleTreeController;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -84,6 +87,8 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 	@Autowired
 	@Qualifier(value="securityApplicationId")
 	String applicationId ; 
+	
+	private boolean flagDelete=false;
 	
 
 	@Override
@@ -283,24 +288,73 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 	}
 
 
+	/**
+	 * get all child id, include parent id
+	 */
+	protected List<Serializable> getIdChild(Long parentId, List<ApplicationMenu> menus){
+		List<Serializable> listId = new ArrayList<>();
+		listId.add(parentId);
+		if(menus!=null && !menus.isEmpty()){
+			for(ApplicationMenu menu : menus){
+				if(menu.getFunctionIdParent()==parentId){
+					listId.add(menu.getId());
+				}
+			}
+		}
+		return listId;
+	}
+	
+	/**
+	 * get all menu assignment
+	 * @param keys
+	 * @return
+	 */
+	protected List<ApplicationMenuAssignment> getListMenuAssignment(List<Serializable> keys){
+		try {
+			return generalPurposeDao.loadDataByKeys(ApplicationMenuAssignment.class, "functionId", keys);
+		} catch (Exception e) {
+			logger.error("Gagal get data ApplicationMenuAssignment,"+e.getMessage(),e);
+			return null;
+		}
+	}
+	
 	@Override
 	public void deleteData(ApplicationMenu data) {
+		List<Serializable> listId = null;
 		if(menuHasChild(data.getId(), getListApplicationMenus())){
 			Long parentId = data.getId();
+			listId=getIdChild(parentId, getListApplicationMenus());
+			List<ApplicationMenuAssignment> menuAss = getListMenuAssignment(listId);
+			if(menuAss!=null && !menuAss.isEmpty()){
+				Messagebox.show("Gagal hapus data menu, menu digunakan di tabel lain", "Hapus Menu", Messagebox.OK, Messagebox.INFORMATION);
+				flagDelete=false;
+				return;
+			}
 			generalPurposeService.delete(ApplicationMenu.class, parentId, "functionIdParent");
 			try {
 				ApplicationMenu menu = generalPurposeDao.get(ApplicationMenu.class, data.getId());
-				super.deleteData(menu);
+				generalPurposeService.delete(menu);
+				flagDelete=true;
 			} catch (Exception e) {
 				logger.error("Gagal hapus data,"+e.getMessage(),e);
+				flagDelete=false;
 			}
 		}else{
+			listId=new ArrayList<>();
+			listId.add(data.getId());
+			List<ApplicationMenuAssignment> menuAss = getListMenuAssignment(listId);
+			if(menuAss!=null && !menuAss.isEmpty()){
+				Messagebox.show("Gagal hapus data menu, menu digunakan di tabel lain", "Hapus Menu", Messagebox.OK, Messagebox.INFORMATION);
+				flagDelete=false;
+				return;
+			}
 			try {
 				ApplicationMenu menu = generalPurposeDao.get(ApplicationMenu.class, data.getId());
-				super.deleteData(menu);
+				generalPurposeService.delete(menu);
+				flagDelete=true;
 			} catch (Exception e) {
 				logger.error("Gagal baca ApplicationMenu,"+e.getMessage(),e);
-				e.printStackTrace();
+				flagDelete=false;
 			}
 			
 		}
@@ -313,15 +367,15 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 		MenuTreeNode<ApplicationMenu> root = (MenuTreeNode<ApplicationMenu>)model.getRoot();
 		List<TreeNode<ApplicationMenu>> child = root.getChildren();
 		ApplicationMenu menu = node.getData();
-	
+		deleteData(menu);
+		if(flagDelete){
 			if(menu.getTreeLevelPosition()==1){
 				child.remove(node);
 			}else{
 				getMapsOfNodeCollection().get(menu.getFunctionIdParent()).remove(node);
 			}
-		
-		tree.invalidate();
-		deleteData(menu);
+			tree.invalidate();
+		}
 	}
 
 	

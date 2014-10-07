@@ -6,23 +6,30 @@
 	border="none" 
 	apply="id.co.sigma.zk.ui.controller.security.UserListController">
 	<groupbox>
-		<grid >
-			<columns>
-				<column label="Type" width="150px" />
-				<column label="Content" />
-			</columns>
+		<grid>
 			<rows>
 			<row>
-				${labels.field.code}
-				<textbox id="txtUserCode"></textbox>
+				<cell width="200px">
+					${labels.field.code}
+				</cell>
+				<cell>
+					<textbox id="txtUserCode"></textbox>
+				</cell>
+				
 			</row>
 			<row>
-				${labels.field.realname}
-				<textbox id="txtRealName"></textbox>
+				<cell width="200px">
+					${labels.field.realname}
+				</cell>
+				<cell>
+					<textbox id="txtRealName"></textbox>
+				</cell>
 			</row>
 			</rows>	
 		</grid>	
+		<separator/>
 		<button id="btnCari">${labels.action.button.search}</button>
+		<space/>
 		<button id="btnReset">${labels.action.button.reset}</button>
 	</groupbox>
 	<separator bar="false"/>
@@ -32,7 +39,7 @@
 		pageSize="10" >
 		<actionListhead>
 			<listheader label="${labels.field.no}" width="50px" align="center"/>
-			<listheader label="${labels.field.username}" width="200px" align="center"/>
+			<listheader label="${labels.field.code}" width="200px" align="center"/>
 			<listheader label="${labels.field.realname}" width="250px" align="center"/>
 			<listheader label="${labels.field.email}" width="200px" align="center"/>
 		</actionListhead>

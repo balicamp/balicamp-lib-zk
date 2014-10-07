@@ -8,6 +8,9 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.common.server.service.IGeneralPurposeService;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
@@ -85,15 +88,11 @@ public class ApplicationMenuEditorController extends
 	@Wire
 	Label code;
 	
-
+	@Autowired
+	private IGeneralPurposeService generalPurposeService ;
 
 	@Override
 	public void insertData() throws Exception {
-		/*if(getEditedData().getFunctionCode()==null || getEditedData().getFunctionCode().equals("")){
-			//code.setValue("Field code harus diisi");
-			functionCode.setConstraint("Test");
-			return;
-		}*/
 		Long appId = new Long(applicationId);
 		getEditedData().setApplicationId(appId);
 		getEditedData().setStatus("A");
@@ -134,20 +133,29 @@ public class ApplicationMenuEditorController extends
 					getEditedData().setSiblingOrder(swap.intValue()+1);
 				}
 			}
-		}		
-		super.insertData();
-		if(getEditedData().getTreeLevelPosition()==1){
-			getEditedData().setMenuTreeCode(String.valueOf(getEditedData().getId()));
-			super.updateData();
+		}	
+		
+		ApplicationMenu[] menus = null;
+		insertData(menus = new ApplicationMenu[]{getEditedData()});
+		ApplicationMenu menu = menus[0];
+		Long id = menu.getId();
+		if(menu.getTreeLevelPosition()==1){
+			menu.setMenuTreeCode(String.valueOf(id));
+			updateData(menu);
 		}else{
-			Long parentId = getEditedData().getFunctionIdParent();
+			Long parentId = menu.getFunctionIdParent();
 			ApplicationMenu app = generalPurposeDao.get(ApplicationMenu.class, parentId);
 			if(app!=null){
-				String menuTreeCode = app.getMenuTreeCode()+"."+String.valueOf(getEditedData().getId());
-				getEditedData().setMenuTreeCode(menuTreeCode);
-				super.updateData();
+				String menuTreeCode = app.getMenuTreeCode()+"."+String.valueOf(id);
+				menu.setMenuTreeCode(menuTreeCode);
+				updateData(menu);
 			}
 		}
+		
+		if ( getEditorCallerReference() != null && getEditorCallerReference() instanceof IReloadablePanel) {
+			((IReloadablePanel)getEditorCallerReference()).reload();
+		}
+		EditorManager.getInstance().closeCurrentEditorPanel();
 	}
 
 	
