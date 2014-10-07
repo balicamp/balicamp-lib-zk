@@ -66,13 +66,11 @@ public class RoleController extends BaseSimpleListController<Role> implements IR
 	}
 
 	
-	@Listen(value="onClick = #resetButton")
-	public void resetClick() {
-		codeSearch.setValue("");
-		descSearch.setValue("");
-		invokeSearch();
-	};
-	
+	@Override
+	public Role addNewData() {
+		return new Role();
+	}
+
 	@Override
 	public void reload() {
 		invokeSearch();
@@ -84,20 +82,4 @@ public class RoleController extends BaseSimpleListController<Role> implements IR
 		reload();
 	}
 	
-	 @Listen(value="onClick = #addButton")
-	    public void clickAdd(){
-	    	Role role = new Role();
-	    	EditorManager.getInstance().addNewData("~./zul/pages/master/security/RoleFormEditor.zul", role, this);
-	 }
-	 
-	 @Listen(value="onClick = #searchButton")
-	 public void click() {
-	        invokeSearch();
-	 }
-
-
-	
-
-	 
-
 }
