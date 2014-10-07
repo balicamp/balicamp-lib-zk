@@ -1,13 +1,23 @@
 package id.co.sigma.zk.ui.controller.security;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.security.domain.ApplicationMenu;
+import id.co.sigma.common.security.domain.ApplicationMenuAssignment;
 import id.co.sigma.common.security.domain.Role;
+import id.co.sigma.common.security.domain.UserRole;
+import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -25,6 +35,9 @@ public class RoleController extends BaseSimpleListController<Role> implements IR
 	/**
 	 * 
 	 */
+	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
+			.getLogger(ApplicationMenuListController.class.getName());
+	
 	private static final long serialVersionUID = -1003489155768495181L;
 
 	@QueryParameterEntry(
@@ -45,6 +58,18 @@ public class RoleController extends BaseSimpleListController<Role> implements IR
 	@Wire Button btnEdit ; 
 	@Wire Button btnHapus ;
 
+	@Autowired
+	private IGeneralPurposeService generalPurposeService ; 
+	private List<Role> listRole;
+	
+	
+	public List<Role> getListRole() {
+		return listRole;
+	}
+
+	public void setListRole(List<Role> listRole) {
+		this.listRole = listRole;
+	}
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
@@ -75,11 +100,40 @@ public class RoleController extends BaseSimpleListController<Role> implements IR
 	public void reload() {
 		invokeSearch();
 	}
+	
+	
+	/**
+	 * get all user role
+	 * @param keys
+	 * @return
+	 */
+	protected List<UserRole> getListUserRole(List<Serializable> keys){
+		try {
+			return generalPurposeDao.loadDataByKeys(UserRole.class, "roleId", keys);
+		} catch (Exception e) {
+			logger.error("Gagal get data Role,"+e.getMessage(),e);
+			return null;
+		}
+	}
 	  
 	@Override
 	public void deleteData(Role data) {
-		deleteData(data, data.getId(), "id");
-		reload();
+		List<Serializable> listId = null;
+		listId=new ArrayList<>();
+		listId.add(data.getId());
+		List<UserRole> userRole = getListUserRole(listId);
+		if(userRole!=null && !userRole.isEmpty()){
+			Messagebox.show("Gagal hapus data role, role digunakan di user lain", "Hapus Role", Messagebox.OK, Messagebox.INFORMATION);
+			return;
+		}
+		try {
+			deleteData(data, data.getId(), "id");
+			reload();
+		} catch (Exception e) {
+			logger.error("Gagal baca Role,"+e.getMessage(),e);
+	
+		}
+		
 	}
 	
 }
