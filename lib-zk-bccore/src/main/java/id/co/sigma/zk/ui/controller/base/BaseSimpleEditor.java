@@ -101,7 +101,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * insert data ke dalam database. 
 	 * override ini kalau anda memerlukan code tersendiri untuk ini
 	 */
-	protected abstract void insertData (POJO data ) throws Exception ;
+	@SuppressWarnings("unchecked")
+	protected abstract void insertData (POJO... data ) throws Exception ;
 	
 	public void deleteData(POJO data) throws Exception {
 		throw new Exception("Method not supported.");
@@ -197,7 +198,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 */
 	@SuppressWarnings("unchecked")
 	public void insertData ()  throws Exception {
-		insertData(getEditedData());
+		
+		Object[] pojo = new Object[]{getEditedData()};
+		
+		insertData((POJO[])pojo);
 		
 		//insert child data (master-detail)
 		List<ZKClientSideListDataEditorContainer<Object>> children = parseChildGridData();

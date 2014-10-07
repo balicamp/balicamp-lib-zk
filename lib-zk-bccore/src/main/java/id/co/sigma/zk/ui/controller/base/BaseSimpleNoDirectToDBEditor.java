@@ -44,8 +44,8 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 	}
 	
 	@Override
-	protected void insertData(POJO data) throws Exception {
-		dataContainer.appendNewItem(data);
+	protected void insertData(POJO... data) throws Exception {
+		dataContainer.appendNewItem(data[0]);
 		
 	}
 
