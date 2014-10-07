@@ -1,0 +1,29 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<panel>
+		<panelchildren>
+			<div class="page-title">
+				<label id="caption" style="font-weight:bold;" />
+			</div>
+		</panelchildren>
+	</panel>
+	<separator/>
+	<panel border="none">
+		<panelchildren id="searchSection">
+		</panelchildren>
+	</panel>
+	<panel border="none">
+		<panelchildren>
+			<hbox height="40px" align="center" style="padding:5px">
+				<button id="btnSearch" label="${labels.action.button.search}"/>
+				<button id="btnReset" label="${labels.action.button.reset}"/>
+				<space/>
+				<button id="btnAddNew" label="${labels.action.button.add}"/>
+			</hbox>
+		</panelchildren>
+	</panel>
+	<panel>
+		<panelchildren id="listSection">
+		</panelchildren>
+	</panel>
+</zk>

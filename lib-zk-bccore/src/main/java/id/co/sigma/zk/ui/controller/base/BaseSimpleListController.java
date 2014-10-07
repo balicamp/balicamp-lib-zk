@@ -22,6 +22,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.impl.InputElement;
 
@@ -232,9 +233,36 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		return flt; 
 	}
 	
+	protected void resetFilter() {
+		Field[] flds =  this.getClass().getDeclaredFields();
+		for ( Field scn : flds){
+			if ( !scn.isAnnotationPresent(QueryParameterEntry.class))
+				continue ; 
+			try {
+				scn.setAccessible(true);
+				Object ctrl =  scn.get(this);
+				if(ctrl instanceof InputElement) {
+					((InputElement)ctrl).setRawValue(null);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage() , e);
+				continue; 
+			}
+			 
+		}
+	}
 	
+	public final void searchData() {
+		invokeSearch();
+	}
 	
+	public final  void resetSearchFilter() {
+		resetFilter();
+	}
 	
+	public DATA addNewData() {
+		throw new RuntimeException("Method not supported.");
+	}
 	
 	/**
 	 * sort argument

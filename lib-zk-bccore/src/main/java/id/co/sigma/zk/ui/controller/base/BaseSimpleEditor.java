@@ -198,6 +198,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		
 		insertData((POJO[])pojo);
 		
+		//set pojo dari hasil insert ke database
+		//hal ini dibutuhkan untuk mendapatkan autoincrement ID
+		setEditedData((POJO)pojo[0]);
+		
 		//insert child data (master-detail)
 		List<ZKClientSideListDataEditorContainer<Object>> children = parseChildGridData();
 		
