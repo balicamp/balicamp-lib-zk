@@ -43,7 +43,7 @@
 			</row>
 			<row>
 				${labels.field.email}
-				<textbox id="email" width="200px"
+				<textbox id="email" width="300px"
 					value="${userEditor$composer.editedData.email}" constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address"></textbox>
 			</row>
 			<row>

@@ -11,6 +11,7 @@ import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
 import id.co.sigma.security.server.service.IApplicationService;
 import id.co.sigma.security.server.service.IUserService;
+import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
@@ -18,6 +19,7 @@ import id.co.sigma.zk.ui.data.SelectedRole;
 import id.co.sigma.zk.ui.data.SelectedUserGroup;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -147,12 +149,20 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		data.setDefaultApplicationId(Integer.parseInt(applicationId));
 		data.setDefaultApplication(appService.getCurrentAppDetailData());
 		
+		
 		if(validationForm(data)){
 			
 			if(ZKEditorState.EDIT.equals(getEditorState())){
 				if(data.getChipperText().equalsIgnoreCase("")){
 					data.setChipperText(editedData.getChipperText());
 				}
+				data.setModifiedBy(SecurityUtil.getUser().getUsername());
+				data.setModifiedOn(new Date());
+			}else{
+				data.setCreatedBy(SecurityUtil.getUser().getUsername());
+				data.setCreatedOn(new Date());
+				data.setModifiedBy(SecurityUtil.getUser().getUsername());
+				data.setModifiedOn(new Date());
 			}
 			
 			if(superAdmin.isChecked()){
@@ -407,6 +417,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		}else{
 			selectedUserRole = getAllRole();
 			selectedUserGroup = getUserGroupList();
+			status.setChecked(true);
 		}
 		listBoxCheckList.setModel(new ListModelList<SelectedUserGroup>(selectedUserGroup));
 		listBoxCheckList.setMultiple(true);
@@ -417,6 +428,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		listBoxCheckListRole.setCheckmark(true);
 		
 		userCode.setReadonly(getEditorState().equals(ZKEditorState.EDIT));
+		
+		
 		
 	}
 	
