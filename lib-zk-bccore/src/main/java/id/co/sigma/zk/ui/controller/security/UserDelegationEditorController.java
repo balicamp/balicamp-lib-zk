@@ -34,6 +34,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Longbox;
+import org.zkoss.zul.Messagebox;
 
 /**
  * User delegation editor controller
@@ -50,6 +51,8 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	private Combobox dataStatus;
 	
 	//private final String defaultDataStatus = "A";
+	
+	private final String modulTitle = "User Delegation";
 	
 	@Wire
 	private Bandbox bnbxDelegateFromUser;
@@ -86,6 +89,14 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		lb.getItems().clear();
 	}
 	
+	private boolean fromAndToUserIsSame(Long fromUserId, Long toUserId){
+		if(fromUserId==null || toUserId==null){
+			return false;
+		}
+		
+		return (fromUserId.compareTo(toUserId)==0);
+	}
+	
 	/**
 	 * Bandbox delegate from user onSelect handler
 	 */
@@ -95,13 +106,17 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	public void onBnbxDelegateFromUserListSelected(){
 		try {
 			User user = bnbxDelegateFromUserList.getSelectedItem().getValue();
-			sourceUserId.setValue(user.getId());
-			bnbxDelegateFromUser.setValue(user.getRealName());
-			bnbxDelegateFromUser.close();
-			lbAvailableRoles.setModel((ListModel<UserRole>) getUserRoleListModel());
-			clearListbox(lbDelegatedRoles);
-			lbAvailableGroups.setModel((ListModel<UserGroupAssignment>) getUserGroupListModel());
-			clearListbox(lbDelegatedGroups);
+			if(!fromAndToUserIsSame(user.getId(), destUserId.getValue())){
+				sourceUserId.setValue(user.getId());
+				bnbxDelegateFromUser.setValue(user.getRealName());
+				bnbxDelegateFromUser.close();
+				lbAvailableRoles.setModel((ListModel<UserRole>) getUserRoleListModel());
+				clearListbox(lbDelegatedRoles);
+				lbAvailableGroups.setModel((ListModel<UserGroupAssignment>) getUserGroupListModel());
+				clearListbox(lbDelegatedGroups);
+			}else{
+				Messagebox.show("User asal dan tujuan tidak boleh sama!", modulTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -115,9 +130,13 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	public void onBnbxDelegateToUserListSelected(){
 		try {
 			User user = bnbxDelegateToUserList.getSelectedItem().getValue();
-			destUserId.setValue(user.getId());
-			bnbxDelegateToUser.setValue(user.getRealName());			
-			bnbxDelegateToUser.close();
+			if(!fromAndToUserIsSame(sourceUserId.getValue(), user.getId())){
+				destUserId.setValue(user.getId());
+				bnbxDelegateToUser.setValue(user.getRealName());			
+				bnbxDelegateToUser.close();
+			}else{
+				Messagebox.show("User asal dan tujuan tidak boleh sama!", modulTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -443,7 +462,10 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		return (ZKEditorState.EDIT.equals(getEditorState()));
 	}
 	
-	private void updateEditorFields(){
+	/**
+	 * Menyesuaikan field-field pada form editor dengan data saat ini
+	 */
+	private void adjustEditorFields(){
 		if(isEditing()){
 			// Set value combo data status sesuai dgn data dari db
 			if(!getEditedData().getDataStatus().isEmpty()){
@@ -475,7 +497,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		updateEditorFields();
+		adjustEditorFields();
 	}
 	
 }
