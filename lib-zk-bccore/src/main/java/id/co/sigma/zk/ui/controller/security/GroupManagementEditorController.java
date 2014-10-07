@@ -6,6 +6,7 @@ import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.ApplicationMenuAssignment;
 import id.co.sigma.common.security.domain.UserGroup;
+import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectableApplicationMenu;
@@ -218,7 +219,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 
 	@Override
 	public void insertData() throws Exception {
-		preSaveData();
+		preSaveData(true);
 		Object[] data = new Object[]{getEditedData()};
 		insertData(data);
 		UserGroup group = (UserGroup) data[0];
@@ -226,7 +227,15 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		closeCurrentEditorPanel();
 	}
 	
-	private void preSaveData(){
+	private void preSaveData(boolean isNew){
+		if(isNew){
+			getEditedData().setCreatedBy(SecurityUtil.getUser().getUsername());
+			getEditedData().setCreatedOn(new Date());
+		}else{
+			getEditedData().setModifiedBy(SecurityUtil.getUser().getUsername());
+			getEditedData().setModifiedOn(new Date());
+		}
+		
 		if(getEditedData().getApplicationId()==null){
 			getEditedData().setApplicationId(new Long(applicationId));
 		}
