@@ -30,6 +30,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -272,7 +273,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		IdSpace idSpace = comp.getSpaceOwner();
 		Collection<Component> fellows = idSpace.getFellows();
 		for(Component fComp : fellows) {
-			if(fComp instanceof InputElement) {
+			if(fComp instanceof InputElement || fComp instanceof Checkbox) {
 				String fId = fComp.getId();
 				if(fId.contains(".")) {
 					String[] fields = fId.split("\\.");

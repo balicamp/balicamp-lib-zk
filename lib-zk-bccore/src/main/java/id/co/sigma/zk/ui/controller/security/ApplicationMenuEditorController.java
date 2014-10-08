@@ -56,8 +56,6 @@ public class ApplicationMenuEditorController extends
 	
 	ListModelList<ApplicationMenu> listModelParent;
 	
-	
-	
 	@Wire
 	Listbox list;
 	
@@ -135,8 +133,8 @@ public class ApplicationMenuEditorController extends
 			}
 		}	
 		
-		ApplicationMenu[] menus = null;
-		insertData(menus = new ApplicationMenu[]{getEditedData()});
+		ApplicationMenu[] menus = new ApplicationMenu[]{getEditedData()};
+		insertData(menus);
 		ApplicationMenu menu = menus[0];
 		Long id = menu.getId();
 		if(menu.getTreeLevelPosition()==1){
@@ -262,10 +260,11 @@ public class ApplicationMenuEditorController extends
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
+		if(getEditorState().equals(ZKEditorState.EDIT)){
+			functionCode.setReadonly(true);
+		}
 		listModel = new ListModelList<>(getPages());
-		//listModelParent = new ListModelList<>(getListMenu());
 		list.setModel(listModel);
-		//listParent.setModel(listModelParent);
 	}
 	
 	@Listen("onSelect=#list")

@@ -1,13 +1,13 @@
 <?page title="${labels.menu.list.title}" contentType="text/html;charset=UTF-8"?>
 <window id="form"
-	title="${labels.menu.list.title}" border="normal"  apply="id.co.sigma.zk.ui.controller.security.ApplicationMenuListController">
+	title="${labels.field.menu.title}" border="normal"  apply="id.co.sigma.zk.ui.controller.security.ApplicationMenuListController">
 	<vlayout>
     <tree id="tree" hflex="1">
 		<treecols>
-			<treecol hflex="1" label="${labels.field.code}" />
-			<treecol hflex="1" label="${labels.field.label}" />
-			<treecol hflex="1" label="${labels.field.url}" />
-			<treecol width="100px" label="${labels.field.action}" />
+			<treecol hflex="1" label="${labels.field.menu.code}" />
+			<treecol hflex="1" label="${labels.field.menu.label}" />
+			<treecol hflex="1" label="${labels.field.menu.url}" />
+			<treecol width="100px" label="${labels.field.menu.action}" />
 		</treecols>
 		<template name="model">
 	        <treeitem>
@@ -20,7 +20,7 @@
 	                		<actionButtonTree controller="${form$composer}" 
 	                	entityClass="${form$composer.entityClass}"
 						editorPage="~./zul/pages/master/security/MenuEditor.zul"
-						deleteMsg="Apakah anda yakin menghapus data page: ${each.data.id} ?"/>	  
+						deleteMsg="Apakah anda yakin ingin menghapus ${each.data.functionCode} - ${each.data.functionLabel} ?"/>	  
 						</hlayout>
 	                </treecell>
 	            </treerow>
