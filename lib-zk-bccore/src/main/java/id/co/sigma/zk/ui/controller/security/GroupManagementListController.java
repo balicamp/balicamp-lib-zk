@@ -1,16 +1,12 @@
 package id.co.sigma.zk.ui.controller.security;
 
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
-import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
-import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
