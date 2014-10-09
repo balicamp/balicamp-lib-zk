@@ -7,11 +7,10 @@ import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.security.domain.UserDelegation;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
-import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -34,39 +33,30 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserDelegationListController.class.getName());
 	
-	@Wire
-	private Listbox searchResult;
 	
-	@Wire
+	@Wire private Listbox searchResult;
+	
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
 	@QueryParameterEntry(filteredField="dataStatus", queryOperator=SimpleQueryFilterOperator.equal)
-	private Combobox cmbStatus;
+	@Wire private Combobox cmbStatus;
 	
-	@Wire
 	@QueryParameterEntry(filteredField="sourceUserId", queryOperator=SimpleQueryFilterOperator.equal)
-	private Longbox txtIdDelegateFromUser;
+	@Wire private Longbox txtIdDelegateFromUser;
 	
-	@Wire
-	private Bandbox bnbxDelegateFromUser;
+	@Wire private Bandbox bnbxDelegateFromUser;
 	
-	@Wire
 	@QueryParameterEntry(filteredField="destUserId", queryOperator=SimpleQueryFilterOperator.equal)
-	private Longbox txtIdDelegateToUser;
+	@Wire private Longbox txtIdDelegateToUser;
 	
-	@Wire
-	private Bandbox bnbxDelegateToUser;
+	@Wire private Bandbox bnbxDelegateToUser;
 	
-	@Wire
-	private Datebox txtStartDateBegin;
+	@Wire private Datebox txtStartDateBegin;
 	
-	@Wire
-	private Datebox txtStartDateEnd;
+	@Wire private Datebox txtStartDateEnd;
 	
-	@Wire
-	private Datebox txtEndDateBegin;
+	@Wire private Datebox txtEndDateBegin;
 	
-	@Wire
-	private Datebox txtEndDateEnd;
+	@Wire private Datebox txtEndDateEnd;
 	
 	public List<User> getUserList() {
 		return new ListModelList<>(getAllUser());
@@ -99,15 +89,14 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 		return searchResult;
 	}
 	
-	@Listen("onClick=#btnCari")
-	public void onBtnCariClick(){
-		invokeSearch();
+	@Override
+	public UserDelegation addNewData() {
+		return new UserDelegation();
 	}
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		loadDefaultFormValues();
 	}
 	
 	@Override
@@ -115,29 +104,6 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 		super.doBeforeComposeChildren(comp);
 	}
 	
-	private void loadDefaultFormValues(){
-		txtIdDelegateFromUser.setValue(null);
-		bnbxDelegateFromUser.setValue("");
-		txtIdDelegateToUser.setValue(null);
-		bnbxDelegateToUser.setValue("");
-		txtStartDateBegin.setValue(new Date());
-		txtStartDateEnd.setValue(new Date());
-		txtEndDateBegin.setValue(new Date());
-		txtEndDateEnd.setValue(new Date());
-		cmbStatus.setValue("");
-	}
-	
-	@Listen("onClick=#btnReset")
-	public void onBtnResetClick(){
-		loadDefaultFormValues();
-	}
-	
-	@Listen("onClick=#btnCreateNew")
-	public void onBtnCreateNewClick(){
-		UserDelegation newData = new UserDelegation();
-		EditorManager.getInstance().addNewData("~./zul/pages/master/security/UserDelegationEditor.zul", newData, this);
-	}
-
 	@Override
 	public void reload() {
 		invokeSearch();
@@ -167,6 +133,35 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void resetFilter() {
+		super.resetFilter();
+		bnbxDelegateFromUser.setValue(null);
+		bnbxDelegateToUser.setValue(null);
+	}
+
+	@Override
+	public void invokeSearch() {
+		List<SimpleQueryFilter> myFilters = new ArrayList<>();		
+		SimpleQueryFilter[] filters = generateFilters();
+		if(filters!=null && filters.length>0){
+			for (SimpleQueryFilter simpleQueryFilter : filters) {
+				myFilters.add(simpleQueryFilter);
+			}
+		}
+		if(txtStartDateBegin.getValue()!=null && txtStartDateEnd.getValue()!=null){
+			myFilters.add( new SimpleQueryFilter("startDate", txtStartDateBegin.getValue(), txtStartDateEnd.getValue()) );
+		}
+		if(txtEndDateBegin.getValue()!=null && txtEndDateEnd.getValue()!=null){
+			myFilters.add( new SimpleQueryFilter("endDate", txtEndDateBegin.getValue(), txtEndDateEnd.getValue()) );
+		}
+		SimpleQueryFilter[] finalFilters = new SimpleQueryFilter[myFilters.size()];
+		myFilters.toArray(finalFilters);
+		SimpleSortArgument [] sorts = getSorts();
+		
+		super.invokeSearch(finalFilters, sorts);
 	}
 	
 }

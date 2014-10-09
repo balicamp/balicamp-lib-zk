@@ -1,10 +1,11 @@
 <?page title="User Delegation" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<window id="userDelegationWin" 
+	<listWindow id="userDelegationWin" 
 	  width="100%"
 	  title="User Delegation" 
 	  border="normal" 
-	  apply="id.co.sigma.zk.ui.controller.security.UserDelegationListController">
+	  apply="id.co.sigma.zk.ui.controller.security.UserDelegationListController" 
+	  editorPage="~./zul/pages/master/security/UserDelegationEditor.zul">
 		
 		<groupbox id="searchBox" mold="3d" width="100%">
 			<grid >
@@ -12,7 +13,7 @@
 					<row>
 						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true">
+							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" readonly="true">
 								<bandpopup>
 									<vbox>
 										<hbox>
@@ -32,7 +33,7 @@
 					<row>
 						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true">
+							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" readonly="true">
 								<bandpopup>
 									<vbox>
 										<hbox>
@@ -68,29 +69,16 @@
 					<row>
 						<cell>${labels.field.status}</cell>
 						<cell>
-							<combobox id="cmbStatus"/>
+							<combobox id="cmbStatus" readonly="true"/>
 						</cell>
 					</row>
 				</rows>	
 			</grid>
-			<separator />
-			<hbox>
-				<button id="btnCari">${labels.action.button.search}</button>
-				<space></space>
-				<button id="btnReset">${labels.action.button.reset}</button>
-				<space></space>
-				<button id="btnCreateNew">${labels.action.button.add}</button>
-			</hbox>
 		</groupbox>
-		<separator bar="false"/>
+		<separator/>
 		
-		<listbox 
-			id="searchResult" 
-			width="100%"
-			height="300px"
-			mold="paging"
-			pageSize="10" 
-			emptyMessage="NO RECORD FOUND">
+		<listbox id="searchResult" width="100%" height="400px" mold="paging" pageSize="10" 
+			emptyMessage="${labels.msg.search.empty_result}">
 			<listhead>
 				<listheader label="${labels.field.no}" width="50px" align="center"/>
 				<listheader label="${labels.field.delegate_from_user}" hflex="1" align="center"/>
@@ -98,7 +86,7 @@
 				<listheader label="${labels.field.date_start}" hflex="1" align="center"/>
 				<listheader label="${labels.field.date_end}" hflex="1" align="center"/>
 				<listheader label="${labels.field.status}" hflex="1" align="center"/>
-				<listheader label="${labels.field.action}" width="150px" align="center"/>
+				<listheader label="${labels.field.action}" width="100px" align="center"/>
 			</listhead>
 			<template name="model">
 				<listitem >
@@ -117,8 +105,7 @@
 				</listitem>
 			</template>
 		</listbox>
-		<separator bar="false"/>
 		
-	</window>
+	</listWindow>
 
 </zk>
