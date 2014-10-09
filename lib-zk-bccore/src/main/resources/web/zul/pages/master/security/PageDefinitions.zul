@@ -1,15 +1,17 @@
 <?page title="Daftar Halaman" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window id="pListWin"
-	title="Page Definitions"
-	 border="normal" 
-	apply="id.co.sigma.zk.ui.controller.security.PageDefintionListController">
-	<groupbox id="searchBox" mold="3d" width="500px">
+<listWindow id="pListWin"
+	title="Daftar Page Definitions"
+	border="normal" 
+	apply="id.co.sigma.zk.ui.controller.security.PageDefintionListController"
+	editorPage="~./zul/pages/master/security/PageDefinitionEditor.zul">
+	
+	<groupbox id="searchBox" mold="3d" width="100%">
 		
 	<grid >
 			<columns>
-				<column label="Type" width="150px" />
-				<column label="Content" />
+				<column width="150px" />
+				<column />
 			</columns>
 			<rows>
 			<row>
@@ -26,12 +28,7 @@
 			</row>
 			</rows>	
 		</grid>	
-		<button id="btnCari">Cari</button>
-		<button id="btnReset">Reset</button>
 	</groupbox>
-	<separator bar="false"/>
-	
-	
 	<listbox 
 		id="pageListBox"
 		height="300px"
@@ -56,13 +53,6 @@
 				<listcell label="${each.additionalData}" style="text-align:left"/>
 			</actionListitem>
 		</template>		
-		<listfoot>  
-                    <listfooter span="6" align="left"><button id="btnTambah">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
-                    
-                </listfoot>
 	</listbox>
-	<separator bar="false"/>
-	
-	
-</window>
+</listWindow>
 </zk>
