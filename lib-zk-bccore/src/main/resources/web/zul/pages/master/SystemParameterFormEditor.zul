@@ -14,7 +14,8 @@
 					<label value="Param Key" width="150px" />
 					<textbox id="id"
 						value="${editorSystemParameter$composer.editedData.id}"
-						width="150px" />
+						width="150px" 
+						readonly="${not empty editorSystemParameter$composer.editedData.id}"/>
 				</row>
 				
 				<row>
