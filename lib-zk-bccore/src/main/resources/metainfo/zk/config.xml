@@ -11,4 +11,10 @@
 		<listener-class>id.co.sigma.zk.ui.SigmaWebAppInit</listener-class>
 	</listener>
 
+	<system-config>
+		<label-location>/WEB-INF/classes/metainfo/labels/common-label.properties</label-location>
+		<label-location>/WEB-INF/lib/metainfo/labels/common-label.properties</label-location>
+		<label-location>/WEB-INF/classes/metainfo/labels/menu-label.properties</label-location>
+		<label-location>/WEB-INF/lib/metainfo/labels/menu-label.properties</label-location>
+	</system-config>
 </zk>

@@ -1,8 +1,9 @@
 
 <?page title="Edit Page" contentType="text/html;charset=UTF-8"?>
+<!-- <?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> -->
 <zk>
 
-<editorWindow id="pageDefEditor" captionLabel="Page Definition Editor"
+<editorWindow id="pageDefEditor" captionLabel="Edit Page"
 	apply="id.co.sigma.zk.ui.controller.security.PageDefintionEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
@@ -13,13 +14,18 @@
 			</columns>
 		<rows>
 			<row>
-				${labels.field.code}
-				<textbox 
-					id="pageCode" 
-					value="${pageDefEditor$composer.editedData.pageCode}"/>
+				Code
+				
+				<bctextbox 
+					id="pageCodeByXml" 
+					targetBindField="pageCode" 
+					binderClassFQCN="id.co.sigma.itdc.web.component.MyBinder"
+					value="${pageDefEditor$composer.editedData.pageCode}"></bctextbox>
 			</row>
 			<row>
 				URL
+				
+					
 				<textbox id="pageUrlAnnotated" 
 					disabled="${editStateEnabledFlag}"
 					value="${pageDefEditor$composer.editedData.pageUrl}"></textbox>
@@ -33,7 +39,7 @@
 					value="${pageDefEditor$composer.editedData.additionalData}"></textbox>
 			</row>
 			<row>
-				${labels.field.remark}
+				Remark
 				<textbox id="remark"
 					value="${pageDefEditor$composer.editedData.remark}"></textbox>
 			</row>

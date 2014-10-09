@@ -24,7 +24,7 @@ public class PageDefintionEditorController extends BaseSimpleDirectToDBEditor<Pa
 	
 	
 	@Wire
-	@ControlDataBinder(targetField="pageUrl")
+	@ControlDataBinder(targetField="pageCode")
 	private Textbox pageUrlAnnotated ; 
 	
 	

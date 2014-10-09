@@ -1,15 +1,23 @@
 <?page title="Auto Generated index.zul"?>
-<listWindow id="index" 
-	apply="id.co.sigma.zk.ui.controller.master.SystemParameterController" 
-	title="Daftar Parameter System" border="normal"
-	editorPage="~./zul/pages/master/SystemParameterFormEditor.zul">
-
-     <groupbox id="searchBox" width="100%">
+<window id="index" apply="id.co.sigma.zk.ui.controller.master.SystemParameterController" title="Parameter System" border="normal">
+<!--     <vlayout>
+    	Key:
+        <textbox id="keySearch" />
+        Catatan
+        <textbox id="remarkSearch" />
+    </vlayout>
+   
+     <vbox align="center">
+     	<button id="searchButton" label="Search" 
+            onClick="@command('click')"/>
+     </vbox>
+      -->
+     <groupbox id="searchBox" mold="3d" width="500px">
      
      <grid >
 			<columns>
-				<column width="150px" />
-				<column />
+				<column label="Type" width="150px" />
+				<column label="Content" />
 			</columns>
 			<rows>
 			<row>
@@ -22,35 +30,49 @@
 			</row>
 			</rows>	
 		</grid>	
+		<button id="searchButton">Search</button>
+		<button id="resetButton">Reset</button>
 	</groupbox>
+	<separator bar="false"/>
+    
+    <vbox align="center">
+    </vbox>
     <listbox 
         height="400px" 
         id="listbox"
+
         mold="paging"
         pageSize="10" 
         >   
-        <actionListhead>
-            <listheader label="${labels.field.no}" width="50px" align="center"/>
+        <listhead>
+        	<listheader label="Edit" width="100px" align="center"/>
+            <listheader label="No" width="50px" align="center"/>
             <listheader label="Key" width="100px" align="center"/>
             <listheader label="Nilai" width="250px"  align="center"/>
-            <listheader label="${labels.field.remark}" width="250px" align="center"/>
-			<listheader label="${labels.field.type}" width="250px" align="center"/>
+            <listheader label="Catatan" width="250px" align="center"/>
+			<listheader label="Tipe" width="250px" align="center"/>
 			<listheader label="Boleh di edit" width="200px" align="center"/>
-        </actionListhead>
+        </listhead>
         <template name="model">
-        <actionListitem value="${each}" 
-        	editorPage="~./zul/pages/master/SystemParameterFormEditor.zul"
-        	deleteMsg="Apakah anda yakin menghapus data key: ${each.id} - ${each.valueRaw}"
-        	controller="${index$composer}">
+        <listitem >
+        	<listcell>
+					<actionButton editorPage="~./zul/pages/master/SystemParameterFormEditor.zul"
+						deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
+						controller="${index$composer}"/>
+			</listcell>
             <listcell label="${forEachStatus.index+1}" style="text-align:right"/>
             <listcell label="${each.id}" style="text-align:rigth"/>
             <listcell label="${each.valueRaw}" style="text-align:left"/>
             <listcell label="${each.remark}" style="text-align:left"/>
-            <listcell label="${each.paramType}" style="text-align:left"/>
-            <listcell label="${each.editableFlag}" style="text-align:left"/>
-        </actionListitem>
+             <listcell label="${each.paramType}" style="text-align:left"/>
+             <listcell label="${each.editableFlag}" style="text-align:left"/>
+        </listitem>
         </template>
+         		<listfoot>  
+                    <listfooter span="6" align="left"><button id="addButton">Tambah</button><button id="btnEdit" visible="false">Edit</button><button id="btnHapus"  visible="false">Hapus</button></listfooter>
+                    
+                </listfoot>
     </listbox>
     
     
-</listWindow>
+</window>

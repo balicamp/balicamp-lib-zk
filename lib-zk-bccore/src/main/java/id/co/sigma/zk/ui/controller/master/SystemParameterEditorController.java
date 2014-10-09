@@ -1,13 +1,14 @@
 package id.co.sigma.zk.ui.controller.master;
 
-import id.co.sigma.common.data.app.SystemSimpleParameter;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
-import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import id.co.sigma.common.data.app.SystemSimpleParameter;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,18 +16,24 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 /**
  * 
@@ -74,6 +81,84 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     ListModelList<String> listModelParamtype;
     SystemSimpleParameter system;
     
+/*    Window win;
+    AnnotateDataBinder binder;
+    boolean textbox, datepicker, radiogrup;
+    
+    
+    private Date dtValue ;
+    private Radio editableRadio;
+    private Radio valueRadio;
+    
+
+
+
+	public Radio getValueRadio() {
+		return valueRadio;
+	}
+
+	public void setValueRadio(Radio valueRadio) {
+		this.valueRadio = valueRadio;
+	}
+
+	public Radio getEditableRadio() {
+		return editableRadio;
+	}
+
+	public void setEditableRadio(Radio editableRadio) {
+		this.editableRadio = editableRadio;
+	}
+
+	public Textbox getRemark() {
+		return remark;
+	}
+
+	public void setRemark(Textbox remark) {
+		this.remark = remark;
+	}
+
+	public Date getDtValue() {
+		return dtValue;
+	}
+
+	public void setDtValue(Date dtValue) {
+		this.dtValue = dtValue;
+	}
+
+
+
+	public Radiogroup getEditableFlag() {
+		return editableFlag;
+	}
+
+	public void setEditableFlag(Radiogroup editableFlag) {
+		this.editableFlag = editableFlag;
+	}
+
+	public boolean isRadiogrup() {
+		return radiogrup;
+	}
+
+	public void setRadiogrup(boolean radiogrup) {
+		this.radiogrup = radiogrup;
+	}
+
+	public boolean isTextbox() {
+		return textbox;
+	}
+
+	public void setTextbox(boolean textbox) {
+		this.textbox = textbox;
+	}
+
+	public boolean isDatepicker() {
+		return datepicker;
+	}
+
+	public void setDatepicker(boolean datepicker) {
+		this.datepicker = datepicker;
+	}
+*/
 	public ListModelList<String> getListModelParamtype() {
 		return listModelParamtype;
 	}
@@ -98,6 +183,33 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 		this.listModelEditable = listModelEditable;
 	}
 	
+	
+
+	/*@Listen(value="onClick = #saveButton")
+    public void simpanClick() {
+        if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
+            try {
+                insertData();
+            } catch (Exception e) {
+                logger.error( "" + e.getMessage() , e);
+                 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Tambah Data", Messagebox.OK, Messagebox.ERROR);
+            }
+
+        }else {
+            try {
+                updateData();
+            } catch (Exception e) {
+                logger.error("gagal update file. error : " + e.getMessage() , e);
+                 Messagebox.show("Gagal input data page. error : " + e.getMessage(), "Gagal Simpan Data", Messagebox.OK, Messagebox.ERROR);
+            }
+				Date datenya = dateValue.getValue();
+				String valStr = datenya.toString();
+        }
+
+    }*/
+	
+	
+
     public Textbox getId() {
 		return id;
 	}
@@ -106,15 +218,27 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 		this.id = id;
 	}
 
+	@Listen("onClick=#btnCancel")
+    public void onCancel(){
+        EditorManager.getInstance().closeCurrentEditorPanel();
+    }
+
+
 	@Listen("onChange=#cmbType")
     public void onChange(Event event){
 		if(cmbType.getValue().equals("java.util.Date")){
+//			setTextbox(false);
+//			setDatepicker(true);
+//			setRadiogrup(false);
 			intParamType.setVisible(false);
 			textParamType.setVisible(false);
 			dateParamType.setVisible(true);
 			boolParamType.setVisible(false);
 			decParamType.setVisible(false);
 		}else if (cmbType.getValue().equals("java.lang.Boolean")){
+//			setTextbox(false);
+//		    setDatepicker(false);
+//		    setRadiogrup(true);
 			intParamType.setVisible(false);
 			textParamType.setVisible(false);
 			dateParamType.setVisible(false);
@@ -146,6 +270,14 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
     public void doAfterCompose(Component comp) throws Exception {
     	// TODO Auto-generated method stub
     	super.doAfterCompose(comp);
+    	
+//    	if(comp instanceof Window){
+//    		win = (Window) comp;
+//    		binder = new AnnotateDataBinder(win);
+//    		System.out.println("WINDOW_ID : " + win.getId());
+//            System.out.println("DESKTOP_ID : " + win.getDesktop().getId());
+//    	}
+    	
     	
     	listModelParamtype= new ListModelList<String>();
     	listModelParamtype.add(Integer.class.getName());

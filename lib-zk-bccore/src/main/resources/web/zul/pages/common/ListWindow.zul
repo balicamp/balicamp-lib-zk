@@ -8,16 +8,17 @@
 		</panelchildren>
 	</panel>
 	<separator/>
-	<panel id="panelSearchKeys" border="none">
+	<panel border="none">
 		<panelchildren id="searchSection">
 		</panelchildren>
 	</panel>
-	<panel id="panelButtons" border="none">
+	<panel border="none">
 		<panelchildren>
 			<hbox height="40px" align="center" style="padding:5px">
 				<button id="btnSearch" label="${labels.action.button.search}"/>
+				<space spacing="2px" />
 				<button id="btnReset" label="${labels.action.button.reset}"/>
-				<space/>
+				<space spacing="2px" />
 				<button id="btnAddNew" label="${labels.action.button.add}"/>
 			</hbox>
 		</panelchildren>
