@@ -51,21 +51,9 @@ public class GroupManagementListController extends BaseSimpleListController<User
 		return pageListBox;
 	}
 	
-	@Listen("onClick=#btnCari")
-	public void btnCariClick(){
-		invokeSearch();
-	}
-	
-	@Listen("onClick=#btnReset")
-	public void btnResetClick(){
-		txtGroupCode.setValue("");
-		txtGroupName.setValue("");
-	}
-	
-	@Listen("onClick=#btnTambah")
-	public void btnTambahClick(){
-		UserGroup usrGrp = new UserGroup();
-		EditorManager.getInstance().addNewData("~./zul/pages/master/security/GroupManagementEditor.zul", usrGrp, this);
+	@Override
+	public UserGroup addNewData() {
+		return new UserGroup();
 	}
 	
 }

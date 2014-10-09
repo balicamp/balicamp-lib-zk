@@ -1,64 +1,49 @@
 <?page title="Group Management" contentType="text/html;charset=UTF-8"?>
 <zk>
-<window 
-	id="groupMgmWin" 
-	title="Group Management"
-	border="normal" 
-	apply="id.co.sigma.zk.ui.controller.security.GroupManagementListController">
+<listWindow id="groupMgmWin" 
+	title="Daftar Group Management"
+	border="none" 
+	width="100%" 
+	height="100%" 
+	apply="id.co.sigma.zk.ui.controller.security.GroupManagementListController" 
+	editorPage="~./zul/pages/master/security/GroupManagementEditor.zul">
 	
 	<groupbox id="searchBox" mold="3d" width="100%">
 		<grid >
 			<rows>
 				<row>
-					<cell width="200px">Group Code</cell>
+					<cell width="200px">${labels.field.group_code}</cell>
 					<cell><textbox id="txtGroupCode"></textbox></cell>
 				</row>
 				<row>
-					<cell>Group Name</cell>
+					<cell>${labels.field.group_name}</cell>
 					<cell><textbox id="txtGroupName"></textbox></cell>
 				</row>
 			</rows>	
-		</grid>	
-		<button id="btnCari">Cari</button>
-		<space></space>
-		<button id="btnReset">Reset</button>
+		</grid>
 	</groupbox>
-	<separator bar="false"/>
+	<separator/>
 	
-	
-	<listbox 
-		id="pageListBox" 
+	<listbox id="pageListBox" 
 		width="100%"
 		height="300px"
 		mold="paging"
 		pageSize="10" >
-		<listhead>
-			<listheader label="No" width="50px" align="center"/>
-			<listheader label="Code" hflex="1" align="center"/>
-			<listheader label="Name" hflex="1" align="center"/>
-			<listheader label="Action" width="150px" align="center"/>
-		</listhead>
-		<template 
-			name="model">
-			<listitem >
+		<actionListhead>
+			<listheader label="${labels.field.no}" width="50px" align="center"/>
+			<listheader label="${labels.field.code}" hflex="1" align="center"/>
+			<listheader label="${labels.field.name}" hflex="1" align="center"/>
+		</actionListhead>
+		<template name="model">
+			<actionListitem value="${each}" editorPage="~./zul/pages/master/security/GroupManagementEditor.zul" 
+				deleteMsg="${labels.msg.questions.confirm_delete}"
+				controller="${groupMgmWin$composer}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right;"/>
 				<listcell label="${each.groupCode}" style="text-align:left;"/>
 				<listcell label="${each.groupName}" style="text-align:left;"/>
-				<listcell>
-					<actionButton editorPage="~./zul/pages/master/security/GroupManagementEditor.zul"
-						deleteMsg="Apakah anda yakin menghapus data group: ${each.groupCode}"
-						controller="${groupMgmWin$composer}" />
-				</listcell>
-			</listitem>
-		</template>		
-		<listfoot>  
-        	<listfooter span="6" align="left">
-	        	<button id="btnTambah">Tambah</button>
-        	</listfooter>
-        </listfoot>
+			</actionListitem>
+		</template>
 	</listbox>
-	<separator bar="false"/>
 	
-	
-</window>
+</listWindow>
 </zk>
