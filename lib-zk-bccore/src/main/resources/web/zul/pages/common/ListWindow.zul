@@ -16,8 +16,9 @@
 		<panelchildren>
 			<hbox height="40px" align="center" style="padding:5px">
 				<button id="btnSearch" label="${labels.action.button.search}"/>
+				<space width="1px"/>
 				<button id="btnReset" label="${labels.action.button.reset}"/>
-				<space/>
+				<space bar="true" width="7px" height="26px"/>
 				<button id="btnAddNew" label="${labels.action.button.add}"/>
 			</hbox>
 		</panelchildren>
