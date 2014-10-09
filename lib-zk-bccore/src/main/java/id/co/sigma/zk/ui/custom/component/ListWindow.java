@@ -15,6 +15,7 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Window;
@@ -90,15 +91,28 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 			panelButtons.setVisible(false);
 		}
 
-		if((getChildren().size() - childrenCount) == 2) {
+		if((getChildren().size() - childrenCount) >= 2) {
 			
 			Component srchSection = getChildren().get(childrenCount);
 			srchSection.setVisible(isSearchable());
 			searchSection.appendChild(srchSection);
 			
 		}
-
-		listSection.appendChild(getChildren().get(childrenCount));
+		
+		Component child = null;
+		
+		for(;getChildren().size() > childrenCount;) {
+			
+			child = getChildren().get(childrenCount);
+			
+			if(child instanceof Listbox) break;
+			
+			searchSection.appendChild(child);
+		}
+		
+		if(child != null) {
+			listSection.appendChild(child);
+		}
 		
 	}
 	
