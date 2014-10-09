@@ -15,11 +15,11 @@
 				<rows>
 					<row>
 						<cell width="200px">Group Code</cell>
-						<cell><textbox id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}"></textbox></cell>
+						<cell><textbox id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}" maxlength="32" constraint="no empty"></textbox></cell>
 					</row>
 					<row>
 						<cell>Group Name</cell>
-						<cell><textbox id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}"></textbox></cell>
+						<cell><textbox id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}" maxlength="128" constraint="no empty"></textbox></cell>
 					</row>
 					<row>
 						<cell>Active</cell>
