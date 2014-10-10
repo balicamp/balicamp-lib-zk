@@ -14,7 +14,7 @@
 						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
 							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" readonly="true" 
-							value="${userDelegationEditorWin$composer.editedData.sourceUser.realName}">
+							value="${userDelegationEditorWin$composer.editedData.sourceUser.realName}" constraint="no empty">
 								<bandpopup>
 									<vbox>
 										<hbox>
@@ -35,7 +35,7 @@
 						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
 							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" readonly="true" 
-							value="${userDelegationEditorWin$composer.editedData.destUser.realName}">
+							value="${userDelegationEditorWin$composer.editedData.destUser.realName}" constraint="no empty">
 								<bandpopup>
 									<vbox>
 										<hbox>
@@ -55,13 +55,15 @@
 					<row>
 						<cell>${labels.field.date_start}</cell>
 						<cell>
-							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" readonly="true" />
+							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" 
+							readonly="true" constraint="no empty, no past" />
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.date_end}</cell>
 						<cell>
-							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" readonly="true" />
+							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" 
+							readonly="true" constraint="no empty, no past, after ${userDelegationEditorWin$composer.tomorrowDateStr}" />
 						</cell>
 					</row>
 					<row>
