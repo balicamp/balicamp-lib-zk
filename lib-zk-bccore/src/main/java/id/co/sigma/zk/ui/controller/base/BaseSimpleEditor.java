@@ -25,10 +25,14 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
@@ -87,6 +91,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * state editor
 	 */
 	private ZKEditorState editorState ; 
+	
+	/**
+	 * data detail
+	 */
+	protected List<ZKClientSideListDataEditorContainer<Object>> children;
 	
 	/**
 	 * reference ke pemanggil dari component
@@ -166,7 +175,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		updateData(getEditedData());
 		
 		//insert child data (master-detail)
-		List<ZKClientSideListDataEditorContainer<Object>> children = parseChildGridData();
 		if((children != null) && (children.size() > 0)) {
 			
 			for(ZKClientSideListDataEditorContainer<?> child : children) {
@@ -187,7 +195,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				
 			}
 		}
-		closeCurrentEditorPanel();
 	}
 	
 	/**
@@ -204,8 +211,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		//hal ini dibutuhkan untuk mendapatkan autoincrement ID
 		setEditedData((POJO)pojo[0]);
 		
-		//insert child data (master-detail)
-		List<ZKClientSideListDataEditorContainer<Object>> children = parseChildGridData();
+		ExtendedBeanUtils beanUtils = ExtendedBeanUtils.getInstance();
 		
 		if((children != null) && (children.size() > 0)) {
 			
@@ -213,7 +219,14 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				
 				if(child != null) {
 					
+					JoinKey[] keys = getJoinKeys(child);
+					
 					for(Object data: child.getNewlyAppendedData()) {
+						
+						for(JoinKey key : keys) {
+							Object val = beanUtils.getProperty(editedData, key.parentKey());
+							beanUtils.setProperty(data, val, key.childKey());
+						}
 						
 						insertData((POJO)data);
 						
@@ -224,7 +237,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			}
 			
 		}
-		closeCurrentEditorPanel();
 	}
 	
 	/**
@@ -299,7 +311,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	/**
 	 * re-load child/detail data 
 	 */
-	protected void reloadChildGridData() {
+	protected final void reloadChildGridData() {
 		parseChildGridData();
 	}
 	
@@ -308,7 +320,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private List<ZKClientSideListDataEditorContainer<Object>> parseChildGridData() {
+	protected final List<ZKClientSideListDataEditorContainer<Object>> parseChildGridData() {
 		Field[] fields = getClass().getDeclaredFields();
 		List<ZKClientSideListDataEditorContainer<Object>> lists = new ArrayList<ZKClientSideListDataEditorContainer<Object>>();
 		for(Field f: fields) {
@@ -523,6 +535,34 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			}
 		}
 	}
+	
+	private JoinKey[] getJoinKeys(ZKClientSideListDataEditorContainer<?> container) {
+		Field[] fields = getClass().getDeclaredFields();
+		for(Field f: fields) {
+			if(f.isAnnotationPresent(ChildGridData.class)) {
+
+				ChildGridData ann = f.getAnnotation(ChildGridData.class);
+				
+				try {
+
+					if(!f.isAccessible()) {
+						f.setAccessible(true);
+					}
+					
+					ZKClientSideListDataEditorContainer<?> cntr = (ZKClientSideListDataEditorContainer<?>)f.get(this);
+					
+					if((container != null && cntr != null) && (container.equals(cntr))) {
+						return ann.joinKeys();
+					}
+					
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+				}
+				
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Set data property dari input client
@@ -709,5 +749,67 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 */
 	public BaseSimpleController getEditorCallerReference() {
 		return editorCallerReference;
+	}
+	
+	protected abstract void saveData(final Event event);
+
+	protected final void showSuccesMessage(ZKEditorState state) {
+		Messagebox.show(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.success") : Labels.getLabel("msg.save.edit.success"), 
+				Labels.getLabel("title.msgbox.information"),
+				new Messagebox.Button[]{Messagebox.Button.OK},
+				new String[]{Labels.getLabel("action.button.ok")},
+				Messagebox.INFORMATION,
+				Messagebox.Button.OK, null);
+	}
+	
+	protected final void showErrorMessage(ZKEditorState state, String errMessage) {
+		Messagebox.show(
+				(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.fail") : Labels.getLabel("msg.save.edit.fail"))
+				+ ".\n" + ((errMessage != null) ? ("Error: " + errMessage) : ""), 
+				Labels.getLabel("title.msgbox.error"),
+				new Messagebox.Button[]{Messagebox.Button.OK},
+				new String[]{Labels.getLabel("action.button.ok")},
+				Messagebox.ERROR,
+				Messagebox.Button.OK, null);
+	}
+	
+	protected final void showCancelConfirmationMessage(String cancelMsg) {
+		if(cancelMsg != null && cancelMsg.trim().length() > 0) {
+			
+			Messagebox.show(cancelMsg, Labels.getLabel("title.msgbox.confirmation"),
+					new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
+					new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
+					Messagebox.QUESTION,
+					Messagebox.Button.YES,
+					new EventListener<Messagebox.ClickEvent>() {
+				
+				@Override
+				public void onEvent(Messagebox.ClickEvent event) throws Exception {
+					if(Messagebox.Button.YES.equals(event.getButton())) {
+						EditorManager.getInstance().closeCurrentEditorPanel();
+					}
+				}
+			});				
+		} else EditorManager.getInstance().closeCurrentEditorPanel();
+	}
+	
+	protected final void showSaveConfirmationMessage(final Event evt, ZKEditorState state, String confirmMsg) {
+		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
+			
+			Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.confirmation"),
+					new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
+					new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
+					Messagebox.QUESTION,
+					Messagebox.Button.YES,
+					new EventListener<Messagebox.ClickEvent>() {
+				
+				@Override
+				public void onEvent(Messagebox.ClickEvent event) throws Exception {
+					if(Messagebox.Button.YES.equals(event.getButton())) {
+						saveData(evt);
+					}
+				}
+			});				
+		} else saveData(evt); 
 	}
 }

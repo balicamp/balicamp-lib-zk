@@ -3,7 +3,6 @@ package id.co.sigma.zk.ui.controller.base;
 
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
-import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
@@ -17,10 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Listen;
 
 /**
@@ -67,162 +63,89 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 		parseEditedData(evt.getTarget());
 		try {
 			bindValueFromControl(getEditedData());
+			children = parseChildGridData();
 		} catch (Exception e) {
-			if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
-				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
-						Labels.getLabel("title.msgbox.error"),
-						new Messagebox.Button[]{Messagebox.Button.OK},
-						new String[]{Labels.getLabel("action.button.ok")},
-						Messagebox.ERROR,
-						Messagebox.Button.OK, null);
-			} else {
-				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
-						Labels.getLabel("title.msgbox.error"),
-						new Messagebox.Button[]{Messagebox.Button.OK},
-						new String[]{Labels.getLabel("action.button.ok")},
-						Messagebox.ERROR,
-						Messagebox.Button.OK, null);
-			}
+			showErrorMessage(getEditorState(), e.getMessage());
 			return  ; 
 		}
 		//-->end
 		
 		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
-		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
-			
-			Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.confirmation"),
-					new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
-					new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
-					Messagebox.QUESTION,
-					Messagebox.Button.YES,
-					new EventListener<Messagebox.ClickEvent>() {
-				
-				@Override
-				public void onEvent(Messagebox.ClickEvent event) throws Exception {
-					if(Messagebox.Button.YES.equals(event.getButton())) {
-						saveData(evt);
-					}
-				}
-			});				
-		} else saveData(evt); 
+		showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+		
 	}
 	
-	private final void saveData(final Event event) {
-//		parseEditedData(event.getTarget());
-//		try {
-//			bindValueFromControl(getEditedData());
-//		} catch (Exception e) {
-//			 Messagebox.show("Gagal Bind data. error : " + e.getMessage(), "Gagal Bind Data", Messagebox.OK, Messagebox.ERROR);
-//			return  ; 
-//		}
-		
+	@Override
+	protected void saveData(final Event event) {
+
 		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 		
-		tmpl.execute(new TransactionCallback<Integer>() {
-			@Override
-			public Integer doInTransaction(TransactionStatus stts) {
-				
-				Object obj = null;
-				try {
-					obj = stts.createSavepoint();
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
-				}
-				
-				boolean saveCommit = true ; 
-				
-				
-				if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
+		try {
+			tmpl.execute(new TransactionCallback<Integer>() {
+				@Override
+				public Integer doInTransaction(TransactionStatus stts) {
+					
+					Object obj = null;
 					try {
-						
-						insertData();
-						
-						Messagebox.show(Labels.getLabel("msg.save.add.success"), 
-								Labels.getLabel("title.msgbox.information"),
-								new Messagebox.Button[]{Messagebox.Button.OK},
-								new String[]{Labels.getLabel("action.button.ok")},
-								Messagebox.INFORMATION,
-								Messagebox.Button.OK, null);
-						
+						obj = stts.createSavepoint();
 					} catch (Exception e) {
-						saveCommit = false ; 
-						logger.error( "" + e.getMessage() , e);
-
-						Messagebox.show(Labels.getLabel("msg.save.add.fail"), 
-								Labels.getLabel("title.msgbox.error"),
-								new Messagebox.Button[]{Messagebox.Button.OK},
-								new String[]{Labels.getLabel("action.button.ok")},
-								Messagebox.ERROR,
-								Messagebox.Button.OK, null);
-					}
-				}else {
-					try {
-						
-						updateData();
-						
-						Messagebox.show(Labels.getLabel("msg.save.edit.success"), 
-								Labels.getLabel("title.msgbox.information"),
-								new Messagebox.Button[]{Messagebox.Button.OK},
-								new String[]{Labels.getLabel("action.button.ok")},
-								Messagebox.INFORMATION,
-								Messagebox.Button.OK, null);
-						
-					} catch (Exception e) {
-						saveCommit = false ; 
-						logger.error("gagal update file. error : " + e.getMessage() , e);
-
-						Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
-								Labels.getLabel("title.msgbox.error"),
-								new Messagebox.Button[]{Messagebox.Button.OK},
-								new String[]{Labels.getLabel("action.button.ok")},
-								Messagebox.ERROR,
-								Messagebox.Button.OK, null);
+						logger.warn(e.getMessage());
 					}
 					
+					boolean saveCommit = true ; 
+					
+					
+					if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
+						try {
+							
+							insertData();
+							
+						} catch (Exception e) {
+							saveCommit = false ; 
+							logger.error( "" + e.getMessage() , e);
+						}
+					}else {
+						try {
+							
+							updateData();
+							
+						} catch (Exception e) {
+							saveCommit = false ; 
+							logger.error("gagal update file. error : " + e.getMessage() , e);
+						}
+						
+					}
+					
+					if(obj != null) { //jika support savepoint
+						if ( saveCommit){
+							stts.releaseSavepoint(obj);
+						}
+						else {
+							stts.rollbackToSavepoint(obj);
+						}
+					} else { //jika tidak support savepoint
+						if(!saveCommit) {
+							stts.setRollbackOnly();
+						}
+					}
+					
+					return 1;
 				}
-				
-				if(obj != null) { //jika support savepoint
-					if ( saveCommit){
-						stts.releaseSavepoint(obj);
-					}
-					else {
-						stts.rollbackToSavepoint(obj);
-					}
-				} else { //jika tidak support savepoint
-					if(!saveCommit) {
-						stts.setRollbackOnly();
-					}
-				}
-				
-				return 1;
-			}
-		});
-		
-		
-		
-		
+			});
+			
+			showSuccesMessage(getEditorState());
+			closeCurrentEditorPanel();
+			
+		} catch (Exception e) {			
+			logger.error("gagal update file. error : " + e.getMessage() , e);			
+			showErrorMessage(getEditorState(), e.getMessage());
+		}
 	}
 	
 	@Listen("onClick = #btnCancel")
 	public void cancelClick() {
 		String cancelMsg = (String)getSelf().getAttribute("cancellationMsg");
-		if(cancelMsg != null && cancelMsg.trim().length() > 0) {
-			
-			Messagebox.show(cancelMsg, Labels.getLabel("title.msgbox.confirmation"),
-					new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
-					new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
-					Messagebox.QUESTION,
-					Messagebox.Button.YES,
-					new EventListener<Messagebox.ClickEvent>() {
-				
-				@Override
-				public void onEvent(Messagebox.ClickEvent event) throws Exception {
-					if(Messagebox.Button.YES.equals(event.getButton())) {
-						EditorManager.getInstance().closeCurrentEditorPanel();
-					}
-				}
-			});				
-		} else EditorManager.getInstance().closeCurrentEditorPanel();
+		showCancelConfirmationMessage(cancelMsg);
 	}
 
 	/**

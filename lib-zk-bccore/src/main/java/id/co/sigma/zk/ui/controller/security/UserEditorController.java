@@ -142,7 +142,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	}
 	
 	
-	private final void saveData(final Event evt) {
+	protected final void saveData(final Event evt) {
 		parseEditedData(evt.getTarget());
 		User data = getEditedData();
 		

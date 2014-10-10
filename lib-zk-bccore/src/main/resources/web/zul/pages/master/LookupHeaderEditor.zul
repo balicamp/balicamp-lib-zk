@@ -13,11 +13,11 @@
 		<rows>
 			<row>
 				${labels.field.id}:
-				<textbox id="txtIdLov" maxlength="32" value="${lookupHeader$composer.editedData.id}"></textbox>
+				<textbox id="txtIdLov" maxlength="32" value="${lookupHeader$composer.editedData.id}" constraint="no empty : ${labels.field.id} tidak boleh kosong"></textbox>
 			</row>
 			<row>
 				${labels.field.locale}:
-				<textbox id="txtI18Key" maxlength="32" value="${lookupHeader$composer.editedData.i18Key}"></textbox>
+				<textbox id="txtI18Key" maxlength="32" value="${lookupHeader$composer.editedData.i18Key}" constraint="no empty : ${labels.field.locale} tidak boleh kosong"></textbox>
 			</row>
 			<row>
 				${labels.field.remark}:
@@ -46,21 +46,21 @@
 			</actionListhead>
 			<template 
 				name="model">
-				<actionListitem value="${each}" editable="true" editorPage="~./zul/pages/master/LookupDetailEditor.zul"
+				<actionListitem value="${each}" editable="false" editorPage="~./zul/pages/master/LookupDetailEditor.zul"
 					deleteMsg="Apakah anda yakin menghapus data key: ${each.detailCode}"
 					controller="${lookupHeader$composer}" child="true">
 					<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
 					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.i18Key}" readonly="true"/></listcell>
-					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.detailCode}" readonly="${not empty each.detailCode}"/></listcell>
-					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.label}"/></listcell>
-					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField1}"/></listcell>
-					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField2}"/></listcell>
-					<listcell style="text-align:right"><intbox width="100%" inplace="true" value="${each.sequence}"/></listcell>
+					<listcell style="text-align:left">
+						<textbox width="100%" inplace="true" value="${each.detailCode}" 
+							readonly="${not empty each.detailCode}" maxlength="255" constraint="no empty : ${labels.field.code} tidak boleh kosong"/>
+					</listcell>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.label}" maxlength="255"/></listcell>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField1}" maxlength="255"/></listcell>
+					<listcell style="text-align:left"><textbox width="100%" inplace="true" value="${each.extField2}" maxlength="255"/></listcell>
+					<listcell style="text-align:right"><intbox width="100%" inplace="true" value="${each.sequence}" maxlength="11"/></listcell>
 				</actionListitem>
 			</template>		
-<!-- 			<listfoot>  
-				<listfooter span="8" align="left"><button id="btnAdd" label="${labels.action.button.add}"/></listfooter>
-			</listfoot> -->
 		</listbox>	
 		</vlayout>
 	</groupbox>

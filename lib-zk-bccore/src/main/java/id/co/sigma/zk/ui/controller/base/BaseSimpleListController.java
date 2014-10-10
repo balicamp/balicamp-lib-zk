@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -114,64 +115,69 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		
 		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 
-		tmpl.execute(new TransactionCallback<Integer>() {
+		try {
+			tmpl.execute(new TransactionCallback<Integer>() {
 
-			@Override
-			public Integer doInTransaction(TransactionStatus status) {
-				Object obj = null;
-				try {
-					obj = status.createSavepoint();
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
-				}
-				
-				boolean saveCommit = true ;
-				
-				try {
-					Map<String, Class<?>> children = getChildrenParentKeyAndEntiy();
-					if(children != null && !children.isEmpty()) {
-						String[] prntKeys = children.keySet().toArray(new String[children.keySet().size()]);
-						for(String pKey : prntKeys) {
-							Class<?> clazz = children.get(pKey);
-							generalPurposeService.delete(clazz, pk, pKey);
+				@Override
+				public Integer doInTransaction(TransactionStatus status) {
+					Object obj = null;
+					try {
+						obj = status.createSavepoint();
+					} catch (Exception e) {
+						logger.warn(e.getMessage());
+					}
+					
+					boolean saveCommit = true ;
+					
+					try {
+						Map<String, Class<?>> children = getChildrenParentKeyAndEntiy();
+						if(children != null && !children.isEmpty()) {
+							String[] prntKeys = children.keySet().toArray(new String[children.keySet().size()]);
+							for(String pKey : prntKeys) {
+								Class<?> clazz = children.get(pKey);
+								generalPurposeService.delete(clazz, pk, pKey);
+							}
+						}
+						
+						generalPurposeService.delete(data.getClass(), pk, pkFieldName);
+						
+					} catch (Exception e) {
+						saveCommit = false ;
+						logger.error(e.getMessage(), e);
+					}
+					
+					if(obj != null) {
+						if(saveCommit) {
+							status.releaseSavepoint(obj);
+						} else {
+							status.rollbackToSavepoint(obj);
+						}
+					} else {
+						if(!saveCommit) {
+							status.setRollbackOnly();
 						}
 					}
-					generalPurposeService.delete(data.getClass(), pk, pkFieldName);
 					
-					Messagebox.show(Labels.getLabel("msg.save.delete.success"), 
-							Labels.getLabel("title.msgbox.information"),
-							new Messagebox.Button[]{Messagebox.Button.OK},
-							new String[]{Labels.getLabel("action.button.ok")},
-							Messagebox.INFORMATION,
-							Messagebox.Button.OK, null);
-					
-				} catch (Exception e) {
-					saveCommit = false ;
-					logger.error(e.getMessage(), e);
+					return 1;
+				}
+			});
 
-					Messagebox.show(Labels.getLabel("msg.save.delete.fail"), 
-							Labels.getLabel("title.msgbox.error"),
-							new Messagebox.Button[]{Messagebox.Button.OK},
-							new String[]{Labels.getLabel("action.button.ok")},
-							Messagebox.ERROR,
-							Messagebox.Button.OK, null);
-				}
-				
-				if(obj != null) {
-					if(saveCommit) {
-						status.releaseSavepoint(obj);
-					} else {
-						status.rollbackToSavepoint(obj);
-					}
-				} else {
-					if(!saveCommit) {
-						status.setRollbackOnly();
-					}
-				}
-				
-				return 1;
-			}
-		});
+			Messagebox.show(Labels.getLabel("msg.save.delete.success"), 
+					Labels.getLabel("title.msgbox.information"),
+					new Messagebox.Button[]{Messagebox.Button.OK},
+					new String[]{Labels.getLabel("action.button.ok")},
+					Messagebox.INFORMATION,
+					Messagebox.Button.OK, null);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);		
+			Messagebox.show(Labels.getLabel("msg.save.delete.fail"), 
+					Labels.getLabel("title.msgbox.error"),
+					new Messagebox.Button[]{Messagebox.Button.OK},
+					new String[]{Labels.getLabel("action.button.ok")},
+					Messagebox.ERROR,
+					Messagebox.Button.OK, null);
+		}
 		
 	}
 	
