@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -105,6 +104,30 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		
 	}
 	
+	protected Map<Class<?>, SimpleQueryFilter[]> getReferenceEntities(Object parentId, String... errMessage) {
+		return null;
+	}
+	
+	private void checkDataInUse(Object parentId) {
+		String[] errMessage = new String[1];
+		Map<Class<?>, SimpleQueryFilter[]> map =  getReferenceEntities(parentId, errMessage);
+		if(map != null && !map.isEmpty()) {
+			Class<?>[] classes = map.keySet().toArray(new Class[map.size()]);
+			Long count = 0L;
+			for(Class<?> clazz : classes) {
+				SimpleQueryFilter[] filters = map.get(clazz);
+				count = count + generalPurposeDao.count(clazz, filters);
+			}
+			if(count != null && count > 0) {
+				String errMsg = "Error entity is in use";
+				if(errMessage != null && errMessage.length == 1) {
+					errMsg = errMessage[0];
+				}
+				throw new RuntimeException(errMsg);
+			}
+		}
+	}
+	
 	/**
 	 * delete data
 	 * @param data
@@ -116,6 +139,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 
 		try {
+			
+			checkDataInUse(pk);
+			
 			tmpl.execute(new TransactionCallback<Integer>() {
 
 				@Override
@@ -171,7 +197,8 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);		
-			Messagebox.show(Labels.getLabel("msg.save.delete.fail"), 
+			Messagebox.show(Labels.getLabel("msg.save.delete.fail") 
+					+ ".\n Error: " + e.getMessage(), 
 					Labels.getLabel("title.msgbox.error"),
 					new Messagebox.Button[]{Messagebox.Button.OK},
 					new String[]{Labels.getLabel("action.button.ok")},

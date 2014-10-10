@@ -2,17 +2,21 @@ package id.co.sigma.zk.ui.controller.security;
 
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.security.domain.ApplicationMenuAssignment;
 import id.co.sigma.common.security.domain.UserGroup;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 /**
@@ -27,8 +31,6 @@ public class GroupManagementListController extends BaseSimpleListController<User
 	@Qualifier(value="securityApplicationId")
 	@Autowired
 	private String applicationId;
-	
-	private final String moduleTitle = "Daftar Group Menu";
 	
 	@Wire private Listbox pageListBox;
 	
@@ -58,22 +60,29 @@ public class GroupManagementListController extends BaseSimpleListController<User
 		return new UserGroup();
 	}
 	
-	private boolean groupIsInUse(Long groupId){
-		SimpleQueryFilter[] filters = {
-			new SimpleQueryFilter("groupId", SimpleQueryFilterOperator.equal, groupId)
-		};
-		Long nGroupAssigns = generalPurposeDao.count(UserGroupAssignment.class, filters);
-		return (nGroupAssigns!=null && nGroupAssigns > 0);
+	@Override
+	public void deleteData(UserGroup data) {
+		deleteData(data, data.getId(), "id");
+		reload();
 	}
 
 	@Override
-	public void deleteData(UserGroup data) {
-		if(groupIsInUse(data.getId())){
-			String msg = Labels.getLabel("");
-			Messagebox.show("Data group menu tidak bisa dihapus karena masih digunakan oleh user", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
-		}else{
-			super.deleteData(data, data.getId(), "id");
-		}
+	protected Map<String, Class<?>> getChildrenParentKeyAndEntiy() {
+		Map<String, Class<?>> childClasses = new HashMap<String, Class<?>>();
+		childClasses.put("groupId", ApplicationMenuAssignment.class);
+		return childClasses;
+	}
+
+	@Override
+	protected Map<Class<?>, SimpleQueryFilter[]> getReferenceEntities(Object parentId,
+			String... errMessage) {
+		Map<Class<?>, SimpleQueryFilter[]> refs = new HashMap<Class<?>, SimpleQueryFilter[]>();
+		SimpleQueryFilter[] filters = {
+				new SimpleQueryFilter("groupId", SimpleQueryFilterOperator.equal, (Long)parentId)
+			};
+		refs.put(UserGroupAssignment.class, filters);
+		errMessage[0] = Labels.getLabel("msg.warnings.groupmenu.no_delete");
+		return refs;
 	}
 	
 }
