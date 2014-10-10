@@ -5,153 +5,129 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-	
-	<parent>
+    <parent>
         <groupId>id.co.sigma.commonlib.zk</groupId>
         <artifactId>balicamp-lib-zk</artifactId>
         <version>1.6</version>
     </parent>
-	
-	
-	
-   
     <artifactId>lib-zk-bccore</artifactId>
-
-    <packaging>jar</packaging>
     <name>Core ZK component</name>
-
-   
-
-   
+    <description>ZK core component</description>
+    <packaging>jar</packaging>
 
     <build>
-    
-    	<resources>
-    		<resource>
-    			<directory>src/main/java</directory>
-    		
-    		</resource>
-    		<resource>
-    			<directory>src/main/resources</directory>
-    		
-    		</resource>
-    	
-    	</resources>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <defaultGoal>install</defaultGoal>
-		<plugins>
-		<plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>${maven.compiler.plugin.version}</version>
-			<configuration>
-				<encoding>UTF-8</encoding>
-				<source>${maven.compiler.source}</source>
-				<target>${maven.compiler.target}</target>
-			</configuration>
-		</plugin>
-		
-	
-	</plugins>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
-	<repositories>
-		<repository>
-			<id>servlet repository</id>
-			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-	</repositories>
-	
+    <repositories>
+        <repository>
+            <id>servlet repository</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+    </repositories>
+
     <dependencies>
-		<dependency>
-	      <groupId>org.zkoss.zk</groupId>
-	      <artifactId>zkplus</artifactId>
-	      <version>${zk.version}</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.zkoss.zk</groupId>
-	      <artifactId>zk</artifactId>
-	      <version>${zk.version}</version>
-	      <exclusions>
-				<exclusion>
-					<artifactId>slf4j-jdk14</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-	    </dependency>
-	    
-    <dependency>
-      <groupId>org.zkoss.zk</groupId>
-      <artifactId>zhtml</artifactId>
-      <version>${zk.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.zkoss.zk</groupId>
-      <artifactId>zkbind</artifactId>
-      <version>${zk.version}</version>
-    </dependency>
-    
-
-	
-
-
-    <dependency>
-      <groupId>org.zkoss.zk</groupId>
-      <artifactId>zul</artifactId>
-      <version>${zk.version}</version>
-      <exclusions>
-		<exclusion>
-			<artifactId>slf4j-api</artifactId>
-			<groupId>org.slf4j</groupId>
-		</exclusion>
-		</exclusions>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>${commons.logging.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>${commons.io.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>${commons.lang.version}</version>
-    </dependency>
-     
-    <dependency>
-      <groupId>id.co.sigma.commonlib</groupId>
-      <artifactId>lib-base-server</artifactId>
-      <version>${bcommon.libs.version}</version>
-    </dependency>	
-   		
-		<dependency>
-		  <groupId>junit</groupId>
-		  <artifactId>junit</artifactId>
-		  <version>${lib.junit.version}</version>
-		  <scope>test</scope>
-		</dependency> 
-		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-  			<artifactId>javax.servlet-api</artifactId>
-  			<version>3.0.1</version>
-  			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>${commons.beanutils.version}</version>
-		</dependency>
-		
-		
-  	</dependencies>
-    
-   
-    <description>ZK core component</description>
-    
-   
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkplus</artifactId>
+            <version>${zk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zk</artifactId>
+            <version>${zk.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-jdk14</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zhtml</artifactId>
+            <version>${zk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkbind</artifactId>
+            <version>${zk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zul</artifactId>
+            <version>${zk.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons.logging.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons.lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>id.co.sigma.commonlib</groupId>
+            <artifactId>lib-base-server</artifactId>
+            <version>${bcommon.libs.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${lib.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons.beanutils.version}</version>
+        </dependency>
+    </dependencies>
 </project>
 
