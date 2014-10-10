@@ -1,12 +1,6 @@
 
 package id.co.sigma.zk.ui.controller.base;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import id.co.sigma.common.data.CustomDataFormatter;
 import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.lov.CommonLOVHeader;
@@ -18,6 +12,12 @@ import id.co.sigma.zk.ui.data.FormDataBinderUtil;
 import id.co.sigma.zk.ui.lov.CommonLOVWithRenderer;
 import id.co.sigma.zk.ui.lov.DefaultLOVRenderer;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +27,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zul.Combobox;
@@ -239,4 +241,11 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		
 	}
 	
+	/**
+	 * ini untuk keperluan penambahan listener ke component tertentu
+	 * override method ini jika diperlukan
+	 */
+	public void setListenerForSpecificComponent(Component[] comps){
+	    throw new RuntimeException("Method Not Suppport");
+	}
 }

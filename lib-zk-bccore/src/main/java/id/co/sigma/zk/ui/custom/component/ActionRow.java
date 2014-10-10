@@ -81,6 +81,7 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 			}
 			children.add(cmp);
 		}
+		controller.setListenerForSpecificComponent(dynamics);
 	}
 
 	public String getEditorPage() {
