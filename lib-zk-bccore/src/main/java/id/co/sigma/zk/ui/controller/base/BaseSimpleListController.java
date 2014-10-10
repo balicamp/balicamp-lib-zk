@@ -172,7 +172,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						if(obj != null) {
-							status.releaseSavepoint(obj);
+							status.rollbackToSavepoint(obj);
 						} else {
 							status.setRollbackOnly();
 						}
