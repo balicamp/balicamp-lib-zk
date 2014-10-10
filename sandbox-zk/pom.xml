@@ -5,75 +5,55 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-	
-	<parent>
+
+    <parent>
         <groupId>id.co.sigma.commonlib.zk</groupId>
         <artifactId>balicamp-lib-zk</artifactId>
         <version>1.6</version>
     </parent>
-	
-	
-   
     <artifactId>sandbox-zk</artifactId>
-
-    <packaging>war</packaging>
     <name>ZK sandbox - playing ground</name>
-
-   
-
-   
+    <packaging>war</packaging>
 
     <build>
-    
-    	<resources>
-    		<resource>
-    			<directory>src/main/java</directory>
-    		
-    		</resource>
-    		<resource>
-    			<directory>src/main/resources</directory>
-    		
-    		</resource>
-    	
-    	</resources>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <defaultGoal>install</defaultGoal>
-		<plugins>
-		<plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>${maven.compiler.plugin.version}</version>
-			<configuration>
-				<encoding>UTF-8</encoding>
-				<source>${maven.compiler.source}</source>
-				<target>${maven.compiler.target}</target>
-			</configuration>
-		</plugin>
-		
-	
-	</plugins>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
-    
-   
-    
-   
-    
-    
     <description>ZK toy app. untuk mengetes component ZK</description>
     <dependencies>
-    	<dependency>
-    		<groupId>id.co.sigma.commonlib.zk</groupId>
-    		<artifactId>lib-zk-bccore</artifactId>
-    		<version>${project.version}</version>
-    	</dependency>
-    	<dependency>
-    		<groupId>id.co.sigma.commonlib</groupId>
-    		<artifactId>sandbox-shared</artifactId>
-    		<version>${bcommon.libs.version}</version>
-    	</dependency>
+        <dependency>
+            <groupId>id.co.sigma.commonlib.zk</groupId>
+            <artifactId>lib-zk-bccore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>id.co.sigma.commonlib</groupId>
+            <artifactId>sandbox-shared</artifactId>
+            <version>${bcommon.libs.version}</version>
+        </dependency>
     </dependencies>
-    
+
     <organization>
-    	<name>Balicamp</name>
+        <name>Balicamp</name>
     </organization>
 </project>
 
