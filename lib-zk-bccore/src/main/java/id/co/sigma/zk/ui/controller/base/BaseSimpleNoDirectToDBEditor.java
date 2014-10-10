@@ -2,6 +2,7 @@ package id.co.sigma.zk.ui.controller.base;
 
 import java.util.Map;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -58,6 +59,29 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 	@Listen("onClick = #btnSave")
 	public void saveClick(final Event evt) {
 
+		parseEditedData(evt.getTarget());
+		try {
+			bindValueFromControl(getEditedData());
+		} catch (Exception e) {
+			if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
+				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
+						Labels.getLabel("title.msgbox.error"),
+						new Messagebox.Button[]{Messagebox.Button.OK},
+						new String[]{Labels.getLabel("action.button.ok")},
+						Messagebox.ERROR,
+						Messagebox.Button.OK, null);
+			} else {
+				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
+						Labels.getLabel("title.msgbox.error"),
+						new Messagebox.Button[]{Messagebox.Button.OK},
+						new String[]{Labels.getLabel("action.button.ok")},
+						Messagebox.ERROR,
+						Messagebox.Button.OK, null);
+			}
+			return  ; 
+		}
+		
+		
 		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
 		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
 			
@@ -105,14 +129,6 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 	}
 
 	private final void saveData(final Event event) {
-		parseEditedData(event.getTarget());
-		try {
-			bindValueFromControl(getEditedData());
-		} catch (Exception e) {
-			 Messagebox.show("Gagal Bind data. error : " + e.getMessage(), "Gagal Bind Data", Messagebox.OK, Messagebox.ERROR);
-			return  ; 
-		}
-		
 		try {
 			if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
 				insertData();

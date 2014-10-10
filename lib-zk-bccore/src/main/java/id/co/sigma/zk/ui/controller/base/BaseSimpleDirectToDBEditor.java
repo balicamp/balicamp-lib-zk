@@ -63,6 +63,30 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	@Listen("onClick = #btnSave")
 	public void saveClick(final Event evt) {
 
+		//trigger validasi input data sebelum message konfirmasi		
+		parseEditedData(evt.getTarget());
+		try {
+			bindValueFromControl(getEditedData());
+		} catch (Exception e) {
+			if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
+				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
+						Labels.getLabel("title.msgbox.error"),
+						new Messagebox.Button[]{Messagebox.Button.OK},
+						new String[]{Labels.getLabel("action.button.ok")},
+						Messagebox.ERROR,
+						Messagebox.Button.OK, null);
+			} else {
+				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
+						Labels.getLabel("title.msgbox.error"),
+						new Messagebox.Button[]{Messagebox.Button.OK},
+						new String[]{Labels.getLabel("action.button.ok")},
+						Messagebox.ERROR,
+						Messagebox.Button.OK, null);
+			}
+			return  ; 
+		}
+		//-->end
+		
 		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
 		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
 			
@@ -84,13 +108,13 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 	}
 	
 	private final void saveData(final Event event) {
-		parseEditedData(event.getTarget());
-		try {
-			bindValueFromControl(getEditedData());
-		} catch (Exception e) {
-			 Messagebox.show("Gagal Bind data. error : " + e.getMessage(), "Gagal Bind Data", Messagebox.OK, Messagebox.ERROR);
-			return  ; 
-		}
+//		parseEditedData(event.getTarget());
+//		try {
+//			bindValueFromControl(getEditedData());
+//		} catch (Exception e) {
+//			 Messagebox.show("Gagal Bind data. error : " + e.getMessage(), "Gagal Bind Data", Messagebox.OK, Messagebox.ERROR);
+//			return  ; 
+//		}
 		
 		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 		
