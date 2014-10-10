@@ -153,8 +153,6 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 						logger.warn(e.getMessage());
 					}
 					
-					boolean saveCommit = true ;
-					
 					try {
 						Map<String, Class<?>> children = getChildrenParentKeyAndEntiy();
 						if(children != null && !children.isEmpty()) {
@@ -167,23 +165,20 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 						
 						generalPurposeService.delete(data.getClass(), pk, pkFieldName);
 						
+						if(obj != null) {
+							status.releaseSavepoint(obj);
+						}
+						
 					} catch (Exception e) {
-						saveCommit = false ;
 						logger.error(e.getMessage(), e);
-					}
-					
-					if(obj != null) {
-						if(saveCommit) {
+						if(obj != null) {
 							status.releaseSavepoint(obj);
 						} else {
-							status.rollbackToSavepoint(obj);
-						}
-					} else {
-						if(!saveCommit) {
 							status.setRollbackOnly();
 						}
+						throw e;
 					}
-					
+
 					return 1;
 				}
 			});
