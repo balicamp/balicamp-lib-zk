@@ -74,12 +74,11 @@ public class GroupManagementListController extends BaseSimpleListController<User
 	}
 
 	@Override
-	protected Map<Class<?>, SimpleQueryFilter[]> getReferenceEntities(Object parentId,
-			String... errMessage) {
+	protected Map<Class<?>, SimpleQueryFilter[]> getReferenceEntities(Object parentId, String... errMessage) {
 		Map<Class<?>, SimpleQueryFilter[]> refs = new HashMap<Class<?>, SimpleQueryFilter[]>();
 		SimpleQueryFilter[] filters = {
-				new SimpleQueryFilter("groupId", SimpleQueryFilterOperator.equal, (Long)parentId)
-			};
+			new SimpleQueryFilter("groupId", SimpleQueryFilterOperator.equal, (Long)parentId)
+		};
 		refs.put(UserGroupAssignment.class, filters);
 		errMessage[0] = Labels.getLabel("msg.warnings.groupmenu.no_delete");
 		return refs;
