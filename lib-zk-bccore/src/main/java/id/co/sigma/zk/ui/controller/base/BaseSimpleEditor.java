@@ -46,6 +46,7 @@ import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Longbox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
@@ -558,6 +559,20 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					}
 				}
 				
+			}else if(input instanceof Checkbox){
+				Checkbox chk = (Checkbox)input;
+				if(chk.isChecked()){
+					val=1;
+				}else{
+					val=0;
+				}
+			}else if(input instanceof Radio){
+				Radio radio = (Radio)input;
+				if(radio.isSelected()){
+					val=1;
+				}else{
+					val=0;
+				}
 			}else if(input instanceof Textbox) {
 				val = ((Textbox)input).getValue();
 			} else if(input instanceof Longbox) {

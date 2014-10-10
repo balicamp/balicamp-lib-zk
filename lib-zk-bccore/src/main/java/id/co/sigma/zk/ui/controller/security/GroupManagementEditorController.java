@@ -245,11 +245,9 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 			getEditedData().setGroupCode(capitalizedGroupCode);
 		}
 		
-		if(getEditedData().getSuperGroup().isEmpty()){
-			getEditedData().setSuperGroup("N");
-		}
+		getEditedData().setSuperGroup("N");
 		
-		if(getEditedData().getActiveFlag().isEmpty()){
+		if(getEditedData().getActiveFlag()!=null && getEditedData().getActiveFlag().isEmpty()){
 			getEditedData().setActiveFlag("A");
 		}
 	}

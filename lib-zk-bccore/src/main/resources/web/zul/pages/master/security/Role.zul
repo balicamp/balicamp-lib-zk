@@ -1,6 +1,6 @@
 <?page title="" contentType="text/html;charset=UTF-8"?>
 <zk>
-<listWindow title="Daftar Role" id="role" 
+<listWindow title="${labels.role.titlelist}" id="role" 
 	apply="id.co.sigma.zk.ui.controller.security.RoleController"
 	editorPage="~./zul/pages/master/security/RoleFormEditor.zul">
      <grid vflex="1" height="100px">

@@ -1,5 +1,5 @@
 <?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> 
-<editorWindow id="editorRole" apply="id.co.sigma.zk.ui.controller.security.RoleEditorController" captionLabel="Maintenance Role"
+<editorWindow id="editorRole" apply="id.co.sigma.zk.ui.controller.security.RoleEditorController" captionLabel="${labels.role.titleeditor}"
 				cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
 					confirmationMsg="Apakah anda akan menyimpan data ini ?" >
 		<grid vflex="1">
@@ -11,13 +11,13 @@
 				<row>
 					<label value="${labels.field.rolecode}" width="150px" />
 					<textbox id="roleCode" value="${editorRole$composer.editedData.roleCode}" constraint="no empty"
-						width="150px" />
+						maxlength="20" width="150px" />
 				</row>
 				
 				<row>
 					<label value="${labels.field.roledesc}" width="150px" />
 					<textbox id="roleDesc"	value="${editorRole$composer.editedData.roleDesc}" constraint="no empty"
-						width="300px" rows="2" multiline="true" cols="2" height="150px"/>
+						maxlength="50" width="300px" rows="2" multiline="true" cols="2" height="150px"/>
 				</row>
 			
 			</rows>

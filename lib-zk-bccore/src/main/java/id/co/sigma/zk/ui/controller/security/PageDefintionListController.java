@@ -47,13 +47,6 @@ public class PageDefintionListController extends BaseSimpleListController<PageDe
 	@Wire Textbox txtPageRemark; 
 	
 	
-	@Wire Button btnCari ;
-	@Wire Button btnReset ; 
-	@Wire Button btnTambah ; 
-	
-	@Wire Button btnEdit ; 
-	@Wire Button btnHapus ; 
-
 	@Override
 	protected Class<? extends PageDefinition> getHandledClass() {
 		return PageDefinition.class;
@@ -69,25 +62,6 @@ public class PageDefintionListController extends BaseSimpleListController<PageDe
 		super.doAfterCompose(comp);
 		invokeSearch();
 	}
-	@Listen(value="onClick = #btnCari")
-	public void searchClick() {
-		invokeSearch();
-	};
-	
-	@Listen(value="onClick = #btnReset")
-	public void resetClick() {
-		txtPageCode.setValue("");
-		txtPageRemark.setValue("");
-		txtPagUrl.setValue("");
-		invokeSearch();
-		
-	};
-	
-	@Listen(value="onClick = #btnTambah")
-	public void addClick() {
-		PageDefinition def = new PageDefinition(); 
-		EditorManager.getInstance().addNewData("~./zul/pages/master/security/PageDefinitionEditor.zul", def, this);
-	}
 	
 	@Override
 	public void reload() {
@@ -101,43 +75,14 @@ public class PageDefintionListController extends BaseSimpleListController<PageDe
 		reload();
 	}
 
-	
-	
-//	@Listen("onEditData = #pageListBox")
-//	public void clickEdit(ForwardEvent e) {
-//		Component item = e.getOrigin().getTarget().getParent().getParent();
-//		if(item instanceof Listitem) {
-//			PageDefinition pDef = ((Listitem)item).getValue();
-//			EditorManager.getInstance().editData("~./zul/pages/master/security/PageDefinitionEditor.zul", pDef, this);
-//		}
-//	}
-//	
-//	@Listen("onDeleteData = #pageListBox")
-//	public void clickDelete(ForwardEvent e) {
-//		Component item = e.getOrigin().getTarget().getParent().getParent();
-//		if(item instanceof Listitem) {
-//			PageDefinition pDef = ((Listitem)item).getValue();
-//			deleteData(pDef, pDef.getId(), "id");
-//			reload();
-//		}
-//	}
-	
-//	@Listen(value="onClick = #btnHapus")
-//	public void hapusClick() {
-//		
-//	}
-	
-//	@Listen(value="onSelect = #pageListBox")
-//	public void listboxSelected () {
-//		System.out.println("selected");
-//		btnHapus.setVisible(true); 
-//		btnEdit.setVisible(true);
-//	}
-//	
-//	@Listen(value="onClick =#pageListBox")
-//	public void onEditOnGridClick(ForwardEvent evt ) {
-//		Messagebox.show("Test click Grid"); 
-//	}
+	/* (non-Javadoc)
+	 * @see id.co.sigma.zk.ui.controller.base.BaseSimpleListController#addNewData()
+	 */
+	@Override
+	public PageDefinition addNewData() {
+		return new PageDefinition();
+	}
+
 	
 
 }

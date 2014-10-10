@@ -16,7 +16,7 @@
 			<row>
 				${labels.field.username}
 				<textbox id="userCode"			
-					value="${userEditor$composer.editedData.userCode}">
+					value="${userEditor$composer.editedData.userCode}" constraint="no empty:Nama Pengguna tidak boleh kosong">
 				</textbox>
 			</row>
 			 <row>
@@ -39,7 +39,7 @@
 			<row>
 				${labels.field.realname}
 				<textbox id="realName"
-					value="${userEditor$composer.editedData.realName}"></textbox>
+					value="${userEditor$composer.editedData.realName}" constraint="no empty"></textbox>
 			</row>
 			<row>
 				${labels.field.email}

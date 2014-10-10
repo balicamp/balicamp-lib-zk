@@ -51,6 +51,16 @@ public class EditorWindow extends Window implements AfterCompose {
 	
 	@Override
 	public void afterCompose() {
+		
+		String title = getTitle();
+		
+		if(title != null && title.trim().length() > 0) {
+			setCaptionLabel(title);
+		}
+		
+		setBorder("none");
+		setTitle("");
+		
 		List<Component> children = getChildren();
 		int dynaChildren = children.size() - childrenCount;
 		for(int i = 0; i < dynaChildren; i++) {

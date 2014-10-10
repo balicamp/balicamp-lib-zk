@@ -13,7 +13,7 @@
 					<row>
 						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" 
+							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" readonly="true" 
 							value="${userDelegationEditorWin$composer.editedData.sourceUser.realName}">
 								<bandpopup>
 									<vbox>
@@ -34,7 +34,7 @@
 					<row>
 						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" 
+							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" readonly="true" 
 							value="${userDelegationEditorWin$composer.editedData.destUser.realName}">
 								<bandpopup>
 									<vbox>
@@ -55,13 +55,13 @@
 					<row>
 						<cell>${labels.field.date_start}</cell>
 						<cell>
-							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" />
+							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" readonly="true" />
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.date_end}</cell>
 						<cell>
-							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" />
+							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" readonly="true" />
 						</cell>
 					</row>
 					<row>
@@ -73,7 +73,7 @@
 					<row>
 						<cell>${labels.field.status}</cell>
 						<cell>
-							<combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" />
+							<combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" readonly="true" />
 						</cell>
 					</row>
 				</rows>	

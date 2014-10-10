@@ -1,7 +1,9 @@
 <?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> 
-<editorWindow id="editorSystemParameter" apply="id.co.sigma.zk.ui.controller.master.SystemParameterEditorController" 
-				cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
-					confirmationMsg="Apakah anda akan menyimpan data ini ?">
+<editorWindow
+	title="System Parameter Editor" 
+	id="editorSystemParameter" apply="id.co.sigma.zk.ui.controller.master.SystemParameterEditorController" 
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
+	confirmationMsg="Apakah anda akan menyimpan data ini ?">
 		<grid vflex="1">
 			<columns>
 				<column width="150px" />
@@ -12,7 +14,8 @@
 					<label value="Param Key" width="150px" />
 					<textbox id="id"
 						value="${editorSystemParameter$composer.editedData.id}"
-						width="150px" />
+						width="150px" 
+						readonly="${not empty editorSystemParameter$composer.editedData.id}"/>
 				</row>
 				
 				<row>
