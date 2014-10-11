@@ -1,6 +1,6 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<hlayout height="300px" style="padding:2px">
+	<hlayout id="dualLayout" height="300px" style="padding:2px">
 		<listbox id="candidate" hflex="1" vflex="true" multiple="true" rows="8">
 			<template name="model">
 				<listitem value="${each}"/>
