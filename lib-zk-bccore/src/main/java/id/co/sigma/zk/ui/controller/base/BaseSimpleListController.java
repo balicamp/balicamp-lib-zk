@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.base;
 
+import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
@@ -9,6 +10,7 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -297,8 +299,15 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		resetFilter();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public DATA addNewData() {
-		throw new RuntimeException("Method not supported.");
+		try {
+			ParameterizedType genericClass = (ParameterizedType) getClass().getGenericSuperclass();
+			Class<DATA> clazz = (Class<DATA>)genericClass.getActualTypeArguments()[0];
+			return clazz.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
@@ -310,8 +319,13 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 
 	public abstract Listbox getListbox()  ; 
 	
+	@SuppressWarnings("rawtypes")
 	public void deleteData(DATA data) {
-		throw new RuntimeException("Method not supported.");
+		if(data instanceof SingleKeyEntityData) {
+			deleteData(data, (Serializable)((SingleKeyEntityData)data).getId(), "id");
+		} else {
+			throw new RuntimeException("Method not supported.");
+		}
 	}
 
 }
