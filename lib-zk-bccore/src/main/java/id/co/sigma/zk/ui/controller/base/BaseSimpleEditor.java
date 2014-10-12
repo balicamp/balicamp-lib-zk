@@ -172,6 +172,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	@SuppressWarnings("unchecked")
 	public   void updateData (  ) throws Exception {
 		
+		ExtendedBeanUtils beanUtils = ExtendedBeanUtils.getInstance();
+		
 		updateData(getEditedData());
 		
 		//insert child data (master-detail)
@@ -181,9 +183,17 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				
 				if(child != null) {
 					
+					JoinKey[] keys = getJoinKeys(child);
+					
 					deleteChildrenData(child.getErasedData());
 
 					for(Object data: child.getNewlyAppendedData()) {
+						
+						for(JoinKey key : keys) {
+							Object val = beanUtils.getProperty(editedData, key.parentKey());
+							beanUtils.setProperty(data, val, key.childKey());
+						}
+						
 						insertData((POJO)data);
 					}
 
