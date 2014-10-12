@@ -17,6 +17,7 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
@@ -35,6 +36,9 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	
 	@Wire
 	private Hlayout dualLayout;
+	
+	@Wire
+	private Box btnBox;
 	
 	@Wire
 	private Listbox candidate;
@@ -69,17 +73,31 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 
 	@Override
 	public void afterCompose() {
-		dualLayout.setHeight(getHeight());
+		String height = getHeight();
+		if(height != null && height.trim().length() > 0) {
+			dualLayout.setHeight(height);
+		} 			
+		
+		btnBox.setHeight(dualLayout.getHeight());
+		candidate.setHeight(dualLayout.getHeight());
+		choosendata.setHeight(dualLayout.getHeight());
+
 		if(this.srcModel != null) {
+			
+			List<Object> existingData = targetContainer.getAllStillExistData();
+			
+			if((existingData != null) && !existingData.isEmpty()) {
+				this.srcModel.removeAll(existingData);				
+				chosenModel.addAll(existingData);
+				
+				populateData(choosendata, existingData);
+				
+			}
+			
 			candidate.setModel(candidateModel = new ListModelList<Object>(this.srcModel));
 			candidateModel.setMultiple(true);
-			int i = 0;
-			for(Listitem item : candidate.getItems()) {
-				Object data = this.srcModel.get(i);
-				item.setValue(data);
-				setLabel(item);
-				i++;
-			}
+			
+			populateData(candidate, candidateModel.getInnerList());
 		}
 	}
 
@@ -117,12 +135,7 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		chosenModel.addAll(candidateModel);
 		candidateModel.clear();
 		
-		int i = 0;
-		for(Listitem item : choosendata.getItems()) {
-			item.setValue(targetContainer.getAllStillExistData().get(i));
-			setLabel(item);
-			i++;
-		}
+		populateData(choosendata, targetContainer.getAllStillExistData());
 	}
 	
 	@Listen("onClick = #moveLeftAll")
@@ -131,13 +144,7 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		candidateModel.addAll(chosenModel);
 		chosenModel.clear();
 		
-		int i = 0;
-		List<Object> list = candidateModel.getInnerList();
-		for(Listitem item : candidate.getItems()) {
-			item.setValue(list.get(i));
-			setLabel(item);
-			i++;
-		}
+		populateData(candidate, candidateModel.getInnerList());
 	}
 	
 	@Listen("onClick = #moveRight")
@@ -173,13 +180,8 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 
 		candidateModel.removeAll(set);
 		
-		int i = 0;
-		for(Listitem item : choosendata.getItems()) {
-			item.setValue(targetContainer.getAllStillExistData().get(i));
-			setLabel(item);
-			i++;
-		}
-		
+		populateData(choosendata, targetContainer.getAllStillExistData());
+
 		return set;
 	}
 	
@@ -191,14 +193,8 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		targetContainer.eraseData(new ArrayList<Object>(set));
 		chosenModel.removeAll(set);
 		
-		int i = 0;
-		List<Object> list = candidateModel.getInnerList();
-		for(Listitem item : candidate.getItems()) {
-			item.setValue(list.get(i));
-			setLabel(item);
-			i++;
-		}
-		
+		populateData(candidate, candidateModel.getInnerList());
+
 		return set;
 	}
 
@@ -214,6 +210,14 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 			
 		} catch (Exception e) {
 			
+		}
+	}
+	
+	private void populateData(Listbox listbox, List<Object> list) {
+		int i = 0;
+		for(Listitem item : listbox.getItems()) {
+			item.setValue(list.get(i++));
+			setLabel(item);
 		}
 	}
 	
