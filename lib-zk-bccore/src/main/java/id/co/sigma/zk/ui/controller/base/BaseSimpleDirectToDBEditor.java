@@ -65,6 +65,7 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 			bindValueFromControl(getEditedData());
 			children = parseChildGridData();
 		} catch (Exception e) {
+			logger.error("gagal simpam data. error : " +e.getMessage() , e ); 
 			showErrorMessage(getEditorState(), e.getMessage());
 			return  ; 
 		}
@@ -75,12 +76,19 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 		
 	}
 	
+	protected void validateData() throws Exception {
+		
+	}
+	
 	@Override
 	protected void saveData(final Event event) {
 
 		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 		
 		try {
+			
+			validateData();
+			
 			tmpl.execute(new TransactionCallback<Integer>() {
 				@Override
 				public Integer doInTransaction(TransactionStatus stts) {
