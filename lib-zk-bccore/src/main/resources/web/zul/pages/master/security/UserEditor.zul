@@ -39,7 +39,7 @@
 			<row>
 				${labels.field.realname}
 				<textbox id="realName"
-					value="${userEditor$composer.editedData.realName}" constraint="no empty"></textbox>
+					value="${userEditor$composer.editedData.realName}" constraint="no empty:Nama Lengkap tidak boleh kosong"></textbox>
 			</row>
 			<row>
 				${labels.field.email}
