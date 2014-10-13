@@ -1,17 +1,13 @@
 package id.co.sigma.zk.ui.controller.base;
 
-import java.util.Map;
-
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zhtml.Messagebox;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.select.annotation.Listen;
-
 import id.co.sigma.zk.ZKCoreLibConstant;
-import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
+
+import java.util.Map;
+
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.select.annotation.Listen;
 
 /**
  * editor ini menyimpan ke data container, bukan ke db
@@ -63,79 +59,31 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 		try {
 			bindValueFromControl(getEditedData());
 		} catch (Exception e) {
-			if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
-				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
-						Labels.getLabel("title.msgbox.error"),
-						new Messagebox.Button[]{Messagebox.Button.OK},
-						new String[]{Labels.getLabel("action.button.ok")},
-						Messagebox.ERROR,
-						Messagebox.Button.OK, null);
-			} else {
-				Messagebox.show(Labels.getLabel("msg.save.edit.fail"), 
-						Labels.getLabel("title.msgbox.error"),
-						new Messagebox.Button[]{Messagebox.Button.OK},
-						new String[]{Labels.getLabel("action.button.ok")},
-						Messagebox.ERROR,
-						Messagebox.Button.OK, null);
-			}
+			showErrorMessage(getEditorState(), e.getMessage());
 			return  ; 
 		}
 		
 		
 		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
-		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
-			
-			Messagebox.show(confirmMsg, "Prompt", 
-					Messagebox.YES|Messagebox.NO, 
-					Messagebox.QUESTION, 
-			new EventListener<Event>() {
-				
-				@Override
-				public void onEvent(Event event) throws Exception {
-					switch(((Integer)event.getData()).intValue()) {
-					case Messagebox.YES:
-						saveData(evt);
-						break;
-					case Messagebox.NO:
-						break;
-					}
-				}
-			});				
-		} else saveData(evt); 
+		showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+		
 	}
 	
-	@Listen("onClick = #btnCancel")
-	public void cancelClick() {
-		String cancelMsg = (String)getSelf().getAttribute("cancellationMsg");
-		if(cancelMsg != null && cancelMsg.trim().length() > 0) {
-			
-			Messagebox.show(cancelMsg, "Prompt", 
-					Messagebox.YES|Messagebox.NO, 
-					Messagebox.QUESTION, 
-			new EventListener<Event>() {
-				
-				@Override
-				public void onEvent(Event event) throws Exception {
-					switch(((Integer)event.getData()).intValue()) {
-					case Messagebox.YES:
-						EditorManager.getInstance().closeCurrentEditorPanel();
-						break;
-					case Messagebox.NO:
-						break;
-					}
-				}
-			});				
-		} else EditorManager.getInstance().closeCurrentEditorPanel();
-	}
-
-	private final void saveData(final Event event) {
+	@Override
+	protected void saveData(Event event) {
 		try {
 			if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
 				insertData();
 			} else if(ZKEditorState.EDIT.equals(getEditorState())) {
 				updateData();
 			}
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
+		closeCurrentEditorPanel();
+	}
+
+	@Listen("onClick = #btnCancel")
+	public void cancelClick() {
+		String cancelMsg = (String)getSelf().getAttribute("cancellationMsg");
+		showCancelConfirmationMessage(cancelMsg);
 	}	
 }

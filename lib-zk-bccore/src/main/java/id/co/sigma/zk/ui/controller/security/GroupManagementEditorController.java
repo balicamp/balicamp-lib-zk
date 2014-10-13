@@ -10,13 +10,11 @@ import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectableApplicationMenu;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.json.JSONArray;
@@ -199,7 +197,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 					ApplicationMenuAssignment assign = new ApplicationMenuAssignment();
 					assign.setFunctionId(mnuId);
 					assign.setGroupId(groupId);
-					assign.setCreatedBy("GSR"); // FIXME Nanti harus diisi dengan user yg login
+					assign.setCreatedBy(SecurityUtil.getUser().getUsername());
 					assign.setCreatedOn(new Date());
 					
 					generalPurposeService.insert(assign);

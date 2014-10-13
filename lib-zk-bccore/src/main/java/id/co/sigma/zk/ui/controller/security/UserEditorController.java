@@ -106,6 +106,12 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		return isAddNewState;
 	}
 	
+	@Override
+	public void insertData() throws Exception {
+		/*// TODO Auto-generated method stub
+		super.insertData();*/
+		System.out.println("Masuk tanpa parameter");
+	}
 	
 	@Override
 	@Listen("onClick = #btnSave")
@@ -136,7 +142,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	}
 	
 	
-	private final void saveData(final Event evt) {
+	protected final void saveData(final Event evt) {
 		parseEditedData(evt.getTarget());
 		User data = getEditedData();
 		
@@ -265,6 +271,13 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		}
 	}*/
 	
+	@Override
+	protected void updateData(User data) throws Exception {
+		// TODO Auto-generated method stub
+		/*if(validationForm()){
+			saveUserGroupAssignment(editedData.getId(), data);
+		}*/
+	}
 	private boolean validationForm(User data){
 		List<String> notValidFiled = new ArrayList<String>();
 		

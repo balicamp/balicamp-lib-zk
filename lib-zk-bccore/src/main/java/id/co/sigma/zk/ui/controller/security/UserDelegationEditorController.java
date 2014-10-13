@@ -16,7 +16,10 @@ import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,7 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -46,25 +50,24 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserDelegationEditorController.class.getName());
 	
-	@Wire
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
-	private Combobox dataStatus;
+	@Wire private Combobox dataStatus;
 	
-	//private final String defaultDataStatus = "A";
+	private final String defaultDataStatus = "A";
 	
-	private final String modulTitle = "User Delegation";
+	private final String modulTitle = "User Delegation Editor";
 	
-	@Wire
-	private Bandbox bnbxDelegateFromUser;
+	@Wire private Bandbox bnbxDelegateFromUser;
 	
-	@Wire
-	private Longbox sourceUserId;
+	@Wire private Longbox sourceUserId;
 	
-	@Wire
-	private Bandbox bnbxDelegateToUser;
+	@Wire private Bandbox bnbxDelegateToUser;
 	
-	@Wire
-	private Longbox destUserId;
+	@Wire private Longbox destUserId;
+	
+	@Wire private Datebox startDate;
+	
+	@Wire private Datebox endDate;
 	
 	@Autowired
 	private IUserDelegationService userDelegationService;
@@ -491,7 +494,24 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			}else{
 				lbDelegatedGroups.setModel(new ListModelList<>());
 			}
+		}else{
+			setComboValueByRealData(dataStatus, defaultDataStatus);
+			
+			startDate.setValue(new Date());
+			endDate.setValue(getTomorrowDate());
 		}
+	}
+	
+	private Date getTomorrowDate(){
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
+	}
+	
+	public String getTomorrowDateStr(){
+		Date tomDate = getTomorrowDate();
+		Format formatter = new SimpleDateFormat("yyyyMMdd");
+		return formatter.format(tomDate);
 	}
 	
 	@Override
@@ -499,5 +519,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		super.doAfterCompose(comp);
 		adjustEditorFields();
 	}
+	
+	
 	
 }

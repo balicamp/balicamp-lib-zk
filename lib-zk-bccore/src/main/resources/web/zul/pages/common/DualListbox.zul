@@ -1,25 +1,29 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<hlayout height="300px" style="padding:2px">
-		<listbox id="candidate" hflex="1" vflex="true" multiple="true" rows="8">
-			<template name="model">
-				<listitem value="${each}"/>
-			</template>
-		</listbox>
-		<vbox spacing="10px" width="50px" align="center">
-<!-- 			<image style="cursor:pointer"/>
-			<image style="cursor:pointer"/>
-			<image style="cursor:pointer"/>
-			<image style="cursor:pointer"/> -->
-			<button id="moveRightAll" label="&gt;&gt;"/>
-			<button id="moveRight" label="&gt;"/>
-			<button id="moveLeft" label="&lt;"/>
-			<button id="moveLeftAll" label="&lt;&lt;"/>
-		</vbox>
-		<listbox id="choosendata" hflex="1" vflex="true" multiple="true" emptyMessage="belum ada data yang diselect" rows="8">
-			<template name="model">
-				<listitem value="${each}"/>
-			</template>
-		</listbox>
+	<hlayout id="dualLayout" height="300px" style="padding:2px" xmlns:n="native">
+		<panel border="normal" hflex="1" vflex="true" style="border: 1px solid rgb(202, 211, 201);">
+			<panelchildren>
+				<listbox id="candidate" hflex="1" vflex="true" multiple="true">
+					<template name="model">
+						<listitem value="${each}"/>
+					</template>
+				</listbox>
+			</panelchildren>
+		</panel>
+		<box id="btnBox" spacing="10px" width="50px" align="center" pack="center" height="300px">
+			<button id="moveRightAll" width="36px" iconSclass="z-icon-fast-forward"/>
+			<button id="moveRight" width="36px" iconSclass="z-icon-step-forward"/>
+			<button id="moveLeft" width="36px" iconSclass="z-icon-step-backward"/>
+			<button id="moveLeftAll" width="36px" iconSclass="z-icon-fast-backward"/>
+		</box>
+		<panel border="normal" hflex="1" vflex="true" style="border: 1px solid rgb(202, 211, 201);">
+			<panelchildren>
+				<listbox id="choosendata" hflex="1" vflex="true" multiple="true" emptyMessage="belum ada data yang diselect">
+					<template name="model">
+						<listitem value="${each}"/>
+					</template>
+				</listbox>
+			</panelchildren>
+		</panel>
 	</hlayout>
 </zk>

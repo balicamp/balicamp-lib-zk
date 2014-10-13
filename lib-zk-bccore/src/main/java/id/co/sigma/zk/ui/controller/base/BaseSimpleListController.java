@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.base;
 
+import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
@@ -9,6 +10,7 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -104,6 +106,30 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		
 	}
 	
+	protected Map<Class<?>, SimpleQueryFilter[]> getReferenceEntities(Object parentId, String... errMessage) {
+		return null;
+	}
+	
+	private void checkDataInUse(Object parentId) {
+		String[] errMessage = new String[1];
+		Map<Class<?>, SimpleQueryFilter[]> map =  getReferenceEntities(parentId, errMessage);
+		if(map != null && !map.isEmpty()) {
+			Class<?>[] classes = map.keySet().toArray(new Class[map.size()]);
+			Long count = 0L;
+			for(Class<?> clazz : classes) {
+				SimpleQueryFilter[] filters = map.get(clazz);
+				count = count + generalPurposeDao.count(clazz, filters);
+			}
+			if(count != null && count > 0) {
+				String errMsg = "Error entity is in use";
+				if(errMessage != null && errMessage.length == 1) {
+					errMsg = errMessage[0];
+				}
+				throw new RuntimeException(errMsg);
+			}
+		}
+	}
+	
 	/**
 	 * delete data
 	 * @param data
@@ -114,64 +140,68 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		
 		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 
-		tmpl.execute(new TransactionCallback<Integer>() {
+		try {
+			
+			checkDataInUse(pk);
+			
+			tmpl.execute(new TransactionCallback<Integer>() {
 
-			@Override
-			public Integer doInTransaction(TransactionStatus status) {
-				Object obj = null;
-				try {
-					obj = status.createSavepoint();
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
-				}
-				
-				boolean saveCommit = true ;
-				
-				try {
-					Map<String, Class<?>> children = getChildrenParentKeyAndEntiy();
-					if(children != null && !children.isEmpty()) {
-						String[] prntKeys = children.keySet().toArray(new String[children.keySet().size()]);
-						for(String pKey : prntKeys) {
-							Class<?> clazz = children.get(pKey);
-							generalPurposeService.delete(clazz, pk, pKey);
+				@Override
+				public Integer doInTransaction(TransactionStatus status) {
+					Object obj = null;
+					try {
+						obj = status.createSavepoint();
+					} catch (Exception e) {
+						logger.warn(e.getMessage());
+					}
+					
+					try {
+						Map<String, Class<?>> children = getChildrenParentKeyAndEntiy();
+						if(children != null && !children.isEmpty()) {
+							String[] prntKeys = children.keySet().toArray(new String[children.keySet().size()]);
+							for(String pKey : prntKeys) {
+								Class<?> clazz = children.get(pKey);
+								generalPurposeService.delete(clazz, pk, pKey);
+							}
 						}
+						
+						generalPurposeService.delete(data.getClass(), pk, pkFieldName);
+						
+						if(obj != null) {
+							status.releaseSavepoint(obj);
+						}
+						
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						if(obj != null) {
+							status.rollbackToSavepoint(obj);
+						} else {
+							status.setRollbackOnly();
+						}
+						throw e;
 					}
-					generalPurposeService.delete(data.getClass(), pk, pkFieldName);
-					
-					Messagebox.show(Labels.getLabel("msg.save.delete.success"), 
-							Labels.getLabel("title.msgbox.information"),
-							new Messagebox.Button[]{Messagebox.Button.OK},
-							new String[]{Labels.getLabel("action.button.ok")},
-							Messagebox.INFORMATION,
-							Messagebox.Button.OK, null);
-					
-				} catch (Exception e) {
-					saveCommit = false ;
-					logger.error(e.getMessage(), e);
 
-					Messagebox.show(Labels.getLabel("msg.save.delete.fail"), 
-							Labels.getLabel("title.msgbox.error"),
-							new Messagebox.Button[]{Messagebox.Button.OK},
-							new String[]{Labels.getLabel("action.button.ok")},
-							Messagebox.ERROR,
-							Messagebox.Button.OK, null);
+					return 1;
 				}
-				
-				if(obj != null) {
-					if(saveCommit) {
-						status.releaseSavepoint(obj);
-					} else {
-						status.rollbackToSavepoint(obj);
-					}
-				} else {
-					if(!saveCommit) {
-						status.setRollbackOnly();
-					}
-				}
-				
-				return 1;
-			}
-		});
+			});
+
+			Messagebox.show(Labels.getLabel("msg.save.delete.success"), 
+					Labels.getLabel("title.msgbox.information"),
+					new Messagebox.Button[]{Messagebox.Button.OK},
+					new String[]{Labels.getLabel("action.button.ok")},
+					Messagebox.INFORMATION,
+					Messagebox.Button.OK, null);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);		
+			Messagebox.show(Labels.getLabel("msg.save.delete.fail") 
+					+ ".\n Error: " + e.getMessage(), 
+					Labels.getLabel("title.msgbox.error"),
+					new Messagebox.Button[]{Messagebox.Button.OK},
+					new String[]{Labels.getLabel("action.button.ok")},
+					Messagebox.ERROR,
+					Messagebox.Button.OK, null);
+		}
 		
 	}
 	
@@ -269,8 +299,15 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		resetFilter();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public DATA addNewData() {
-		throw new RuntimeException("Method not supported.");
+		try {
+			ParameterizedType genericClass = (ParameterizedType) getClass().getGenericSuperclass();
+			Class<DATA> clazz = (Class<DATA>)genericClass.getActualTypeArguments()[0];
+			return clazz.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
@@ -282,8 +319,13 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 
 	public abstract Listbox getListbox()  ; 
 	
+	@SuppressWarnings("rawtypes")
 	public void deleteData(DATA data) {
-		throw new RuntimeException("Method not supported.");
+		if(data instanceof SingleKeyEntityData) {
+			deleteData(data, (Serializable)((SingleKeyEntityData)data).getId(), "id");
+		} else {
+			throw new RuntimeException("Method not supported.");
+		}
 	}
 
 }
