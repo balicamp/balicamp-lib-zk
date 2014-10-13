@@ -174,6 +174,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		
 		ExtendedBeanUtils beanUtils = ExtendedBeanUtils.getInstance();
 		
+		doBeforeSave(getEditedData());
+		
 		updateData(getEditedData());
 		
 		//insert child data (master-detail)
@@ -212,6 +214,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 */
 	@SuppressWarnings("unchecked")
 	public void insertData ()  throws Exception {
+		
+		doBeforeSave(getEditedData());
 		
 		Serializable[] pojo = new Serializable[]{(Serializable)getEditedData()};
 		
@@ -355,6 +359,14 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			}
 		}
 		return lists;
+	}
+	
+	/**
+	 * jika ada proses setting data tambahan sebelum save data
+	 * @param editedData
+	 */
+	protected void doBeforeSave(POJO editedData) {
+		
 	}
 	
 	/**

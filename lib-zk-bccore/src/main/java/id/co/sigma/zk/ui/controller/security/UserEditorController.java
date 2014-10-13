@@ -12,11 +12,14 @@ import id.co.sigma.common.security.domain.UserRole;
 import id.co.sigma.security.server.service.IApplicationService;
 import id.co.sigma.security.server.service.IUserService;
 import id.co.sigma.zk.spring.security.SecurityUtil;
+import id.co.sigma.zk.ui.annotations.ChildGridData;
+import id.co.sigma.zk.ui.annotations.JoinKey;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectedRole;
 import id.co.sigma.zk.ui.data.SelectedUserGroup;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,6 +85,30 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	@Wire
 	Textbox confirmChipperText;
 	
+	@ChildGridData(
+			entity = UserGroupAssignment.class,
+			gridId = "listBoxCheckList",
+			joinKeys={
+				@JoinKey(
+					parentKey = "id",
+					childKey = "userId"
+				)
+			} 			
+	)
+	ZKClientSideListDataEditorContainer<UserGroupAssignment> groups;
+	
+	@ChildGridData(
+			entity = UserRole.class,
+			gridId = "listBoxCheckListRole",
+			joinKeys={
+				@JoinKey(
+					parentKey = "id",
+					childKey = "userId"
+				)
+			} 			
+	)
+	ZKClientSideListDataEditorContainer<UserRole> roles;
+	
 	/*@Wire
 	Textbox chipperText;*/
 	
@@ -107,128 +134,182 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	}
 	
 	@Override
-	public void insertData() throws Exception {
-		/*// TODO Auto-generated method stub
-		super.insertData();*/
-		System.out.println("Masuk tanpa parameter");
-	}
+	protected void doBeforeSave(User data) {
+		
+		validationForm(data);
 	
-	@Override
-	@Listen("onClick = #btnSave")
-	public void saveClick(final Event evt) {
-		
-		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
-		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
-			
-			Messagebox.show(confirmMsg, "Prompt", 
-					Messagebox.YES|Messagebox.NO, 
-					Messagebox.QUESTION, 
-			new EventListener<Event>() {
-				
-				@Override
-				public void onEvent(Event event) throws Exception {
-					switch(((Integer)event.getData()).intValue()) {
-					case Messagebox.YES:
-						saveData(evt);
-						break;
-					case Messagebox.NO:
-						break;
-					}
-				}
-			});				
-		} else saveData(evt); 
-		
-		
-	}
-	
-	
-	protected final void saveData(final Event evt) {
-		parseEditedData(evt.getTarget());
-		User data = getEditedData();
-		
-		data.setDefaultApplicationId(Integer.parseInt(applicationId));
-		data.setDefaultApplication(appService.getCurrentAppDetailData());
-		
-		
-		if(validationForm(data)){
-			
-			if(ZKEditorState.EDIT.equals(getEditorState())){
-				if(data.getChipperText().equalsIgnoreCase("")){
-					data.setChipperText(editedData.getChipperText());
-				}
-				data.setModifiedBy(SecurityUtil.getUser().getUsername());
-				data.setModifiedOn(new Date());
-			}else{
-				data.setCreatedBy(SecurityUtil.getUser().getUsername());
-				data.setCreatedOn(new Date());
-				data.setModifiedBy(SecurityUtil.getUser().getUsername());
-				data.setModifiedOn(new Date());
+		if(ZKEditorState.EDIT.equals(getEditorState())){
+			if(data.getChipperText().equalsIgnoreCase("")){
+				data.setChipperText(editedData.getChipperText());
 			}
-			
-			if(superAdmin.isChecked()){
-				data.setSuperAdmin("Y");
-			}else{
-				data.setSuperAdmin("N");
-			}
-			if(status.isChecked()){
-				data.setStatus("A");
-			}else{
-				data.setStatus("D");
-			}
-			
-			Set<Listitem> li = listBoxCheckList.getSelectedItems();
-			
-			Set<Listitem> liRole = listBoxCheckListRole.getSelectedItems();
-			
-			List<SelectedUserGroup> selectedListUserGroup = new ArrayList<SelectedUserGroup>();
-			List<SelectedRole> selectedListRole = new ArrayList<SelectedRole>();
-			
-			List<UserGroupAssignment> listGroup = new ArrayList<UserGroupAssignment>();
-			List<UserRole> listUserRole = new ArrayList<UserRole>();
-			
-			for (Listitem listitem : li) {
-				selectedListUserGroup.add((SelectedUserGroup) listitem.getValue());
-			}
-			
-			for (Listitem listitem : liRole) {
-				selectedListRole.add((SelectedRole) listitem.getValue());
-			}
-			
-			for (SelectedUserGroup selectedUserGroup : selectedListUserGroup) {
-				UserGroupAssignment dataInsert = new UserGroupAssignment();
-				dataInsert.setGroupId(selectedUserGroup.getId());
-				if(ZKEditorState.EDIT.equals(getEditorState())){
-					dataInsert.setUserId(editedData.getId());
-				}
-				listGroup.add(dataInsert);
-			}
+			data.setModifiedBy(SecurityUtil.getUser().getUsername());
+			data.setModifiedOn(new Date());
+		}else{
+			data.setCreatedBy(SecurityUtil.getUser().getUsername());
+			data.setCreatedOn(new Date());
+			data.setModifiedBy(SecurityUtil.getUser().getUsername());
+			data.setModifiedOn(new Date());
+		}
 		
-			
-			for (SelectedRole selectedRole : selectedListRole) {
-				UserRole dataUserRole = new UserRole();
-				dataUserRole.setRoleId(selectedRole.getId());
-				if(ZKEditorState.EDIT.equals(getEditorState())){
-					dataUserRole.setUserId(editedData.getId());
-				}
-				listUserRole.add(dataUserRole);
-				
-			}
-			
-			try {
-				userService.insertDataUser(data, listGroup, listUserRole);
-				String msg = "";
-				if(ZKEditorState.ADD_NEW.equals(getEditorState())){
-					msg = "tambah data baru";
-				}else{
-					msg = "update data";
-				}
-				Messagebox.show("Sukses "+msg);
-				EditorManager.getInstance().closeCurrentEditorPanel();
-			} catch (Exception e) {
-				e.printStackTrace();
+		if(superAdmin.isChecked()){
+			data.setSuperAdmin("Y");
+		}else{
+			data.setSuperAdmin("N");
+		}
+		if(status.isChecked()){
+			data.setStatus("A");
+		}else{
+			data.setStatus("D");
+		}
+		
+		groups.eraseData(new ArrayList<UserGroupAssignment>(groups.getAllStillExistData()));
+		for(Listitem item : listBoxCheckList.getItems()) {
+			UserGroupAssignment ug = new UserGroupAssignment();
+			SelectedUserGroup sg = item.getValue();
+			ug.setGroupId(sg.getId());
+			ug.setUserId(data.getId());
+			if(item.isSelected()) {
+				groups.appendNewItem(ug);
 			}
 		}
+
+		roles.eraseData(new ArrayList<UserRole>(roles.getAllStillExistData()));
+		for(Listitem item : listBoxCheckListRole.getItems()) {
+			UserRole ur = new UserRole();
+			SelectedRole sr = item.getValue();
+			ur.setRoleId(sr.getId());
+			ur.setUserId(data.getId());
+			if(item.isSelected()) {
+				roles.appendNewItem(ur);
+			}
+		}
+			
 	}
+
+	
+//	@Override
+//	public void insertData() throws Exception {
+//		/*// TODO Auto-generated method stub
+//		super.insertData();*/
+//		System.out.println("Masuk tanpa parameter");
+//	}
+	
+//	@Override
+//	@Listen("onClick = #btnSave")
+//	public void saveClick(final Event evt) {
+//		
+//		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
+//		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
+//			
+//			Messagebox.show(confirmMsg, "Prompt", 
+//					Messagebox.YES|Messagebox.NO, 
+//					Messagebox.QUESTION, 
+//			new EventListener<Event>() {
+//				
+//				@Override
+//				public void onEvent(Event event) throws Exception {
+//					switch(((Integer)event.getData()).intValue()) {
+//					case Messagebox.YES:
+//						saveData(evt);
+//						break;
+//					case Messagebox.NO:
+//						break;
+//					}
+//				}
+//			});				
+//		} else saveData(evt); 
+//		
+//		
+//	}
+//	
+//	
+//	protected final void saveData(final Event evt) {
+//		parseEditedData(evt.getTarget());
+//		User data = getEditedData();
+//		
+//		data.setDefaultApplicationId(Integer.parseInt(applicationId));
+//		data.setDefaultApplication(appService.getCurrentAppDetailData());
+//		
+//		
+//		if(validationForm(data)){
+//			
+//			if(ZKEditorState.EDIT.equals(getEditorState())){
+//				if(data.getChipperText().equalsIgnoreCase("")){
+//					data.setChipperText(editedData.getChipperText());
+//				}
+//				data.setModifiedBy(SecurityUtil.getUser().getUsername());
+//				data.setModifiedOn(new Date());
+//			}else{
+//				data.setCreatedBy(SecurityUtil.getUser().getUsername());
+//				data.setCreatedOn(new Date());
+//				data.setModifiedBy(SecurityUtil.getUser().getUsername());
+//				data.setModifiedOn(new Date());
+//			}
+//			
+//			if(superAdmin.isChecked()){
+//				data.setSuperAdmin("Y");
+//			}else{
+//				data.setSuperAdmin("N");
+//			}
+//			if(status.isChecked()){
+//				data.setStatus("A");
+//			}else{
+//				data.setStatus("D");
+//			}
+//			
+//			Set<Listitem> li = listBoxCheckList.getSelectedItems();
+//			
+//			Set<Listitem> liRole = listBoxCheckListRole.getSelectedItems();
+//			
+//			List<SelectedUserGroup> selectedListUserGroup = new ArrayList<SelectedUserGroup>();
+//			List<SelectedRole> selectedListRole = new ArrayList<SelectedRole>();
+//			
+//			List<UserGroupAssignment> listGroup = new ArrayList<UserGroupAssignment>();
+//			List<UserRole> listUserRole = new ArrayList<UserRole>();
+//			
+//			for (Listitem listitem : li) {
+//				selectedListUserGroup.add((SelectedUserGroup) listitem.getValue());
+//			}
+//			
+//			for (Listitem listitem : liRole) {
+//				selectedListRole.add((SelectedRole) listitem.getValue());
+//			}
+//			
+//			for (SelectedUserGroup selectedUserGroup : selectedListUserGroup) {
+//				UserGroupAssignment dataInsert = new UserGroupAssignment();
+//				dataInsert.setGroupId(selectedUserGroup.getId());
+//				if(ZKEditorState.EDIT.equals(getEditorState())){
+//					dataInsert.setUserId(editedData.getId());
+//				}
+//				listGroup.add(dataInsert);
+//			}
+//		
+//			
+//			for (SelectedRole selectedRole : selectedListRole) {
+//				UserRole dataUserRole = new UserRole();
+//				dataUserRole.setRoleId(selectedRole.getId());
+//				if(ZKEditorState.EDIT.equals(getEditorState())){
+//					dataUserRole.setUserId(editedData.getId());
+//				}
+//				listUserRole.add(dataUserRole);
+//				
+//			}
+//			
+//			try {
+//				userService.insertDataUser(data, listGroup, listUserRole);
+//				String msg = "";
+//				if(ZKEditorState.ADD_NEW.equals(getEditorState())){
+//					msg = "tambah data baru";
+//				}else{
+//					msg = "update data";
+//				}
+//				Messagebox.show("Sukses "+msg);
+//				EditorManager.getInstance().closeCurrentEditorPanel();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 	/*@Override
 	protected void insertData(User data) throws Exception {
 		if(validationForm()){
@@ -271,13 +352,39 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		}
 	}*/
 	
+//	@Override
+//	protected void updateData(User data) throws Exception {
+//		// TODO Auto-generated method stub
+//		/*if(validationForm()){
+//			saveUserGroupAssignment(editedData.getId(), data);
+//		}*/
+//	}
+	
 	@Override
-	protected void updateData(User data) throws Exception {
-		// TODO Auto-generated method stub
-		/*if(validationForm()){
-			saveUserGroupAssignment(editedData.getId(), data);
-		}*/
+	public void deleteChildrenData(List<?> childrenData) throws Exception {
+		for(Object child : childrenData) {
+			if(child instanceof UserGroupAssignment) {
+				generalPurposeService.delete(UserGroupAssignment.class, ((UserGroupAssignment)child).getId(), "id");
+			} else if(child instanceof UserRole) {
+				generalPurposeService.delete(UserRole.class, ((UserRole)child).getId(), "id");
+			}
+		}
 	}
+
+	
+	
+	@Override
+	protected void insertData(Object... data) throws Exception {
+		Object[] obj = data;
+		if(obj != null && obj.length == 1) {
+			if(obj[0] instanceof User) {
+				data[0] = userService.insert((User)obj[0]);
+			} else {
+				super.insertData(data);
+			}
+		}
+	}
+
 	private boolean validationForm(User data){
 		List<String> notValidFiled = new ArrayList<String>();
 		
@@ -303,8 +410,9 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 					error += string+" \n";
 				}
 			}
-			Messagebox.show("Error Message : \n"+error);
-			return false;
+//			Messagebox.show("Error Message : \n"+error);
+			throw new RuntimeException("Error Message : \n"+error);
+//			return false;
 		}else{
 			return true;
 		}
@@ -438,10 +546,12 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		List<UserGroupAssignment> listUserGroupAssignment = null;
 		
 		List<SelectedUserGroup> listDataTampil = new ArrayList<SelectedUserGroup>();
+		groups = new ZKClientSideListDataEditorContainer<UserGroupAssignment>();
 		
 		if(listUserGroup!=null && !listUserGroup.isEmpty()){
 			if(editedData.getId()!=null){
 				listUserGroupAssignment = getUserGroupAssignmentByUserId(userId);
+				groups.initiateAndFillData(listUserGroupAssignment);
 			}
 			for (SelectedUserGroup selectedUserGroup : listUserGroup) {
 				if(listUserGroupAssignment != null && !listUserGroupAssignment.isEmpty()){
@@ -573,9 +683,12 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		
 		List<SelectedRole> listDataTampil = new ArrayList<SelectedRole>();
 		
+		roles = new ZKClientSideListDataEditorContainer<UserRole>();
+		
 		if(listUserRoleSelected!=null && !listUserRoleSelected.isEmpty()){
 			if(editedData.getId()!=null){
 				listUserRole = getRoleByUserId(userId);
+				roles.initiateAndFillData(listUserRole);
 			}
 			for (SelectedRole selectedUserRole : listUserRoleSelected) {
 				if(listUserRole != null && !listUserRole.isEmpty()){
