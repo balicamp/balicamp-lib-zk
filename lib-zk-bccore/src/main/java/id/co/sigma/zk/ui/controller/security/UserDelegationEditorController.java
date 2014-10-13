@@ -27,6 +27,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
@@ -55,7 +57,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	private final String defaultDataStatus = "A";
 	
-	private final String modulTitle = "User Delegation Editor";
+	private final String moduleTitle = "User Delegation Editor";
 	
 	@Wire private Bandbox bnbxDelegateFromUser;
 	
@@ -110,15 +112,28 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		try {
 			User user = bnbxDelegateFromUserList.getSelectedItem().getValue();
 			if(!fromAndToUserIsSame(user.getId(), destUserId.getValue())){
+				// Set values and close bandbox
 				sourceUserId.setValue(user.getId());
 				bnbxDelegateFromUser.setValue(user.getRealName());
 				bnbxDelegateFromUser.close();
+				
+				// Update listbox
 				lbAvailableRoles.setModel((ListModel<UserRole>) getUserRoleListModel());
 				clearListbox(lbDelegatedRoles);
 				lbAvailableGroups.setModel((ListModel<UserGroupAssignment>) getUserGroupListModel());
 				clearListbox(lbDelegatedGroups);
+				
+				// Button state
+				if(lbAvailableRoles.getItems().size()>0){
+					btnAddAllRoles.setDisabled(false);
+					btnAddSingleRole.setDisabled(false);
+				}
+				if(lbAvailableGroups.getItems().size()>0){
+					btnAddAllGroups.setDisabled(false);
+					btnAddSingleGroup.setDisabled(false);
+				}
 			}else{
-				Messagebox.show("User asal dan tujuan tidak boleh sama!", modulTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+				Messagebox.show("User asal dan tujuan tidak boleh sama!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -138,7 +153,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				bnbxDelegateToUser.setValue(user.getRealName());			
 				bnbxDelegateToUser.close();
 			}else{
-				Messagebox.show("User asal dan tujuan tidak boleh sama!", modulTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+				Messagebox.show("User asal dan tujuan tidak boleh sama!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,8 +182,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	private void moveListboxItem(Listbox source, Listbox dest, boolean moveAll, boolean isMovingRoles, boolean ltr){
+		int j = source.getItems().size();
+		
 		if(moveAll){
-			int j = source.getItems().size();
 			if(j > 0){
 				List<Listitem> copy = new ArrayList<Listitem>(source.getItems());
 				for (Listitem item : copy) {
@@ -177,12 +193,14 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				source.getItems().clear();
 			}
 		}else{
-			if(source.getSelectedItem() != null){
-				dest.getItems().add(source.getSelectedItem());
-			}else{
-				source.setSelectedItem(source.getItemAtIndex(0));
-				dest.getItems().add(source.getSelectedItem());
-			}			
+			if(j > 0){
+				if(source.getSelectedItem() != null){
+					dest.getItems().add(source.getSelectedItem());
+				}else{
+					source.setSelectedItem(source.getItemAtIndex(0));
+					dest.getItems().add(source.getSelectedItem());
+				}
+			}
 		}
 		
 		updateGroupsAndRolesButtonState(source, isMovingRoles, ltr);
@@ -305,7 +323,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	public List<UserRole> getRemainingUserRoleListModel(){
-		// delegated roles
+		// Delegated roles
 		List<UserDelegationRole> delegatedRoles = getDelegatedRoles();
 		Map<Long, UserDelegationRole> delegatedRolesMap = new HashMap<>();
 		if(delegatedRoles!=null && !delegatedRoles.isEmpty()){
@@ -314,7 +332,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			}
 		}
 		
-		// all user roles
+		// All user roles
 		List<UserRole> retval = new ArrayList<>();
 		List<UserRole> allRoles = getUserRoles();
 		if(allRoles!=null && !allRoles.isEmpty()){
@@ -331,6 +349,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	public List<UserRole> getDelegatedUserRoleListModel(){
+		// Delegated roles
 		List<UserDelegationRole> currentRoles = getDelegatedRoles();
 		Map<Long, UserDelegationRole> currentRolesMap = new HashMap<>();
 		if(currentRoles!=null && !currentRoles.isEmpty()){
@@ -341,6 +360,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			return new ListModelList<>();
 		}
 		
+		// All user roles
 		List<UserRole> retval = new ArrayList<>();
 		List<UserRole> userRoles = getUserRoles();
 		if(userRoles!=null){
@@ -359,16 +379,16 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	public List<UserGroupAssignment> getRemainingUserGroupListModel(){
-		// delegated groups
+		// Delegated groups
 		List<UserDelegationGroup> delegatedGroups = getDelegatedGroups();
 		Map<Long, UserDelegationGroup> delegatedGroupsMap = new HashMap<>();
 		if(delegatedGroups!=null && !delegatedGroups.isEmpty()){
-			for(UserDelegationGroup group : getDelegatedGroups()){
+			for(UserDelegationGroup group : delegatedGroups){
 				delegatedGroupsMap.put(group.getGroupId(), group);
 			}
 		}
 		
-		// all user groups
+		// All user groups
 		List<UserGroupAssignment> retval = new ArrayList<>();
 		List<UserGroupAssignment> userGroups = getUserGroups();
 		if(userGroups!=null){
@@ -385,16 +405,18 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	public List<UserGroupAssignment> getDelegatedUserGroupListModel(){
+		// Delegated groups
 		List<UserDelegationGroup> currentGroups = getDelegatedGroups();
 		Map<Long, UserDelegationGroup> currentGroupsMap = new HashMap<>();
 		if(currentGroups!=null && !currentGroups.isEmpty()){
-			for(UserDelegationGroup group : getDelegatedGroups()){
+			for(UserDelegationGroup group : currentGroups){
 				currentGroupsMap.put(group.getGroupId(), group);
 			}
 		}else{
 			return new ListModelList<>();
 		}
 		
+		// All user groups
 		List<UserGroupAssignment> retval = new ArrayList<>();
 		List<UserGroupAssignment> userGroups = getUserGroups();
 		if(userGroups!=null){
@@ -407,12 +429,84 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		
 		return new ListModelList<>(retval);
 	}
+	
+	/**
+	 * Cek apakah delegasi dari user x dalam rentang waktu tertentu sudah ada/belum
+	 * @param userId - ID user asal
+	 * @param startDate - Dari tanggal
+	 * @param endDate - Sampai tanggal
+	 * @return boolean
+	 */
+	private boolean userDelegationIsExist(Long userId, Date startDate, Date endDate){
+		SimpleQueryFilter[] filters = {
+			new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, userId),
+			new SimpleQueryFilter("endDate", startDate, endDate)
+		};
+		
+		Long delegs = generalPurposeDao.count(UserDelegation.class, filters);
+		
+		return ( (delegs!=null) && (delegs>0) );
+	}
+	
+	private boolean delegationIsUnique(Long srcUserId, Long destUserId){
+		SimpleQueryFilter[] filters = {
+			new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, srcUserId),
+			new SimpleQueryFilter("destUserId", SimpleQueryFilterOperator.equal, destUserId)
+		};
+			
+		Long delegs = generalPurposeDao.count(UserDelegation.class, filters);
+		
+		return ( (delegs!=null) && (delegs==0) );
+	}
+	
+	private void disableExistingDelegations(Long userId, Date startDate, Date endDate){
+		SimpleQueryFilter[] filters = {
+			new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, userId),
+			new SimpleQueryFilter("endDate", startDate, endDate)
+		};
+		
+		try {
+			List<UserDelegation> delegs = generalPurposeDao.list(UserDelegation.class, filters, null);
+			if(delegs!=null && !delegs.isEmpty()){
+				for (UserDelegation deleg : delegs) {
+					deleg.setDataStatus("I");
+					generalPurposeService.merge(deleg);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	protected void insertData(Object... data) throws Exception {
 		getEditedData().setCreatedBy(SecurityUtil.getUser().getUsername());
 		getEditedData().setCreatedOn(new Date());
 		userDelegationService.insert(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
+	}
+	
+	@Override
+	@Listen("onClick = #btnSave")
+	public void saveClick(Event evt) {
+		if(!isEditing() && delegationIsUnique(sourceUserId.getValue(), destUserId.getValue())){
+			if(userDelegationIsExist(sourceUserId.getValue(), startDate.getValue(), endDate.getValue())){
+				String msg = "Delegasi dari user yang sama dalam rentang waktu "+startDate.getText()+
+							 " s/d "+endDate.getText()+" sudah ada! Apakah anda ingin menonaktifkan delegasi-delegasi yang terdahulu?";
+				Messagebox.show(msg, "Perhatian!", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						if(event.getName().equals(Messagebox.ON_YES)){
+							// Disable existing delegation(s)
+							disableExistingDelegations(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
+						}
+					}
+				});
+			}
+			
+			super.saveClick(evt);
+		}else{
+			Messagebox.show("Delegasi dari user dan ke user yang sama sudah ada!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+		}
 	}
 
 	@Override
@@ -499,6 +593,17 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			
 			startDate.setValue(new Date());
 			endDate.setValue(getTomorrowDate());
+			
+			// Disable roles & group buttons
+			btnAddAllRoles.setDisabled(true);
+			btnAddSingleRole.setDisabled(true);
+			btnRemoveAllRoles.setDisabled(true);
+			btnRemoveSingleRole.setDisabled(true);
+			
+			btnAddAllGroups.setDisabled(true);
+			btnAddSingleGroup.setDisabled(true);
+			btnRemoveAllGroups.setDisabled(true);
+			btnRemoveSingleGroup.setDisabled(true);
 		}
 	}
 	
@@ -519,7 +624,5 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		super.doAfterCompose(comp);
 		adjustEditorFields();
 	}
-	
-	
-	
+
 }

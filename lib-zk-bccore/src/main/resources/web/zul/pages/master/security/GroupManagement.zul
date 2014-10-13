@@ -33,6 +33,7 @@
 			<listheader label="${labels.field.no}" width="50px" align="center"/>
 			<listheader label="${labels.field.code}" hflex="1" align="center"/>
 			<listheader label="${labels.field.name}" hflex="1" align="center"/>
+			<listheader label="${labels.field.status}" hflex="1" align="center"/>
 		</actionListhead>
 		<template name="model">
 			<actionListitem value="${each}" editorPage="~./zul/pages/master/security/GroupManagementEditor.zul" 
@@ -41,6 +42,7 @@
 				<listcell label="${forEachStatus.index+1}" style="text-align:right;"/>
 				<listcell label="${each.groupCode}" style="text-align:left;"/>
 				<listcell label="${each.groupName}" style="text-align:left;"/>
+				<listcell label="${each.activeFlagAlias}" style="text-align:left;"/>
 			</actionListitem>
 		</template>
 	</listbox>

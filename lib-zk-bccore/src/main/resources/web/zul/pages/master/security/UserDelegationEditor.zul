@@ -91,7 +91,7 @@
 							<listbox id="lbAvailableRoles" rows="10" multiple="true" 
 							emptyMessage="User tidak memiliki role">
 								<template name="model">
-									<listitem value="${each}" label="${each.role.roleDesc}"/>
+									<listitem value="${each}" label="${each.roleName}"/>
 								</template>
 							</listbox>
 						</div>
@@ -110,7 +110,7 @@
 							<listbox id="lbDelegatedRoles" rows="10" multiple="true" 
 							emptyMessage="Pilih dari daftar role di sebelah kiri">
 								<template name="model">
-									<listitem value="${each}" label="${each.role.roleDesc}"/>
+									<listitem value="${each}" label="${each.roleName}"/>
 								</template>
 							</listbox>
 						</div>
@@ -128,7 +128,7 @@
 							<listbox id="lbAvailableGroups" rows="10" multiple="true" 
 							emptyMessage="User tidak memiliki group">
 								<template name="model">
-									<listitem value="${each}" label="${each.userGroup.groupName}" />
+									<listitem value="${each}" label="${each.groupName}" />
 								</template>
 							</listbox>
 						</div>
@@ -147,7 +147,7 @@
 							<listbox id="lbDelegatedGroups" rows="10" multiple="true" 
 							emptyMessage="Pilih dari daftar group di sebelah kiri">
 								<template name="model">
-									<listitem value="${each}" label="${each.userGroup.groupName}" />
+									<listitem value="${each}" label="${each.groupName}" />
 								</template>
 							</listbox>
 						</div>
