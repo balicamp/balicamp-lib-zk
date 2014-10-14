@@ -100,41 +100,25 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 						logger.warn(e.getMessage());
 					}
 					
-					boolean saveCommit = true ; 
-					
-					
-					if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
-						try {
-							
+					try {
+						if ( ZKEditorState.ADD_NEW.equals(getEditorState())) {
 							insertData();
-							
-						} catch (Exception e) {
-							saveCommit = false ; 
-							logger.error( "" + e.getMessage() , e);
-						}
-					}else {
-						try {
-							
+						}else {
 							updateData();
-							
-						} catch (Exception e) {
-							saveCommit = false ; 
-							logger.error("gagal update file. error : " + e.getMessage() , e);
 						}
 						
-					}
-					
-					if(obj != null) { //jika support savepoint
-						if ( saveCommit){
+						if(obj != null) {
 							stts.releaseSavepoint(obj);
 						}
-						else {
+						
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						if(obj != null) {
 							stts.rollbackToSavepoint(obj);
-						}
-					} else { //jika tidak support savepoint
-						if(!saveCommit) {
+						} else {
 							stts.setRollbackOnly();
 						}
+						throw new RuntimeException(e);
 					}
 					
 					return 1;
