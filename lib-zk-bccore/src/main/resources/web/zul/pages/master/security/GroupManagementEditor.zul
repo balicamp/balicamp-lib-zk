@@ -2,7 +2,7 @@
 
 <zk xmlns:w="client">
 
-<editorWindow id="groupMgmEditorWin" captionLabel="Edit Page"
+<editorWindow id="groupMgmEditorWin" captionLabel="Group Management Editor"
 	apply="id.co.sigma.zk.ui.controller.security.GroupManagementEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
@@ -14,15 +14,19 @@
 			<grid >
 				<rows>
 					<row>
-						<cell width="200px">Group Code</cell>
-						<cell><textbox id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}" maxlength="32" constraint="no empty"></textbox></cell>
+						<cell width="200px">${labels.field.group_code}<span class="sign-mandatory">*</span></cell>
+						<cell>
+							<textbox id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}" maxlength="32" constraint="no empty"/>
+						</cell>
 					</row>
 					<row>
-						<cell>Group Name</cell>
-						<cell><textbox id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}" maxlength="128" constraint="no empty"></textbox></cell>
+						<cell>${labels.field.group_name}<span class="sign-mandatory">*</span></cell>
+						<cell>
+							<textbox id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}" maxlength="128" constraint="no empty"/>
+						</cell>
 					</row>
 					<row>
-						<cell>Active</cell>
+						<cell>${labels.field.aktif}</cell>
 						<cell>
 							<checkbox id="cbActiveFlag"></checkbox>
 							<textbox id="activeFlag" value="${groupMgmEditorWin$composer.editedData.activeFlag}" visible="false" />

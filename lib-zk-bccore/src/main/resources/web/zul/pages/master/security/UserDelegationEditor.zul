@@ -11,7 +11,7 @@
 			<grid >
 				<rows>
 					<row>
-						<cell width="200px">${labels.field.delegate_from_user}</cell>
+						<cell width="200px">${labels.field.delegate_from_user}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" readonly="true" 
 							value="${userDelegationEditorWin$composer.editedData.sourceUser.realName}" constraint="no empty">
@@ -32,7 +32,7 @@
 						</cell>
 					</row>
 					<row>
-						<cell>${labels.field.delegate_to_user}</cell>
+						<cell>${labels.field.delegate_to_user}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" readonly="true" 
 							value="${userDelegationEditorWin$composer.editedData.destUser.realName}" constraint="no empty">
@@ -53,29 +53,29 @@
 						</cell>
 					</row>
 					<row>
-						<cell>${labels.field.date_start}</cell>
+						<cell>${labels.field.date_start}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" 
 							readonly="true" />
 						</cell>
 					</row>
 					<row>
-						<cell>${labels.field.date_end}</cell>
+						<cell>${labels.field.date_end}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" 
 							readonly="true" />
 						</cell>
 					</row>
 					<row>
-						<cell>${labels.field.description}</cell>
+						<cell>${labels.field.description}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<textbox id="remark" width="300px" height="100px" cols="50" rows="5" value="${userDelegationEditorWin$composer.editedData.remark}" />
+							<textbox id="remark" width="300px" height="100px" cols="50" rows="5" value="${userDelegationEditorWin$composer.editedData.remark}" constraint="no empty" />
 						</cell>
 					</row>
 					<row>
-						<cell>${labels.field.status}</cell>
+						<cell>${labels.field.status}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" readonly="true" />
+							<combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" readonly="true" constraint="no empty" />
 						</cell>
 					</row>
 				</rows>	

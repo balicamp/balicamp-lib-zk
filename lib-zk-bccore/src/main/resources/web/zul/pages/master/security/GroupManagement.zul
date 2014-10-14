@@ -31,8 +31,8 @@
 		pageSize="10" >
 		<actionListhead>
 			<listheader label="${labels.field.no}" width="50px" align="center"/>
-			<listheader label="${labels.field.code}" hflex="1" align="center"/>
-			<listheader label="${labels.field.name}" hflex="1" align="center"/>
+			<listheader label="${labels.field.group_code}" hflex="1" align="center"/>
+			<listheader label="${labels.field.group_name}" hflex="1" align="center"/>
 			<listheader label="${labels.field.status}" hflex="1" align="center"/>
 		</actionListhead>
 		<template name="model">
