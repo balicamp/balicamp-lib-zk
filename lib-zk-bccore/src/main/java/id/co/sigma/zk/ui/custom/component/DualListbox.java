@@ -1,9 +1,11 @@
 package id.co.sigma.zk.ui.custom.component;
 
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
+import id.co.sigma.zk.ui.annotations.DualListboxBinder;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +26,7 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Window;
 
 public class DualListbox extends Div implements AfterCompose, IdSpace {
 
@@ -57,6 +60,10 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	
 	private String showField;
 	
+	private String sourceClass;
+	
+	private String targetClass;
+	
 	private ZKClientSideListDataEditorContainer<Object> targetContainer;
 	
 	private ListModelList<Object> candidateModel;
@@ -70,21 +77,11 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		choosendata.setModel(chosenModel = new ListModelList<Object>());
 		chosenModel.setMultiple(true);
 	}
-
-	@Override
-	public void afterCompose() {
-		String height = getHeight();
-		if(height != null && height.trim().length() > 0) {
-			dualLayout.setHeight(height);
-		} 			
-		
-		btnBox.setHeight(dualLayout.getHeight());
-		candidate.setHeight(dualLayout.getHeight());
-		choosendata.setHeight(dualLayout.getHeight());
-
+	
+	public void loadData() {
 		if(this.srcModel != null) {
 			
-			List<Object> existingData = targetContainer.getAllStillExistData();
+			List<Object> existingData = copyData(targetContainer.getAllStillExistData(), sourceClass);
 			
 			if((existingData != null) && !existingData.isEmpty()) {
 				this.srcModel.removeAll(existingData);				
@@ -99,6 +96,39 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 			
 			populateData(candidate, candidateModel.getInnerList());
 		}
+	}
+
+	@Override
+	public void afterCompose() {
+		
+		Window window = getParentWindow();
+		
+		if(window != null) {
+			Object composer = window.getAttribute(window.getId() + "$composer");
+			if(composer != null) {
+				Field[] fields = composer.getClass().getDeclaredFields();
+				for(Field f: fields) {
+					if(f.isAnnotationPresent(DualListboxBinder.class)) {
+						DualListboxBinder ann = f.getAnnotation(DualListboxBinder.class);
+						this.targetClass = ann.targetClass().getName();
+						this.sourceClass = ann.sourceClass().getName();
+					}
+				}
+			}
+		}
+		
+		String height = getHeight();
+		if(height != null && height.trim().length() > 0) {
+			dualLayout.setHeight(height);
+		} 			
+		
+		btnBox.setHeight(dualLayout.getHeight());
+		candidate.setHeight(dualLayout.getHeight());
+		choosendata.setHeight(dualLayout.getHeight());
+		
+		loadData();
+		
+		toggleButtons();
 	}
 
 	/**
@@ -131,8 +161,9 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 
 	@Listen("onClick = #moveRightAll")
 	public void moveRightAll() {
-		targetContainer.appendNewItems(candidateModel.getInnerList());
-		chosenModel.addAll(candidateModel);
+		List<Object> data = copyData(candidateModel.getInnerList(), targetClass);
+		targetContainer.appendNewItems(data);
+		chosenModel.addAll(data);
 		candidateModel.clear();
 		
 		populateData(choosendata, targetContainer.getAllStillExistData());
@@ -140,8 +171,9 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	
 	@Listen("onClick = #moveLeftAll")
 	public void moveLeftAll() {
+		List<Object> data = copyData(chosenModel.getInnerList(), sourceClass);
 		targetContainer.eraseData(chosenModel.getInnerList());
-		candidateModel.addAll(chosenModel);
+		candidateModel.addAll(data);
 		chosenModel.clear();
 		
 		populateData(candidate, candidateModel.getInnerList());
@@ -172,11 +204,68 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		this.targetContainer = targetContainer;
 	}
 	
+	/**
+	 * @return the sourceClass
+	 */
+	public String getSourceClass() {
+		return sourceClass;
+	}
+
+	/**
+	 * @param sourceClass the sourceClass to set
+	 */
+	public void setSourceClass(String sourceClass) {
+		this.sourceClass = sourceClass;
+	}
+
+	/**
+	 * @return the targetClass
+	 */
+	public String getTargetClass() {
+		return targetClass;
+	}
+
+	/**
+	 * @param targetClass the targetClass to set
+	 */
+	public void setTargetClass(String targetClass) {
+		this.targetClass = targetClass;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private List<Object> copyData(List<Object> sources, String className) {
+		
+		try {
+			Class c = Class.forName(className);
+		
+			List<Object> datas = new ArrayList<Object>();
+			for(Object source : sources) {
+				try {
+					Object oDest = c.newInstance();
+					ExtendedBeanUtils.copyProperties(source, oDest);
+					datas.add(oDest);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			return datas;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
 	private Set<Object> chooseSome() {
 		Set<Object> set = candidateModel.getSelection();
 		
-		chosenModel.addAll(set);
-		targetContainer.appendNewItems(new ArrayList<Object>(set));
+		List<Object> orig = new ArrayList<Object>(set);
+		List<Object> data = copyData(orig, targetClass);
+		
+		chosenModel.addAll(data);
+		targetContainer.appendNewItems(data);
 
 		candidateModel.removeAll(set);
 		
@@ -187,10 +276,13 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	
 	private Set<Object> removeSome() {
 		Set<Object> set = chosenModel.getSelection();
-		
-		candidateModel.addAll(set);
 
-		targetContainer.eraseData(new ArrayList<Object>(set));
+		List<Object> orig = new ArrayList<Object>(set);
+		List<Object> data = copyData(orig, sourceClass);
+		
+		candidateModel.addAll(data);
+
+		targetContainer.eraseData(orig);
 		chosenModel.removeAll(set);
 		
 		populateData(candidate, candidateModel.getInnerList());
@@ -219,6 +311,38 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 			item.setValue(list.get(i++));
 			setLabel(item);
 		}
+		toggleButtons();
+	}
+	
+	private void toggleButtons() {
+		if(candidateModel == null || candidateModel.getInnerList() == null) {
+			moveRightAll.setDisabled(true);
+			moveRight.setDisabled(true);
+		} else {
+			moveRightAll.setDisabled(candidateModel.getInnerList().isEmpty());
+			moveRight.setDisabled(candidateModel.getInnerList().isEmpty());
+		}
+		if(targetContainer == null || targetContainer.getAllStillExistData() == null) {
+			moveLeftAll.setDisabled(true);
+			moveLeft.setDisabled(true);
+		} else {
+			moveLeftAll.setDisabled(targetContainer.getAllStillExistData().isEmpty());
+			moveLeft.setDisabled(targetContainer.getAllStillExistData().isEmpty());
+		}
+	}
+	
+	private Window getParentWindow() {
+		Component parent = getParent();
+		if(parent instanceof Window) {
+			return (Window)parent;
+		}
+		for(;!(parent instanceof Window);) {
+			parent = parent.getParent();
+			if(parent instanceof Window) {
+				return (Window)parent;
+			}
+		}
+		return null;
 	}
 	
 	public class ChooseEvent extends Event {
