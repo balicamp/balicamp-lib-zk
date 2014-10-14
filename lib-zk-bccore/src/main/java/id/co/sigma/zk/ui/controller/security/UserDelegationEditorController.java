@@ -534,12 +534,18 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			if(!isEditing() && isUnique){
 				boolean overlappingDelegationsExists = overlappingUserDelegationIsExist(getEditedData().getSourceUserId(), getEditedData().getStartDate(), getEditedData().getEndDate());
 				if(overlappingDelegationsExists){
-					String msg = "Delegasi dari user yang sama dalam rentang waktu "+startDate.getText()+
-								 " s/d "+endDate.getText()+" sudah ada, klik OK untuk menonaktifkan delegasi-delegasi yang terdahulu dan menyimpan data.";
-					Messagebox.show(msg, "Perhatian!", Messagebox.OK|Messagebox.CANCEL, Messagebox.EXCLAMATION, new EventListener<Event>() {
+					String confirmMsg = Labels.getLabel("msg.warnings.delegation.overlapping");
+					confirmMsg = confirmMsg.replace("{startingDate}", startDate.getText());
+					confirmMsg = confirmMsg.replace("{endingDate}", endDate.getText());
+					Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.attention"), 
+							new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL}, 
+							new String[]{Labels.getLabel("action.button.ok"), Labels.getLabel("action.button.cancel")},
+							Messagebox.EXCLAMATION,
+							Messagebox.Button.OK,
+							new EventListener<Messagebox.ClickEvent>() {
 						@Override
-						public void onEvent(Event event) throws Exception {
-							if(event.getName().equals(Messagebox.ON_OK)){
+						public void onEvent(Messagebox.ClickEvent event) throws Exception {
+							if(event.getButton().equals(Messagebox.Button.OK)){
 								// Disable existing delegation(s)
 								disableExistingDelegations(getEditedData().getSourceUserId(), getEditedData().getStartDate(), getEditedData().getEndDate());
 								saveData(evt);
