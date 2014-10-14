@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -52,12 +53,14 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserDelegationEditorController.class.getName());
 	
-	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
-	@Wire private Combobox dataStatus;
-	
 	private final String defaultDataStatus = "A";
 	
+	private final String constraintDateFormat = "yyyyMMdd";
+	
 	private final String moduleTitle = "User Delegation Editor";
+	
+	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
+	@Wire private Combobox dataStatus;
 	
 	@Wire private Bandbox bnbxDelegateFromUser;
 	
@@ -437,7 +440,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	 * @param endDate - Sampai tanggal
 	 * @return boolean
 	 */
-	private boolean userDelegationIsExist(Long userId, Date startDate, Date endDate){
+	private boolean overlappingUserDelegationIsExist(Long userId, Date startDate, Date endDate){
 		SimpleQueryFilter[] filters = {
 			new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, userId),
 			new SimpleQueryFilter("endDate", startDate, endDate)
@@ -487,31 +490,72 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	@Override
 	@Listen("onClick = #btnSave")
-	public void saveClick(Event evt) {
-		if(!isEditing() && delegationIsUnique(sourceUserId.getValue(), destUserId.getValue())){
-			if(userDelegationIsExist(sourceUserId.getValue(), startDate.getValue(), endDate.getValue())){
-				String msg = "Delegasi dari user yang sama dalam rentang waktu "+startDate.getText()+
-							 " s/d "+endDate.getText()+" sudah ada! Apakah anda ingin menonaktifkan delegasi-delegasi yang terdahulu?";
-				Messagebox.show(msg, "Perhatian!", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						if(event.getName().equals(Messagebox.ON_YES)){
-							// Disable existing delegation(s)
-							disableExistingDelegations(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
-						}
-					}
-				});
-			}
-			
-			super.saveClick(evt);
-		}else{
-			Messagebox.show("Delegasi dari user dan ke user yang sama sudah ada!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+	public void saveClick(final Event evt) {
+		parseEditedData(evt.getTarget());
+		try{
+			bindValueFromControl(getEditedData());
+		}catch(Exception e){
+			logger.error("Gagal simpam data. error : " +e.getMessage() , e ); 
+			showErrorMessage(getEditorState(), e.getMessage());
+			return;
 		}
+		
+		String confirmMsg = (String) getSelf().getAttribute("confirmationMsg");
+		Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.confirmation"),
+				new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
+				new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
+				Messagebox.QUESTION,
+				Messagebox.Button.YES,
+				new EventListener<Messagebox.ClickEvent>() {
+			
+			@Override
+			public void onEvent(Messagebox.ClickEvent event) throws Exception {
+				if(Messagebox.Button.YES.equals(event.getButton())) {
+					saveDataWorker(evt);
+				}
+			}
+		});	
 	}
 
 	@Override
 	protected void updateData(UserDelegation data) throws Exception {
 		userDelegationService.update(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
+	}
+	
+	private void saveDataWorker(final Event evt){
+		// Editing
+		if(isEditing()){
+			saveData(evt);
+		}else{
+			
+			// Inserting
+			boolean isUnique = delegationIsUnique(getEditedData().getSourceUserId(), getEditedData().getDestUserId());
+			
+			if(!isEditing() && isUnique){
+				boolean overlappingDelegationsExists = overlappingUserDelegationIsExist(getEditedData().getSourceUserId(), getEditedData().getStartDate(), getEditedData().getEndDate());
+				if(overlappingDelegationsExists){
+					String msg = "Delegasi dari user yang sama dalam rentang waktu "+startDate.getText()+
+								 " s/d "+endDate.getText()+" sudah ada, klik OK untuk menonaktifkan delegasi-delegasi yang terdahulu dan menyimpan data.";
+					Messagebox.show(msg, "Perhatian!", Messagebox.OK|Messagebox.CANCEL, Messagebox.EXCLAMATION, new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
+							if(event.getName().equals(Messagebox.ON_OK)){
+								// Disable existing delegation(s)
+								disableExistingDelegations(getEditedData().getSourceUserId(), getEditedData().getStartDate(), getEditedData().getEndDate());
+								saveData(evt);
+							}
+						}
+					});
+				}else{
+					saveData(evt);
+				}
+			}
+			
+			if(!isEditing() && !isUnique){
+				Messagebox.show("Delegasi dari user dan ke user yang sama sudah ada!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+			}
+		
+		}
 	}
 	
 	private List<UserDelegationRole> getDelegatedRolesFromListbox(){
@@ -569,6 +613,12 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				setComboValueByRealData(dataStatus, getEditedData().getDataStatus());
 			}
 			
+			// Set start date constraint
+			startDate.setConstraint("no empty, after "+dateToString(getEditedData().getStartDate(), constraintDateFormat));
+			
+			// Set end date constraint
+			endDate.setConstraint("no empty, after "+dateToString(getNextDayDate(getEditedData().getStartDate()), constraintDateFormat));
+			
 			// Show available roles (remaining only)
 			lbAvailableRoles.setModel((ListModel<?>) getRemainingUserRoleListModel());
 			
@@ -589,17 +639,22 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				lbDelegatedGroups.setModel(new ListModelList<>());
 			}
 		}else{
+			// Set value combo data status sesuai dgn data dari db
 			setComboValueByRealData(dataStatus, defaultDataStatus);
 			
+			// Set start date value & constraint
 			startDate.setValue(new Date());
+			startDate.setConstraint("no empty, no past");
+			
+			// Set end date value & constraint
 			endDate.setValue(getTomorrowDate());
+			endDate.setConstraint("no empty, no past, after "+getTomorrowDateStr());
 			
 			// Disable roles & group buttons
 			btnAddAllRoles.setDisabled(true);
 			btnAddSingleRole.setDisabled(true);
 			btnRemoveAllRoles.setDisabled(true);
 			btnRemoveSingleRole.setDisabled(true);
-			
 			btnAddAllGroups.setDisabled(true);
 			btnAddSingleGroup.setDisabled(true);
 			btnRemoveAllGroups.setDisabled(true);
@@ -613,10 +668,25 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		return cal.getTime();
 	}
 	
+	/**
+	 * Get next day from specific date
+	 * @param dt - The specific date
+	 * @return (specific date + 1 day)
+	 */
+	private Date getNextDayDate(Date dt){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dt);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
+	}
+	
 	public String getTomorrowDateStr(){
-		Date tomDate = getTomorrowDate();
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		return formatter.format(tomDate);
+		return dateToString(getTomorrowDate(), constraintDateFormat);
+	}
+	
+	private String dateToString(Date dt, String format){
+		Format formatter = new SimpleDateFormat(format);
+		return formatter.format(dt);
 	}
 	
 	@Override

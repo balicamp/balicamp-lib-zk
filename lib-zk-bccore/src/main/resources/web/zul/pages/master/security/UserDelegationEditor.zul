@@ -56,14 +56,14 @@
 						<cell>${labels.field.date_start}</cell>
 						<cell>
 							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" 
-							readonly="true" constraint="no empty, no past" />
+							readonly="true" />
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.date_end}</cell>
 						<cell>
 							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" 
-							readonly="true" constraint="no empty, no past, after ${userDelegationEditorWin$composer.tomorrowDateStr}" />
+							readonly="true" />
 						</cell>
 					</row>
 					<row>
