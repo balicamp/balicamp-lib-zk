@@ -70,9 +70,17 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 			return  ; 
 		}
 		//-->end
-		
-		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
-		showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+
+		try {
+			validateData();
+			
+			String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
+			showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			showInvalidDataMessage(getEditorState(), e.getMessage());
+		}
 		
 	}
 	
@@ -86,8 +94,6 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> exte
 		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 		
 		try {
-			
-			validateData();
 			
 			tmpl.execute(new TransactionCallback<Integer>() {
 				@Override

@@ -1,14 +1,12 @@
 package id.co.sigma.zk.ui.annotations;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD})
+@Target({})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DualListboxBinder {
-	Class<?> sourceClass();
-	Class<?> targetClass();
-	EqualsField[] equalsFields() default {};
+public @interface EqualsField {
+	String sourceField();
+	String targetField() default "";
 }

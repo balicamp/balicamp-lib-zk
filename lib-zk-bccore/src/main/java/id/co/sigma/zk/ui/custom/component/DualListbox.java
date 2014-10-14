@@ -2,6 +2,7 @@ package id.co.sigma.zk.ui.custom.component;
 
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.zk.ui.annotations.DualListboxBinder;
+import id.co.sigma.zk.ui.annotations.EqualsField;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.beans.PropertyDescriptor;
@@ -21,6 +22,7 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.ListModelList;
@@ -35,7 +37,7 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private List<Object> srcModel;
+	private List<?> srcModel;
 	
 	@Wire
 	private Hlayout dualLayout;
@@ -58,6 +60,12 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	@Wire
 	private Button moveLeftAll;
 	
+	@Wire
+	private Caption sourceCaption;
+	
+	@Wire
+	private Caption targetCaption;
+	
 	private String showField;
 	
 	private String sourceClass;
@@ -69,6 +77,8 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	private ListModelList<Object> candidateModel;
 	private ListModelList<Object> chosenModel;
 	
+	private EqualsField[] equalsFields;
+	
 	public DualListbox() {
 		Executions.createComponents("~./zul/pages/common/DualListbox.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -79,15 +89,54 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	}
 	
 	public void loadData() {
+		if(candidateModel != null) candidateModel.clear();
+		if(chosenModel != null) chosenModel.clear();
 		if(this.srcModel != null) {
+			
+			if(!this.srcModel.isEmpty()){
+				this.srcModel.get(0).hashCode();
+			}
+			if((targetContainer != null) && (targetContainer.getAllStillExistData() != null) && !targetContainer.getAllStillExistData().isEmpty()) {
+				targetContainer.getAllStillExistData().get(0).hashCode();
+			}
 			
 			List<Object> existingData = copyData(targetContainer.getAllStillExistData(), sourceClass);
 			
 			if((existingData != null) && !existingData.isEmpty()) {
-				this.srcModel.removeAll(existingData);				
-				chosenModel.addAll(existingData);
 				
-				populateData(choosendata, existingData);
+				if(equalsFields != null && equalsFields.length > 0) {
+					for(Object o : existingData) {
+						for(Object s : this.srcModel) {
+							boolean eq = true;
+							for(EqualsField ef : equalsFields) {
+								try {
+									Object tk = ExtendedBeanUtils.getPropertyDescriptor(
+											o.getClass(), 
+											"".equals(ef.targetField()) ? ef.sourceField() : ef.targetField()
+											).getReadMethod().invoke(o, new Object[]{});
+									Object sk = ExtendedBeanUtils.getPropertyDescriptor(
+											s.getClass(), 
+											ef.sourceField()
+											).getReadMethod().invoke(s, new Object[]{});
+									eq = eq && (tk != null && tk.equals(sk));
+								} catch (Exception e) {
+									eq = false;
+									break;
+								}
+							}
+							if(eq){
+								this.srcModel.remove(s);
+								break;
+							}
+						}
+					}
+				} else {				
+					this.srcModel.removeAll(existingData);				
+				}
+
+				chosenModel.addAll(targetContainer.getAllStillExistData());
+				
+				populateData(choosendata, targetContainer.getAllStillExistData());
 				
 			}
 			
@@ -109,9 +158,19 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 				Field[] fields = composer.getClass().getDeclaredFields();
 				for(Field f: fields) {
 					if(f.isAnnotationPresent(DualListboxBinder.class)) {
-						DualListboxBinder ann = f.getAnnotation(DualListboxBinder.class);
-						this.targetClass = ann.targetClass().getName();
-						this.sourceClass = ann.sourceClass().getName();
+						String id = getId();
+						if(f.isAnnotationPresent(Wire.class)) {
+							Wire w = f.getAnnotation(Wire.class);
+							if(!("".equals(w.value()))) {
+								id = w.value();
+							}
+						}
+						if(f.getName().equals(id)) {
+							DualListboxBinder ann = f.getAnnotation(DualListboxBinder.class);
+							this.targetClass = ann.targetClass().getName();
+							this.sourceClass = ann.sourceClass().getName();
+							this.equalsFields = ann.equalsFields();
+						}
 					}
 				}
 			}
@@ -134,14 +193,14 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	/**
 	 * @return the srcModel
 	 */
-	public List<Object> getSrcModel() {
+	public List<?> getSrcModel() {
 		return srcModel;
 	}
 
 	/**
 	 * @param srcModel the srcModel to set
 	 */
-	public void setSrcModel(List<Object> srcModel) {
+	public void setSrcModel(List<?> srcModel) {
 		this.srcModel = srcModel;
 	}
 
@@ -231,9 +290,17 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 	public void setTargetClass(String targetClass) {
 		this.targetClass = targetClass;
 	}
+	
+	public void setSourceTitle(String title) {
+		this.sourceCaption.setLabel(title);
+	}
 
+	public void setTargetTitle(String title) {
+		this.targetCaption.setLabel(title);
+	}
+	
 	@SuppressWarnings("rawtypes")
-	private List<Object> copyData(List<Object> sources, String className) {
+	public List<Object> copyData(List<Object> sources, String className) {
 		
 		try {
 			Class c = Class.forName(className);
@@ -258,7 +325,7 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		return null;
 	}
 	
-	private Set<Object> chooseSome() {
+	public Set<Object> chooseSome() {
 		Set<Object> set = candidateModel.getSelection();
 		
 		List<Object> orig = new ArrayList<Object>(set);
@@ -274,7 +341,7 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		return set;
 	}
 	
-	private Set<Object> removeSome() {
+	public Set<Object> removeSome() {
 		Set<Object> set = chosenModel.getSelection();
 
 		List<Object> orig = new ArrayList<Object>(set);
@@ -290,7 +357,7 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		return set;
 	}
 
-	private void setLabel(Listitem item) {
+	public void setLabel(Listitem item) {
 		try {
 
 			Object data = item.getValue();
@@ -305,7 +372,7 @@ public class DualListbox extends Div implements AfterCompose, IdSpace {
 		}
 	}
 	
-	private void populateData(Listbox listbox, List<Object> list) {
+	public void populateData(Listbox listbox, List<Object> list) {
 		int i = 0;
 		for(Listitem item : listbox.getItems()) {
 			item.setValue(list.get(i++));

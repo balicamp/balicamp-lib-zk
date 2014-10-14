@@ -2,6 +2,7 @@
 <zk>
 	<hlayout id="dualLayout" height="300px" style="padding:2px" xmlns:n="native">
 		<panel border="normal" hflex="1" vflex="true" style="border: 1px solid rgb(202, 211, 201);">
+			<caption id="sourceCaption" label="Candidate"/>
 			<panelchildren>
 				<listbox id="candidate" hflex="1" vflex="true" multiple="true">
 					<template name="model">
@@ -17,6 +18,7 @@
 			<button id="moveLeftAll" width="36px" iconSclass="z-icon-fast-backward"/>
 		</box>
 		<panel border="normal" hflex="1" vflex="true" style="border: 1px solid rgb(202, 211, 201);">
+			<caption id="targetCaption" label="Choosen"/>
 			<panelchildren>
 				<listbox id="choosendata" hflex="1" vflex="true" multiple="true" emptyMessage="belum ada data yang diselect">
 					<template name="model">

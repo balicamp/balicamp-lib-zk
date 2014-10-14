@@ -774,6 +774,15 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	}
 	
 	protected abstract void saveData(final Event event);
+	
+	/**
+	 * handle button no jika dipilih
+	 * default tidak melakukan proses 
+	 * @param event
+	 */
+	protected void handleNoButton(final Event event) {
+		
+	}
 
 	protected final void showSuccesMessage(ZKEditorState state) {
 		Messagebox.show(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.success") : Labels.getLabel("msg.save.edit.success"), 
@@ -787,11 +796,22 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	protected final void showErrorMessage(ZKEditorState state, String errMessage) {
 		Messagebox.show(
 				(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.fail") : Labels.getLabel("msg.save.edit.fail"))
-				+ ".\n" + ((errMessage != null) ? ("Error: " + errMessage) : ""), 
+				+ ".\n\n" + ((errMessage != null) ? (Labels.getLabel("title.msgbox.error") + ": \n" + errMessage) : ""), 
 				Labels.getLabel("title.msgbox.error"),
 				new Messagebox.Button[]{Messagebox.Button.OK},
 				new String[]{Labels.getLabel("action.button.ok")},
 				Messagebox.ERROR,
+				Messagebox.Button.OK, null);
+	}
+
+	protected final void showInvalidDataMessage(ZKEditorState state, String errMessage) {
+		Messagebox.show(
+				(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.invalid") : Labels.getLabel("msg.save.edit.invalid"))
+				+ ".\n\n" + ((errMessage != null) ? (Labels.getLabel("title.msgbox.invalid")+ ": \n" + errMessage) : ""), 
+				Labels.getLabel("title.msgbox.invalid"),
+				new Messagebox.Button[]{Messagebox.Button.OK},
+				new String[]{Labels.getLabel("action.button.ok")},
+				Messagebox.EXCLAMATION,
 				Messagebox.Button.OK, null);
 	}
 	
@@ -829,6 +849,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				public void onEvent(Messagebox.ClickEvent event) throws Exception {
 					if(Messagebox.Button.YES.equals(event.getButton())) {
 						saveData(evt);
+					} else if(Messagebox.Button.NO.equals(event.getButton())) {
+						handleNoButton(evt);
 					}
 				}
 			});				

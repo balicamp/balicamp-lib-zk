@@ -5,7 +5,9 @@ import id.co.sigma.common.data.CustomDataFormatter;
 import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.lov.CommonLOVHeader;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
+import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.common.server.lov.ILOVProviderService;
+import id.co.sigma.common.util.json.SharedServerClientLogicManager;
 import id.co.sigma.zk.service.IZKCommonService;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.data.FormDataBinderUtil;
@@ -77,7 +79,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 
 	public BaseSimpleController() {
 		super() ; 
-		
+		SharedServerClientLogicManager.getInstance().setDateTimeParser(ServerSideDateTimeParser.getInstance());
 	}
 	
 	@Override
