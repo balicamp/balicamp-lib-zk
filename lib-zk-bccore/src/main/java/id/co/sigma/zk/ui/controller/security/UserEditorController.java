@@ -378,7 +378,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		Object[] obj = data;
 		if(obj != null && obj.length == 1) {
 			if(obj[0] instanceof User) {
-				data[0] = userService.insert((User)obj[0]);
+//				data[0] = userService.insert((User)obj[0]);
 			} else {
 				super.insertData(data);
 			}
