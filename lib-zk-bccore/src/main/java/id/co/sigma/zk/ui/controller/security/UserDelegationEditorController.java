@@ -507,4 +507,12 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		adjustEditorFields();
 	}
 
+	@Override
+	protected String getSelectedLOV(Combobox cmb) {
+		if(cmb.equals(dataStatus)) {
+			return getEditedData().getDataStatus();
+		}
+		return "";
+	}
+
 }

@@ -198,7 +198,8 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		if ( swp instanceof Combobox) {
 			Combobox cmb = (Combobox)swp ; 
 			ListModelList<CommonLOVWithRenderer> models = new ListModelList<CommonLOVWithRenderer>();
-			int selectedIdx = -1;
+//			int selectedIdx = -1;
+			String label = "";
 			if ( header.getDetails()!= null ) {
 				ArrayList<CommonLOVWithRenderer> contents = new ArrayList<CommonLOVWithRenderer>() ;
 				int i = 0;
@@ -208,7 +209,8 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 					contents.add(w) ; 
 					if(val != null) {
 						if(scn.getDataValue().equals(val)) {
-							selectedIdx = i;
+//							selectedIdx = i;
+							label = scn.getLabel();
 						}
 					}
 					i++;
@@ -216,8 +218,9 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				models.addAll(contents); 
 			}
 			cmb.setModel(models);
-			if(selectedIdx >= 0) {
-				cmb.setSelectedIndex(selectedIdx);
+			cmb.invalidate();
+			if(!("".equals(label))) {
+				cmb.setValue(label);
 			}
 		}
 	}

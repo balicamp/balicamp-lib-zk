@@ -79,30 +79,26 @@
 		
 		<listbox id="searchResult" width="100%" height="400px" mold="paging" pageSize="10" 
 			emptyMessage="${labels.msg.search.empty_result}">
-			<listhead>
+			<actionListhead>
 				<listheader label="${labels.field.no}" width="50px" align="center"/>
 				<listheader label="${labels.field.delegate_from_user}" hflex="1" align="center"/>
 				<listheader label="${labels.field.delegate_to_user}" hflex="1" align="center"/>
 				<listheader label="${labels.field.date_start}" hflex="1" align="center"/>
 				<listheader label="${labels.field.date_end}" hflex="1" align="center"/>
 				<listheader label="${labels.field.status}" hflex="1" align="center"/>
-				<listheader label="${labels.field.action}" width="100px" align="center"/>
-			</listhead>
+			</actionListhead>
 			<template name="model">
-				<listitem >
+				<actionListitem editorPage="~./zul/pages/master/security/UserDelegationEditor.zul"
+							deleteMsg="${labels.msg.questions.confirm_delete}"
+							controller="${userDelegationWin$composer}"
+							deletable="false">
 					<listcell label="${forEachStatus.index+1}" style="text-align:right;"/>
 					<listcell label="${each.sourceUser.realName}" style="text-align:left;"/>
 					<listcell label="${each.destUser.realName}" style="text-align:left;"/>
 					<listcell label="${each.startDate}" style="text-align:left;"/>
 					<listcell label="${each.endDate}" style="text-align:left;"/>
 					<listcell label="${each.dataStatusAlias}" style="text-align:left;"/>
-					<listcell>
-						<actionButton editorPage="~./zul/pages/master/security/UserDelegationEditor.zul"
-							deleteMsg="${labels.msg.questions.confirm_delete}"
-							controller="${userDelegationWin$composer}"
-							delete="false" />
-					</listcell>
-				</listitem>
+				</actionListitem>
 			</template>
 		</listbox>
 		
