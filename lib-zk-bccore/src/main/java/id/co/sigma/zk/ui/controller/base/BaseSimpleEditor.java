@@ -2,6 +2,7 @@ package id.co.sigma.zk.ui.controller.base;
 
 
 
+import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.zk.ZKCoreLibConstant;
@@ -122,7 +123,17 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * delete child/detail data
 	 * @throws Exception
 	 */
+	@SuppressWarnings("rawtypes")
 	public void deleteChildrenData(List<?> childrenData) throws Exception {
+		if(childrenData == null || childrenData.isEmpty()) return;
+		if(childrenData != null && !childrenData.isEmpty()) {
+			if(childrenData.get(0) instanceof SingleKeyEntityData) {
+				for(Object child : childrenData) {
+					generalPurposeDao.delete(child.getClass(), (Serializable)((SingleKeyEntityData)child).getId(), "id");
+				}
+				return;
+			}
+		}
 		throw new Exception("Method not supported");
 	}
 
