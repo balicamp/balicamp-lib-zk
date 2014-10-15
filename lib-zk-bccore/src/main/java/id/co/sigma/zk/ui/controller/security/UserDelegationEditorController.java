@@ -441,9 +441,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	private void adjustEditorFields(){
 		if(isEditing()){
 			// Set value combo data status sesuai dgn data dari db
-			if(!getEditedData().getDataStatus().isEmpty()){
-				setComboValueByRealData(dataStatus, getEditedData().getDataStatus());
-			}
+//			if(!getEditedData().getDataStatus().isEmpty()){
+//				setComboValueByRealData(dataStatus, getEditedData().getDataStatus());
+//			}
 			
 			this.userSourceRoles = new ArrayList<UserRole>(getUserRoles());
 			this.delegateRole = new ZKClientSideListDataEditorContainer<UserDelegationRole>();
