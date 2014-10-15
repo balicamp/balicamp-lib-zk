@@ -1,6 +1,5 @@
 package id.co.sigma.zk.ui.controller.security;
 
-import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
@@ -30,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -51,11 +51,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserDelegationEditorController.class.getName());
 	
-	private final String defaultDataStatus = "A";
-	
 	private final String constraintDateFormat = "yyyyMMdd";
-	
-//	private final String moduleTitle = "User Delegation Editor";
 	
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
 	@Wire private Combobox dataStatus;
@@ -384,19 +380,21 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		if(!isEditing()) {
 			if(delegationIsUnique(sourceUserId.getValue(), destUserId.getValue())){
 				hasDelegation = overlappingUserDelegationIsExist(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
-				if(hasDelegation) { 
-					getSelf().setAttribute("confirmationMsg", "Delegasi dari user yang sama dalam rentang waktu " + 
-							startDate.getText() +
-							" s/d "+endDate.getText() + 
-							" sudah ada! Apakah anda ingin menonaktifkan delegasi-delegasi yang terdahulu?");
+				if(hasDelegation) {
+					String confirmMsg = Labels.getLabel("msg.warnings.delegation.overlapping");
+					confirmMsg = confirmMsg.replace("{startingDate}", startDate.getText());
+					confirmMsg = confirmMsg.replace("{endingDate}", endDate.getText());
+					getSelf().setAttribute("confirmationMsg", confirmMsg);
 				}
 			} else {
-				throw new RuntimeException("Delegasi dari user id: " + sourceUserId.getValue() + 
-						" dan ke user id: " + destUserId.getValue() + " yang sama sudah ada!");
+				String exMsg = Labels.getLabel("msg.warnings.delegation.not_unique");
+				exMsg = exMsg.replace("{srcUserId}", sourceUserId.getValue().toString());
+				exMsg = exMsg.replace("{destUserId}", destUserId.getValue().toString());
+				throw new RuntimeException(exMsg);
 			}
 		} else {
 			if(fromAndToUserIsSame(sourceUserId.getValue(), destUserId.getValue())){
-				throw new RuntimeException("User asal dan tujuan tidak boleh sama!");
+				throw new RuntimeException(Labels.getLabel("msg.warnings.delegation.same_delegated_user"));
 			}
 		}
 	}
@@ -417,19 +415,6 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		super.saveData(event);
 	}
 
-	private void setComboValueByRealData(Combobox cmb, String data){
-		ListModelList<Object> model = (ListModelList<Object>) cmb.getModel();
-		if(model.getSize() > 0){
-			for(Object o : model){
-				CommonLOV lov = (CommonLOV) o;
-				if(lov.getAdditionalData1().equalsIgnoreCase(data)){
-					cmb.setValue(lov.getLabel());
-					break;
-				}
-			}
-		}
-	}
-	
 	private boolean isEditing(){
 		return (ZKEditorState.EDIT.equals(getEditorState()));
 	}
@@ -439,11 +424,12 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void adjustEditorFields(){
+		bnbxDelegateFromUser.setDisabled(isEditing());
+		bnbxDelegateToUser.setDisabled(isEditing());
+		startDate.setDisabled(isEditing());
+		endDate.setDisabled(isEditing());
+		
 		if(isEditing()){
-			// Set value combo data status sesuai dgn data dari db
-//			if(!getEditedData().getDataStatus().isEmpty()){
-//				setComboValueByRealData(dataStatus, getEditedData().getDataStatus());
-//			}
 			
 			this.userSourceRoles = new ArrayList<UserRole>(getUserRoles());
 			this.delegateRole = new ZKClientSideListDataEditorContainer<UserDelegationRole>();
@@ -460,8 +446,6 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			dlbDelegateGroup.loadData();
 			
 		}else{
-			// Set value combo data status sesuai dgn data dari db
-			setComboValueByRealData(dataStatus, defaultDataStatus);
 			
 			// Set start date value & constraint
 			startDate.setValue(new Date());
@@ -476,18 +460,6 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	private Date getTomorrowDate(){
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, 1);
-		return cal.getTime();
-	}
-	
-	/**
-	 * Get next day from specific date
-	 * @param dt - The specific date
-	 * @return (specific date + 1 day)
-	 */
-	private Date getNextDayDate(Date dt){
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(dt);
 		cal.add(Calendar.DATE, 1);
 		return cal.getTime();
 	}
