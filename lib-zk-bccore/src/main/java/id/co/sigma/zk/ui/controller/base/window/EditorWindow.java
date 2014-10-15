@@ -1,15 +1,25 @@
 package id.co.sigma.zk.ui.controller.base.window;
 
+import id.co.sigma.zk.ui.annotations.ChildGridData;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.impl.InputElement;
 
 public class EditorWindow extends Window implements AfterCompose {
 
@@ -17,6 +27,10 @@ public class EditorWindow extends Window implements AfterCompose {
 	 * 
 	 */
 	private static final long serialVersionUID = 4855931629516556573L;
+	
+	private static final String MARK_REQUIRED_CSS = "sign-mandatory";
+	
+	private static final String MARK_REQUIRED = "*";
 	
 	/**
 	 * jumlah child component window template 
@@ -32,6 +46,8 @@ public class EditorWindow extends Window implements AfterCompose {
 	private String cancellationMsg;
 	
 	private String confirmationMsg;
+	
+	private BaseSimpleController controller;
 	
 	public EditorWindow() {
 		Executions.createComponents("~./zul/pages/common/EditorWindow.zul", this, null);
@@ -61,6 +77,10 @@ public class EditorWindow extends Window implements AfterCompose {
 		setBorder("none");
 		setTitle("");
 		
+		try {
+			controller = (BaseSimpleController)getAttribute(getId() + "$composer");
+		} catch (Exception e) {}
+		
 		List<Component> children = getChildren();
 		int dynaChildren = children.size() - childrenCount;
 		for(int i = 0; i < dynaChildren; i++) {
@@ -68,6 +88,7 @@ public class EditorWindow extends Window implements AfterCompose {
 			panelEditor.appendChild(child);
 		}
 
+		markRequiredFields();
 	}
 
 	public String getCancellationMsg() {
@@ -88,5 +109,65 @@ public class EditorWindow extends Window implements AfterCompose {
 		this.confirmationMsg = confirmationMsg;
 	}
 
+	private void markRequiredFields() {
+		List<String> childGrids = new ArrayList<String>();
+		if(controller != null) {			
+			Field[] fields = controller.getClass().getDeclaredFields();
+			for(Field f : fields) {
+				if(f.isAnnotationPresent(ChildGridData.class)) {
+					ChildGridData ann = f.getAnnotation(ChildGridData.class);
+					childGrids.add(ann.gridId());
+				}
+			}
+			
+		}
+		List<Component> comps = new ArrayList<Component>(getFellows());
+		for(Component comp : comps) {
+			if(comp instanceof InputElement) {
+				Constraint cons = ((InputElement)comp).getConstraint();
+				if(cons instanceof SimpleConstraint) {
+					SimpleConstraint sc = (SimpleConstraint) cons;
+					int reqFlag = sc.getFlags() & SimpleConstraint.NO_EMPTY;
+					if(reqFlag == SimpleConstraint.NO_EMPTY) {
+						Component prev = comp.getPreviousSibling();
+						if((prev != null) && (prev instanceof Label)) {
+							comp.getParent().insertBefore(createMarkRequired(prev), comp);
+						} else { //jika dalam Cell ambil parent-nya
+							Component prn = comp.getParent();
+							Component ps = prn.getPreviousSibling();
+							if((ps != null) && (ps instanceof Label)) {
+								prn.getParent().insertBefore(createMarkRequired(ps), prn);
+							} else if((ps != null) && (ps instanceof Cell)) {
+								List<Component> chs = ps.getChildren();
+								boolean marked = false;
+								for(Component c : chs) {
+									if(c instanceof HtmlBasedComponent) {
+										String sclass = ((HtmlBasedComponent)c).getSclass();
+										if(sclass != null && sclass.contains(MARK_REQUIRED_CSS)) {
+											marked = true;
+											break;
+										}
+									}
+								}
+								if(!marked) {
+									Label mreq = new Label(MARK_REQUIRED);
+									mreq.setClass(MARK_REQUIRED_CSS);
+									ps.appendChild(mreq);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	
+	private Cell createMarkRequired(Component prev) {
+		Label mreq = new Label(MARK_REQUIRED);
+		mreq.setClass(MARK_REQUIRED_CSS);
+		Cell cell = new Cell();
+		cell.appendChild(prev);
+		cell.appendChild(mreq);
+		return cell;
+	}
 }
