@@ -12,6 +12,7 @@ import id.co.sigma.zk.ui.annotations.JoinKey;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
+import id.co.sigma.zk.ui.controller.base.window.EditorWindow;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.io.Serializable;
@@ -828,6 +829,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	
 	protected final void showCancelConfirmationMessage(String cancelMsg) {
 		if(cancelMsg != null && cancelMsg.trim().length() > 0) {
+			
+			if(getSelf() instanceof EditorWindow) {
+				((EditorWindow)getSelf()).clearErrorMessage();
+			}
 			
 			Messagebox.show(cancelMsg, Labels.getLabel("title.msgbox.confirmation"),
 					new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},

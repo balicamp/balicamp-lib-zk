@@ -49,6 +49,8 @@ public class EditorWindow extends Window implements AfterCompose {
 	
 	private BaseSimpleController controller;
 	
+	private List<Component> requiredFields;
+	
 	public EditorWindow() {
 		Executions.createComponents("~./zul/pages/common/EditorWindow.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -67,6 +69,8 @@ public class EditorWindow extends Window implements AfterCompose {
 	
 	@Override
 	public void afterCompose() {
+		
+		requiredFields = new ArrayList<Component>();
 		
 		String title = getTitle();
 		
@@ -109,6 +113,13 @@ public class EditorWindow extends Window implements AfterCompose {
 		this.confirmationMsg = confirmationMsg;
 	}
 
+	public void clearErrorMessage() {
+		if(requiredFields == null) return;
+		for(Component cr : requiredFields) {
+			((InputElement)cr).clearErrorMessage();
+		}
+	}
+	
 	private void markRequiredFields() {
 		List<String> childGrids = new ArrayList<String>();
 		if(controller != null) {			
@@ -129,6 +140,7 @@ public class EditorWindow extends Window implements AfterCompose {
 					SimpleConstraint sc = (SimpleConstraint) cons;
 					int reqFlag = sc.getFlags() & SimpleConstraint.NO_EMPTY;
 					if(reqFlag == SimpleConstraint.NO_EMPTY) {
+						requiredFields.add(comp);
 						Component prev = comp.getPreviousSibling();
 						if((prev != null) && (prev instanceof Label)) {
 							comp.getParent().insertBefore(createMarkRequired(prev), comp);
