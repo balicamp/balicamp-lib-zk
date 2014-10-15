@@ -10,6 +10,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Row;
@@ -68,7 +69,8 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 				}
 			}
 			
-			((Label)defaults[1]).setValue(existing == 1 ? "": (existing == 2 ? "*" : "+"));
+			//((Label)defaults[1]).setValue(existing == 1 ? "": (existing == 2 ? "*" : "+"));
+			((Div)defaults[1]).setSclass(existing == 1 ? "": (existing == 2 ? "z-icon-pencil" : "z-icon-asterisk"));
 		}
 		
 		for(Component cmp : dynamics) {

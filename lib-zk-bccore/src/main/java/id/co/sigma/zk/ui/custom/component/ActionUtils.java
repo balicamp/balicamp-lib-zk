@@ -20,13 +20,22 @@ public final class ActionUtils {
 	public static final void registerClientEventListner(Component com, String uuid, boolean isGrid) {
 		if(com instanceof InputElement) {
 			if(isGrid) {
-				com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
+				/*com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
 						+ "var lO = zk.Widget.$('$"+uuid+"');"
 						+ "var _s=lO.getValue();"
 						+ "var _l='+';"
 						+ "if((_s=='') || (_s == '*')){_l='*';}"
 						+ "lO.setValue(_l);"
-						+ "lO.smartUpdate('value',_l);");
+						+ "lO.smartUpdate('value',_l);");*/
+				
+				com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
+						+ "var lO = zk.Widget.$('$"+uuid+"');"
+						+ "var _s=lO.getSclass();"
+						+ "var _l='z-icon-asterisk';"
+						+ "console.log(_s);"
+						+ "if((_s==undefined) || (_s=='') || (_s == 'z-icon-pencil')){_l='z-icon-pencil';}"
+						+ "lO.setSclass(_l);" 
+						+ "lO.smartUpdate('sclass', _l);");
 			} else {
 				com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
 						+ "var lO = zk.Widget.$('$"+uuid+"');"
