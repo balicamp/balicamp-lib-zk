@@ -12,36 +12,34 @@ import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
 import id.co.sigma.security.server.service.IUserDelegationService;
 import id.co.sigma.zk.spring.security.SecurityUtil;
+import id.co.sigma.zk.ui.annotations.ChildGridData;
+import id.co.sigma.zk.ui.annotations.DualListboxBinder;
+import id.co.sigma.zk.ui.annotations.EqualsField;
+import id.co.sigma.zk.ui.annotations.JoinKey;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+import id.co.sigma.zk.ui.custom.component.DualListbox;
+import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Longbox;
-import org.zkoss.zul.Messagebox;
 
 /**
  * User delegation editor controller
@@ -57,7 +55,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	private final String constraintDateFormat = "yyyyMMdd";
 	
-	private final String moduleTitle = "User Delegation Editor";
+//	private final String moduleTitle = "User Delegation Editor";
 	
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
 	@Wire private Combobox dataStatus;
@@ -77,25 +75,59 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	@Autowired
 	private IUserDelegationService userDelegationService;
 	
-	// User roles stuff
-	@Wire private Listbox lbAvailableRoles;
-	@Wire private Listbox lbDelegatedRoles;
-	@Wire private Button btnAddAllRoles;
-	@Wire private Button btnAddSingleRole;
-	@Wire private Button btnRemoveSingleRole;
-	@Wire private Button btnRemoveAllRoles;
-	
-	// User groups stuff
-	@Wire private Listbox lbAvailableGroups;
-	@Wire private Listbox lbDelegatedGroups;
-	@Wire private Button btnAddAllGroups;
-	@Wire private Button btnAddSingleGroup;
-	@Wire private Button btnRemoveSingleGroup;
-	@Wire private Button btnRemoveAllGroups;
-	
-	private void clearListbox(Listbox lb){
-		lb.getItems().clear();
+	@DualListboxBinder(sourceClass=UserGroupAssignment.class,
+			targetClass=UserDelegationGroup.class,
+			equalsFields={
+			@EqualsField(
+				sourceField="groupId",
+				targetField="groupId"
+			)
 	}
+	)
+	@Wire
+	private DualListbox dlbDelegateGroup;
+	
+	@DualListboxBinder(sourceClass=UserRole.class,
+			targetClass=UserDelegationRole.class,
+			equalsFields={
+				@EqualsField(
+					sourceField="roleId",
+					targetField="roleId"
+				)
+			}
+	)
+	@Wire
+	private DualListbox dlbDelegateRole;
+	
+	private boolean hasDelegation = false;
+	
+	private List<UserRole> userSourceRoles;
+	private List<UserGroupAssignment> userSourceGroups;
+	
+	
+	@ChildGridData(
+			entity=UserDelegationGroup.class,
+			gridId="dlbDelegateGroup",
+			joinKeys={
+				@JoinKey(
+						childKey="userDelegateId",
+						parentKey="id"
+				)
+			}
+	)
+	private ZKClientSideListDataEditorContainer<UserDelegationGroup> delegateGroups;
+	
+	@ChildGridData(
+			entity=UserDelegationGroup.class,
+			gridId="dlbDelegateRole",
+			joinKeys={
+				@JoinKey(
+						childKey="userDelegateId",
+						parentKey="id"
+				)
+			}
+	)
+	private ZKClientSideListDataEditorContainer<UserDelegationRole> delegateRole;
 	
 	private boolean fromAndToUserIsSame(Long fromUserId, Long toUserId){
 		if(fromUserId==null || toUserId==null){
@@ -106,10 +138,70 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	/**
+	 * @return the delegateGroups
+	 */
+	public ZKClientSideListDataEditorContainer<UserDelegationGroup> getDelegateGroups() {
+		return delegateGroups;
+	}
+
+	/**
+	 * @param delegateGroups the delegateGroups to set
+	 */
+	public void setDelegateGroups(
+			ZKClientSideListDataEditorContainer<UserDelegationGroup> delegateGroups) {
+		this.delegateGroups = delegateGroups;
+	}
+
+	/**
+	 * @return the delegateRole
+	 */
+	public ZKClientSideListDataEditorContainer<UserDelegationRole> getDelegateRole() {
+		return delegateRole;
+	}
+
+	/**
+	 * @param delegateRole the delegateRole to set
+	 */
+	public void setDelegateRole(
+			ZKClientSideListDataEditorContainer<UserDelegationRole> delegateRole) {
+		this.delegateRole = delegateRole;
+	}
+
+	
+	/**
+	 * @return the userSourceRoles
+	 */
+	public List<UserRole> getUserSourceRoles() {
+		return userSourceRoles;
+	}
+
+	/**
+	 * @param userSourceRoles the userSourceRoles to set
+	 */
+	public void setUserSourceRoles(List<UserRole> userSourceRoles) {
+		this.userSourceRoles = userSourceRoles;
+	}
+
+	/**
+	 * @return the userSourceGroups
+	 */
+	public List<UserGroupAssignment> getUserSourceGroups() {
+		return userSourceGroups;
+	}
+
+	/**
+	 * @param userSourceGroups the userSourceGroups to set
+	 */
+	public void setUserSourceGroups(List<UserGroupAssignment> userSourceGroups) {
+		this.userSourceGroups = userSourceGroups;
+	}
+
+
+	/**
 	 * Bandbox delegate from user onSelect handler
 	 */
 	@Wire private Listbox bnbxDelegateFromUserList;
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Listen("onSelect=#bnbxDelegateFromUserList")
 	public void onBnbxDelegateFromUserListSelected(){
 		try {
@@ -120,24 +212,21 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				bnbxDelegateFromUser.setValue(user.getRealName());
 				bnbxDelegateFromUser.close();
 				
-				// Update listbox
-				lbAvailableRoles.setModel((ListModel<UserRole>) getUserRoleListModel());
-				clearListbox(lbDelegatedRoles);
-				lbAvailableGroups.setModel((ListModel<UserGroupAssignment>) getUserGroupListModel());
-				clearListbox(lbDelegatedGroups);
+				this.userSourceRoles = new ArrayList<UserRole>(getUserRoles());
+				this.delegateRole = new ZKClientSideListDataEditorContainer<UserDelegationRole>();
+				dlbDelegateRole.setTargetContainer((ZKClientSideListDataEditorContainer)delegateRole);
+				dlbDelegateRole.setSrcModel((List<?>)this.userSourceRoles);
+				dlbDelegateRole.loadData();
+
+				this.userSourceGroups = new ArrayList<UserGroupAssignment>(getUserGroups());
+				this.delegateGroups = new ZKClientSideListDataEditorContainer<UserDelegationGroup>();
+				dlbDelegateGroup.setTargetContainer((ZKClientSideListDataEditorContainer)delegateGroups);
+				dlbDelegateGroup.setSrcModel((List<?>)this.userSourceGroups);
+				dlbDelegateGroup.loadData();
 				
-				// Button state
-				if(lbAvailableRoles.getItems().size()>0){
-					btnAddAllRoles.setDisabled(false);
-					btnAddSingleRole.setDisabled(false);
-				}
-				if(lbAvailableGroups.getItems().size()>0){
-					btnAddAllGroups.setDisabled(false);
-					btnAddSingleGroup.setDisabled(false);
-				}
-			}else{
+			} /*else{
 				Messagebox.show("User asal dan tujuan tidak boleh sama!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
-			}
+			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,9 +244,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				destUserId.setValue(user.getId());
 				bnbxDelegateToUser.setValue(user.getRealName());			
 				bnbxDelegateToUser.close();
-			}else{
+			}/*else{
 				Messagebox.show("User asal dan tujuan tidak boleh sama!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
-			}
+			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -182,87 +271,6 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			e.printStackTrace();
 			return null;
 		}
-	}
-	
-	private void moveListboxItem(Listbox source, Listbox dest, boolean moveAll, boolean isMovingRoles, boolean ltr){
-		int j = source.getItems().size();
-		
-		if(moveAll){
-			if(j > 0){
-				List<Listitem> copy = new ArrayList<Listitem>(source.getItems());
-				for (Listitem item : copy) {
-					dest.getItems().add(item);
-				}
-				source.getItems().clear();
-			}
-		}else{
-			if(j > 0){
-				if(source.getSelectedItem() != null){
-					dest.getItems().add(source.getSelectedItem());
-				}else{
-					source.setSelectedItem(source.getItemAtIndex(0));
-					dest.getItems().add(source.getSelectedItem());
-				}
-			}
-		}
-		
-		updateGroupsAndRolesButtonState(source, isMovingRoles, ltr);
-	}
-	
-	private void updateGroupsAndRolesButtonState(Listbox source, boolean isRoleButtons, boolean ltr){
-		int listCount = source.getItems().size();
-		
-		if(isRoleButtons){
-			btnAddAllRoles.setDisabled(listCount == 0 && ltr);
-			btnAddSingleRole.setDisabled(listCount == 0 && ltr);
-			btnRemoveSingleRole.setDisabled(listCount == 0 && !ltr);
-			btnRemoveAllRoles.setDisabled(listCount == 0 && !ltr);
-		}else{
-			btnAddAllGroups.setDisabled(listCount == 0 && ltr);
-			btnAddSingleGroup.setDisabled(listCount == 0 && ltr);
-			btnRemoveSingleGroup.setDisabled(listCount == 0 && !ltr);
-			btnRemoveAllGroups.setDisabled(listCount == 0 && !ltr);
-		}
-	}
-	
-	@Listen("onClick=#btnAddAllRoles")
-	public void btnAddAllRoles_click(){
-		moveListboxItem(lbAvailableRoles, lbDelegatedRoles, true, true, true);
-	}
-	
-	@Listen("onClick=#btnAddSingleRole")
-	public void btnAddSingleRole_click(){
-		moveListboxItem(lbAvailableRoles, lbDelegatedRoles, false, true, true);
-	}
-	
-	@Listen("onClick=#btnRemoveSingleRole")
-	public void btnRemoveSingleRole_click(){
-		moveListboxItem(lbDelegatedRoles, lbAvailableRoles, false, true, false);
-	}
-	
-	@Listen("onClick=#btnRemoveAllRoles")
-	public void btnRemoveAllRoles_click(){
-		moveListboxItem(lbDelegatedRoles, lbAvailableRoles, true, true, false);
-	}
-	
-	@Listen("onClick=#btnAddAllGroups")
-	public void btnAddAllGroups_click(){
-		moveListboxItem(lbAvailableGroups, lbDelegatedGroups, true, false, true);
-	}
-	
-	@Listen("onClick=#btnAddSingleGroup")
-	public void btnAddSingleGroup_click(){
-		moveListboxItem(lbAvailableGroups, lbDelegatedGroups, false, false, true);
-	}
-	
-	@Listen("onClick=#btnRemoveSingleGroup")
-	public void btnRemoveSingleGroup_click(){
-		moveListboxItem(lbDelegatedGroups, lbAvailableGroups, false, false, false);
-	}
-	
-	@Listen("onClick=#btnRemoveAllGroups")
-	public void btnRemoveAllGroups_click(){
-		moveListboxItem(lbDelegatedGroups, lbAvailableGroups, true, false, false);
 	}
 	
 	private List<UserRole> getUserRoles(){
@@ -321,118 +329,6 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		}
 	}
 	
-	public List<UserRole> getUserRoleListModel(){
-		return new ListModelList<>(getUserRoles());
-	}
-	
-	public List<UserRole> getRemainingUserRoleListModel(){
-		// Delegated roles
-		List<UserDelegationRole> delegatedRoles = getDelegatedRoles();
-		Map<Long, UserDelegationRole> delegatedRolesMap = new HashMap<>();
-		if(delegatedRoles!=null && !delegatedRoles.isEmpty()){
-			for(UserDelegationRole delegatedRole : delegatedRoles){
-				delegatedRolesMap.put(delegatedRole.getRoleId(), delegatedRole);
-			}
-		}
-		
-		// All user roles
-		List<UserRole> retval = new ArrayList<>();
-		List<UserRole> allRoles = getUserRoles();
-		if(allRoles!=null && !allRoles.isEmpty()){
-			for(UserRole urole : allRoles){
-				if(!delegatedRolesMap.containsKey(urole.getRoleId())){
-					retval.add(urole);
-				}
-			}
-		}else{
-			return new ListModelList<>();
-		}
-		
-		return new ListModelList<>(retval);
-	}
-	
-	public List<UserRole> getDelegatedUserRoleListModel(){
-		// Delegated roles
-		List<UserDelegationRole> currentRoles = getDelegatedRoles();
-		Map<Long, UserDelegationRole> currentRolesMap = new HashMap<>();
-		if(currentRoles!=null && !currentRoles.isEmpty()){
-			for(UserDelegationRole delegRole : currentRoles){
-				currentRolesMap.put(delegRole.getRoleId(), delegRole);
-			}
-		}else{
-			return new ListModelList<>();
-		}
-		
-		// All user roles
-		List<UserRole> retval = new ArrayList<>();
-		List<UserRole> userRoles = getUserRoles();
-		if(userRoles!=null){
-			for (UserRole userRole : userRoles) {
-				if(currentRolesMap.containsKey(userRole.getRoleId())){
-					retval.add(userRole);
-				}
-			}
-		}
-		
-		return new ListModelList<>(retval);
-	}
-	
-	public List<UserGroupAssignment> getUserGroupListModel(){
-		return new ListModelList<>(getUserGroups());
-	}
-	
-	public List<UserGroupAssignment> getRemainingUserGroupListModel(){
-		// Delegated groups
-		List<UserDelegationGroup> delegatedGroups = getDelegatedGroups();
-		Map<Long, UserDelegationGroup> delegatedGroupsMap = new HashMap<>();
-		if(delegatedGroups!=null && !delegatedGroups.isEmpty()){
-			for(UserDelegationGroup group : delegatedGroups){
-				delegatedGroupsMap.put(group.getGroupId(), group);
-			}
-		}
-		
-		// All user groups
-		List<UserGroupAssignment> retval = new ArrayList<>();
-		List<UserGroupAssignment> userGroups = getUserGroups();
-		if(userGroups!=null){
-			for(UserGroupAssignment grpAss : userGroups){
-				if(!delegatedGroupsMap.containsKey(grpAss.getGroupId())){
-					retval.add(grpAss);
-				}
-			}
-		}else{
-			return new ListModelList<>();
-		}
-		
-		return new ListModelList<>(retval);
-	}
-	
-	public List<UserGroupAssignment> getDelegatedUserGroupListModel(){
-		// Delegated groups
-		List<UserDelegationGroup> currentGroups = getDelegatedGroups();
-		Map<Long, UserDelegationGroup> currentGroupsMap = new HashMap<>();
-		if(currentGroups!=null && !currentGroups.isEmpty()){
-			for(UserDelegationGroup group : currentGroups){
-				currentGroupsMap.put(group.getGroupId(), group);
-			}
-		}else{
-			return new ListModelList<>();
-		}
-		
-		// All user groups
-		List<UserGroupAssignment> retval = new ArrayList<>();
-		List<UserGroupAssignment> userGroups = getUserGroups();
-		if(userGroups!=null){
-			for(UserGroupAssignment grpAss : userGroups){
-				if(currentGroupsMap.containsKey(grpAss.getGroupId())){
-					retval.add(grpAss);
-				}
-			}
-		}
-		
-		return new ListModelList<>(retval);
-	}
-	
 	/**
 	 * Cek apakah delegasi dari user x dalam rentang waktu tertentu sudah ada/belum
 	 * @param userId - ID user asal
@@ -481,117 +377,46 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		}
 	}
 
-	@Override
-	protected void insertData(Object... data) throws Exception {
-		getEditedData().setCreatedBy(SecurityUtil.getUser().getUsername());
-		getEditedData().setCreatedOn(new Date());
-		userDelegationService.insert(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
-	}
+
 	
 	@Override
-	@Listen("onClick = #btnSave")
-	public void saveClick(final Event evt) {
-		parseEditedData(evt.getTarget());
-		try{
-			bindValueFromControl(getEditedData());
-		}catch(Exception e){
-			logger.error("Gagal simpam data. error : " +e.getMessage() , e ); 
-			showErrorMessage(getEditorState(), e.getMessage());
-			return;
-		}
-		
-		String confirmMsg = (String) getSelf().getAttribute("confirmationMsg");
-		Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.confirmation"),
-				new Messagebox.Button[]{Messagebox.Button.YES, Messagebox.Button.NO},
-				new String[]{Labels.getLabel("action.button.yes"), Labels.getLabel("action.button.no")},
-				Messagebox.QUESTION,
-				Messagebox.Button.YES,
-				new EventListener<Messagebox.ClickEvent>() {
-			
-			@Override
-			public void onEvent(Messagebox.ClickEvent event) throws Exception {
-				if(Messagebox.Button.YES.equals(event.getButton())) {
-					saveDataWorker(evt);
+	protected void validateData() throws Exception {
+		if(!isEditing()) {
+			if(delegationIsUnique(sourceUserId.getValue(), destUserId.getValue())){
+				hasDelegation = overlappingUserDelegationIsExist(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
+				if(hasDelegation) { 
+					getSelf().setAttribute("confirmationMsg", "Delegasi dari user yang sama dalam rentang waktu " + 
+							startDate.getText() +
+							" s/d "+endDate.getText() + 
+							" sudah ada! Apakah anda ingin menonaktifkan delegasi-delegasi yang terdahulu?");
 				}
+			} else {
+				throw new RuntimeException("Delegasi dari user id: " + sourceUserId.getValue() + 
+						" dan ke user id: " + destUserId.getValue() + " yang sama sudah ada!");
 			}
-		});	
+		} else {
+			if(fromAndToUserIsSame(sourceUserId.getValue(), destUserId.getValue())){
+				throw new RuntimeException("User asal dan tujuan tidak boleh sama!");
+			}
+		}
 	}
 
 	@Override
-	protected void updateData(UserDelegation data) throws Exception {
-		userDelegationService.update(getEditedData(), getDelegatedRolesFromListbox(), getDelegatedGroupsFromListbox());
-	}
-	
-	private void saveDataWorker(final Event evt){
-		// Editing
-		if(isEditing()){
-			saveData(evt);
-		}else{
-			
-			// Inserting
-			boolean isUnique = delegationIsUnique(getEditedData().getSourceUserId(), getEditedData().getDestUserId());
-			
-			if(!isEditing() && isUnique){
-				boolean overlappingDelegationsExists = overlappingUserDelegationIsExist(getEditedData().getSourceUserId(), getEditedData().getStartDate(), getEditedData().getEndDate());
-				if(overlappingDelegationsExists){
-					String confirmMsg = Labels.getLabel("msg.warnings.delegation.overlapping");
-					confirmMsg = confirmMsg.replace("{startingDate}", startDate.getText());
-					confirmMsg = confirmMsg.replace("{endingDate}", endDate.getText());
-					Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.attention"), 
-							new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL}, 
-							new String[]{Labels.getLabel("action.button.ok"), Labels.getLabel("action.button.cancel")},
-							Messagebox.EXCLAMATION,
-							Messagebox.Button.OK,
-							new EventListener<Messagebox.ClickEvent>() {
-						@Override
-						public void onEvent(Messagebox.ClickEvent event) throws Exception {
-							if(event.getButton().equals(Messagebox.Button.OK)){
-								// Disable existing delegation(s)
-								disableExistingDelegations(getEditedData().getSourceUserId(), getEditedData().getStartDate(), getEditedData().getEndDate());
-								saveData(evt);
-							}
-						}
-					});
-				}else{
-					saveData(evt);
-				}
-			}
-			
-			if(!isEditing() && !isUnique){
-				Messagebox.show("Delegasi dari user dan ke user yang sama sudah ada!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
-			}
-		
+	protected void doBeforeSave(UserDelegation editedData) {
+		if(!isEditing()) {
+			getEditedData().setCreatedBy(SecurityUtil.getUser().getUsername());
+			getEditedData().setCreatedOn(new Date());
 		}
 	}
-	
-	private List<UserDelegationRole> getDelegatedRolesFromListbox(){
-		int itemCount = lbDelegatedRoles.getItems().size();
-		List<UserDelegationRole> retval = null;
-		if(itemCount > 0){
-			retval = new ArrayList<UserDelegationRole>();
-			for(Listitem li : lbDelegatedRoles.getItems()){
-				UserRole userRole = li.getValue();
-				UserDelegationRole role = new UserDelegationRole(userRole);
-				retval.add(role);
-			}
+
+	@Override
+	protected void saveData(Event event) {
+		if(hasDelegation) {
+			disableExistingDelegations(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
 		}
-		return retval;
+		super.saveData(event);
 	}
-	
-	private List<UserDelegationGroup> getDelegatedGroupsFromListbox(){
-		int itemCount = lbDelegatedGroups.getItems().size();
-		List<UserDelegationGroup> retval = null;
-		if(itemCount > 0){
-			retval = new ArrayList<UserDelegationGroup>();
-			for(Listitem li : lbDelegatedGroups.getItems()){
-				UserGroupAssignment grpAsg = li.getValue();
-				UserDelegationGroup group = new UserDelegationGroup(grpAsg);
-				retval.add(group);
-			}
-		}
-		return retval;
-	}
-	
+
 	private void setComboValueByRealData(Combobox cmb, String data){
 		ListModelList<Object> model = (ListModelList<Object>) cmb.getModel();
 		if(model.getSize() > 0){
@@ -612,6 +437,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	/**
 	 * Menyesuaikan field-field pada form editor dengan data saat ini
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void adjustEditorFields(){
 		if(isEditing()){
 			// Set value combo data status sesuai dgn data dari db
@@ -619,31 +445,20 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				setComboValueByRealData(dataStatus, getEditedData().getDataStatus());
 			}
 			
-			// Set start date constraint
-			startDate.setConstraint("no empty, after "+dateToString(getEditedData().getStartDate(), constraintDateFormat));
+			this.userSourceRoles = new ArrayList<UserRole>(getUserRoles());
+			this.delegateRole = new ZKClientSideListDataEditorContainer<UserDelegationRole>();
+			this.delegateRole.initiateAndFillData(getDelegatedRoles());
+			dlbDelegateRole.setTargetContainer((ZKClientSideListDataEditorContainer)delegateRole);
+			dlbDelegateRole.setSrcModel((List<?>)this.userSourceRoles);
+			dlbDelegateRole.loadData();
+
+			this.userSourceGroups = new ArrayList<UserGroupAssignment>(getUserGroups());
+			this.delegateGroups = new ZKClientSideListDataEditorContainer<UserDelegationGroup>();
+			this.delegateGroups.initiateAndFillData(getDelegatedGroups());
+			dlbDelegateGroup.setTargetContainer((ZKClientSideListDataEditorContainer)delegateGroups);
+			dlbDelegateGroup.setSrcModel((List<?>)this.userSourceGroups);
+			dlbDelegateGroup.loadData();
 			
-			// Set end date constraint
-			endDate.setConstraint("no empty, after "+dateToString(getNextDayDate(getEditedData().getStartDate()), constraintDateFormat));
-			
-			// Show available roles (remaining only)
-			lbAvailableRoles.setModel((ListModel<?>) getRemainingUserRoleListModel());
-			
-			// Show delegated roles
-			if(getDelegatedRoles()!=null){
-				lbDelegatedRoles.setModel((ListModel<?>) getDelegatedUserRoleListModel());
-			}else{
-				lbDelegatedRoles.setModel(new ListModelList<>());
-			}
-			
-			// Show available groups (remaining only)
-			lbAvailableGroups.setModel((ListModel<?>) getRemainingUserGroupListModel());
-			
-			// Show delegated groups
-			if(getDelegatedGroups()!=null){
-				lbDelegatedGroups.setModel((ListModel<?>) getDelegatedUserGroupListModel());
-			}else{
-				lbDelegatedGroups.setModel(new ListModelList<>());
-			}
 		}else{
 			// Set value combo data status sesuai dgn data dari db
 			setComboValueByRealData(dataStatus, defaultDataStatus);
@@ -656,15 +471,6 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			endDate.setValue(getTomorrowDate());
 			endDate.setConstraint("no empty, no past, after "+getTomorrowDateStr());
 			
-			// Disable roles & group buttons
-			btnAddAllRoles.setDisabled(true);
-			btnAddSingleRole.setDisabled(true);
-			btnRemoveAllRoles.setDisabled(true);
-			btnRemoveSingleRole.setDisabled(true);
-			btnAddAllGroups.setDisabled(true);
-			btnAddSingleGroup.setDisabled(true);
-			btnRemoveAllGroups.setDisabled(true);
-			btnRemoveSingleGroup.setDisabled(true);
 		}
 	}
 	

@@ -86,34 +86,11 @@
 			<n:table style="width:100%;">
 				<n:tr>
 					<n:td width="40%" valign="top">
-						<n:h5>${labels.field.owned_roles}</n:h5>
-						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
-							<listbox id="lbAvailableRoles" rows="10" multiple="true" 
-							emptyMessage="User tidak memiliki role">
-								<template name="model">
-									<listitem value="${each}" label="${each.roleName}"/>
-								</template>
-							</listbox>
-						</div>
-					</n:td>
-					<n:td width="20%">
-						<vbox width="100%" align="center">
-							<button id="btnAddAllRoles" label="All &gt;&gt;" />
-							<button id="btnAddSingleRole" label="&gt;" />
-							<button id="btnRemoveSingleRole" label="&lt;" />
-							<button id="btnRemoveAllRoles" label="&lt;&lt; All" />
-						</vbox>
-					</n:td>
-					<n:td width="40%" valign="top">
-						<n:h5>${labels.field.delegated_roles}</n:h5>
-						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
-							<listbox id="lbDelegatedRoles" rows="10" multiple="true" 
-							emptyMessage="Pilih dari daftar role di sebelah kiri">
-								<template name="model">
-									<listitem value="${each}" label="${each.roleName}"/>
-								</template>
-							</listbox>
-						</div>
+						<dualListbox id="dlbDelegateRole" srcModel="${userDelegationEditorWin$composer.userSourceRoles}" 
+							showField="roleName" targetContainer="${userDelegationEditorWin$composer.delegateRole}"
+							sourceTitle="${labels.field.owned_roles}"
+							targetTitle="${labels.field.delegated_roles}" 
+							height="200px"/>						
 					</n:td>
 				</n:tr>
 			</n:table>
@@ -123,35 +100,12 @@
 			<n:table style="width:100%;">
 				<n:tr>
 					<n:td width="40%" valign="top">
-						<n:h5>${labels.field.owned_groups}</n:h5>
-						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
-							<listbox id="lbAvailableGroups" rows="10" multiple="true" 
-							emptyMessage="User tidak memiliki group">
-								<template name="model">
-									<listitem value="${each}" label="${each.groupName}" />
-								</template>
-							</listbox>
-						</div>
-					</n:td>
-					<n:td width="20%" >
-						<vbox width="100%" align="center">
-							<button id="btnAddAllGroups" label="All &gt;&gt;" />
-							<button id="btnAddSingleGroup" label="&gt;" />
-							<button id="btnRemoveSingleGroup" label="&lt;" />
-							<button id="btnRemoveAllGroups" label="&lt;&lt; All" />
-						</vbox>
-					</n:td>
-					<n:td width="40%" valign="top">
-						<n:h5>${labels.field.delegated_groups}</n:h5>
-						<div style="padding:3px; border:1px solid #666; width:480px; height:200px;">
-							<listbox id="lbDelegatedGroups" rows="10" multiple="true" 
-							emptyMessage="Pilih dari daftar group di sebelah kiri">
-								<template name="model">
-									<listitem value="${each}" label="${each.groupName}" />
-								</template>
-							</listbox>
-						</div>
-					</n:td>
+						<dualListbox id="dlbDelegateGroup" srcModel="${userDelegationEditorWin$composer.userSourceGroups}" 
+							showField="groupName" targetContainer="${userDelegationEditorWin$composer.delegateGroups}"
+							sourceTitle="${labels.field.owned_groups}"
+							targetTitle="${labels.field.delegated_groups}" 
+							height="200px"/>	
+					</n:td>				
 				</n:tr>
 			</n:table>
 			
