@@ -380,6 +380,11 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			}
 		}
 	}
+	
+	@Override
+	protected void updateData(User data) throws Exception {
+		userService.update(data);
+	}
 
 	private boolean validationForm(User data){
 		List<String> notValidFiled = new ArrayList<String>();
