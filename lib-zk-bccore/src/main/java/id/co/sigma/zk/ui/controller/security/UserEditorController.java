@@ -14,7 +14,6 @@ import id.co.sigma.security.server.service.IUserService;
 import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.annotations.ChildGridData;
 import id.co.sigma.zk.ui.annotations.JoinKey;
-import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectedRole;
@@ -24,21 +23,16 @@ import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 /**
@@ -95,7 +89,9 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 				)
 			} 			
 	)
-	ZKClientSideListDataEditorContainer<UserGroupAssignment> groups;
+	
+	
+	private ZKClientSideListDataEditorContainer<UserGroupAssignment> groups = new ZKClientSideListDataEditorContainer<UserGroupAssignment>();
 	
 	@ChildGridData(
 			entity = UserRole.class,
@@ -107,7 +103,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 				)
 			} 			
 	)
-	ZKClientSideListDataEditorContainer<UserRole> roles;
+	private ZKClientSideListDataEditorContainer<UserRole> roles = new ZKClientSideListDataEditorContainer<UserRole>();
 	
 	/*@Wire
 	Textbox chipperText;*/
