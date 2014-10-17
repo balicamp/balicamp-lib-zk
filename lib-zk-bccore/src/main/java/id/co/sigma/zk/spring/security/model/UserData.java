@@ -63,5 +63,17 @@ public class UserData extends SimpleUserData {
 	public void setApplicationUser(User applicationUser) {
 		this.applicationUser = applicationUser;
 	}
+
+	/* (non-Javadoc)
+	 * @see id.co.sigma.common.server.data.security.SimpleUserData#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled() {
+		if(this.applicationUser != null) {
+			return "A".equals(this.applicationUser.getActiveFlag());
+		}
+		return true;
+	}
+	
 	
 }
