@@ -44,8 +44,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 	// must return a value or throw UsernameNotFoundException
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		UserData user = USERS.get(username);
-		if(user==null){
+		UserData user = null; //USERS.get(username);
+//		if(user==null){
 			//load from database
 			User dbUser = userDao.getUserByUserName(username);
 			if(dbUser != null) {
@@ -57,10 +57,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 			} else {
 				throw new UsernameNotFoundException("cannot found user: "+username);
 			}
-		} else {
-			String[] roles = userDao.getUserRoles(user.getApplicationUser().getId());
-			user.setRoles(getRoles(roles));
-		}
+//		} else {
+//			String[] roles = userDao.getUserRoles(user.getApplicationUser().getId());
+//			user.setRoles(getRoles(roles));
+//		}
 		return user;
 	}
 
