@@ -241,7 +241,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		
 		if(!getEditedData().getGroupCode().isEmpty()){
 			String capitalizedGroupCode = getEditedData().getGroupCode().toUpperCase();
-			getEditedData().setGroupCode(capitalizedGroupCode);
+			getEditedData().setGroupCode(capitalizedGroupCode.trim());
 		}
 		
 		getEditedData().setSuperGroup("N");
@@ -254,7 +254,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	@Override
 	protected void validateData() throws Exception {
 		if(!isEditing()){
-			if(!isUnique(getEditedData().getGroupCode())){
+			if( !isUnique(getEditedData().getGroupCode().trim()) ){
 				throw new RuntimeException(Labels.getLabel("msg.warnings.groupmenu.not_unique"));
 			}
 		}
