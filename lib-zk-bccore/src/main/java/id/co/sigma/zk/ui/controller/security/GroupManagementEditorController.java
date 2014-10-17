@@ -18,6 +18,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.json.JSONArray;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -248,6 +249,29 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		if(getEditedData().getActiveFlag()!=null && getEditedData().getActiveFlag().isEmpty()){
 			getEditedData().setActiveFlag("A");
 		}
+	}
+
+	@Override
+	protected void validateData() throws Exception {
+		if(!isEditing()){
+			if(!isUnique(getEditedData().getGroupCode())){
+				throw new RuntimeException(Labels.getLabel("msg.warnings.groupmenu.not_unique"));
+			}
+		}
+	}
+	
+	private boolean isEditing(){
+		return (ZKEditorState.EDIT.equals(getEditorState()));
+	}
+	
+	private boolean isUnique(String groupCode){
+		SimpleQueryFilter[] filters = {
+			new SimpleQueryFilter("groupCode", SimpleQueryFilterOperator.equal, groupCode)
+		};
+		
+		Long count = generalPurposeDao.count(UserGroup.class, filters);
+		
+		return (count!=null && count==0L);
 	}
 	
 }
