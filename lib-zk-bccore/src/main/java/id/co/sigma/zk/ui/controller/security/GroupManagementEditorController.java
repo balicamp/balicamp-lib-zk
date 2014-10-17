@@ -10,11 +10,13 @@ import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.SelectableApplicationMenu;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.json.JSONArray;
@@ -191,10 +193,45 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 				}
 			}
 			
-			// insert new menu assignments
+			// Selected menu id(s) from tree
 			List<Long> checkedMenus = getSelectedMenuIds();
+			
+			// insert new menu assignments
 			if(checkedMenus.size() > 0){
+				// mapped selected menu ids
+				Map<Long, Long> mappedMenuIds = new HashMap<>();
 				for (Long mnuId : checkedMenus) {
+					mappedMenuIds.put(mnuId, mnuId);
+				}
+				
+				// include menu parent id(s)
+				Long[] inFilters = new Long[checkedMenus.size()];
+				checkedMenus.toArray(inFilters);
+				SimpleQueryFilter[] filters = {
+					new SimpleQueryFilter("id", inFilters)
+				};
+				
+				Map<Long, Long> parenMenuIds = new HashMap<>();
+				List<ApplicationMenu> appMenus = generalPurposeDao.list(ApplicationMenu.class, filters, null);
+				for (ApplicationMenu menu : appMenus) {
+					String[] parentIds = menu.getMenuTreeCode().split("\\.");
+					for (String parentId : parentIds) {
+						Long pid = new Long(parentId);
+						if(!parenMenuIds.containsKey(pid) && !mappedMenuIds.containsKey(pid)){
+							parenMenuIds.put(pid, pid);
+						}
+					}
+				}
+				
+				// merge with selected menu ids
+				for (Long parenMenuId : parenMenuIds.values()) {
+					if(!mappedMenuIds.containsKey(parenMenuId)){
+						mappedMenuIds.put(parenMenuId, parenMenuId);
+					}
+				}
+				
+				// saving
+				for (Long mnuId : mappedMenuIds.values()) {
 					ApplicationMenuAssignment assign = new ApplicationMenuAssignment();
 					assign.setFunctionId(mnuId);
 					assign.setGroupId(groupId);
