@@ -42,6 +42,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -484,6 +485,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					if("*".equals(sLbl)) {
 						container.modifyItem(data);
 					}
+				} else if(label instanceof Div) {
+					String sclass = ((Div)label).getSclass();
+					if("z-icon-pencil".equals(sclass)) {
+						container.modifyItem(data);
+					}
 				}
 				
 				for(int i = 0; i < parentKey.length; i++) {
@@ -547,8 +553,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					
 					Component cell = item.getLastChild();
 					if(cell instanceof Listcell) {
-						String sLabel = ((Listcell)cell).getLabel();
-						if("*".equals(sLabel)) {
+//						String sLabel = ((Listcell)cell).getLabel();
+						String sLabel = ((Listcell)cell).getIconSclass();
+						if("z-icon-pencil".equals(sLabel)) {
 							container.modifyItem(data);
 						}
 						
