@@ -1,6 +1,6 @@
 <zk>
 	<actionButton />
-	<div width="24px" height="24px">
+	<div width="24px" height="24px" style="font-size:10px">
 		<custom-attributes org.zkoss.zk.ui.updateByClient="true"/>
 	</div>
 	<!-- <label value="">
