@@ -11,7 +11,6 @@ import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Row;
 

@@ -37,13 +37,21 @@ public final class ActionUtils {
 						+ "lO.setSclass(_l);" 
 						+ "lO.smartUpdate('sclass', _l);");
 			} else {
-				com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
+				/*com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
 						+ "var lO = zk.Widget.$('$"+uuid+"');"
 						+ "var _s=lO.getLabel();"
 						+ "var _l='+';"
 						+ "if((_s=='') || (_s == '*')){_l='*';}"
 						+ "lO.setLabel(_l);"
-						+ "lO.smartUpdate('label',_l);");
+						+ "lO.smartUpdate('label',_l);");*/
+				
+				com.setWidgetListener("onChange", "var wDom = jq('#' + '"+uuid+"'); "
+						+ "var lO = zk.Widget.$('$"+uuid+"');"
+						+ "var _s=lO.getIconSclass();"
+						+ "var _l='z-icon-asterisk';"
+						+ "if((_s==undefined) || (_s=='') || (_s == 'z-icon-pencil')){_l='z-icon-pencil';}"
+						+ "lO.setIconSclass(_l);"
+						+ "lO.smartUpdate('iconSclass',_l);");
 			}
 		}
 	}

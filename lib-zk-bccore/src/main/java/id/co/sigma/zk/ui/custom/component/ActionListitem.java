@@ -69,8 +69,8 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 				}
 			}
 			
-			((Listcell)defaults[1]).setLabel(existing == 1 ? "": (existing == 2 ? "*" : "+"));
-			
+//			((Listcell)defaults[1]).setLabel(existing == 1 ? "": (existing == 2 ? "*" : "+"));
+			((Listcell)defaults[1]).setIconSclass(existing == 1 ? "": (existing == 2 ? "z-icon-pencil" : "z-icon-asterisk"));
 		}
 		
 		for(Component cmp : dynamics) {
