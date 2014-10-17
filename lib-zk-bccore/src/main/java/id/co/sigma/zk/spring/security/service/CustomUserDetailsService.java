@@ -49,15 +49,29 @@ public class CustomUserDetailsService implements UserDetailsService {
 			//load from database
 			User dbUser = userDao.getUserByUserName(username);
 			if(dbUser != null) {
-				user = new UserData(username, dbUser.getChipperText(), "ROLE_USER");
+				
+				String[] roles = userDao.getUserRoles(dbUser.getId());
+				user = new UserData(username, dbUser.getChipperText(), getRoles(roles));
 				user.setApplicationUser(dbUser);
 				add(user);
 			} else {
 				throw new UsernameNotFoundException("cannot found user: "+username);
 			}
+		} else {
+			String[] roles = userDao.getUserRoles(user.getApplicationUser().getId());
+			user.setRoles(getRoles(roles));
 		}
 		return user;
 	}
 
+	private String[] getRoles(String... roles) {
+		String[] defRoles = new String[]{"ROLE_USER"};
+		if(roles != null && roles.length > 0) {
+			defRoles = new String[roles.length+1];
+			defRoles[0] = "ROLE_USER";
+			System.arraycopy(roles, 0, defRoles, 1, roles.length);
+		}
+		return defRoles;
+	}
 
 }

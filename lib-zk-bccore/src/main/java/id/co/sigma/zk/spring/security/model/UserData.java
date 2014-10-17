@@ -42,6 +42,10 @@ public class UserData extends SimpleUserData {
 		this.password = password;
 	}
 	
+	public void setRoles(String... roles) {
+		setAuthorities(toGrantedAuthorities(roles));
+	}
+	
 	private static Collection<CoreComponentAuthority> toGrantedAuthorities(String... authoStrs){
 		ArrayList<CoreComponentAuthority> arrList = new ArrayList<CoreComponentAuthority>(authoStrs.length);
 		for(String gaStr : authoStrs){

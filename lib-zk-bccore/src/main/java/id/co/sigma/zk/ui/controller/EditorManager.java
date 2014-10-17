@@ -5,6 +5,7 @@ import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.controller.base.IEditorPanel;
+import id.co.sigma.zk.ui.custom.component.ListWindow;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.Calendar;
@@ -15,6 +16,8 @@ import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Window;
 
@@ -218,7 +221,7 @@ public final class EditorManager {
 		if ( components.isEmpty()){
 			editorContainerWindow.setVisible(false) ; 
 			includePanel.setVisible(true); 
-			
+			Events.postEvent(new ReloadEvent(includePanel.getFirstChild(), reloadData()));
 		}
 	}
 	
@@ -233,5 +236,26 @@ public final class EditorManager {
 		this.editorContainerWindow = editorContainer ; 
 		this.includePanel = includePanel ; 
 	}
+	
+	private Long reloadData() {
+		Component listWindow = includePanel.getFirstChild();
+		Object composer = null;
+		if(listWindow instanceof ListWindow) {
+			composer = ((ListWindow)listWindow).getAttribute(listWindow.getId() + "$composer");
+		} else if(listWindow instanceof Window) {
+			composer = ((Window)listWindow).getAttribute(listWindow.getId() + "$composer");
+		}
+		if(composer instanceof IReloadablePanel) {
+			((IReloadablePanel)composer).reload();
+		}
+		return System.currentTimeMillis();
+	}
 
+	@SuppressWarnings("serial")
+	public class ReloadEvent extends Event {
+		public ReloadEvent(Component target, Object data) {
+			super("onReload", target, data);
+		}
+		
+	}
 }
