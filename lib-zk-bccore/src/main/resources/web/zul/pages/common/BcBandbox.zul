@@ -1,0 +1,7 @@
+<zk>
+	<bandbox>
+		<bandpopup>
+			<listbox id="listbox" />
+		</bandpopup>
+	</bandbox>
+</zk>

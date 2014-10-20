@@ -1,11 +1,18 @@
 package id.co.sigma.zk.ui.custom.component;
 
+import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
+
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Listbox;
 
 /**
- * Tulis keterangan class di sini
+ * Bandbox dgn fungsi autocomplete
  * @author <a href="mailto:ida.suartama@sigma.co.id">Goesde Rai</a>
  */
 public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
@@ -13,9 +20,39 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 	private static final long serialVersionUID = -3806592381198871322L;
 	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BcBandbox.class.getName());
+	
+	private ListModelList<Object> listData;
+	
+	private BaseSimpleController controller;
+	
+	public ListModelList<Object> getListData() {
+		return listData;
+	}
+	
+	public void setListData(ListModelList<Object> listData) {
+		this.listData = listData;
+	}
+	
+	public BaseSimpleController getController() {
+		return controller;
+	}
+	
+	public void setController(BaseSimpleController controller) {
+		this.controller = controller;
+	}
+	
+	@Wire
+	private Listbox listbox;
+	
+	public BcBandbox(){
+		Executions.createComponents("~./zul/pages/common/BcBandbox.zul", this, null);
+		Selectors.wireComponents(this, this, false);
+		Selectors.wireEventListeners(this, this);
+	}
 
 	@Override
 	public void afterCompose() {
-		// TODO Auto-generated method stub
+		// Generate data list
+		
 	}
 }
