@@ -4,6 +4,8 @@ import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -41,18 +43,35 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 		this.controller = controller;
 	}
 	
-	@Wire
-	private Listbox listbox;
+	@Wire private Listbox listbox;
 	
 	public BcBandbox(){
 		Executions.createComponents("~./zul/pages/common/BcBandbox.zul", this, null);
 		Selectors.wireComponents(this, this, false);
 		Selectors.wireEventListeners(this, this);
 	}
+	
+	public Object getObjectValue(){
+		return listbox.getSelectedItem();
+	}
 
 	@Override
 	public void afterCompose() {
 		// Generate data list
 		
+		
+		// Add event listener
+		this.addEventListener("onChange", new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				String val = getValue();
+				if(val!=null && val.length()>=3){
+					open();
+					// TODO refresh list data
+				}
+			}
+			
+		});
 	}
 }
