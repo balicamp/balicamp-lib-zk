@@ -63,6 +63,12 @@
         <component-class>id.co.sigma.zk.ui.custom.component.ListWindow</component-class>
     </component>
     
+    <component>
+    	<component-name>bcBandbox</component-name>
+    	<extends>bandbox</extends>
+    	<component-class>id.co.sigma.zk.ui.custom.component.BcBandbox</component-class>
+    </component>
+    
     	
 <!--  
 Author : gede sutarsa
