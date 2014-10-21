@@ -25,6 +25,7 @@ public class SelectableApplicationMenu extends ApplicationMenu implements JSONAw
 		setFunctionIdParent(menu.getFunctionIdParent());
 		setFunctionCode(menu.getFunctionCode());
 		setFunctionLabel(menu.getFunctionLabel());
+		setMenuTreeCode(menu.getMenuTreeCode());
 		this.state = new SelectableApplicationMenuState(false, false, selected);
 	}
 	

@@ -91,11 +91,29 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 			tempMenus.put(swap.getId(), swap);
 		}
 		
+		// Set selected state
 		if(groupId != null){
 			List<ApplicationMenuAssignment> menuAssigns = getMenuAssignments(groupId);
 			for (ApplicationMenuAssignment menuAssign : menuAssigns) {
 				if(tempMenus.containsKey(menuAssign.getFunctionId())){
 					tempMenus.get(menuAssign.getFunctionId()).getState().setSelected(true);
+				}
+			}
+		}
+		
+		// Fix bug #5111
+		for(SelectableApplicationMenu sam : tempMenus.values()){
+			System.out.println("Menu ID: "+sam.getId()+", Menu tree code: "+sam.getMenuTreeCode());
+			if(isEditing() && sam.getMenuTreeCode() != null){
+				String[] parentIds = sam.getMenuTreeCode().split("\\.");
+				int count = parentIds.length - 1;
+				if( (count > 0) && sam.getState().isSelected() ){
+					for (int i = 0; i < count; i++) {
+						Long pid = new Long(parentIds[i]);
+						if(tempMenus.containsKey(pid)){
+							tempMenus.get(pid).getState().setSelected(false);
+						}
+					}
 				}
 			}
 		}
@@ -167,7 +185,7 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 	
 	@Listen("onCheck=#cbActiveFlag")
 	public void onActiveFlagChecked(){
-		String isActive = cbActiveFlag.isChecked()? "A" : "D";
+		String isActive = cbActiveFlag.isChecked()? "A" : "I";
 		activeFlag.setValue(isActive);
 	}
 
