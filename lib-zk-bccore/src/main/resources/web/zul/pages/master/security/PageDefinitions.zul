@@ -31,15 +31,14 @@
 	</groupbox>
 	<listbox 
 		id="pageListBox"
-		height="300px"
 		mold="paging"
 		pageSize="10" >
 		<actionListhead>
 			<listheader label="No" width="2%" align="center"/>
 			<listheader label="Code" width="20%" align="center"/>
-			<listheader label="URL" width="25%" align="center"/>
-			<listheader label="Remark" width="33%" align="center"/>
-			<listheader label="Additional Data" width="20%" align="center"/>
+			<listheader label="URL" width="40%" align="center"/>
+			<listheader label="Remark" width="20%" align="center"/>
+			<listheader label="Additional Data" width="15%" align="center"/>
 		</actionListhead>
 		<template 
 			name="model">

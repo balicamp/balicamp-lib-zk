@@ -7,25 +7,26 @@
 	
 	<grid>
 		<columns>
-			<column width="150px" />
+			<column width="150px" align="right"/>
+			<column />
+			<column width="40px"/>
+			<column width="150px" align="right"/>
 			<column />
 		</columns>
 		<rows>
 			<row>
 				${labels.field.id}:
-				<textbox id="txtIdLov" maxlength="32" value="${lookupHeader$composer.editedData.id}" constraint="no empty : ${labels.field.id} tidak boleh kosong"></textbox>
+				<textbox id="txtIdLov" maxlength="32" value="${lookupHeader$composer.editedData.id}" constraint="no empty : ${labels.field.id} tidak boleh kosong" hflex="1"></textbox>
+				<space hflex="1"/>
+				${labels.field.remark}:
+				<textbox id="txtRemark" maxlength="128" value="${lookupHeader$composer.editedData.remark}" hflex="1"></textbox>
 			</row>
 			<row>
 				${labels.field.locale}:
-				<textbox id="txtI18Key" maxlength="32" value="${lookupHeader$composer.editedData.i18Key}" constraint="no empty : ${labels.field.locale} tidak boleh kosong"></textbox>
-			</row>
-			<row>
-				${labels.field.remark}:
-				<textbox id="txtRemark" maxlength="128" value="${lookupHeader$composer.editedData.remark}"></textbox>
-			</row>
-			<row>
+				<textbox id="txtI18Key" maxlength="32" value="${lookupHeader$composer.editedData.i18Key}" constraint="no empty : ${labels.field.locale} tidak boleh kosong"  hflex="1"></textbox>
+				<space hflex="1"/>
 				${labels.field.version}:
-				<textbox id="txtVersion" maxlength="16" value="${lookupHeader$composer.editedData.version}"></textbox>
+				<textbox id="txtVersion" maxlength="16" value="${lookupHeader$composer.editedData.version}" hflex="1"></textbox>
 			</row>
 		</rows>
 	</grid>	

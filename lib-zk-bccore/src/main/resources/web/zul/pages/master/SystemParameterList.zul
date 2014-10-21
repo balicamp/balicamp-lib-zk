@@ -3,28 +3,24 @@
 	apply="id.co.sigma.zk.ui.controller.master.SystemParameterController" 
 	title="Daftar Parameter System" border="normal"
 	editorPage="~./zul/pages/master/SystemParameterFormEditor.zul">
-
-     <groupbox id="searchBox" width="100%">
-     
      <grid >
-			<columns>
-				<column width="150px" />
-				<column />
-			</columns>
-			<rows>
+		<columns>
+			<column width="150px" align="right"/>
+			<column />
+		</columns>
+		<rows>
 			<row>
-				Key Parameter
+				Key
 				<textbox id="keySearch"></textbox>
 			</row>
 			<row>
-				Remark
+				${labels.field.remark}
 				<textbox id="remarkSearch"></textbox>
 			</row>
-			</rows>	
-		</grid>	
-	</groupbox>
+		</rows>	
+	</grid>	
+
     <listbox 
-        height="400px" 
         id="listbox"
         mold="paging"
         pageSize="10" 

@@ -14,7 +14,9 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.SimpleConstraint;
@@ -136,6 +138,10 @@ public class EditorWindow extends Window implements AfterCompose {
 		for(Component comp : comps) {
 			if(comp instanceof InputElement) {
 				Constraint cons = ((InputElement)comp).getConstraint();
+				if((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
+						&& !((comp instanceof Combobox) || (comp instanceof Datebox))) {
+					((InputElement)comp).setHflex("1");
+				}
 				if(cons instanceof SimpleConstraint) {
 					SimpleConstraint sc = (SimpleConstraint) cons;
 					int reqFlag = sc.getFlags() & SimpleConstraint.NO_EMPTY;
@@ -178,6 +184,7 @@ public class EditorWindow extends Window implements AfterCompose {
 		Label mreq = new Label(MARK_REQUIRED);
 		mreq.setClass(MARK_REQUIRED_CSS);
 		Cell cell = new Cell();
+		cell.setClass("z-row-inner");
 		cell.appendChild(prev);
 		cell.appendChild(mreq);
 		return cell;

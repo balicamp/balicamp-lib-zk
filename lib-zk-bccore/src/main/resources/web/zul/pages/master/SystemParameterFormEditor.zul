@@ -6,79 +6,61 @@
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
 		<grid vflex="1">
 			<columns>
-				<column width="150px" />
+				<column width="150px" align="right"/>
+				<column />
+				<column width="40px"/>
+				<column width="150px" align="right"/>
 				<column />
 			</columns>
 			<rows>
 				<row>
-					<label value="Param Key" width="150px" />
+					<label value="Param Key"/>
 					<textbox id="id"
 						value="${editorSystemParameter$composer.editedData.id}"
-						width="150px" 
-						readonly="${not empty editorSystemParameter$composer.editedData.id}"/>
-				</row>
-				
-				<row>
-					<cell>Param Type :</cell>
-					<cell>
-						<combobox id="cmbType" 
-							model="${editorSystemParameter$SystemParameterEditorController.listModelParamtype}"
-							value="${editorSystemParameter$SystemParameterEditorController.editedData.paramType}"/> 
-							<!-- selectedItem="@{editorSystemParameter$SystemParameterEditorController.system.paramType}"/> -->
-					</cell>
-				</row>
-				
-				<row id="textParamType" visible="false" width="150%">
-					<label value="Param Value" width="150px"/>
-					<textbox id="paramValue"
-						width="150px" />
-				</row>
-				
-				<row id="decParamType" visible="false" width="150%">
-					<label value="Param Value" width="150px"/>
-					<decimalbox id="decparamValue"
-						width="150px" />
-				</row>
-				
-				<row id="intParamType" visible="false" width="150%">
-					<label value="Param Value" width="150px"/>
-					<intbox id="intparamValue"
-						width="150px" />
-				</row>
-				
-				<!-- value="${editorSystemParameter$composer.editedData.valueRaw}" -->
-				
-				 <row id="dateParamType" visible="false">
-					<label value="Param Value" width="150px"/>
-					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
-					 <!-- value="${editorSystemParameter$composer.dtValue}"/> -->
-				</row>
-				
-				<row id="boolParamType" width = "150%" visible="false" >
-					<label value="Param Value" width="150px"/>
-					<radiogroup id="radioValue">  
-						<!-- selectedItem="${editorSystemParameter$composer.valueRadio}" > -->	
-							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/> 
-							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
-					</radiogroup>
-				</row>
-				
-				<row>
-					<label value="Param Remark" width="150px" />
+						readonly="${not empty editorSystemParameter$composer.editedData.id}"
+						constraint="no empty"/>
+					<space hflex="1"/>
+					<label value="Param Remark"/>
 					<textbox id="remark"
-						value="${editorSystemParameter$composer.editedData.remark}"
-						width="150px" />
-					 
-				</row>
+					value="${editorSystemParameter$composer.editedData.remark}"/>
+				</row>				
 				<row>
-					<cell>Edited Flag :</cell>
-					<cell>
+					<label value="Param Type"/>
+					<combobox id="cmbType" 
+						model="${editorSystemParameter$SystemParameterEditorController.listModelParamtype}"
+						value="${editorSystemParameter$SystemParameterEditorController.editedData.paramType}" 
+						constraint="no empty"/> 
+					<space hflex="1"/>
+					<label value="Edited Flag"/>
 					<radiogroup id="editableFlag"> 
-					<!-- selectedItem="${editorSystemParameter$composer.editableRadio}" > -->	
-							<radio id="editableFlagY" value ="Yes" label="Yes" radiogroup="editableFlag"/> 
+							<radio id="editableFlagY" value ="Yes" label="Yes" radiogroup="editableFlag"/>
+							<space width="20px"/> 
 							<radio id="editableFlagN" value ="No" label="No" radiogroup="editableFlag"/> 
 					</radiogroup>
-					</cell>
+				</row>				
+				<row id="textParamType" visible="false">
+					<label value="Param Value"/>
+					<textbox id="paramValue"/>
+				</row>				
+				<row id="decParamType" visible="false">
+					<label value="Param Value"/>
+					<decimalbox id="decparamValue" />
+				</row>
+				<row id="intParamType" visible="false">
+					<label value="Param Value"/>
+					<intbox id="intparamValue"/>
+				</row>
+				 <row id="dateParamType" visible="false">
+					<label value="Param Value"/>
+					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
+				</row>
+				<row id="boolParamType" visible="false" >
+					<label value="Param Value"/>
+					<radiogroup id="radioValue">  
+							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/>
+							<space width="20px"/> 
+							<radio id="valueFalse" value ="False" label="False" radiogroup="radioValue"/> 
+					</radiogroup>
 				</row>
 			</rows>
 		</grid>
