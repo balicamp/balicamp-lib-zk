@@ -8,31 +8,29 @@
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
 	<grid vflex="1">	
 		<columns>
-				<column width="150px" />
+				<column width="150px" align="right"/>
 				<column  />
-			</columns>
+				<column width="50px"/>
+				<column width="150px" align="right"/>
+				<column  />
+		</columns>
 		<rows>
 			<row>
 				${labels.field.code}
 				<textbox 
 					id="pageCode" 
-					value="${pageDefEditor$composer.editedData.pageCode}"/>
-			</row>
-			<row>
-				URL
-				<textbox id="pageUrlAnnotated" 
-					disabled="${editStateEnabledFlag}"
-					value="${pageDefEditor$composer.editedData.pageUrl}"></textbox>
-			</row>
-			
-			
-			
-			<row>
+					value="${pageDefEditor$composer.editedData.pageCode}" constraint="no empty:${labels.field.code} ${labels.msg.input.required}"/>
+				<space hflex="1"/>
 				Additional Data
 				<textbox id="additionalData"
 					value="${pageDefEditor$composer.editedData.additionalData}"></textbox>
 			</row>
 			<row>
+				URL
+				<textbox id="pageUrlAnnotated" 
+					disabled="${editStateEnabledFlag}"
+					value="${pageDefEditor$composer.editedData.pageUrl}" constraint="no empty : URL ${labels.msg.input.required}"></textbox>
+				<space hflex="1"/>
 				${labels.field.remark}
 				<textbox id="remark"
 					value="${pageDefEditor$composer.editedData.remark}"></textbox>

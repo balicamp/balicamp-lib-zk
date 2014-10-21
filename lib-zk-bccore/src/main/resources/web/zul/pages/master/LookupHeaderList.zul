@@ -11,7 +11,7 @@
 	<grid vflex="1">
 	
 		<columns>
-				<column width="150px" />
+				<column width="150px" align="right"/>
 				<column  />
 			</columns>
 		<rows>
@@ -28,7 +28,6 @@
 	
 	<listbox
 		id="lsbLookupHeader"
-		height="350px"
 		mold="paging"
 		pageSize="10" width="100%">
 		<actionListhead>

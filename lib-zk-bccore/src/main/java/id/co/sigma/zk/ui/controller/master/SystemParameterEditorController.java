@@ -201,6 +201,13 @@ public class SystemParameterEditorController extends BaseSimpleDirectToDBEditor<
 	    			intparamValue.setValue(new Integer(editedData.getValueRaw()));
 	    		}
 	     	}
+    	} else {
+			textParamType.setVisible(true);
+			dateParamType.setVisible(false);
+			boolParamType.setVisible(false);
+			decParamType.setVisible(false);
+			intParamType.setVisible(false);
+			cmbType.setValue(String.class.getName());
     	}
     	
     	editableFlag.setSelectedIndex(("Yes".equals(editedData.getEditableFlag()) || "Y".equals(editedData.getEditableFlag())) ? 0 : 1);
