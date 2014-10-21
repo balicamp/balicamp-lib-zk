@@ -87,8 +87,8 @@
 					<listcell label="${forEachStatus.index+1}" style="text-align:right;"/>
 					<listcell label="${each.sourceUser.realName}" style="text-align:left;"/>
 					<listcell label="${each.destUser.realName}" style="text-align:left;"/>
-					<listcell label="${each.startDate}" style="text-align:left;"/>
-					<listcell label="${each.endDate}" style="text-align:left;"/>
+					<listcell label="${userDelegationWin$composer.formatDate(each.startDate)}" style="text-align:left;"/>
+					<listcell label="${userDelegationWin$composer.formatDate(each.endDate)}" style="text-align:left;"/>
 					<listcell label="${each.dataStatusAlias}" style="text-align:left;"/>
 				</actionListitem>
 			</template>

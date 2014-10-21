@@ -9,6 +9,7 @@ import id.co.sigma.common.security.domain.UserDelegationGroup;
 import id.co.sigma.common.security.domain.UserDelegationRole;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
+import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.security.server.service.IUserDelegationService;
 import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.annotations.ChildGridData;
@@ -21,14 +22,13 @@ import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.custom.component.DualListbox;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -51,7 +51,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserDelegationEditorController.class.getName());
 	
-	private final String constraintDateFormat = "yyyyMMdd";
+	@Autowired
+	@Qualifier("commonUiConstraintDateFormat")
+	private String constraintDateFormat;
 	
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
 	@Wire private Combobox dataStatus;
@@ -467,12 +469,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	public String getTomorrowDateStr(){
-		return dateToString(getTomorrowDate(), constraintDateFormat);
-	}
-	
-	private String dateToString(Date dt, String format){
-		Format formatter = new SimpleDateFormat(format);
-		return formatter.format(dt);
+		return ServerSideDateTimeParser.getInstance().format(getTomorrowDate(), constraintDateFormat);
 	}
 	
 	@Override

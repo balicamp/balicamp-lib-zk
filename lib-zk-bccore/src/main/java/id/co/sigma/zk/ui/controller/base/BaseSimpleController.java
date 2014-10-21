@@ -40,13 +40,9 @@ import org.zkoss.zul.ListModelList;
  */
 public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7154919543754238692L;
 	
 	private boolean springWired = false ; 
-	
 	
 	private static final Logger logger = LoggerFactory.getLogger(BaseSimpleController.class); 
 	
@@ -54,16 +50,16 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	
 	private DefaultLOVRenderer defaultLOVRenderer = new DefaultLOVRenderer();
 	
-	
 	@Autowired
 	protected ILOVProviderService lovProviderService;
-	
 	
 	@Autowired
 	@Qualifier(value="zkCommonServiceBean")
 	protected IZKCommonService zkCommonService ; 
 	
-	
+	@Autowired
+	@Qualifier("commonUiDateFormat")
+	protected String commonDateFormat;
 	
 	/**
 	 * id space. ini untuk akses ke element dari componen
