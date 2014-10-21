@@ -326,7 +326,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 	
 	/**
-	 * Cek apakah delegasi dari user x dalam rentang waktu tertentu sudah ada/belum
+	 * Cek apakah ada delegasi yang aktif dari user x dalam rentang waktu tertentu sudah ada/belum
 	 * @param userId - ID user asal
 	 * @param startDate - Dari tanggal
 	 * @param endDate - Sampai tanggal
@@ -335,23 +335,25 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	private boolean overlappingUserDelegationIsExist(Long userId, Date startDate, Date endDate){
 		SimpleQueryFilter[] filters = {
 			new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, userId),
+			new SimpleQueryFilter("dataStatus", SimpleQueryFilterOperator.equal, "A"),
 			new SimpleQueryFilter("endDate", startDate, endDate)
 		};
 		
 		Long delegs = generalPurposeDao.count(UserDelegation.class, filters);
 		
-		return ( (delegs!=null) && (delegs>0) );
+		return ( (delegs!=null) && (delegs>0L) );
 	}
 	
 	private boolean delegationIsUnique(Long srcUserId, Long destUserId){
 		SimpleQueryFilter[] filters = {
 			new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, srcUserId),
-			new SimpleQueryFilter("destUserId", SimpleQueryFilterOperator.equal, destUserId)
+			new SimpleQueryFilter("destUserId", SimpleQueryFilterOperator.equal, destUserId),
+			new SimpleQueryFilter("dataStatus", SimpleQueryFilterOperator.equal, "A")
 		};
 			
 		Long delegs = generalPurposeDao.count(UserDelegation.class, filters);
 		
-		return ( (delegs!=null) && (delegs==0) );
+		return ( (delegs!=null) && (delegs==0L) );
 	}
 	
 	private void disableExistingDelegations(Long userId, Date startDate, Date endDate){
@@ -388,8 +390,8 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				}
 			} else {
 				String exMsg = Labels.getLabel("msg.warnings.delegation.not_unique");
-				exMsg = exMsg.replace("{srcUserId}", sourceUserId.getValue().toString());
-				exMsg = exMsg.replace("{destUserId}", destUserId.getValue().toString());
+				exMsg = exMsg.replace("{srcUserId}", bnbxDelegateFromUser.getValue());
+				exMsg = exMsg.replace("{destUserId}", bnbxDelegateToUser.getValue());
 				throw new RuntimeException(exMsg);
 			}
 		} else {

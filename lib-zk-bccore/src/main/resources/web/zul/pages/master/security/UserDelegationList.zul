@@ -13,14 +13,10 @@
 					<row>
 						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" readonly="true">
+							<bandbox id="bnbxDelegateFromUser" width="350px" autodrop="true" buttonVisible="true" readonly="true">
 								<bandpopup>
 									<vbox>
-										<hbox>
-											${labels.action.button.search}
-											<textbox id="bnbxDelegateFromUserSearchText" width="150px" />
-										</hbox>
-										<listbox id="bnbxDelegateFromUserList" width="200px" mold="paging" pageSize="10" 
+										<listbox id="bnbxDelegateFromUserList" width="350px" mold="paging" pageSize="10" 
 											model="${userDelegationWin$composer.userList}">
 											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
 										</listbox>
@@ -33,14 +29,10 @@
 					<row>
 						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" readonly="true">
+							<bandbox id="bnbxDelegateToUser" width="350px" autodrop="true" buttonVisible="true" readonly="true">
 								<bandpopup>
 									<vbox>
-										<hbox>
-											${labels.action.button.search}
-											<textbox id="bnbxDelegateToUserSearchText" width="150px" />
-										</hbox>
-										<listbox id="bnbxDelegateToUserList" width="200px" 
+										<listbox id="bnbxDelegateToUserList" width="350px" 
 											model="${userDelegationWin$composer.userList}" mold="paging" pageSize="10">
 											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
 										</listbox>
