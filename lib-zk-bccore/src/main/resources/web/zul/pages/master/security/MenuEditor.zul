@@ -24,9 +24,9 @@
 			</row>
 			<row if="${menuEditor$composer.additionalData==null}">
 				${labels.field.menu.parent}
-				<bandbox id="parentBox" mold="rounded" autodrop="true" value="${menuEditor$composer.labelParent}" width="200px" >
+				<bandbox id="parentBox" mold="rounded" autodrop="true" value="${menuEditor$composer.labelParent}">
 					<bandpopup>
-						<listbox id="listParent" model="${menuEditor$composer.listParent}" height="250px" width="450px">
+						<listbox id="listParent" model="${menuEditor$composer.listParent}" height="250px" hflex="min">
 							<listhead>
 								<listheader label="Menu Code"/>
 								<listheader label="Menu Label"/>

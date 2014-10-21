@@ -1,6 +1,7 @@
 package id.co.sigma.zk.ui.controller.base;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
+import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
@@ -25,6 +26,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.impl.InputElement;
 
@@ -253,8 +256,25 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		
 		
 		InputElement elem = (InputElement) ctrl; 
-		
-		Object raw = elem.getRawValue(); 
+		Object raw = null;
+		if(elem instanceof Combobox){
+			int idx = ((Combobox)elem).getSelectedIndex();
+			Object cdata = null;
+			if(idx >= 0) {
+				cdata = ((Combobox)elem).getModel().getElementAt(idx);
+			}
+			if(cdata instanceof CommonLOV) {
+				raw = ((CommonLOV)cdata).getDataValue();
+			} else {
+				Comboitem citem = ((Combobox)elem).getSelectedItem();
+				if(citem != null) {
+					raw = citem.getValue();
+				}
+			}
+		}else{
+			raw = elem.getRawValue();
+		}
+		 
 		if (raw instanceof String) {
 			String rawString = (String) raw ; 
 			if (  ( rawString == null || rawString.isEmpty()) && ann.skipFilterIfEmpty() ){
@@ -266,7 +286,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 				return null ; 
 		}
 		//FIXME: untuk yang memakai in belum siap
-		flt.assignFilterWorker(elem.getRawValue());
+		flt.assignFilterWorker(raw);
 		
 		flt.setOperator(opr);
 		return flt; 
