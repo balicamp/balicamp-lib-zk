@@ -20,10 +20,11 @@
 				<button id="btnReset" label="${labels.action.button.reset}"/>
 				<space bar="true" width="7px" height="26px"/>
 				<button id="btnAddNew" label="${labels.action.button.add}"/>
+				<timer id="listTimer" repeats="false" delay="100" onCreate="self.stop()"/>
 			</hbox>
 		</panelchildren>
 	</panel>
-	<panel>
+	<panel height="390px">
 		<panelchildren id="listSection">
 		</panelchildren>
 	</panel>

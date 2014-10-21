@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 import org.zkoss.zk.ui.Component;
@@ -18,6 +19,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 
 /**
@@ -55,6 +57,9 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	
 	@Wire
 	private Button btnReset;
+	
+	@Wire
+	private Timer listTimer;
 
 	private int childrenCount = 6;
 	
@@ -134,6 +139,13 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	public void onClickButtonAddNew() {
 		if(listController != null) {
 			EditorManager.getInstance().addNewData(editorPage, (SingleKeyEntityData<?>)listController.addNewData(), listController);
+		}
+	}
+	
+	@Listen("onTimer = #listTimer")
+	public void fecthData() {
+		if((listController != null) && (listController instanceof IReloadablePanel)) {
+			((IReloadablePanel)listController).reload();
 		}
 	}
 
