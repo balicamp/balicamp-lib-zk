@@ -15,9 +15,11 @@ import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -88,6 +90,22 @@ public class ApplicationMenuEditorController extends
 	
 	@Autowired
 	private IGeneralPurposeService generalPurposeService ;
+	
+	int flag=0;
+	
+	
+
+	public int getFlag() {
+		return flag;
+	}
+
+
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+
+
 
 	@Override
 	public void insertData() throws Exception {
@@ -256,13 +274,31 @@ public class ApplicationMenuEditorController extends
 			return null ;
 		}
 	}
+	
+	
+
+	@Override
+	protected void validateData() throws Exception {
+		if(getEditorState().equals(ZKEditorState.ADD_NEW)){
+			String code = functionCode.getValue().trim();
+			if(code!=null&&!code.equals("")){
+				SimpleQueryFilter[] filter = new SimpleQueryFilter[]{
+					new SimpleQueryFilter("functionCode", SimpleQueryFilterOperator.equal, code)	
+				};
+				Long swap = generalPurposeDao.count(ApplicationMenu.class, filter);
+				if(swap!=null && swap>0){
+					String msg = Labels.getLabel("msg.warning.menu.not_unique");
+					msg = msg.replace("{codeMenu}", code);
+					throw new Exception(msg);
+				}
+			}
+			
+		}
+	}
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		if(getEditorState().equals(ZKEditorState.EDIT)){
-			functionCode.setReadonly(true);
-		}
 		listModel = new ListModelList<>(getPages());
 		list.setModel(listModel);
 	}
@@ -287,5 +323,18 @@ public class ApplicationMenuEditorController extends
 			parentBox.close();
 		}
 	}
+
+
+
+	@Override
+	protected void runAditionalTaskOnDataRevieved(ApplicationMenu editedData,
+			ZKEditorState editorState, Map<?, ?> rawDataParameter) {
+		if(getEditorState().equals(ZKEditorState.EDIT)){
+			flag=1;
+		}
+		super.runAditionalTaskOnDataRevieved(editedData, editorState, rawDataParameter);
+	}
+	
+	
 
 }

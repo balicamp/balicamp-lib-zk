@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -326,7 +327,7 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 			listId=getIdChild(parentId, getListApplicationMenus());
 			List<ApplicationMenuAssignment> menuAss = getListMenuAssignment(listId);
 			if(menuAss!=null && !menuAss.isEmpty()){
-				Messagebox.show("Gagal hapus data menu, menu digunakan di tabel lain", "Hapus Menu", Messagebox.OK, Messagebox.INFORMATION);
+				Messagebox.show(Labels.getLabel("msg.menu.delete.failed"), Labels.getLabel("title.msgbox.information"), Messagebox.OK, Messagebox.INFORMATION);
 				flagDelete=false;
 				return;
 			}
@@ -344,7 +345,7 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 			listId.add(data.getId());
 			List<ApplicationMenuAssignment> menuAss = getListMenuAssignment(listId);
 			if(menuAss!=null && !menuAss.isEmpty()){
-				Messagebox.show("Gagal hapus data menu, menu digunakan di tabel lain", "Hapus Menu", Messagebox.OK, Messagebox.INFORMATION);
+				Messagebox.show(Labels.getLabel("msg.menu.delete.failed"), Labels.getLabel("title.msgbox.information"), Messagebox.OK, Messagebox.INFORMATION);
 				flagDelete=false;
 				return;
 			}
@@ -375,6 +376,15 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 				getMapsOfNodeCollection().get(menu.getFunctionIdParent()).remove(node);
 			}
 			tree.invalidate();
+			String msg = Labels.getLabel("msg.menu.delete.success");
+			msg = msg.replace("{codeMenu}", menu.getFunctionCode());
+			msg = msg.replace("{labelMenu}", menu.getFunctionLabel());
+			Messagebox.show(msg, 
+					Labels.getLabel("title.msgbox.information"),
+					new Messagebox.Button[]{Messagebox.Button.OK},
+					new String[]{Labels.getLabel("action.button.ok")},
+					Messagebox.INFORMATION,
+					Messagebox.Button.OK, null);
 		}
 	}
 

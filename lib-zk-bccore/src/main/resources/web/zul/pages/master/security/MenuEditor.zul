@@ -12,9 +12,10 @@
 		<rows>
 			<row>
 				${labels.field.menu.code}
-				<textbox id="functionCode" 		
+				<textbox id="functionCode" if="${menuEditor$composer.flag==0}" 		
 					value="${menuEditor$composer.editedData.functionCode}" constraint="no empty:${labels.field.code} harus diisi !!!">
 				</textbox>
+				<label value="${menuEditor$composer.editedData.functionCode}" if="${menuEditor$composer.flag==1}" />
 			</row>
 			<row>
 				${labels.field.menu.label}
@@ -23,7 +24,7 @@
 			</row>
 			<row if="${menuEditor$composer.additionalData==null}">
 				${labels.field.menu.parent}
-				<bandbox id="parentBox" mold="rounded" autodrop="true" value="${menuEditor$composer.labelParent}" width="200px">
+				<bandbox id="parentBox" mold="rounded" autodrop="true" value="${menuEditor$composer.labelParent}" width="200px" >
 					<bandpopup>
 						<listbox id="listParent" model="${menuEditor$composer.listParent}" height="250px" width="450px">
 							<listhead>
