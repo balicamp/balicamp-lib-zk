@@ -1,11 +1,11 @@
 package id.co.sigma.zk.ui.custom.component;
 
-import java.io.Serializable;
-
 import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+
+import java.io.Serializable;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -15,6 +15,7 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
@@ -41,7 +42,9 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	private Panelchildren searchSection;
 	
 	@Wire
-	private Panelchildren listSection;
+//	private Panelchildren listSection;
+//	private Vbox listSection;
+	private Div listSection;
 	
 	@Wire
 	private Panel panelSearchKeys;
@@ -86,6 +89,9 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		String title = getTitle();
 		caption.setValue(title);
 		setTitle("");
+		setStyle("overflow:auto");
+		setHeight(""); //reset height
+		setVflex(""); //rest vflex
 		
 		listController = (BaseSimpleListController<Serializable>) getAttribute(getId() + "$composer");
 		
@@ -116,6 +122,10 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		}
 		
 		if(child != null) {
+			if(child instanceof Listbox) {
+				((Listbox)child).setHeight(""); //reset heigh
+				((Listbox)child).setVflex("1");
+			}
 			listSection.appendChild(child);
 		}
 		

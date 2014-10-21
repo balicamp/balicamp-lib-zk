@@ -24,8 +24,10 @@
 			</hbox>
 		</panelchildren>
 	</panel>
-	<panel height="390px">
+	<div id="listSection">
+	</div>
+<!-- 	<panel id="panelList" vflex="1">
 		<panelchildren id="listSection">
 		</panelchildren>
-	</panel>
+	</panel> -->
 </zk>
