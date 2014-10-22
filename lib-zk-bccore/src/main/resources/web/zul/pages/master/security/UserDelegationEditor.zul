@@ -13,34 +13,24 @@
 					<row>
 						<cell width="200px">${labels.field.delegate_from_user}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<bandbox id="bnbxDelegateFromUser" autodrop="true" buttonVisible="true" readonly="true" 
-							value="${userDelegationEditorWin$composer.editedData.sourceUser.realName}" constraint="no empty">
-								<bandpopup>
-									<vbox>
-										<listbox id="bnbxDelegateFromUserList" width="100%" mold="paging" pageSize="10" 
-											model="${userDelegationEditorWin$composer.userList}">
-											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
-										</listbox>
-									</vbox>
-								</bandpopup>
-							</bandbox>								
+							<combobox id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" hflex="1" 
+							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
+								<template name="model">
+									<comboitem value="${each}" label="${each.realName}" />
+								</template>
+							</combobox>
 							<longbox id="sourceUserId" visible="false" value="${userDelegationEditorWin$composer.editedData.sourceUserId}" />
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.delegate_to_user}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<bandbox id="bnbxDelegateToUser" autodrop="true" buttonVisible="true" readonly="true" 
-							value="${userDelegationEditorWin$composer.editedData.destUser.realName}" constraint="no empty">
-								<bandpopup>
-									<vbox>
-										<listbox id="bnbxDelegateToUserList" width="100%" 
-											model="${userDelegationEditorWin$composer.userList}" mold="paging" pageSize="10">
-											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
-										</listbox>
-									</vbox>
-								</bandpopup>
-							</bandbox>
+							<combobox id="cmbDelegateToUser" autodrop="true" buttonVisible="false" hflex="1" 
+							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
+								<template name="model">
+									<comboitem value="${each}" label="${each.realName}" />
+								</template>
+							</combobox>
 							<longbox id="destUserId" visible="false" value="${userDelegationEditorWin$composer.editedData.destUserId}" />
 						</cell>
 					</row>

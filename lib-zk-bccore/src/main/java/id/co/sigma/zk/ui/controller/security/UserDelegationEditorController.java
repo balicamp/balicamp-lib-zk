@@ -19,6 +19,7 @@ import id.co.sigma.zk.ui.annotations.JoinKey;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+import id.co.sigma.zk.ui.custom.component.CustomListModel;
 import id.co.sigma.zk.ui.custom.component.DualListbox;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
@@ -32,6 +33,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Bandbox;
@@ -58,11 +61,11 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	@LookupEnabledControl(parameterId="DATA_STATUS_OPTIONS")
 	@Wire private Combobox dataStatus;
 	
-	@Wire private Bandbox bnbxDelegateFromUser;
+	@Wire private Combobox cmbDelegateFromUser;
 	
 	@Wire private Longbox sourceUserId;
 	
-	@Wire private Bandbox bnbxDelegateToUser;
+	@Wire private Combobox cmbDelegateToUser;
 	
 	@Wire private Longbox destUserId;
 	
@@ -193,22 +196,53 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	public void setUserSourceGroups(List<UserGroupAssignment> userSourceGroups) {
 		this.userSourceGroups = userSourceGroups;
 	}
-
+	
+	/**
+	 * Bandbox delegate from user onChanging handler
+	 */
+	/*@Listen("onChanging=#bnbxDelegateFromUser")
+	public void bnbxDelegateFromUser_changing(InputEvent ie){
+		try{
+			String txt = ie.getValue();
+			if(txt!=null && txt.length()>=3){
+				List<User> users = getAllUserByName(txt);
+				if(users!=null && users.size()>0){
+					bnbxDelegateFromUserList.setModel(new ListModelList<>(users));
+				}
+			}else{
+				bnbxDelegateFromUserList.setModel(new ListModelList<>(getAllUser()));
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}*/
+	
+	/**
+	 * Bandbox delegate from user onBlur handler
+	 */
+	/*@Listen("onBlur=#bnbxDelegateFromUser")
+	public void bnbxDelegateFromUser_blur(){
+		Long srcUserId = sourceUserId.getValue();
+		if(srcUserId==null || srcUserId==0L){
+			bnbxDelegateFromUser.setValue(null);
+			bnbxDelegateFromUser.setText(null);
+		}
+	}*/
 
 	/**
-	 * Bandbox delegate from user onSelect handler
+	 * Combobox delegate from user onSelect handler
 	 */
-	@Wire private Listbox bnbxDelegateFromUserList;
+	//@Wire private Listbox bnbxDelegateFromUserList;
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Listen("onSelect=#bnbxDelegateFromUserList")
-	public void onBnbxDelegateFromUserListSelected(){
+	@Listen("onSelect=#cmbDelegateFromUser")
+	public void onCmbDelegateFromUserSelected(){
 		try {
-			User user = bnbxDelegateFromUserList.getSelectedItem().getValue();
+			User user = cmbDelegateFromUser.getSelectedItem().getValue();
 			if(!fromAndToUserIsSame(user.getId(), destUserId.getValue())){
 				// Set values and close bandbox
 				sourceUserId.setValue(user.getId());
-				bnbxDelegateFromUser.setValue(user.getRealName());
-				bnbxDelegateFromUser.close();
+				//cmbDelegateFromUser.setValue(user.getRealName());
+				//cmbDelegateFromUser.close();
 				
 				this.userSourceRoles = new ArrayList<UserRole>(getUserRoles());
 				this.delegateRole = new ZKClientSideListDataEditorContainer<UserDelegationRole>();
@@ -222,41 +256,60 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				dlbDelegateGroup.setSrcModel((List<?>)this.userSourceGroups);
 				dlbDelegateGroup.loadData();
 				
-			} /*else{
-				Messagebox.show("User asal dan tujuan tidak boleh sama!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
-			}*/
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Bandbox delegate to user onSelect handler
+	 * Combobox delegate to user onSelect handler
 	 */
-	@Wire private Listbox bnbxDelegateToUserList;
-	@Listen("onSelect=#bnbxDelegateToUserList")
-	public void onBnbxDelegateToUserListSelected(){
+	//@Wire private Listbox bnbxDelegateToUserList;
+	@Listen("onSelect=#cmbDelegateToUser")
+	public void onCmbDelegateToUserSelected(Event ev){
 		try {
-			User user = bnbxDelegateToUserList.getSelectedItem().getValue();
-			if(!fromAndToUserIsSame(sourceUserId.getValue(), user.getId())){
+			User user = cmbDelegateToUser.getSelectedItem().getValue();
+			destUserId.setValue(user.getId());
+			
+			/*if(!fromAndToUserIsSame(sourceUserId.getValue(), user.getId())){
 				destUserId.setValue(user.getId());
-				bnbxDelegateToUser.setValue(user.getRealName());			
-				bnbxDelegateToUser.close();
-			}/*else{
-				Messagebox.show("User asal dan tujuan tidak boleh sama!", moduleTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+			}else{
+				destUserId.setValue(null);
 			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public List<User> getUserList() {
-		return new ListModelList<>(getAllUser());
+	public CustomListModel<User> getUserList() {
+		CustomListModel<User> users = new CustomListModel<>(getAllUser());
+		return users;
 	}
 	
 	private List<User> getAllUser(){
 		SimpleQueryFilter[] filters = {
 			new SimpleQueryFilter("status", SimpleQueryFilterOperator.equal, "A")	
+		};
+		
+		SimpleSortArgument[] sortArgs = {
+			new SimpleSortArgument("realName", true)
+		};
+		
+		try {
+			return generalPurposeDao.list(User.class, filters, sortArgs);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private List<User> getAllUserByName(String name){
+		if(name==null) name="";
+		
+		SimpleQueryFilter[] filters = {
+			new SimpleQueryFilter("status", SimpleQueryFilterOperator.equal, "A"),
+			new SimpleQueryFilter("realName", SimpleQueryFilterOperator.likeBothSide, name)
 		};
 		
 		SimpleSortArgument[] sortArgs = {
@@ -381,6 +434,10 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	
 	@Override
 	protected void validateData() throws Exception {
+		if(fromAndToUserIsSame(sourceUserId.getValue(), destUserId.getValue())){
+			throw new RuntimeException(Labels.getLabel("msg.warnings.delegation.same_delegated_user"));
+		}
+		
 		if(!isEditing()) {
 			if(delegationIsUnique(sourceUserId.getValue(), destUserId.getValue())){
 				hasDelegation = overlappingUserDelegationIsExist(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
@@ -392,13 +449,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 				}
 			} else {
 				String exMsg = Labels.getLabel("msg.warnings.delegation.not_unique");
-				exMsg = exMsg.replace("{srcUserId}", bnbxDelegateFromUser.getValue());
-				exMsg = exMsg.replace("{destUserId}", bnbxDelegateToUser.getValue());
+				exMsg = exMsg.replace("{srcUserId}", cmbDelegateFromUser.getValue());
+				exMsg = exMsg.replace("{destUserId}", cmbDelegateToUser.getValue());
 				throw new RuntimeException(exMsg);
-			}
-		} else {
-			if(fromAndToUserIsSame(sourceUserId.getValue(), destUserId.getValue())){
-				throw new RuntimeException(Labels.getLabel("msg.warnings.delegation.same_delegated_user"));
 			}
 		}
 	}
@@ -428,8 +481,8 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void adjustEditorFields(){
-		bnbxDelegateFromUser.setDisabled(isEditing());
-		bnbxDelegateToUser.setDisabled(isEditing());
+		cmbDelegateFromUser.setDisabled(isEditing());
+		cmbDelegateToUser.setDisabled(isEditing());
 		startDate.setDisabled(isEditing());
 		endDate.setDisabled(isEditing());
 		
