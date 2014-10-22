@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Timer;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -194,7 +195,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 					new String[]{Labels.getLabel("action.button.ok")},
 					Messagebox.INFORMATION,
 					Messagebox.Button.OK, null);
-			invokeSearch();
+			
+			refreshList();
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);		
 			Messagebox.show(Labels.getLabel("msg.save.delete.fail") 
@@ -345,6 +348,13 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 			deleteData(data, (Serializable)((SingleKeyEntityData)data).getId(), "id");
 		} else {
 			throw new RuntimeException("Method not supported.");
+		}
+	}
+	
+	private void refreshList() {
+		Component timer = getSelf().getFellowIfAny("listTimer");
+		if(timer instanceof Timer) {
+			((Timer)timer).start();
 		}
 	}
 
