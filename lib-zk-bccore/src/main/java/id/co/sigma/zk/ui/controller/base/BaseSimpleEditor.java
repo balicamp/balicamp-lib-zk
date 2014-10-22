@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
@@ -626,7 +627,13 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				val = ((Doublebox)input).getValue();
 			} else if(input instanceof Combobox)  {
 				
-				int idx = ((Combobox)input).getSelectedIndex();
+				if(!Components.isRealVisible(input)) return;
+				
+				int idx = -1;
+				try {
+					idx = ((Combobox)input).getSelectedIndex();
+				} catch (Exception e) {}
+				
 				Object cdata = null;
 				if(idx >= 0) {
 					cdata = ((Combobox)input).getModel().getElementAt(idx);

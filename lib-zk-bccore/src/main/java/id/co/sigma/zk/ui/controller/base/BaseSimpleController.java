@@ -194,22 +194,18 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		if ( swp instanceof Combobox) {
 			Combobox cmb = (Combobox)swp ; 
 			ListModelList<CommonLOVWithRenderer> models = new ListModelList<CommonLOVWithRenderer>();
-//			int selectedIdx = -1;
 			String label = "";
 			if ( header.getDetails()!= null ) {
 				ArrayList<CommonLOVWithRenderer> contents = new ArrayList<CommonLOVWithRenderer>() ;
-				int i = 0;
 				String val = getSelectedLOV(cmb);
 				for ( CommonLOV scn : header.getDetails() ) {
 					CommonLOVWithRenderer w = new CommonLOVWithRenderer(scn, dataRenderer) ; 
 					contents.add(w) ; 
 					if(val != null) {
 						if(scn.getDataValue().equals(val)) {
-//							selectedIdx = i;
 							label = scn.getLabel();
 						}
 					}
-					i++;
 				}
 				models.addAll(contents); 
 			}
