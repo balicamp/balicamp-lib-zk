@@ -4,11 +4,14 @@
 	apply="id.co.sigma.zk.ui.controller.security.ApplicationMenuEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
-	<grid vflex="1">	
+	<grid hflex="1">	
 		<columns>
-				<column width="150px" />
-				<column  />
-			</columns>
+			<column width="150px" align="right" />
+			<column />
+			<column width="40px" />
+			<column width="150px" align="right" />
+			<column />
+		</columns>
 		<rows>
 			<row>
 				${labels.field.menu.code}
@@ -16,11 +19,14 @@
 					value="${menuEditor$composer.editedData.functionCode}" constraint="no empty:${labels.field.code} harus diisi !!!">
 				</textbox>
 				<label value="${menuEditor$composer.editedData.functionCode}" if="${menuEditor$composer.flag==1}" />
+				
 			</row>
 			<row>
 				${labels.field.menu.label}
 				<textbox id="functionLabel" 
-					value="${menuEditor$composer.editedData.functionLabel}" constraint="no empty:${labels.field.label} harus diisi !!!"></textbox>
+					value="${menuEditor$composer.editedData.functionLabel}" constraint="no empty:${labels.field.label} harus diisi !!!">
+					</textbox>
+				
 			</row>
 			<row if="${menuEditor$composer.additionalData==null}">
 				${labels.field.menu.parent}
