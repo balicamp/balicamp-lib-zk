@@ -6,59 +6,74 @@
 	apply="id.co.sigma.zk.ui.controller.security.UserEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
-	<groupbox mold="3d" width="100%">
 	<grid vflex="1">	
-		<columns>
-				<column width="150px" />
+			<columns>
+				<column width="150px" align="left"/>
+				<column  />
+				<column width="40px"/>
+				<column width="150px" align="left"/>
 				<column  />
 			</columns>
 		<rows>
 			<row>
-				${labels.field.username}
-				<textbox id="userCode"			
-					value="${userEditor$composer.editedData.userCode}" constraint="no empty:Nama Pengguna tidak boleh kosong">
-				</textbox>
+				<cell>${labels.field.username}</cell>
+				<cell>
+					<textbox id="userCode"			
+					value="${userEditor$composer.editedData.userCode}" constraint="no empty:Nama Pengguna tidak boleh kosong"/>
+				</cell>
+				<cell><space hflex="1"/></cell>
+			 	<cell>
+                	${labels.field.password}
+                </cell>
+                <cell>
+                	<textbox id="chipperText" width="150px" type="password" c:onChanging="meterUpdate(event)" />
+                </cell>
 			</row>
 			 <row>
-                ${labels.field.password}
-                <textbox id="chipperText" width="150px" type="password" c:onChanging="meterUpdate(event)" />
-            </row>
-            <row>
-                ${labels.field.passwordstrength} 
-                <vlayout>
-                    <div id="meter" sclass="meter" width="240px">
-                        <div sclass="meter-inner"></div>
-                    </div>
-                    <label id="msg" />
-                </vlayout>
-            </row>
-            <row>
-                ${labels.field.passwordconfirm}
-                <textbox id="confirmChipperText" width="150px" type="password" />
-            </row>
-			<row>
-				${labels.field.realname}
+				<cell>
+					${labels.field.realname}
+				</cell>
+				<cell>
 				<textbox id="realName"
 					value="${userEditor$composer.editedData.realName}" constraint="no empty:Nama Lengkap tidak boleh kosong"></textbox>
-			</row>
-			<row>
-				${labels.field.email}
-				<textbox id="email" width="300px"
+				</cell>
+				<cell><space hflex="1"/></cell>
+            	<cell>
+                	${labels.field.passwordstrength}
+                </cell>
+                <cell> 
+	                <vlayout>
+	                    <div id="meter" sclass="meter" width="240px">
+	                        <div sclass="meter-inner"></div>
+	                    </div>
+	                    <label id="msg" />
+	                </vlayout>
+                </cell>
+            </row>
+            <row>
+                <cell>
+					${labels.field.email}
+				</cell>
+				<cell>
+					<textbox id="email" width="300px"
 					value="${userEditor$composer.editedData.email}" constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address"></textbox>
-			</row>
-			<row>
-				${labels.field.aktif}
-				<checkbox id="status"></checkbox>
-			</row>
-			<row>
-				${labels.field.superadmin}
-				<checkbox id="superAdmin"></checkbox>
-			</row>
-			<row>
-				${labels.field.branch}
+				</cell>
+                <cell><space hflex="1"/></cell>
+            	<cell>
+                	${labels.field.passwordconfirm}
+                </cell>
+                <cell>
+                	<textbox id="confirmChipperText" width="150px" type="password" />
+                </cell>
+            </row>
+            <row>
+				<cell>
+					${labels.field.branch}
+				</cell>
+				<cell>
 				<bandbox id="defaultBranchCode" value="${userEditor$composer.editedData.defaultBranchCode}">
-		        <bandpopup>
-		            <vbox>
+		        	<bandpopup>
+		            	<vbox>
 		                <hbox>
 		                    ${labels.action.button.search}
 		                    <textbox />
@@ -80,54 +95,57 @@
 				        </vbox>
 				    </bandpopup>
 				</bandbox>
-			</row>
+				</cell>
+                <cell><space hflex="1"/></cell>
+                <cell>
+					${labels.field.aktif}
+				</cell>
+				<cell>
+					<checkbox id="status"></checkbox>
+				</cell>
+            </row>
+			<!-- <row>
+				${labels.field.superadmin}
+				<checkbox id="superAdmin"></checkbox>
+			</row> -->
+					
 		</rows>
 	</grid>
-	</groupbox>
-	
-	<separator bar="false"/>
-	
-	<groupbox>
-		<grid>
-			<rows>
-				<row>
-				<label>${labels.field.usergroup}</label>
-				</row>
-	            <row>
-	                <listbox id="listBoxCheckList">
-	                    <template name="model">
-	                        <listitem selected="${each.selected}" value="${each}">
-	                        	<listcell label="${each.groupCode}" />
-	                        </listitem>
-	                    </template>
-	           		</listbox>
-	            </row>
-			</rows>
-			
-		</grid>
-	</groupbox>
-		
-		<separator bar="false"/>
-		
-	<groupbox>
-		<grid>
-			<rows>
-				<row>
-					<label>${labels.field.userrole}</label>
-				</row>
-	            <row>
-	         		
-	                <listbox id="listBoxCheckListRole">
-		                    <template name="model">
-		                        <listitem selected="${each.selected}" value="${each}">
-		                        	<listcell label="${each.roleCode}" />
-		                        </listitem>
-		                    </template>
-	           		</listbox>
-	            </row>
-            </rows>
-		</grid>
-	</groupbox>
-            
+	<grid>
+		<rows>
+			<row>
+				<cell colspan="2">
+					<panel border="normal" style="border: 1px solid rgb(202, 211, 201);" hflex="1" vflex="1">
+						<caption label="${labels.field.usergroup}"/>
+						<panelchildren>
+			                <listbox id="listBoxCheckList">
+			                    <template name="model">
+			                        <listitem selected="${each.selected}" value="${each}">
+			                        	<listcell label="${each.groupCode} - ${each.groupName}" />
+			                        </listitem>
+			                    </template>
+			           		</listbox>
+						</panelchildren>
+						</panel>
+				</cell>
+		 	
+               <cell colspan="2">
+               	<panel border="normal" style="border: 1px solid rgb(202, 211, 201);" hflex="1" vflex="1">
+					<caption label="${labels.field.userrole}"/>
+					<panelchildren>
+		                <listbox id="listBoxCheckListRole">
+			                    <template name="model">
+			                        <listitem selected="${each.selected}" value="${each}">
+			                        	<listcell label="${each.roleCode} - ${each.roleDesc}" />
+			                        </listitem>
+			                    </template>
+		           		</listbox>
+	           		</panelchildren>
+           		</panel>
+               </cell>
+               <cell><space width="10px"/></cell>
+			</row>	
+		</rows>
+	</grid>
 </editorWindow>
 </zk>

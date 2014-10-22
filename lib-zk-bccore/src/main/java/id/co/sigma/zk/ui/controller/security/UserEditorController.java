@@ -70,8 +70,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	@Wire
 	Textbox userCode;
 	
-	@Wire
-	Checkbox superAdmin;
+	/*@Wire
+	Checkbox superAdmin;*/
 	
 	@Wire
 	Checkbox status;
@@ -147,11 +147,11 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			data.setModifiedOn(new Date());
 		}
 		
-		if(superAdmin.isChecked()){
+		/*if(superAdmin.isChecked()){
 			data.setSuperAdmin("Y");
 		}else{
 			data.setSuperAdmin("N");
-		}
+		}*/
 		if(status.isChecked()){
 			data.setStatus("A");
 		}else{
@@ -512,11 +512,11 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		if(editedData.getId()!=null){
 			selectedUserRole = listSelectedUserRole(editedData.getId());
 			selectedUserGroup = listSelectedUserGroup(editedData.getId());
-			if(editedData.getSuperAdmin()!=null && editedData.getSuperAdmin().equals("Y")){
+			/*if(editedData.getSuperAdmin()!=null && editedData.getSuperAdmin().equals("Y")){
 				superAdmin.setChecked(true);
 			}else{
 				superAdmin.setChecked(false);
-			}
+			}*/
 			
 			if(editedData.getStatus()!=null && editedData.getStatus().equals("A")){
 				status.setChecked(true);
