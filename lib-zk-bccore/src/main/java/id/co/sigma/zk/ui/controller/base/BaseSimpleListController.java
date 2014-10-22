@@ -194,7 +194,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 					new String[]{Labels.getLabel("action.button.ok")},
 					Messagebox.INFORMATION,
 					Messagebox.Button.OK, null);
-			
+			invokeSearch();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);		
 			Messagebox.show(Labels.getLabel("msg.save.delete.fail") 
