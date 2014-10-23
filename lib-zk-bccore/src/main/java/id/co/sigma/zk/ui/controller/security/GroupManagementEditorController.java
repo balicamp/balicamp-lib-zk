@@ -103,7 +103,6 @@ public class GroupManagementEditorController extends BaseSimpleDirectToDBEditor<
 		
 		// Fix bug #5111
 		for(SelectableApplicationMenu sam : tempMenus.values()){
-			System.out.println("Menu ID: "+sam.getId()+", Menu tree code: "+sam.getMenuTreeCode());
 			if(isEditing() && sam.getMenuTreeCode() != null){
 				String[] parentIds = sam.getMenuTreeCode().split("\\.");
 				int count = parentIds.length - 1;
