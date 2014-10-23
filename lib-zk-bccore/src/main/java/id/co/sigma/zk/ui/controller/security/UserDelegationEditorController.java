@@ -33,15 +33,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
 
 /**
@@ -304,7 +299,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		}
 	}
 	
-	private List<User> getAllUserByName(String name){
+	/*private List<User> getAllUserByName(String name){
 		if(name==null) name="";
 		
 		SimpleQueryFilter[] filters = {
@@ -322,7 +317,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 			e.printStackTrace();
 			return null;
 		}
-	}
+	}*/
 	
 	private List<UserRole> getUserRoles(){
 		Long userId = isEditing()? getEditedData().getSourceUserId() : sourceUserId.getValue();

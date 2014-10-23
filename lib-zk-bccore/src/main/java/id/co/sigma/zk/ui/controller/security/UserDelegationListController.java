@@ -10,6 +10,7 @@ import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+import id.co.sigma.zk.ui.custom.component.CustomListModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,10 +19,8 @@ import java.util.List;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
 
@@ -44,12 +43,12 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 	@QueryParameterEntry(filteredField="sourceUserId", queryOperator=SimpleQueryFilterOperator.equal)
 	@Wire private Longbox txtIdDelegateFromUser;
 	
-	@Wire private Bandbox bnbxDelegateFromUser;
+	@Wire private Combobox cmbDelegateFromUser;
 	
 	@QueryParameterEntry(filteredField="destUserId", queryOperator=SimpleQueryFilterOperator.equal)
 	@Wire private Longbox txtIdDelegateToUser;
 	
-	@Wire private Bandbox bnbxDelegateToUser;
+	@Wire private Combobox cmbDelegateToUser;
 	
 	@Wire private Datebox txtStartDateBegin;
 	
@@ -59,8 +58,9 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 	
 	@Wire private Datebox txtEndDateEnd;
 	
-	public List<User> getUserList() {
-		return new ListModelList<>(getAllUser());
+	public CustomListModel<User> getUserList() {
+		CustomListModel<User> users = new CustomListModel<>(getAllUser());
+		return users;
 	}
 	
 	private List<User> getAllUser(){
@@ -110,27 +110,21 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 		invokeSearch();
 	}
 	
-	@Wire private Listbox bnbxDelegateFromUserList;
-	@Listen("onSelect=#bnbxDelegateFromUserList")
+	@Listen("onSelect=#cmbDelegateFromUser")
 	public void onBnbxDelegateFromUserListSelected(){
 		try {
-			User user = bnbxDelegateFromUserList.getSelectedItem().getValue();
+			User user = cmbDelegateFromUser.getSelectedItem().getValue();
 			txtIdDelegateFromUser.setValue(user.getId());
-			bnbxDelegateFromUser.setValue(user.getRealName());
-			bnbxDelegateFromUser.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	@Wire private Listbox bnbxDelegateToUserList;
-	@Listen("onSelect=#bnbxDelegateToUserList")
+	@Listen("onSelect=#cmbDelegateToUser")
 	public void onBnbxDelegateToUserListSelect(){
 		try {
-			User user = bnbxDelegateToUserList.getSelectedItem().getValue();
+			User user = cmbDelegateToUser.getSelectedItem().getValue();
 			txtIdDelegateToUser.setValue(user.getId());
-			bnbxDelegateToUser.setValue(user.getRealName());			
-			bnbxDelegateToUser.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -139,8 +133,8 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 	@Override
 	protected void resetFilter() {
 		super.resetFilter();
-		bnbxDelegateFromUser.setValue(null);
-		bnbxDelegateToUser.setValue(null);
+		cmbDelegateFromUser.setValue(null);
+		cmbDelegateToUser.setValue(null);
 	}
 
 	@Override

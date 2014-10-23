@@ -13,32 +13,24 @@
 					<row>
 						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateFromUser" width="350px" autodrop="true" buttonVisible="true" readonly="true">
-								<bandpopup>
-									<vbox>
-										<listbox id="bnbxDelegateFromUserList" width="350px" mold="paging" pageSize="10" 
-											model="${userDelegationWin$composer.userList}">
-											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
-										</listbox>
-									</vbox>
-								</bandpopup>
-							</bandbox>								
+							<combobox id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" width="350px" 
+							model="${userDelegationWin$composer.userList}">
+								<template name="model">
+									<comboitem value="${each}" label="${each.realName}" />
+								</template>
+							</combobox>								
 							<longbox id="txtIdDelegateFromUser" visible="false" />
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
-							<bandbox id="bnbxDelegateToUser" width="350px" autodrop="true" buttonVisible="true" readonly="true">
-								<bandpopup>
-									<vbox>
-										<listbox id="bnbxDelegateToUserList" width="350px" 
-											model="${userDelegationWin$composer.userList}" mold="paging" pageSize="10">
-											<template name="model"><listitem value="${each}" label="${each.realName}"/></template>
-										</listbox>
-									</vbox>
-								</bandpopup>
-							</bandbox>
+							<combobox id="cmbDelegateToUser" autodrop="true" buttonVisible="false" width="350px" 
+							model="${userDelegationWin$composer.userList}">
+								<template name="model">
+									<comboitem value="${each}" label="${each.realName}" />
+								</template>
+							</combobox>
 							<longbox id="txtIdDelegateToUser" visible="false" />
 						</cell>
 					</row>
