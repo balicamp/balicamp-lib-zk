@@ -157,7 +157,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		}else{
 			data.setStatus("D");
 		}
-		
+		data.setActiveFlag("A");
 		groups.eraseData(new ArrayList<UserGroupAssignment>(groups.getAllStillExistData()));
 		for(Listitem item : listBoxCheckList.getItems()) {
 			UserGroupAssignment ug = new UserGroupAssignment();
