@@ -135,9 +135,9 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		validationForm(data);
 	
 		if(ZKEditorState.EDIT.equals(getEditorState())){
-			if(data.getChipperText().equalsIgnoreCase("")){
+			/*if(data.getChipperText().equalsIgnoreCase("")){
 				data.setChipperText(editedData.getChipperText());
-			}
+			}*/
 			data.setModifiedBy(SecurityUtil.getUser().getUsername());
 			data.setModifiedOn(new Date());
 		}else{
