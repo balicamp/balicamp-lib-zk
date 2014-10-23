@@ -39,14 +39,16 @@
 					<row>
 						<cell>${labels.field.date_start}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<datebox id="startDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.startDate}" 
+							<datebox id="startDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
+							value="${userDelegationEditorWin$composer.editedData.startDate}" 
 							readonly="true" />
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.date_end}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<datebox id="endDate" format="dd-MMM-yyyy" value="${userDelegationEditorWin$composer.editedData.endDate}" 
+							<datebox id="endDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
+							value="${userDelegationEditorWin$composer.editedData.endDate}" 
 							readonly="true" />
 						</cell>
 					</row>

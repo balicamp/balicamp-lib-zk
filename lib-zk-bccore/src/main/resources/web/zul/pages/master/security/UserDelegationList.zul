@@ -37,17 +37,17 @@
 					<row>
 						<cell>${labels.field.date_start}</cell>
 						<cell>
-							<datebox id="txtStartDateBegin" format="dd-MMM-yyyy" />
+							<datebox id="txtStartDateBegin" format="${userDelegationWin$composer.commonDateFormat}" />
 							<space/>s/d<space/>
-							<datebox id="txtStartDateEnd" format="dd-MMM-yyyy" />
+							<datebox id="txtStartDateEnd" format="${userDelegationWin$composer.commonDateFormat}" />
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.date_end}</cell>
 						<cell>
-							<datebox id="txtEndDateBegin" format="dd-MMM-yyyy" />
+							<datebox id="txtEndDateBegin" format="${userDelegationWin$composer.commonDateFormat}" />
 							<space/>s/d<space/>
-							<datebox id="txtEndDateEnd" format="dd-MMM-yyyy" />
+							<datebox id="txtEndDateEnd" format="${userDelegationWin$composer.commonDateFormat}" />
 						</cell>
 					</row>
 					<row>
