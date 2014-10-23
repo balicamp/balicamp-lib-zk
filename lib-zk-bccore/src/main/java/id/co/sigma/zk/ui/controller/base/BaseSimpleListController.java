@@ -359,14 +359,5 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 			((Timer)timer).start();
 		}
 	}
-	
-	/**
-	 * Memformat data tanggal sesuai dgn format yang diinginkan
-	 * @param dt - Tanggal yg ingin diformat
-	 * @return Tanggal terformat
-	 */
-	public String formatDate(Date dt){
-		return ServerSideDateTimeParser.getInstance().format(dt, commonDateFormat);
-	}
 
 }

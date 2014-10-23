@@ -243,4 +243,9 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	public void setListenerForSpecificComponent(Component[] comps){
 	    throw new RuntimeException("Method Not Suppport");
 	}
+
+	public String getCommonDateFormat() {
+		return commonDateFormat;
+	}
+	
 }
