@@ -5,7 +5,6 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.security.domain.UserDelegation;
-import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
@@ -13,7 +12,6 @@ import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 import id.co.sigma.zk.ui.custom.component.CustomListModel;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -157,10 +155,6 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 		SimpleSortArgument [] sorts = getSorts();
 		
 		super.invokeSearch(finalFilters, sorts);
-	}
-	
-	public String formatDate(Date dt){
-		return ServerSideDateTimeParser.getInstance().format(dt, commonDateFormat);
 	}
 	
 }

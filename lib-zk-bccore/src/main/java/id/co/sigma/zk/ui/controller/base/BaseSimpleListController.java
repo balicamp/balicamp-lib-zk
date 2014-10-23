@@ -5,6 +5,7 @@ import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -356,6 +358,15 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		if(timer instanceof Timer) {
 			((Timer)timer).start();
 		}
+	}
+	
+	/**
+	 * Memformat data tanggal sesuai dgn format yang diinginkan
+	 * @param dt - Tanggal yg ingin diformat
+	 * @return Tanggal terformat
+	 */
+	public String formatDate(Date dt){
+		return ServerSideDateTimeParser.getInstance().format(dt, commonDateFormat);
 	}
 
 }
