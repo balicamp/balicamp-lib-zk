@@ -1,7 +1,9 @@
 <zk>
-	<bandbox>
-		<bandpopup>
-			<listbox id="listbox" />
-		</bandpopup>
-	</bandbox>
+	<bandpopup>
+		<listbox id="listbox" width="200px">
+		</listbox>
+		<textbox id="selectedItem" visible="false">
+			<custom-attributes org.zkoss.zk.ui.updateByClient="true"/>
+		</textbox>
+	</bandpopup>
 </zk>
