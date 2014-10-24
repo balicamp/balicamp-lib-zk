@@ -16,6 +16,7 @@ import id.co.sigma.zk.ui.annotations.ChildGridData;
 import id.co.sigma.zk.ui.annotations.JoinKey;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
+import id.co.sigma.zk.ui.custom.component.CustomListModel;
 import id.co.sigma.zk.ui.data.SelectedRole;
 import id.co.sigma.zk.ui.data.SelectedUserGroup;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
@@ -23,17 +24,21 @@ import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
+
+
 
 /**
  * 
@@ -43,6 +48,14 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(UserEditorController.class.getName());
 	
+	
+	private boolean isEditedState(){
+		return ZKEditorState.EDIT.equals(getEditorState());
+	}
+	
+	private static final SimpleSortArgument[] DEF_SORTS ={
+		new SimpleSortArgument("id", true)
+		};
 	@Qualifier(value="securityApplicationId")
 	@Autowired
 	private String applicationId;
@@ -52,11 +65,13 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	@Autowired
 	IUserService userService;
 	
-	@Wire
-	private Bandbox bdBranch;
+	ListModelList<Branch> branchModel;
+	
+	/*@Wire
+	Listbox listBoxBandBox;*/
 	
 	@Wire
-	Listbox listBoxBandBox;
+	Combobox defaultBranchCode;
 	
 	@Wire
 	Listbox listBoxCheckList;
@@ -89,9 +104,20 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 				)
 			} 			
 	)
-	
-	
 	private ZKClientSideListDataEditorContainer<UserGroupAssignment> groups = new ZKClientSideListDataEditorContainer<UserGroupAssignment>();
+	
+	private void setComboValueByRealData(Combobox cmb, String data){
+		ListModelList<Object> model = (ListModelList<Object>) cmb.getModel();
+		if(model.getSize() > 0){
+			for(Object o : model){
+				Branch lov = (Branch) o;
+				if(lov.getBranchCode().equalsIgnoreCase(data)){
+					cmb.setValue(getEditedData().getBranch().getBranchCode()+" - "+getEditedData().getBranch().getBranchName());
+					break;
+				}
+			}
+		}
+	}
 	
 	@ChildGridData(
 			entity = UserRole.class,
@@ -104,6 +130,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			} 			
 	)
 	private ZKClientSideListDataEditorContainer<UserRole> roles = new ZKClientSideListDataEditorContainer<UserRole>();
+	@Wire
+	Label branchName;
 	
 	/*@Wire
 	Textbox chipperText;*/
@@ -116,11 +144,16 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		return listBoxCheckListRole;
 	}
 	
-	private List<Branch> listBranchObject;
-
+	CustomListModel<Branch> listBranchObject;
 	
-	public List<Branch> getListBranchObject() {
-		return listBranchObject;
+	int flag=0;
+	
+	public int getFlag() {
+		return flag;
+	}
+	
+	public void setFlag(int flag) {
+		this.flag = flag;
 	}
 
 	private boolean isAddNewState;
@@ -155,7 +188,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		if(status.isChecked()){
 			data.setStatus("A");
 		}else{
-			data.setStatus("D");
+			data.setStatus("I");
 		}
 		data.setActiveFlag("A");
 		groups.eraseData(new ArrayList<UserGroupAssignment>(groups.getAllStillExistData()));
@@ -493,22 +526,20 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
-		
-		
 		super.doAfterCompose(comp);
-		listBranchObject = new ArrayList<Branch>();
-		
 		List<SelectedUserGroup> selectedUserGroup = new ArrayList<SelectedUserGroup>();
-		
-				
 		List<SelectedRole> selectedUserRole = new ArrayList<SelectedRole>();
 			
 		
-		listBranchObject = getDataBranch();
-		if(listBranchObject!=null){
-			listBoxBandBox.setModel(new ListModelList<Branch>(listBranchObject));
-		}
+		List<Branch> listBranch = new ArrayList<Branch>();
+		listBranch = getBranch();
+		branchModel = new ListModelList<>(listBranch);
+		defaultBranchCode.setModel(branchModel);
 		
+		if(isEditedState()){
+			setComboValueByRealData(defaultBranchCode, editedData.getDefaultBranchCode());
+		}
+			
 		if(editedData.getId()!=null){
 			selectedUserRole = listSelectedUserRole(editedData.getId());
 			selectedUserGroup = listSelectedUserGroup(editedData.getId());
@@ -573,7 +604,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	}
 	
 	
-	private List<Branch> getDataBranch(){
+	/*private List<Branch> getDataBranch(){
 		List<Branch> dataListBranch = new ArrayList<Branch>();
 		SimpleSortArgument[] sortArgs = {
 			new SimpleSortArgument("branchCode", true)
@@ -587,6 +618,11 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			logger.error("Gagal membaca data sec_branch!, Error: " + e.getMessage(), e);
 			return null;
 		}
+		
+	}*/
+	
+	protected List<Branch> getBranch(){
+		return generalPurposeDao.list(Branch.class, DEF_SORTS);
 	}
 	
 	private List<SelectedUserGroup> getUserGroupList(){
@@ -707,5 +743,14 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 			}
 		}
 		return listDataTampil;
+	}
+	
+	@Override
+	protected void runAditionalTaskOnDataRevieved(User editedData,
+			ZKEditorState editorState, Map<?, ?> rawDataParameter) {
+		if(editorState.equals(ZKEditorState.EDIT)){
+			this.flag=1;
+		}
+		super.runAditionalTaskOnDataRevieved(editedData, editorState, rawDataParameter);
 	}
 }

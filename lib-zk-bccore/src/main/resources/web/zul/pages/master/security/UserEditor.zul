@@ -71,7 +71,7 @@
 					${labels.field.branch}
 				</cell>
 				<cell>
-				<bandbox id="defaultBranchCode" value="${userEditor$composer.editedData.defaultBranchCode}">
+				<!-- <bandbox id="defaultBranchCode" value="${userEditor$composer.editedData.defaultBranchCode}">
 		        	<bandpopup>
 		            	<vbox>
 		                <hbox>
@@ -94,7 +94,12 @@
 				            </listbox>
 				        </vbox>
 				    </bandpopup>
-				</bandbox>
+				</bandbox> -->
+					<combobox id="defaultBranchCode" constraint="no empty : ${labels.field.cabang} Harus diisi !!!" readonly="true">
+						<template name="model">
+							<comboitem value="${each.id}" label="${each.branchCode} - ${each.branchName}" />
+						</template>
+					</combobox>
 				</cell>
                 <cell><space hflex="1"/></cell>
                 <cell>
