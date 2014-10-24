@@ -1,20 +1,11 @@
 package id.co.sigma.zk.ui.controller.base;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
-import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
-import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
-import id.co.sigma.common.data.query.SimpleSortArgument;
-import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
-import id.co.sigma.common.server.service.IGeneralPurposeService;
-import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
-import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -28,18 +19,14 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Timer;
-import org.zkoss.zul.impl.InputElement;
 
 /**
  *  
  * 
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
-public abstract class BaseSimpleListController<DATA extends Serializable> extends BaseSimpleController{
+public abstract class BaseSimpleListController<DATA extends Serializable> extends BaseHaveListboxController<DATA>{
 	
 	
 	
@@ -56,16 +43,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	
 	
 	 
-	@Autowired
-	private IGeneralPurposeService generalPurposeService ;  
 	
-	
-	SimpleQueryDrivenListModel<DATA> dataModel ;
-	
-	
-	
-	@SuppressWarnings("unused")
-	private DATA selectedItem ; 
 	
 	
 	@Autowired
@@ -73,44 +51,10 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	protected PlatformTransactionManager  transactionManager ; 
 	
 	
-	/**
-	 * class yang di render controller ini
-	 */
-	protected abstract Class<? extends DATA> getHandledClass() ;
 	
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-	}
 	
-	public void invokeSearch () {
-		final SimpleQueryFilter[] filters = generateFilters() ;  
-		SimpleSortArgument [] sorts = getSorts(); 
-		invokeSearch(filters, sorts);
-	}
 	
-	@SuppressWarnings({ "unchecked", "serial" })
-	public void invokeSearch (final SimpleQueryFilter[] filters ,final   SimpleSortArgument[] sorts) {
-		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
-		dataModel  = new SimpleQueryDrivenListModel<DATA>() {
-			@Override
-			public Class<? extends DATA> getHandledClass() {
-				return dt;
-			}
-			@Override
-			protected SimpleQueryFilter[] getFilters() {
-				return filters;
-			}
-			@Override
-			protected SimpleSortArgument[] getSorts() {
-				return sorts;
-			}
-		};
-		Listbox lb =getListbox(); 
-		dataModel.initiate(lb.getPageSize());
-		lb.setModel(dataModel);
-		
-	}
+	
 	
 	protected Map<Class<?>, SimpleQueryFilter[]> getReferenceEntities(Object parentId, String... errMessage) {
 		return null;
@@ -222,107 +166,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 	}
 	
 	
-	/**
-	 * generate filters. ini di lakukan dengan reflection. override ini kalau anda memerlukan query yang berbeda
-	 */
-	protected SimpleQueryFilter[] generateFilters () {
-		Field[] flds =  this.getClass().getDeclaredFields();
-		ArrayList<SimpleQueryFilter> flts = new ArrayList<SimpleQueryFilter>()  ; 
-		for ( Field scn : flds){
-			if ( !scn.isAnnotationPresent(QueryParameterEntry.class))
-				continue ; 
-			try {
-				SimpleQueryFilter f = generateFilter(scn);
-				if ( f== null)
-					continue ;
-				flts.add(f);
-			} catch (Exception e) {
-				logger.error("gagal membaca parameter query . error : " + e.getMessage() , e);
-				continue; 
-			}
-			 
-		}
-		if ( flts.isEmpty())
-			return null ; 
-		SimpleQueryFilter[] retval = new SimpleQueryFilter[flts.size()]; 
-		flts.toArray(retval);
-		return retval ;
-	}
 	
 	
 	
-	protected SimpleQueryFilter generateFilter(Field annotatedField ) throws Exception{
-		QueryParameterEntry ann =  annotatedField.getAnnotation(QueryParameterEntry.class);
-		SimpleQueryFilterOperator opr =  ann.queryOperator();
-		SimpleQueryFilter flt =new SimpleQueryFilter(); 
-		flt.setField(ann.filteredField());
-		annotatedField.setAccessible(true);
-		Object ctrl =  annotatedField.get(this);
-		
-		
-		InputElement elem = (InputElement) ctrl; 
-		Object raw = null;
-		if(elem instanceof Combobox){
-			int idx = ((Combobox)elem).getSelectedIndex();
-			Object cdata = null;
-			if(idx >= 0) {
-				cdata = ((Combobox)elem).getModel().getElementAt(idx);
-			}
-			if(cdata instanceof CommonLOV) {
-				raw = ((CommonLOV)cdata).getDataValue();
-			} else {
-				Comboitem citem = ((Combobox)elem).getSelectedItem();
-				if(citem != null) {
-					raw = citem.getValue();
-				}
-			}
-		}else{
-			raw = elem.getRawValue();
-		}
-		 
-		if (raw instanceof String) {
-			String rawString = (String) raw ; 
-			if (  ( rawString == null || rawString.isEmpty()) && ann.skipFilterIfEmpty() ){
-				return null ; 
-			}
-		}
-		else   {
-			if ( raw == null && ann.skipFilterIfEmpty())
-				return null ; 
-		}
-		//FIXME: untuk yang memakai in belum siap
-		flt.assignFilterWorker(raw);
-		
-		flt.setOperator(opr);
-		return flt; 
-	}
-	
-	protected void resetFilter() {
-		Field[] flds =  this.getClass().getDeclaredFields();
-		for ( Field scn : flds){
-			if ( !scn.isAnnotationPresent(QueryParameterEntry.class))
-				continue ; 
-			try {
-				scn.setAccessible(true);
-				Object ctrl =  scn.get(this);
-				if(ctrl instanceof InputElement) {
-					((InputElement)ctrl).setRawValue(null);
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage() , e);
-				continue; 
-			}
-			 
-		}
-	}
-	
-	public final void searchData() {
-		invokeSearch();
-	}
-	
-	public final  void resetSearchFilter() {
-		resetFilter();
-	}
 	
 	@SuppressWarnings("unchecked")
 	public DATA addNewData() {
@@ -335,14 +181,9 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		}
 	}
 	
-	/**
-	 * sort argument
-	 */
-	public SimpleSortArgument[] getSorts() {
-		return null ; 
-	}
+	
 
-	public abstract Listbox getListbox()  ; 
+	
 	
 	@SuppressWarnings("rawtypes")
 	public void deleteData(DATA data) {

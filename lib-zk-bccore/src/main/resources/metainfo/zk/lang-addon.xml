@@ -21,6 +21,12 @@
         <component-class>id.co.sigma.zk.ui.custom.component.ActionButton</component-class>
     </component>	
 
+
+	<component>
+		<component-name>SingleLookupWindow</component-name>
+		<component-class>id.co.sigma.zk.ui.controller.base.window.SingleLookupWindow</component-class>
+		<extends>window</extends>
+	</component>
     <component>
         <component-name>actionColumns</component-name>
         <extends>columns</extends>

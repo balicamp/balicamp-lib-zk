@@ -52,6 +52,15 @@ public final class ZKCoreLibConstant  {
 	 * reference dari object dalam menu item
 	 */
 	public static final String MENUITEM_OBJECT_REF_KEY="menObjectRef";
+	
+	
+	
+	
+	/**
+	 * key untuk menaruh key pada saat item di pilih.
+	 * untuk lookup dialog
+	 */
+	public static final String AFTER_SELECTION_HANDLER ="onLookupDoneHandler"; 
 
 }
 

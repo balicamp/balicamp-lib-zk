@@ -3,6 +3,7 @@ package id.co.sigma.zk.ui.controller;
 import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.spring.security.SecurityUtil;
+import id.co.sigma.zk.ui.SingleValueLookupReciever;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.controller.base.IEditorPanel;
 import id.co.sigma.zk.ui.custom.component.ListWindow;
@@ -205,6 +206,21 @@ public final class EditorManager {
 		this.editorContainerWindow.setVisible(true); 
 		this.includePanel.setVisible(false); 
 		this.editorContainerWindow.appendChild((Component) editor); 
+	}
+	
+	
+	
+	
+	/**
+	 * menapilkan dialog dengan single result
+	 */
+	public <DATA> void showSingleResultLookup (String zulPath , SingleValueLookupReciever<DATA> dataSelectionHandler ) {
+		Map<String, Object> parameter = new HashMap<String, Object>() ; 
+		parameter.put(ZKCoreLibConstant.AFTER_SELECTION_HANDLER, dataSelectionHandler); 
+		final Window w = (Window) Executions.createComponents(zulPath, null, parameter);
+		w.setClosable(true);
+		w.setMaximizable(true);
+		w.doModal(); 
 	}
 	
 	/**
