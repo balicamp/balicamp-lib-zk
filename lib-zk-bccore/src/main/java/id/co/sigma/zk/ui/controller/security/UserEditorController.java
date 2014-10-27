@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional.TxType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.zkoss.zk.ui.Component;
@@ -87,6 +89,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 	
 	/*@Wire
 	Checkbox superAdmin;*/
+	@Wire
+	Textbox chipperText;
 	
 	@Wire
 	Checkbox status;
@@ -538,6 +542,11 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User>{
 		
 		if(isEditedState()){
 			setComboValueByRealData(defaultBranchCode, editedData.getDefaultBranchCode());
+			chipperText.setReadonly(true);
+			confirmChipperText.setReadonly(true);
+			chipperText.setValue(editedData.getChipperText());
+			confirmChipperText.setValue(editedData.getChipperText());
+			
 		}
 			
 		if(editedData.getId()!=null){
