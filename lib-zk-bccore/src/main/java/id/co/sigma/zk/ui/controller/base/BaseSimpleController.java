@@ -7,6 +7,7 @@ import id.co.sigma.common.data.lov.CommonLOVHeader;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.common.server.lov.ILOVProviderService;
+import id.co.sigma.common.server.service.system.ICommonSystemService;
 import id.co.sigma.common.util.json.SharedServerClientLogicManager;
 import id.co.sigma.zk.service.IZKCommonService;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
@@ -52,6 +53,9 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	
 	@Autowired
 	protected ILOVProviderService lovProviderService;
+	
+	@Autowired
+	protected ICommonSystemService commonSystemService;
 	
 	@Autowired
 	@Qualifier(value="zkCommonServiceBean")
