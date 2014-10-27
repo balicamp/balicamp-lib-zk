@@ -136,6 +136,8 @@ penambahan component form dengan tag binding
         <component-class>id.co.sigma.zk.ui.custom.component.SpringSecurityLogin</component-class>
     </component>
 
+	<javascript src="~./zul/js/pouchdb-3.0.6.min.js" charset="UTF-8"/>
+	<javascript src="~./zul/js/bc-core-command.js" charset="UTF-8"/>
 
 </language-addon>
 

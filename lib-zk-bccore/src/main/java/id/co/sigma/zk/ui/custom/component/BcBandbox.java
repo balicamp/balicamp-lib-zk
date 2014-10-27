@@ -166,7 +166,7 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 			}
 		});
 		
-		this.setWidgetListener("onFocus", "this.select();");
+//		this.setWidgetListener("onFocus", "this.select();");
 		
 		//client event listener
 		this.setWidgetListener("onChanging", 
@@ -191,6 +191,8 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 		this.listbox.setWidgetListener("onClick", 
 				"putSelectedValue(this);"
 		);
+		
+		this.listbox.setWidgetListener("onSelect", "putSelectedValue(this, true);");
 		
 	}
 

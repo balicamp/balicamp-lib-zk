@@ -21,8 +21,19 @@ zAu.cmd0.loadBandboxData=function(data) {
 	
 	db.changes().on('complete',function(resp){
 		console.log(resp);
+		setTimeout("afterInsert('"+ dbName +"', '"+ bId +"','" + filter + "')", 10);
 	});
 	
+};
+
+zAu.cmd0.loadComboboxData=function(data) {
+	
+};
+
+function afterInsert(dbName, dbid, filter) {
+	console.log(dbName + ":" + dbid + ":" + filter);
+	var db = new PouchDB(dbName);
+	var listbox = bc[dbid].firstChild.firstChild;
 	db.query(
 		function(doc, emit) {
 			var lwVal = doc.value.toLowerCase();
@@ -44,17 +55,13 @@ zAu.cmd0.loadBandboxData=function(data) {
 					}
 				}
 				listbox.setWidth(width + 'px');
-				bc[bId].open();
+				bc[dbid].open();
 			} else {
-				bc[bId].close();					
+				bc[dbid].close();					
 			}
 		}
 	);
-};
-
-zAu.cmd0.loadComboboxData=function(data) {
-	
-};
+}
 
 function queryData(dbName, filter, bandbox, event) {
 	var db = new PouchDB(dbName);
@@ -91,6 +98,8 @@ function queryData(dbName, filter, bandbox, event) {
 					zAu.send(new zk.Event(bandbox,"onChanging",{value: event.value},{toServer:true}));
 					console.log("fire: " + event.value);
 				}
+			} else {
+				bandbox.open();
 			}
 		}
 	);
@@ -98,24 +107,26 @@ function queryData(dbName, filter, bandbox, event) {
 }
 
 function listFocus(event, bandbox) {
-	if(bandbox.isOpen()) {
-		event.stop({propagation:true, dom:true});
+	event.stop({propagation:true, dom:true});
+	if(bandbox.isOpen()) {		
+		var listbox = bandbox.firstChild.firstChild.firstChild;
+		listbox.focus(50);
+	} else {
 		var listbox = bandbox.firstChild.firstChild;
-		listbox.focus();
-		var selIdx = listbox.getSelectedIndex();
-		if(selIdx >= 0) {
-			listbox.setSelectedIndex(selIdx);
-		} else {
-			listbox.setSelectedIndex(0);
+		if(listbox.nChildren > 0) {
+			bandbox.open();
+			listbox.firstChild.focus(50);
 		}
 	}
 }
 
-function putSelectedValue(listbox) {
+function putSelectedValue(listbox, isOnSelect) {
 	var bDom = listbox.parent.parent;
 	var holdCom = listbox.nextSibling;
 	holdCom.setValue(listbox.getSelectedItem().getValue());
 	holdCom.smartUpdate('value',listbox.getSelectedItem().getValue());
 	bDom.setValue(listbox.getSelectedItem().getLabel());
-	bDom.close();
+	if((isOnSelect == undefined) || (isOnSelect == false)) {
+		bDom.close();
+	}
 }
