@@ -18,7 +18,7 @@
 			<row>
 				<cell>${labels.field.username}</cell>
 				<cell>
-					<textbox id="userCode"			
+					<textbox tabindex="1" id="userCode"
 					value="${userEditor$composer.editedData.userCode}" constraint="no empty:Nama Pengguna tidak boleh kosong"/>
 				</cell>
 				<cell><space hflex="1"/></cell>
@@ -26,7 +26,7 @@
                 	${labels.field.password}
                 </cell>
                 <cell>
-                	<textbox id="chipperText" width="150px" type="password" c:onChanging="meterUpdate(event)" />
+                	<textbox tabindex="5" id="chipperText" width="150px" type="password" c:onChanging="meterUpdate(event)" />
                 </cell>
 			</row>
 			 <row>
@@ -34,7 +34,7 @@
 					${labels.field.realname}
 				</cell>
 				<cell>
-				<textbox id="realName"
+				<textbox tabindex="2" id="realName"
 					value="${userEditor$composer.editedData.realName}" constraint="no empty:Nama Lengkap tidak boleh kosong"></textbox>
 				</cell>
 				<cell><space hflex="1"/></cell>
@@ -55,7 +55,7 @@
 					${labels.field.email}
 				</cell>
 				<cell>
-					<textbox id="email" width="300px"
+					<textbox tabindex="3" id="email" width="300px"
 					value="${userEditor$composer.editedData.email}" constraint="/.+@.+\.[a-z]+/: Please enter an e-mail address"></textbox>
 				</cell>
                 <cell><space hflex="1"/></cell>
@@ -63,7 +63,7 @@
                 	${labels.field.passwordconfirm}
                 </cell>
                 <cell>
-                	<textbox id="confirmChipperText" width="150px" type="password" />
+                	<textbox tabindex="6" id="confirmChipperText" width="150px" type="password" />
                 </cell>
             </row>
             <row>
@@ -71,33 +71,9 @@
 					${labels.field.branch}
 				</cell>
 				<cell>
-				<!-- <bandbox id="defaultBranchCode" value="${userEditor$composer.editedData.defaultBranchCode}">
-		        	<bandpopup>
-		            	<vbox>
-		                <hbox>
-		                    ${labels.action.button.search}
-		                    <textbox />
-		                </hbox>
-		                <listbox id="listBoxBandBox" width="400px"
-		                    onSelect="defaultBranchCode.value=self.selectedItem.label;defaultBranchCode.close();">
-				                <listhead>
-				                    <listheader label="Name" />
-				                    <listheader label="Description" />
-				                </listhead>
-				                <template name="model">
-				               		<listitem>
-				               			<listcell label="${each.branchCode}"/>
-				               			<listcell label="${each.branchName}"/>
-				               		</listitem>
-				                	
-				                </template>
-				            </listbox>
-				        </vbox>
-				    </bandpopup>
-				</bandbox> -->
-					<combobox id="defaultBranchCode" constraint="no empty : ${labels.field.cabang} Harus diisi !!!" readonly="true">
+					<combobox tabindex="4" id="defaultBranchCode" constraint="no empty : ${labels.field.cabang} Harus diisi !!!" readonly="true">
 						<template name="model">
-							<comboitem value="${each.id}" label="${each.branchCode} - ${each.branchName}" />
+							<comboitem value="${each.branchCode}" label="${each.branchCode} - ${each.branchName}" />
 						</template>
 					</combobox>
 				</cell>
@@ -106,14 +82,9 @@
 					${labels.field.aktif}
 				</cell>
 				<cell>
-					<checkbox id="status"></checkbox>
+					<checkbox tabindex="7" id="status"></checkbox>
 				</cell>
             </row>
-			<!-- <row>
-				${labels.field.superadmin}
-				<checkbox id="superAdmin"></checkbox>
-			</row> -->
-					
 		</rows>
 	</grid>
 	<grid>
@@ -123,7 +94,7 @@
 					<panel border="normal" style="border: 1px solid rgb(202, 211, 201);" hflex="1" vflex="1">
 						<caption label="${labels.field.usergroup}"/>
 						<panelchildren>
-			                <listbox id="listBoxCheckList">
+			                <listbox tabindex="8" id="listBoxCheckList">
 			                    <template name="model">
 			                        <listitem selected="${each.selected}" value="${each}">
 			                        	<listcell label="${each.groupCode} - ${each.groupName}" />
@@ -138,7 +109,7 @@
                	<panel border="normal" style="border: 1px solid rgb(202, 211, 201);" hflex="1" vflex="1">
 					<caption label="${labels.field.userrole}"/>
 					<panelchildren>
-		                <listbox id="listBoxCheckListRole">
+		                <listbox tabindex="9" id="listBoxCheckListRole">
 			                    <template name="model">
 			                        <listitem selected="${each.selected}" value="${each}">
 			                        	<listcell label="${each.roleCode} - ${each.roleDesc}" />
