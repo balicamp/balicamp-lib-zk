@@ -8,10 +8,10 @@
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
 	<grid vflex="1">	
 		<columns>
-				<column width="150px" align="right"/>
+				<column width="150px" align="left"/>
 				<column  />
 				<column width="50px"/>
-				<column width="150px" align="right"/>
+				<column width="150px" align="left"/>
 				<column  />
 		</columns>
 		<rows>

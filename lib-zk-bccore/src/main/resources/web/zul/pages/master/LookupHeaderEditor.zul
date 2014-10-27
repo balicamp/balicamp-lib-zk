@@ -7,10 +7,10 @@
 	
 	<grid>
 		<columns>
-			<column width="150px" align="right"/>
+			<column width="150px" align="left"/>
 			<column />
 			<column width="40px"/>
-			<column width="150px" align="right"/>
+			<column width="150px" align="left"/>
 			<column />
 		</columns>
 		<rows>

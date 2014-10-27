@@ -5,7 +5,7 @@
 	editorPage="~./zul/pages/master/SystemParameterFormEditor.zul">
      <grid >
 		<columns>
-			<column width="150px" align="right"/>
+			<column width="150px" align="left"/>
 			<column />
 		</columns>
 		<rows>
