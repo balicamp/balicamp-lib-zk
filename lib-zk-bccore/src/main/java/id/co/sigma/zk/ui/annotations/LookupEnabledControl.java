@@ -29,5 +29,10 @@ public @interface LookupEnabledControl {
 	/**
 	 * render class. yang menggerate data untuk key vs value
 	 */
-	Class<? extends CustomDataFormatter<CommonLOV>> lovDataRenderer () default DefaultLOVRenderer.class ; 
+	Class<? extends CustomDataFormatter<CommonLOV>> lovDataRenderer () default DefaultLOVRenderer.class ;
+	
+	/**
+	 * 
+	 */
+	String separator() default " - ";
 }
