@@ -37,37 +37,34 @@ import org.zkoss.zul.TreeNode;
  * 
  * @author <a href="mailto:raka.sanjaya@sigma.co.id">Raka Sanjaya</a>
  */
-public class ApplicationMenuListController extends BaseSimpleTreeController<ApplicationMenu> implements IReloadablePanel{
+public class ApplicationMenuListController extends
+		BaseSimpleTreeController<ApplicationMenu> implements IReloadablePanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4321464574596835605L;
 
-
-
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(ApplicationMenuListController.class.getName());
-	
-	private static final SimpleSortArgument[] DEF_SORTS ={
-		new SimpleSortArgument("id", true)
-		}; 
-			
-	
+
+	private static final SimpleSortArgument[] DEF_SORTS = { new SimpleSortArgument(
+			"id", true) };
+
 	private List<ApplicationMenu> listApplicationMenus;
-	
+
 	private Map<Long, List<TreeNode<ApplicationMenu>>> mapsOfNodeCollection;
-	
+
 	@Autowired
-	private IGeneralPurposeService generalPurposeService ; 
-	
+	private IGeneralPurposeService generalPurposeService;
+
 	public List<ApplicationMenu> getListApplicationMenus() {
 		return listApplicationMenus;
 	}
 
-	public void setListApplicationMenus(List<ApplicationMenu> listApplicationMenus) {
+	public void setListApplicationMenus(
+			List<ApplicationMenu> listApplicationMenus) {
 		this.listApplicationMenus = listApplicationMenus;
 	}
-	
 
 	public Map<Long, List<TreeNode<ApplicationMenu>>> getMapsOfNodeCollection() {
 		return mapsOfNodeCollection;
@@ -78,124 +75,127 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 		this.mapsOfNodeCollection = mapsOfNodeCollection;
 	}
 
-
-
-
 	@Wire
 	Tree tree;
-	
-	
+
 	@Autowired
-	@Qualifier(value="securityApplicationId")
-	String applicationId ; 
-	
-	private boolean flagDelete=false;
-	
+	@Qualifier(value = "securityApplicationId")
+	String applicationId;
+
+	private boolean flagDelete = false;
 
 	@Override
 	public Tree getTree() {
 		return tree;
 	}
 
-
 	@Override
 	protected Class<? extends ApplicationMenu> getHandledClass() {
 		return ApplicationMenu.class;
 	}
 
-	
 	public Class<? extends SingleKeyEntityData<Long>> getEntityClass() {
 		return ApplicationMenu.class;
 	}
 
-	
-	public TreeModel<TreeNode<ApplicationMenu>> getTreeModel(){
-	  return constructTree(getMenus());
+	public TreeModel<TreeNode<ApplicationMenu>> getTreeModel() {
+		return constructTree(getMenus());
 	}
-	
+
 	@Override
-	public TreeModel<TreeNode<ApplicationMenu>> constructTree(List<ApplicationMenu> data){
-		
+	public TreeModel<TreeNode<ApplicationMenu>> constructTree(
+			List<ApplicationMenu> data) {
+
 		Map<Long, List<TreeNode<ApplicationMenu>>> mapsOfChildCol = new HashMap<>();
 		MenuTreeNodeCollection<ApplicationMenu> col = new MenuTreeNodeCollection<>();
 		List<MenuTreeNode<ApplicationMenu>> listOfTreeMenu = new ArrayList<>();
-		
-		for(ApplicationMenu menu : data){
-			MenuTreeNode<ApplicationMenu> treeMenu=null;
-			if(menuHasChild(menu.getId(), data)){
-				treeMenu = new MenuTreeNode<ApplicationMenu>(menu, new MenuTreeNodeCollection<ApplicationMenu>());
+
+		for (ApplicationMenu menu : data) {
+			MenuTreeNode<ApplicationMenu> treeMenu = null;
+			if (menuHasChild(menu.getId(), data)) {
+				treeMenu = new MenuTreeNode<ApplicationMenu>(menu,
+						new MenuTreeNodeCollection<ApplicationMenu>());
 				mapsOfChildCol.put(menu.getId(), treeMenu.getChildren());
-			}else{
+			} else {
 				treeMenu = new MenuTreeNode<ApplicationMenu>(menu);
 			}
 			listOfTreeMenu.add(treeMenu);
 		}
-		
-		for(MenuTreeNode<ApplicationMenu> tree : listOfTreeMenu){
-			if((tree.getData().getPageId()==null && tree.getData().getFunctionIdParent()==null) ||
-					(tree.getData().getFunctionIdParent()==null && tree.getData().getPageId()!=null)){
+
+		for (MenuTreeNode<ApplicationMenu> tree : listOfTreeMenu) {
+			if ((tree.getData().getPageId() == null && tree.getData()
+					.getFunctionIdParent() == null)
+					|| (tree.getData().getFunctionIdParent() == null && tree
+							.getData().getPageId() != null)) {
 				col.add(tree);
-			}else if(tree.getData().getFunctionIdParent()!=null && tree.getData().getPageId()==null){
-				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
-			} else{
-				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
+			} else if (tree.getData().getFunctionIdParent() != null
+					&& tree.getData().getPageId() == null) {
+				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(
+						tree);
+			} else {
+				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(
+						tree);
 			}
 		}
 		setMapsOfNodeCollection(mapsOfChildCol);
-		return new DefaultTreeModel<ApplicationMenu>(new MenuTreeNode<ApplicationMenu>(null, col));
-		
+		return new DefaultTreeModel<ApplicationMenu>(
+				new MenuTreeNode<ApplicationMenu>(null, col));
+
 	}
-	
 
 	@SuppressWarnings("unchecked")
-	protected List<ApplicationMenu> getMenus () {
+	protected List<ApplicationMenu> getMenus() {
 		Long appId = new Long(applicationId);
-		SimpleQueryFilter[] flt = new SimpleQueryFilter[]{
-				new SimpleQueryFilter("applicationId" , SimpleQueryFilterOperator.equal , appId)
-		};
+		SimpleQueryFilter[] flt = new SimpleQueryFilter[] { new SimpleQueryFilter(
+				"applicationId", SimpleQueryFilterOperator.equal, appId) };
 		try {
-			List l = generalPurposeDao.list( ApplicationMenu.class.getName() +" A left outer join fetch A.pageDefinition", "A", flt, DEF_SORTS,10000,0);
+			List l = generalPurposeDao.list(ApplicationMenu.class.getName()
+					+ " A left outer join fetch A.pageDefinition", "A", flt,
+					DEF_SORTS, 10000, 0);
 			setListApplicationMenus(l);
-			return (List<ApplicationMenu>)l;
+			return (List<ApplicationMenu>) l;
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("gagal membaca menu untuk app id : " + applicationId + " , error : " + e.getMessage() , e);
-			return null ;
+			logger.error("gagal membaca menu untuk app id : " + applicationId
+					+ " , error : " + e.getMessage(), e);
+			return null;
 		}
 	}
-	
-	
+
 	/**
 	 * check if menu has child
+	 * 
 	 * @param menuId
 	 * @param listOfMenu
 	 * @return
 	 */
-	private boolean menuHasChild(Long menuId, List<ApplicationMenu> listOfMenu){
-		for(ApplicationMenu menu : listOfMenu){
-			if(menu.getFunctionIdParent()!=null && menu.getFunctionIdParent()==menuId){
+	private boolean menuHasChild(Long menuId, List<ApplicationMenu> listOfMenu) {
+		for (ApplicationMenu menu : listOfMenu) {
+			if (menu.getFunctionIdParent() != null
+					&& menu.getFunctionIdParent() == menuId) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
 
 	@Override
 	protected String getCustomQuery() {
-		return getHandledClass().getName()+" A left outer join fetch A.pageDefinition";
+		return getHandledClass().getName()
+				+ " A left outer join fetch A.pageDefinition";
 	}
 
 	@Override
 	protected String getInitial() {
 		return "A";
 	}
-	
+
 	@Listen("onClick=#btnAdd")
-	public void onClickAdd(){
+	public void onClickAdd() {
 		ApplicationMenu appMenu = new ApplicationMenu();
-		EditorManager.getInstance().addNewData("~./zul/pages/master/security/MenuEditor.zul", appMenu, this);
-		
+		EditorManager.getInstance().addNewData(
+				"~./zul/pages/master/security/MenuEditor.zul", appMenu, this);
+
 	}
 
 	@Override
@@ -203,17 +203,15 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 		invokeSearch();
 	}
 
-
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 		tree.setModel(constructTree(getMenus()));
 	}
 
-
 	@Override
 	public CustomQueryDrivenTreeModel<ApplicationMenu> generateTreeModel(
-			final SimpleQueryFilter[] filters,final  SimpleSortArgument[] sorts) {
+			final SimpleQueryFilter[] filters, final SimpleSortArgument[] sorts) {
 		final String customQuery = getCustomQuery();
 		final String initial = getInitial();
 		return new CustomQueryDrivenTreeModel<ApplicationMenu>() {
@@ -221,172 +219,189 @@ public class ApplicationMenuListController extends BaseSimpleTreeController<Appl
 			public Class<ApplicationMenu> getHandledClass() {
 				return ApplicationMenu.class;
 			}
+
 			@Override
 			protected SimpleQueryFilter[] getFilters() {
 				return filters;
 			}
+
 			@Override
 			protected SimpleSortArgument[] getSorts() {
 				return sorts;
 			}
+
 			@Override
 			protected String getCustomQuery() {
 				return customQuery;
 			}
+
 			@Override
 			protected String getInitial() {
 				return initial;
 			}
+
 			@Override
 			public List<ApplicationMenu> selectFromDB(int pageSize,
 					int firstRowPosition) {
-				List<ApplicationMenu> swap  =  super.selectFromDB(pageSize, firstRowPosition);
+				List<ApplicationMenu> swap = super.selectFromDB(pageSize,
+						firstRowPosition);
 				setListApplicationMenus(swap);
-				if ( swap != null && !swap.isEmpty()){
-					Map<Long , ArrayList<ApplicationMenu>> idxMenus = new HashMap<>();
-					for (ApplicationMenu scn : swap ){
-						if(scn.getPageId()!=null){
-							if ( !idxMenus.containsKey(scn.getPageId())){
-								idxMenus.put(scn.getPageId() , new ArrayList<ApplicationMenu>());
+				if (swap != null && !swap.isEmpty()) {
+					Map<Long, ArrayList<ApplicationMenu>> idxMenus = new HashMap<>();
+					for (ApplicationMenu scn : swap) {
+						if (scn.getPageId() != null) {
+							if (!idxMenus.containsKey(scn.getPageId())) {
+								idxMenus.put(scn.getPageId(),
+										new ArrayList<ApplicationMenu>());
 							}
 							idxMenus.get(scn.getPageId()).add(scn);
 						}
 					}
-					
-					Number[] n = new Number[idxMenus.size()]; 
-					int i = 0  ; 
-					for ( Long scn :idxMenus.keySet() ){
-						n[i] = scn ; 
-						i++ ; 
+
+					Number[] n = new Number[idxMenus.size()];
+					int i = 0;
+					for (Long scn : idxMenus.keySet()) {
+						n[i] = scn;
+						i++;
 					}
-					SimpleQueryFilter s = new SimpleQueryFilter(); 
-					
-					
+					SimpleQueryFilter s = new SimpleQueryFilter();
+
 					s.setField("id");
-					s.setFilter(n) ; 
+					s.setFilter(n);
 					s.setOperator(SimpleQueryFilterOperator.fieldIn);
-					SimpleQueryFilter[] arr = new SimpleQueryFilter[]{
-							s
-					};
-					try{
-						List<PageDefinition> pgs =  generalPurposeDao.list(PageDefinition.class, arr, null);
-						for  ( PageDefinition scn : pgs ) {
-							List<ApplicationMenu > mnus =  idxMenus.get(scn.getId());
-							for(ApplicationMenu mnu : mnus ){
+					SimpleQueryFilter[] arr = new SimpleQueryFilter[] { s };
+					try {
+						List<PageDefinition> pgs = generalPurposeDao.list(
+								PageDefinition.class, arr, null);
+						for (PageDefinition scn : pgs) {
+							List<ApplicationMenu> mnus = idxMenus.get(scn
+									.getId());
+							for (ApplicationMenu mnu : mnus) {
 								mnu.setPageDefinition(scn);
 							}
 						}
-					}catch ( Exception e){
-						logger.error("Application Menu List, baca pagedefinition,"+e.getMessage(),e);
+					} catch (Exception e) {
+						logger.error(
+								"Application Menu List, baca pagedefinition,"
+										+ e.getMessage(), e);
 					}
-					
+
 				}
 				return swap;
 			}
-			
-			
+
 		};
 	}
-
 
 	/**
 	 * get all child id, include parent id
 	 */
-	protected List<Serializable> getIdChild(Long parentId, List<ApplicationMenu> menus){
+	protected List<Serializable> getIdChild(Long parentId,
+			List<ApplicationMenu> menus) {
 		List<Serializable> listId = new ArrayList<>();
 		listId.add(parentId);
-		if(menus!=null && !menus.isEmpty()){
-			for(ApplicationMenu menu : menus){
-				if(menu.getFunctionIdParent()==parentId){
+		if (menus != null && !menus.isEmpty()) {
+			for (ApplicationMenu menu : menus) {
+				if (menu.getFunctionIdParent() == parentId) {
 					listId.add(menu.getId());
 				}
 			}
 		}
 		return listId;
 	}
-	
+
 	/**
 	 * get all menu assignment
+	 * 
 	 * @param keys
 	 * @return
 	 */
-	protected List<ApplicationMenuAssignment> getListMenuAssignment(List<Serializable> keys){
+	protected List<ApplicationMenuAssignment> getListMenuAssignment(
+			List<Serializable> keys) {
 		try {
-			return generalPurposeDao.loadDataByKeys(ApplicationMenuAssignment.class, "functionId", keys);
+			return generalPurposeDao.loadDataByKeys(
+					ApplicationMenuAssignment.class, "functionId", keys);
 		} catch (Exception e) {
-			logger.error("Gagal get data ApplicationMenuAssignment,"+e.getMessage(),e);
+			logger.error(
+					"Gagal get data ApplicationMenuAssignment,"
+							+ e.getMessage(), e);
 			return null;
 		}
 	}
-	
+
 	@Override
 	public void deleteData(ApplicationMenu data) {
 		List<Serializable> listId = null;
-		if(menuHasChild(data.getId(), getListApplicationMenus())){
+		if (menuHasChild(data.getId(), getListApplicationMenus())) {
 			Long parentId = data.getId();
-			listId=getIdChild(parentId, getListApplicationMenus());
+			listId = getIdChild(parentId, getListApplicationMenus());
 			List<ApplicationMenuAssignment> menuAss = getListMenuAssignment(listId);
-			if(menuAss!=null && !menuAss.isEmpty()){
-				Messagebox.show(Labels.getLabel("msg.menu.delete.failed"), Labels.getLabel("title.msgbox.information"), Messagebox.OK, Messagebox.INFORMATION);
-				flagDelete=false;
+			if (menuAss != null && !menuAss.isEmpty()) {
+				Messagebox.show(Labels.getLabel("msg.menu.delete.failed"),
+						Labels.getLabel("title.msgbox.information"),
+						Messagebox.OK, Messagebox.INFORMATION);
+				flagDelete = false;
 				return;
 			}
-			generalPurposeService.delete(ApplicationMenu.class, parentId, "functionIdParent");
+			generalPurposeService.delete(ApplicationMenu.class, parentId,
+					"functionIdParent");
 			try {
-				ApplicationMenu menu = generalPurposeDao.get(ApplicationMenu.class, data.getId());
+				ApplicationMenu menu = generalPurposeDao.get(
+						ApplicationMenu.class, data.getId());
 				generalPurposeService.delete(menu);
-				flagDelete=true;
+				flagDelete = true;
 			} catch (Exception e) {
-				logger.error("Gagal hapus data,"+e.getMessage(),e);
-				flagDelete=false;
+				logger.error("Gagal hapus data," + e.getMessage(), e);
+				flagDelete = false;
 			}
-		}else{
-			listId=new ArrayList<>();
+		} else {
+			listId = new ArrayList<>();
 			listId.add(data.getId());
 			List<ApplicationMenuAssignment> menuAss = getListMenuAssignment(listId);
-			if(menuAss!=null && !menuAss.isEmpty()){
-				Messagebox.show(Labels.getLabel("msg.menu.delete.failed"), Labels.getLabel("title.msgbox.information"), Messagebox.OK, Messagebox.INFORMATION);
-				flagDelete=false;
+			if (menuAss != null && !menuAss.isEmpty()) {
+				Messagebox.show(Labels.getLabel("msg.menu.delete.failed"),
+						Labels.getLabel("title.msgbox.information"),
+						Messagebox.OK, Messagebox.INFORMATION);
+				flagDelete = false;
 				return;
 			}
 			try {
-				ApplicationMenu menu = generalPurposeDao.get(ApplicationMenu.class, data.getId());
+				ApplicationMenu menu = generalPurposeDao.get(
+						ApplicationMenu.class, data.getId());
 				generalPurposeService.delete(menu);
-				flagDelete=true;
+				flagDelete = true;
 			} catch (Exception e) {
-				logger.error("Gagal baca ApplicationMenu,"+e.getMessage(),e);
-				flagDelete=false;
+				logger.error("Gagal baca ApplicationMenu," + e.getMessage(), e);
+				flagDelete = false;
 			}
-			
+
 		}
 	}
-
 
 	@Override
 	public void deleteNodeFromTree(TreeNode<ApplicationMenu> node) {
 		TreeModel<TreeNode<ApplicationMenu>> model = tree.getModel();
-		MenuTreeNode<ApplicationMenu> root = (MenuTreeNode<ApplicationMenu>)model.getRoot();
+		MenuTreeNode<ApplicationMenu> root = (MenuTreeNode<ApplicationMenu>) model
+				.getRoot();
 		List<TreeNode<ApplicationMenu>> child = root.getChildren();
 		ApplicationMenu menu = node.getData();
 		deleteData(menu);
-		if(flagDelete){
-			if(menu.getTreeLevelPosition()==1){
+		if (flagDelete) {
+			if (menu.getTreeLevelPosition() == 1) {
 				child.remove(node);
-			}else{
-				getMapsOfNodeCollection().get(menu.getFunctionIdParent()).remove(node);
+			} else {
+				getMapsOfNodeCollection().get(menu.getFunctionIdParent())
+						.remove(node);
 			}
 			tree.invalidate();
 			String msg = Labels.getLabel("msg.menu.delete.success");
 			msg = msg.replace("{codeMenu}", menu.getFunctionCode());
 			msg = msg.replace("{labelMenu}", menu.getFunctionLabel());
-			Messagebox.show(msg, 
-					Labels.getLabel("title.msgbox.information"),
-					new Messagebox.Button[]{Messagebox.Button.OK},
-					new String[]{Labels.getLabel("action.button.ok")},
-					Messagebox.INFORMATION,
-					Messagebox.Button.OK, null);
+			Messagebox.show(msg, Labels.getLabel("title.msgbox.information"),
+					new Messagebox.Button[] { Messagebox.Button.OK },
+					new String[] { Labels.getLabel("action.button.ok") },
+					Messagebox.INFORMATION, Messagebox.Button.OK, null);
 		}
 	}
 
-	
 }

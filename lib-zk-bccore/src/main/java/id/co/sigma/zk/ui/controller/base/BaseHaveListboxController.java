@@ -13,6 +13,7 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.impl.InputElement;
 
@@ -151,8 +152,18 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		
 		
 		InputElement elem = (InputElement) ctrl; 
+		Object raw=null;
 		
-		Object raw = elem.getRawValue(); 
+		if(elem instanceof Combobox){
+			Combobox cmb = (Combobox)elem;
+			int idx = cmb.getSelectedIndex();
+			if(idx!=-1){
+				raw = cmb.getItemAtIndex(idx).getValue();
+			}
+		}else{
+			raw = elem.getRawValue();
+		}
+		
 		if (raw instanceof String) {
 			String rawString = (String) raw ; 
 			if (  ( rawString == null || rawString.isEmpty()) && ann.skipFilterIfEmpty() ){
@@ -164,7 +175,7 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 				return null ; 
 		}
 		//FIXME: untuk yang memakai in belum siap
-		flt.assignFilterWorker(elem.getRawValue());
+		flt.assignFilterWorker(raw);
 		
 		flt.setOperator(opr);
 		return flt; 
