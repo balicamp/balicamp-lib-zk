@@ -81,7 +81,7 @@
 					<listcell label="${each.destUser.realName}" style="text-align:left;"/>
 					<listcell label="${zkfn:formatDate(each.startDate, userDelegationWin$composer.commonDateFormat)}" style="text-align:left;"/>
 					<listcell label="${zkfn:formatDate(each.endDate, userDelegationWin$composer.commonDateFormat)}" style="text-align:left;"/>
-					<listcell label="${each.dataStatusAlias}" style="text-align:left;"/>
+					<listcell label="${each.dataStatus=='A'? 'Active':'Inactive'}" style="text-align:left;"/>
 				</actionListitem>
 			</template>
 		</listbox>
