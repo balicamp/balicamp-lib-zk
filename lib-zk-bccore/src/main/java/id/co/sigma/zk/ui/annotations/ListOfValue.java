@@ -34,6 +34,12 @@ public @interface ListOfValue {
 	String valueField();
 	
 	/**
+	 * field code jika tidak diisi maka field code = field value
+	 * @return
+	 */
+	String codeField() default "";
+	
+	/**
 	 * field pojo untuk keterangan
 	 * @return
 	 */
@@ -44,4 +50,12 @@ public @interface ListOfValue {
 	 * @return
 	 */
 	String componentId() default "";
+	
+	/**
+	 * flag load on demand
+	 * @return
+	 */
+	boolean onDemand() default true;
+	
+	LoVFlag[] filterFlags() default {};
 }

@@ -36,6 +36,7 @@ public @interface QueryParameterEntry {
 	 * default = true
 	 */
 	public boolean skipFilterIfEmpty() default true;  
-	
+
+	public Class<?> fieldType() default String.class;
 
 }
