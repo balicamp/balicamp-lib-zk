@@ -483,6 +483,9 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		
 		if(isEditing()){
 			
+			cmbDelegateFromUser.setValue(getEditedData().getSourceUser().getRealName());
+			cmbDelegateToUser.setValue(getEditedData().getDestUser().getRealName());
+			
 			this.userSourceRoles = new ArrayList<UserRole>(getUserRoles());
 			this.delegateRole = new ZKClientSideListDataEditorContainer<UserDelegationRole>();
 			this.delegateRole.initiateAndFillData(getDelegatedRoles());

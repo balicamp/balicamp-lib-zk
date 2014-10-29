@@ -14,8 +14,7 @@
 						<cell width="200px">${labels.field.delegate_from_user}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<combobox id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" hflex="1" 
-							constraint="no empty" model="${userDelegationEditorWin$composer.userList}" 
-							value="${userDelegationEditorWin$composer.editedData.sourceUser.realName}">
+							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
 								<template name="model">
 									<comboitem value="${each}" label="${each.realName}" />
 								</template>
@@ -27,8 +26,7 @@
 						<cell>${labels.field.delegate_to_user}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<combobox id="cmbDelegateToUser" autodrop="true" buttonVisible="false" hflex="1" 
-							constraint="no empty" model="${userDelegationEditorWin$composer.userList}" 
-							value="${userDelegationEditorWin$composer.editedData.destUser.realName}">
+							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
 								<template name="model">
 									<comboitem value="${each}" label="${each.realName}" />
 								</template>
