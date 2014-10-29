@@ -8,7 +8,6 @@ var _db$init = new PouchDB("bc_core");
 
 zAu.cmd0.loadBandboxData=function(data) {
 	var bData = jq.evalJSON(data);
-	console.log(bData);
 	var dbName = bData.className;
 	var bId = bData.id;
 	var filter = bData.filter;
@@ -16,33 +15,30 @@ zAu.cmd0.loadBandboxData=function(data) {
 	var isInit = bData.isInit;
 	var db = new PouchDB(dbName);
 	var listbox = bc[bId].firstChild.firstChild;
-	for(_i=0;_i<list.length;_i++) {
-		db.put(list[_i], list[_i].value, function(err,resp){});
-	}
+	
+	db.bulkDocs(list, function(err,resp){console.log(resp)});
 	
 	db.changes().on('complete',function(resp){
-		console.log(resp);
-		setTimeout("afterInsert('"+ dbName +"', '"+ bId +"','" + filter + "'," + isInit + ")", 10);
+		setTimeout("afterInsert('"+ dbName +"', '"+ bId +"','" + filter + "'," + isInit + ")", list.length);
 	});
 	
 };
 
 zAu.cmd0.loadComboboxData=function(data) {
 	var bData = jq.evalJSON(data);
-	console.log(bData);
 	var dbName = bData.className;
 	var bId = bData.id;
 	var filter = bData.filter;
 	var list = bData.list;
 	var isLov = bData.isLov;
 	var isInit = bData.isInit;
-	var db = new PouchDB(dbName);	
-	for(_i=0;_i<list.length;_i++) {
-		db.put(list[_i], list[_i].value, function(err,resp){});
-	}	
+	var db = new PouchDB(dbName);
+	
+	db.bulkDocs(list, function(err,resp){console.log(resp)});
+	
 	db.changes().on('complete',function(resp){
-		console.log(resp);
-		setTimeout("afterInsertComboitem('"+ dbName +"', '"+ bId +"','" + filter + "'," + isLov + "," + isInit + ")", 10);
+		filter = (filter == null || filter == undefined) ? "" : filter;
+		setTimeout("afterInsertComboitem('"+ dbName +"', '"+ bId +"','" + filter + "'," + isLov + "," + isInit + ")", list.length);
 	});	
 };
 
@@ -53,7 +49,9 @@ function afterInsertComboitem(dbName, dbid, filter, isLov, isInit) {
 		function(doc, emit) {
 			var lwVal = doc.value.toLowerCase();
 			var lwLbl = doc.label.toLowerCase();
-			if((lwVal.indexOf(filter.toLowerCase()) >= 0) || (lwLbl.indexOf(filter.toLowerCase()) >= 0)) {
+			if(filter == null || filter == "") {
+				emit(doc);
+			} else if((lwVal.indexOf(filter.toLowerCase()) >= 0) || (lwLbl.indexOf(filter.toLowerCase()) >= 0)) {
 				emit(doc);
 			}
 		},
@@ -83,7 +81,6 @@ function afterInsertComboitem(dbName, dbid, filter, isLov, isInit) {
 }
 
 function afterInsert(dbName, dbid, filter, isInit) {
-	console.log(dbName + ":" + dbid + ":" + filter);
 	var db = new PouchDB(dbName);
 	var listbox = bc[dbid].firstChild.firstChild;
 	db.query(
@@ -95,7 +92,6 @@ function afterInsert(dbName, dbid, filter, isInit) {
 			}
 		},
 		function(err,resp) {
-			console.log(resp);
 			if(resp.total_rows > 0) {
 				listbox.clear();
 				var width = 1;
@@ -164,7 +160,6 @@ function loadLOVCombo(combo, dbName) {
 	db.allDocs(
 		{include_docs: true},
 		function(err, docs){
-			console.log(docs);
 			if(docs.total_rows > 0) {
 				var val = combo.getValue();
 				var sel = null;
@@ -184,40 +179,41 @@ function loadLOVCombo(combo, dbName) {
 	);
 }
 
-function loadCombo(combo, dbName, isCmbbox) {
+function loadCombo(combo, dbName, isCmbbox, isOnDeman) {
 	bc[combo.getId()] = combo;
 	var db = new PouchDB(dbName);
 	var filter = combo.getValue();
-	if(filter == null || filter == "") return;
+	if((filter == null || filter == "") && (isOnDeman == true)) return;
+	filter = (filter == null) ? "" : filter;
 	db.query(
 		function(doc, emit) {
 			var lwVal = doc.value.toLowerCase();
 			var lwLbl = doc.label.toLowerCase();
-			if((lwVal.indexOf(filter.toLowerCase()) >= 0) || (lwLbl.indexOf(filter.toLowerCase()) >= 0)) {
+			if(doc.value == filter) {
+				combo.setValue(doc.label);
+			}
+			if((filter == null) || (filter == "") || (isOnDeman == false)) {
+				if(isCmbbox != true) {
+					listComp = combo.firstChild.firstChild;
+					listComp.appendChild(new zul.sel.Listitem(doc));
+				} else {
+					combo.appendChild(new zul.inp.Comboitem(doc));
+				}
+				emit(doc);
+			} else if ((lwVal.indexOf(filter.toLowerCase()) >= 0) || (lwLbl.indexOf(filter.toLowerCase()) >= 0)){
+				if(isCmbbox != true) {
+					listComp = combo.firstChild.firstChild;
+					listComp.appendChild(new zul.sel.Listitem(doc));
+				} else {
+					combo.appendChild(new zul.inp.Comboitem(doc));
+				}
 				emit(doc);
 			}
 		},
 		function(err,resp) {
 			if(resp.total_rows > 0) {
-				var sel = null;
-				for(i=0;i<resp.total_rows;i++) {
-					var d = resp.rows[i].key;
-					if(isCmbbox != true) { /*bandbox*/
-						/* bandbox > bandpopup > listbox */
-						listComp = combo.firstChild.firstChild;
-						listComp.appendChild(new zul.sel.Listitem(d));
-					} else {/*combobox*/
-						combo.appendChild(new zul.inp.Comboitem(d));
-					}
-					if(d.value == filter) {
-						sel = d;
-					}
-				}
-				if(sel != null) {
-					combo.setValue(sel.label);
-				}
 			} else {
-				zAu.send(new zk.Event(combo,"onChanging",{value: filter},{toServer:true}));
+				zAu.send(new zk.Event(combo,"onFill",{value: filter, isInit: true},{toServer:true}));
 			}
 		}
 	);
@@ -237,7 +233,6 @@ function onChangingBandbox(dbName, filter, bandbox, event) {
 			}
 		},
 		function(err,resp) {
-			console.log(resp);
 			if(bandbox.oldVal != event.value) {
 				console.log(event.value);
 				bandbox.oldVal = event.value;

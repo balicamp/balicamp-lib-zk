@@ -174,7 +174,7 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 				+ "		event.stop();"
 				+ "} else {"
 				+ "		bc['"+ getId() + "'] = this;"
-				+ "		queryData('" + (lovMap != null ? lovMap[0] : getId()) 
+				+ "		onChangingBandbox('" + (lovMap != null ? lovMap[0] : getId()) 
 				+ "', event.value, this, event);"
 				+ "}"
 		);
@@ -239,35 +239,5 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 				}
 			}
 		}
-	}
-	
-	private final class ListOfValueItem {
-		private String value;
-		
-		private String label;
-		
-		private String separator;
-		
-		public ListOfValueItem(String value, String label, String separator) {
-			super();
-			this.value = value;
-			this.label = label;
-			this.separator = separator;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			StringBuffer sBuf = new StringBuffer();
-			sBuf.append("{")
-				.append("value: \"").append(this.value).append("\", ")
-				.append("label: \"").append(this.value).append(separator).append(label).append("\"")
-				.append("}");			
-			return sBuf.toString();
-		}
-		
-		
 	}
 }
