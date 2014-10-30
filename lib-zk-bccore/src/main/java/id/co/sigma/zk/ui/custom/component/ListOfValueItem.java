@@ -12,6 +12,8 @@ public final class ListOfValueItem {
 	
 	private String separator;
 	
+	private boolean serverObject = false;
+	
 	public ListOfValueItem(Object value, String label, String separator) {
 		super();
 		this.value = value;
@@ -34,17 +36,43 @@ public final class ListOfValueItem {
 	@Override
 	public String toString() {
 		StringBuffer sBuf = new StringBuffer();
-		sBuf.append("{");
-		if(this.value instanceof String || this.value instanceof Date) {
-			sBuf.append("value: \"").append(this.value).append("\", ");
-			sBuf.append("_id: \"").append(this.value).append("\", ");
+		if(!serverObject) {
+			sBuf.append("{");
+			if(this.value instanceof String || this.value instanceof Date) {
+				sBuf.append("value: \"").append(this.value).append("\", ");
+				sBuf.append("_id: \"").append(this.value).append("\", ");
+			} else {
+				sBuf.append("value: ").append(this.value).append(", ");
+				sBuf.append("_id: ").append(this.value).append(", ");
+			}
+			sBuf.append("label: \"").append(this.code).append(separator).append(label).append("\"")
+			.append("}");		
 		} else {
-			sBuf.append("value: ").append(this.value).append(", ");
-			sBuf.append("_id: ").append(this.value).append(", ");
+			sBuf.append(code).append(separator).append(label);
 		}
-		sBuf.append("label: \"").append(this.code).append(separator).append(label).append("\"")
-		.append("}");			
 		return sBuf.toString();
+	}
+
+	public boolean isServerObject() {
+		return serverObject;
+	}
+
+	public void setServerObject(boolean serverObject) {
+		this.serverObject = serverObject;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public Object getValue() {
+		return value;
+	}
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(Object value) {
+		this.value = value;
 	}
 	
 	
