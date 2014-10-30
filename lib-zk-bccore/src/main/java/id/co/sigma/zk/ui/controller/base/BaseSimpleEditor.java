@@ -644,6 +644,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					Comboitem citem = ((Combobox)input).getSelectedItem();
 					if(citem != null) {
 						val = citem.getValue();
+					} else {
+						val = ((Combobox)input).getValue();
 					}
 				}
 				

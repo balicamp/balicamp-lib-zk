@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.base;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
@@ -9,6 +10,7 @@ import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
+import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +152,6 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		annotatedField.setAccessible(true);
 		Object ctrl =  annotatedField.get(this);
 		
-		
 		InputElement elem = (InputElement) ctrl; 
 		Object raw=null;
 		
@@ -159,12 +160,22 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 			int idx = cmb.getSelectedIndex();
 			if(idx!=-1){
 				raw = cmb.getItemAtIndex(idx).getValue();
+			} else {
+				raw = cmb.getValue();
 			}
 		}else{
 			raw = elem.getRawValue();
 		}
 		
 		if (raw instanceof String) {
+			
+			try {			
+				Constructor<?>[] c = ann.fieldType().getConstructors();
+				if(c.length > 0) {
+					flt.setFilterTypeClass(c[0].getName());
+				}
+			} catch(Exception e) {}
+			
 			String rawString = (String) raw ; 
 			if (  ( rawString == null || rawString.isEmpty()) && ann.skipFilterIfEmpty() ){
 				return null ; 
@@ -173,6 +184,9 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		else   {
 			if ( raw == null && ann.skipFilterIfEmpty())
 				return null ; 
+			if(raw instanceof ListOfValueItem) {
+				raw = ((ListOfValueItem)raw).getValue();
+			}
 		}
 		//FIXME: untuk yang memakai in belum siap
 		flt.assignFilterWorker(raw);
