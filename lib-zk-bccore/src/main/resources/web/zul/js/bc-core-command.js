@@ -16,7 +16,7 @@ zAu.cmd0.loadBandboxData=function(data) {
 	var db = new PouchDB(dbName);
 	var listbox = bc[bId].firstChild.firstChild;
 	
-	db.bulkDocs(list, function(err,resp){console.log(resp)});
+	db.bulkDocs(list, function(err,resp){});
 	
 	db.changes().on('complete',function(resp){
 		setTimeout("afterInsert('"+ dbName +"', '"+ bId +"','" + filter + "'," + isInit + ")", list.length);
@@ -34,7 +34,7 @@ zAu.cmd0.loadComboboxData=function(data) {
 	var isInit = bData.isInit;
 	var db = new PouchDB(dbName);
 	
-	db.bulkDocs(list, function(err,resp){console.log(resp)});
+	db.bulkDocs(list, function(err,resp){});
 	
 	db.changes().on('complete',function(resp){
 		filter = (filter == null || filter == undefined) ? "" : filter;
@@ -45,78 +45,71 @@ zAu.cmd0.loadComboboxData=function(data) {
 function afterInsertComboitem(dbName, dbid, filter, isLov, isInit) {
 	var db = new PouchDB(dbName);
 	var cmbbox =  bc[dbid];
-	db.query(
-		function(doc, emit) {
-			var lwVal = doc.value.toLowerCase();
-			var lwLbl = doc.label.toLowerCase();
-			if(filter == null || filter == "") {
-				emit(doc);
-			} else if((lwVal.indexOf(filter.toLowerCase()) >= 0) || (lwLbl.indexOf(filter.toLowerCase()) >= 0)) {
-				emit(doc);
-			}
-		},
-		function(err,resp) {
-			cmbbox.clear();
-			if((isLov != true) && (isInit != true)){
-				cmbbox.close();
-			}
-			if(resp.total_rows > 0) {
-				var val = cmbbox.getValue();
-				var sel = null;
-				for(i=0;i<resp.total_rows;i++) {
-					cmbbox.appendChild(new zul.inp.Comboitem(resp.rows[i].key));
-					if(val == resp.rows[i].key.value) {
-						sel = resp.rows[i].key;
+	db.allDocs(
+			{include_docs: true},
+			function(err, docs) {
+				if(docs.total_rows > 0) {
+					cmbbox.clear();
+					if((isLov != true) && (isInit != true)){
+						cmbbox.close();
+					}
+					var val = cmbbox.getValue();
+					var sel = null;
+					for(i=0;i<docs.total_rows;i++) {
+						cmbbox.appendChild(new zul.inp.Comboitem(docs.rows[i].doc));
+						if($isFound(docs.rows[i].doc, val)) {
+							sel = docs.rows[i].doc;
+						}
+					}
+					if(sel != null) {
+						cmbbox.setValue(sel.label);
+					}
+					if((isLov != true) && (isInit != true)){ 
+						cmbbox.open();
 					}
 				}
-				if(sel != null) {
-					cmbbox.setValue(sel.label);
-				}
+				stopTimer(cmbbox);
 			}
-			if((isLov != true) && (isInit != true)){ 
-				cmbbox.open();
-			}
-		}
 	);
+}
+
+function $isFound(doc, filter) {
+	if(filter == null || filter == undefined || filter == "") return false;	
+	var val = doc.value.toLowerCase();
+	var lbl = doc.label.toLowerCase();
+	return ((val.indexOf(filter.toLowerCase()) >= 0) || (lbl.indexOf(filter.toLowerCase()) >= 0));
 }
 
 function afterInsert(dbName, dbid, filter, isInit) {
 	var db = new PouchDB(dbName);
 	var listbox = bc[dbid].firstChild.firstChild;
-	db.query(
-		function(doc, emit) {
-			var lwVal = doc.value.toLowerCase();
-			var lwLbl = doc.label.toLowerCase();
-			if((lwVal.indexOf(filter.toLowerCase()) >= 0) || (lwLbl.indexOf(filter.toLowerCase()) >= 0)) {
-				emit(doc);
-			}
-		},
-		function(err,resp) {
-			if(resp.total_rows > 0) {
-				listbox.clear();
-				var width = 1;
-				var sel = null;
-				for(i=0;i<resp.total_rows;i++) {
-					listbox.appendChild(new zul.sel.Listitem(resp.rows[i].key));
-					var w = resp.rows[i].key.label.length * 14;
-					if(w > width) {
-						width = w;
+	db.allDocs(
+			{include_docs: true},
+			function(err, docs) {
+				if(docs.total_rows > 0) {
+					listbox.clear();
+					if((isLov != true) && (isInit != true)){
+						bc[dbid].close();
 					}
-					if(bc[dbid].getValue() == resp.rows[i].key.value) {
-						sel = resp.rows[i].key;
+					var val = bc[dbid].getValue();
+					var sel = null;
+					for(i=0;i<docs.total_rows;i++) {
+						listbox.appendChild(new zul.sel.Listitem(docs.rows[i].doc));
+						if($isFound(docs.rows[i].doc, val)) {
+							sel = docs.rows[i].doc;
+						}
+					}
+					if(sel != null) {
+						bc[dbid].setValue(sel.label);
+					}
+					if((isLov != true) && (isInit != true)){ 
+						bc[dbid].open();
 					}
 				}
-				listbox.setWidth(width + 'px');
-				if(isInit != true) {
-					bc[dbid].open();
-				} else if(sel != null) {
-					bc[dbid].setValue(sel.label);
-				}
-			} else {
-				bc[dbid].close();					
+				stopTimer(bc[dbid]);
 			}
-		}
 	);
+	
 }
 
 function onChangingCombobox(dbName, cmbbox, event) {
@@ -172,11 +165,18 @@ function loadLOVCombo(combo, dbName) {
 				if(sel != null) {
 					combo.setValue(sel.label);
 				}
+				stopTimer(combo);
 			} else {
 				zAu.send(new zk.Event(combo,"onFill",{headerId: dbName},{toServer:true}));
 			}
 		}
 	);
+}
+
+function stopTimer(combo) {
+	if(combo == cWindow.lcmb) {
+		zAu.send(new zk.Event(cWindow,"onStopTimer",{comboId: combo.getId()},{toServer:true}));
+	}
 }
 
 function loadCombo(combo, dbName, isCmbbox, isOnDeman) {
@@ -212,6 +212,7 @@ function loadCombo(combo, dbName, isCmbbox, isOnDeman) {
 		},
 		function(err,resp) {
 			if(resp.total_rows > 0) {
+				stopTimer(combo);
 			} else {
 				zAu.send(new zk.Event(combo,"onFill",{value: filter, isInit: true},{toServer:true}));
 			}
@@ -234,7 +235,6 @@ function onChangingBandbox(dbName, filter, bandbox, event) {
 		},
 		function(err,resp) {
 			if(bandbox.oldVal != event.value) {
-				console.log(event.value);
 				bandbox.oldVal = event.value;
 				if(resp.total_rows > 0) {
 					listbox.clear();
@@ -251,7 +251,6 @@ function onChangingBandbox(dbName, filter, bandbox, event) {
 				} else {
 					bandbox.close();					
 					zAu.send(new zk.Event(bandbox,"onChanging",{value: event.value},{toServer:true}));
-					console.log("fire: " + event.value);
 				}
 			} else {
 				bandbox.open();

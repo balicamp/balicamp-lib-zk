@@ -10,10 +10,13 @@ import java.io.Serializable;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
@@ -64,6 +67,9 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	@Wire
 	private Timer listTimer;
 
+	@Wire
+	private Timer lovLoaderTimer;
+	
 	private int childrenCount = 6;
 	
 	private BaseSimpleListController<Serializable> listController;
@@ -92,6 +98,26 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		setStyle("overflow:auto");
 		setHeight(""); //reset height
 		setVflex(""); //rest vflex
+		
+		addEventListener("onLoadCombodata", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if(lovLoaderTimer != null) {
+					lovLoaderTimer.start();
+					Clients.showBusy(event.getTarget(), "Load commbo data");
+				}
+			}
+		});
+
+		addEventListener("onStopTimer", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if(lovLoaderTimer != null) {
+					lovLoaderTimer.stop();
+					Clients.clearBusy(event.getTarget());
+				}
+			}
+		});
 		
 		listController = (BaseSimpleListController<Serializable>) getAttribute(getId() + "$composer");
 		

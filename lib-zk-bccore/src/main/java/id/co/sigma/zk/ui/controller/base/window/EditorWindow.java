@@ -10,9 +10,12 @@ import java.util.List;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Combobox;
@@ -21,6 +24,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.SimpleConstraint;
+import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.impl.InputElement;
 
@@ -45,6 +49,9 @@ public class EditorWindow extends Window implements AfterCompose {
 	
 	@Wire
 	Label caption;
+	
+	@Wire
+	private Timer lovLoaderTimer;
 	
 	private String cancellationMsg;
 	
@@ -83,6 +90,27 @@ public class EditorWindow extends Window implements AfterCompose {
 		
 		setBorder("none");
 		setTitle("");
+		
+		addEventListener("onLoadCombodata", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if(lovLoaderTimer != null) {
+					lovLoaderTimer.start();
+					Clients.showBusy(event.getTarget(), "Load commbo data");
+				}
+			}
+		});
+
+		addEventListener("onStopTimer", new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if(lovLoaderTimer != null) {
+					lovLoaderTimer.stop();
+					Clients.clearBusy(event.getTarget());
+					System.out.println("stop timer");
+				}
+			}
+		});
 		
 		try {
 			controller = (BaseSimpleController)getAttribute(getId() + "$composer");
