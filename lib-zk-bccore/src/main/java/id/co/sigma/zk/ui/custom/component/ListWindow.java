@@ -104,7 +104,7 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 			public void onEvent(Event event) throws Exception {
 				if(lovLoaderTimer != null) {
 					lovLoaderTimer.start();
-					Clients.showBusy(event.getTarget(), "Load commbo data");
+					Clients.showBusy(event.getTarget(), "Load combo data...");
 				}
 			}
 		});
