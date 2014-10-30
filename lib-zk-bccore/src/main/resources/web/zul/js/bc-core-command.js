@@ -16,10 +16,14 @@ zAu.cmd0.loadBandboxData=function(data) {
 	var db = new PouchDB(dbName);
 	var listbox = bc[bId].firstChild.firstChild;
 	
-	db.bulkDocs(list, function(err,resp){});
+	try {
+		db.bulkDocs(list, function(err,resp){
+			/*console.log('bulk: ' + resp);*/
+		});
+	} catch(e){console.log(e);}
 	
 	db.changes().on('complete',function(resp){
-		setTimeout("afterInsert('"+ dbName +"', '"+ bId +"','" + filter + "'," + isInit + ")", list.length);
+		setTimeout("afterInsert('"+ dbName +"', '"+ bId +"','" + filter + "'," + isInit + "," + list.length +")", 10);
 	});
 	
 };
@@ -34,21 +38,27 @@ zAu.cmd0.loadComboboxData=function(data) {
 	var isInit = bData.isInit;
 	var db = new PouchDB(dbName);
 	
-	db.bulkDocs(list, function(err,resp){});
+	try {
+		db.bulkDocs(list, function(err,resp){
+			/*console.log('bulk: ' + resp);*/
+		});
+	} catch(e){console.log(e);}
 	
 	db.changes().on('complete',function(resp){
 		filter = (filter == null || filter == undefined) ? "" : filter;
-		setTimeout("afterInsertComboitem('"+ dbName +"', '"+ bId +"','" + filter + "'," + isLov + "," + isInit + ")", list.length);
+		setTimeout("afterInsertComboitem('"+ dbName +"', '"+ bId +"','" + filter + "'," + isLov + "," + isInit + "," + list.length + ")", 10);
 	});	
 };
 
-function afterInsertComboitem(dbName, dbid, filter, isLov, isInit) {
+function afterInsertComboitem(dbName, dbid, filter, isLov, isInit, _len) {
 	var db = new PouchDB(dbName);
 	var cmbbox =  bc[dbid];
 	db.allDocs(
 			{include_docs: true},
 			function(err, docs) {
-				if(docs.total_rows > 0) {
+				if(docs.total_rows < _len) {
+					populateLookupCombo(dbName, dbid, filter, isLov, isInit, _len); //try again
+				} else if(docs.total_rows > 0) {
 					cmbbox.clear();
 					if((isLov != true) && (isInit != true)){
 						cmbbox.close();
@@ -73,6 +83,14 @@ function afterInsertComboitem(dbName, dbid, filter, isLov, isInit) {
 	);
 }
 
+function populateLookupCombo(dbName, dbid, filter, isLov, isInit, _len) {
+	setTimeout("afterInsertComboitem('"+ dbName +"', '"+ dbid +"','" + filter + "'," + isLov + "," + isInit + "," + _len + ")", 10);	
+}
+
+function populateListOfValueCombo(dbName, dbid, filter, isInit, _len) {
+	setTimeout("afterInsert('"+ dbName +"', '"+ dbid +"','" + filter + "'," + isInit + "," + _len +")", 10);
+}
+
 function $isFound(doc, filter) {
 	if(filter == null || filter == undefined || filter == "") return false;	
 	var val = doc.value.toLowerCase();
@@ -80,13 +98,15 @@ function $isFound(doc, filter) {
 	return ((val.indexOf(filter.toLowerCase()) >= 0) || (lbl.indexOf(filter.toLowerCase()) >= 0));
 }
 
-function afterInsert(dbName, dbid, filter, isInit) {
+function afterInsert(dbName, dbid, filter, isInit, _len) {
 	var db = new PouchDB(dbName);
 	var listbox = bc[dbid].firstChild.firstChild;
 	db.allDocs(
 			{include_docs: true},
 			function(err, docs) {
-				if(docs.total_rows > 0) {
+				if(docs.total_rows < _len) { //try again
+					populateListOfValueCombo(dbName, dbid, filter, isInit, _len);
+				} else if(docs.total_rows > 0) {
 					listbox.clear();
 					if((isLov != true) && (isInit != true)){
 						bc[dbid].close();
@@ -153,6 +173,7 @@ function loadLOVCombo(combo, dbName) {
 	db.allDocs(
 		{include_docs: true},
 		function(err, docs){
+			/*console.log(docs);*/
 			if(docs.total_rows > 0) {
 				var val = combo.getValue();
 				var sel = null;
