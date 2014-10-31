@@ -87,6 +87,7 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		};
 		Listbox lb =getListbox(); 
 		dataModel.initiate(lb.getPageSize());
+		dataModel.setMultiple(lb.isMultiple());
 		lb.setModel(dataModel);
 		
 	}
