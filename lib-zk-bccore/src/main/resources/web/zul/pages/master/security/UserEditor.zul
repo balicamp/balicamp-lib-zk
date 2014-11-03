@@ -7,13 +7,13 @@
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
 	confirmationMsg="Apakah anda akan menyimpan data ini ?">
 	<grid vflex="1">	
-			<columns>
-				<column width="150px" align="left"/>
-				<column  />
-				<column width="40px"/>
-				<column width="150px" align="left"/>
-				<column  />
-			</columns>
+		<columns>
+			<column width="150px" align="left"/>
+			<column  />
+			<column width="40px"/>
+			<column width="150px" align="left"/>
+			<column  />
+		</columns>
 		<rows>
 			<row>
 				<cell>${labels.field.username}</cell>

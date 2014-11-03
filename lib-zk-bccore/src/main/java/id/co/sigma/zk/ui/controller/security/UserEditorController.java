@@ -37,9 +37,6 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Textbox;
-
-
-
 /**
  * 
  * @author <a href="mailto:gusti.darmawan@sigma.co.id">Eka Darmawan</a>

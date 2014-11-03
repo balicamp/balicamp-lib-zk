@@ -565,7 +565,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				List<CommonLOV> lov = vals.get(headerid).getDetails();
 				
 				for(CommonLOV val : lov) {					
-					list.add(new ListOfValueItem(val.getValue(), val.getLabel(), lec.separator()));
+					list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), lec.separator()));
 				}
 				
 				String id = event.getTarget().getId(); 
