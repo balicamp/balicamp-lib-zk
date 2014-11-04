@@ -84,6 +84,10 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	@Qualifier("commonUiDateFormat")
 	protected String commonDateFormat;
 	
+	@Autowired
+	@Qualifier("commonUiConstraintDateFormat")
+	protected String commonConstraintDateFormat;
+	
 	/**
 	 * id space. ini untuk akses ke element dari componen
 	 */
@@ -273,6 +277,10 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 
 	public String getCommonDateFormat() {
 		return commonDateFormat;
+	}
+	
+	public String getCommonConstraintDateFormat() {
+		return commonConstraintDateFormat;
 	}
 	
 	/**
