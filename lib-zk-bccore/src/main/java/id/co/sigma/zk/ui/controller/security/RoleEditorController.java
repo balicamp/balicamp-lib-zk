@@ -14,6 +14,7 @@ import org.zkoss.zul.Textbox;
 
 import id.co.sigma.common.security.domain.Role;
 import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 /**
@@ -29,12 +30,23 @@ public class RoleEditorController extends BaseSimpleDirectToDBEditor<Role>{
 			.getLogger(RoleEditorController.class.getName());
 	private static final long serialVersionUID = 7109113124969951147L;
 	
+	@Wire
+	Textbox roleCode;
+	
 	
 	@Listen("onClick=#btnCancel")
     public void onCancel(){
         EditorManager.getInstance().closeCurrentEditorPanel();
     }
 	
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		// TODO Auto-generated method stub
+		super.doAfterCompose(comp);
+		if(getEditorState().equals(ZKEditorState.EDIT)){
+			roleCode.setDisabled(true);
+		}
+	}
 	
 	@Override
 	protected void parseEditedData(Component comp) {
