@@ -15,13 +15,11 @@
 	<separator/>
 	<panel>
 		<panelchildren>
-			<groupbox>
 				<hlayout>
 					<button id="btnSave" label="${labels.action.button.save}"/>
 					<button id="btnCancel" label="${labels.action.button.cancel}"/>
 					<timer id="lovLoaderTimer" delay="50" onCreate="self.stop()" repeats="true"/>
 				</hlayout>
-			</groupbox>
 		</panelchildren>
 	</panel>
 </zk>
