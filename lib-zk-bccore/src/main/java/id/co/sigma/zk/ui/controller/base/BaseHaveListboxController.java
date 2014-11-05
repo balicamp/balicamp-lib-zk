@@ -47,7 +47,7 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	/**
 	 * data model
 	 */
-	SimpleQueryDrivenListModel<DATA> dataModel ;
+	protected SimpleQueryDrivenListModel<DATA> dataModel ;
 	
 	
 	
