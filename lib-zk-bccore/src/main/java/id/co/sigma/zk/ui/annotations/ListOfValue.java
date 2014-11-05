@@ -58,4 +58,8 @@ public @interface ListOfValue {
 	boolean onDemand() default true;
 	
 	LoVFlag[] filterFlags() default {};
+	
+	LoVSort[] sorts() default {};
+	
+	String dependOn() default "";
 }
