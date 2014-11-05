@@ -6,6 +6,7 @@ import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.lov.CommonLOVHeader;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.common.server.lov.ILOVProviderService;
@@ -15,6 +16,7 @@ import id.co.sigma.common.util.json.SharedServerClientLogicManager;
 import id.co.sigma.zk.service.IZKCommonService;
 import id.co.sigma.zk.ui.annotations.ListOfValue;
 import id.co.sigma.zk.ui.annotations.LoVFlag;
+import id.co.sigma.zk.ui.annotations.LoVSort;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.custom.component.ListOfValueComboitemRenderer;
 import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
@@ -527,10 +529,19 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			}
 		}
 		
+		SimpleSortArgument[] sortArgs = null;
+		if(annLOV.sorts().length > 0) {
+			sortArgs = new SimpleSortArgument[annLOV.sorts().length];
+			int i = 0;
+			for(LoVSort s : annLOV.sorts()) {
+				sortArgs[i++] = new SimpleSortArgument(s.field(), s.ascending());
+			}
+		}
+		
 		try {
 			List<?> lov = generalPurposeDao.list(dbName + " lov", "lov", 
 					(filters != null ? (SimpleQueryFilter[])filters.toArray(new SimpleQueryFilter[filters.size()]) : null), 
-					null);
+					sortArgs);
 			if(lov != null) {
 				for(Object o : lov) {
 					if(!("".equals(annLOV.codeField()))) {
