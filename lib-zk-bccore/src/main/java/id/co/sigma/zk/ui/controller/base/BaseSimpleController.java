@@ -342,7 +342,11 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 						);
 						
 						List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann);
-						((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(((Combobox)comp).getValue()));
+						String defaultVal = "";
+						try {
+							defaultVal = ((Combobox)comp).getValue();
+						} catch (Exception e) {}
+						((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 						((Combobox)comp).setModel(new ListOfValueModel(list));
 
 //						lastCombo = cId;
