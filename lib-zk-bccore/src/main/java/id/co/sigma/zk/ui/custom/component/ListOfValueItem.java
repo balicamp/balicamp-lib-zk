@@ -49,7 +49,7 @@ public final class ListOfValueItem {
 				sBuf.append("label: \"").append(this.code).append(separator).append(label).append("\"")
 				.append("}");		
 			} else {
-				sBuf.append("label: \"").append(label).append("\"");
+				sBuf.append("label: \"").append(label).append("\"").append("}");
 			}
 		} else {
 			if(!"".equals(separator)) {
