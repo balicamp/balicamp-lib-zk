@@ -62,4 +62,6 @@ public @interface ListOfValue {
 	LoVSort[] sorts() default {};
 	
 	String dependOn() default "";
+	
+	LoVDependency[] dependency() default {};
 }

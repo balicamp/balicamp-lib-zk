@@ -15,6 +15,7 @@ import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.common.util.json.SharedServerClientLogicManager;
 import id.co.sigma.zk.service.IZKCommonService;
 import id.co.sigma.zk.ui.annotations.ListOfValue;
+import id.co.sigma.zk.ui.annotations.LoVDependency;
 import id.co.sigma.zk.ui.annotations.LoVFlag;
 import id.co.sigma.zk.ui.annotations.LoVSort;
 import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
@@ -322,7 +323,8 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				if("".equals(cId)) {
 					cId = f.getName();
 				}
-				Component comp = getSelf().getFellowIfAny(cId);
+				
+				final Component comp = getSelf().getFellowIfAny(cId);
 				
 				try {
 					
@@ -341,26 +343,102 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 							+ "} catch (e){}"
 						);
 						
-						List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann);
-						String defaultVal = "";
-						try {
-							defaultVal = ((Combobox)comp).getValue();
-						} catch (Exception e) {}
-						((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
-						((Combobox)comp).setModel(new ListOfValueModel(list));
+						if(ann.dependency() == null || ann.dependency().length == 0) {
+							
+							List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann);
+							String defaultVal = "";
+							try {
+								defaultVal = ((Combobox)comp).getValue();
+							} catch (Exception e) {}
+							((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
+							((Combobox)comp).setModel(new ListOfValueModel(list));
+							
+						} else {
+							
+							List<String> vals = new ArrayList<String>();
+							for(LoVDependency dpd: ann.dependency())  {
+								if(dpd.isFilter()) {
+									String val = ((Combobox)getSelf().getFellowIfAny(dpd.comboId())).getValue();
+									if(val != null && val.trim().length() > 0) {
+										vals.add(val);
+									}
+								} else {
+									vals.add("-1");
+								}
+							}
+							
+							if(!vals.isEmpty()) {
+								String[] svals = new String[vals.size()];
+								for(int i=0;i<vals.size();i++) {
+									svals[i] = vals.get(i);
+								}
+								List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann, svals);
+								String defaultVal = "";
+								try {
+									defaultVal = ((Combobox)comp).getValue();
+								} catch (Exception e) {}
+								((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
+								((Combobox)comp).setModel(new ListOfValueModel(list));
+							}
+							
+							for(LoVDependency dpd: ann.dependency())  {
+								
+								Component cdep = getSelf().getFellowIfAny(dpd.comboId());
+								
+								cdep.addEventListener("onSelect", new EventListener<Event>() {
+									@Override
+									public void onEvent(Event event)
+											throws Exception {
+										
+										List<Object> vals = new ArrayList<Object>();
+										vals.add(((Combobox)event.getTarget()).getSelectedItem().getValue());
+										for(LoVDependency dpd: ann.dependency())  {
+											if(!dpd.comboId().equals(event.getTarget().getId())) {
+												if(dpd.isFilter()) {
+													Combobox dpc = (Combobox)getSelf().getFellowIfAny(dpd.comboId());
+													Object val = null;
+													if(dpc.getSelectedIndex() > -1) {
+														val = dpc.getSelectedItem().getValue();
+													} else {
+														val = "-1";
+													}
+													if(val != null) {
+														if((val instanceof String) && (val.toString().trim().length() > 0)) {
+															vals.add(val);
+														} else {
+															vals.add(val);
+														}
+													}
+												} else {
+													vals.add("-1");
+												}
+											}
+										}
+										
+										List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann, vals.toArray(new String[vals.size()]));
+										String defaultVal = "";
+										try {
+											defaultVal = ((Combobox)comp).getValue();
+										} catch (Exception e) {}
+										((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
+										((Combobox)comp).setModel(new ListOfValueModel(list));
+									}
+								});
+							}
+						}
 
 //						lastCombo = cId;
 						
 //						script.append("loadCombo(").append("cWindow.$f('").append(comp.getId()).append("'),'")
 //						.append(dbName).append("',true,").append(ann.onDemand()).append(");\n");
 					
-//						if(ann.onDemand()) {
-//							comp.setWidgetListener("onChanging", 
-//								"onChangingCombobox('" + dbName +"',this,event);"
-//							);
-//						} else {
-//							comp.setWidgetListener("onChanging", "event.stop({au:true});");
-//						}
+						if(ann.onDemand()) {
+							comp.setWidgetListener("onChanging", 
+								"onChangingCombobox('" + dbName +"',this,event);"
+							);
+						} else {
+							comp.setWidgetListener("onChanging", "console.log(event.data);event.stop({au:true});");
+						}
 					
 						
 //						comp.addEventListener("onFill", new EventListener<Event>() {
@@ -505,7 +583,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		
 	}
 	
-	private final List<ListOfValueItem> loadListOfValueItems(final String dbName, final String sFilter, final ListOfValue annLOV) {
+	private final List<ListOfValueItem> loadListOfValueItems(final String dbName, final String sFilter, final ListOfValue annLOV, String... dependencyFilter) {
 		
 		List<ListOfValueItem> list = new ArrayList<ListOfValueItem>();
 		List<SimpleQueryFilter> filters = null;
@@ -530,6 +608,26 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				filterFlag.setFilterTypeClass(dtType);
 				filterFlag.setOperator(SimpleQueryFilterOperator.equal);
 				filters.add(filterFlag);
+			}
+		}
+		
+		if(annLOV.dependency() != null && annLOV.dependency().length > 0) {
+			int i = 0;
+			if(filters == null) filters = new ArrayList<SimpleQueryFilter>();
+			for(LoVDependency dp : annLOV.dependency()) {
+				Constructor<?>[] c = dp.dataType().getConstructors();
+				String dType = String.class.getName();
+				if(c != null && c.length > 0) {
+					dType = c[0].getName();
+				}
+				if(dp.isFilter()) {
+					SimpleQueryFilter filterFlag = new SimpleQueryFilter();
+					filterFlag.setField(dp.field());
+					filterFlag.setFilter(dependencyFilter[i++]);
+					filterFlag.setFilterTypeClass(dType);
+					filterFlag.setOperator(SimpleQueryFilterOperator.equal);
+					filters.add(filterFlag);
+				}
 			}
 		}
 		
