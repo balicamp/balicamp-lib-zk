@@ -195,6 +195,8 @@ function loadLOVCombo(combo, dbName) {
 }
 
 function stopTimer(combo) {
+	if(cWindow.lcmb == null || cWindow.lcmb == undefined) return;
+	console.log(combo.getId() + " = " + cWindow.lcmb.getId());
 	if(combo == cWindow.lcmb) {
 		zAu.send(new zk.Event(cWindow,"onStopTimer",{comboId: combo.getId()},{toServer:true}));
 	}
