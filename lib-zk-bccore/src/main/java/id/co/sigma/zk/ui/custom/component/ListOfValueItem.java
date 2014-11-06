@@ -45,10 +45,18 @@ public final class ListOfValueItem {
 				sBuf.append("value: ").append(this.value).append(", ");
 				sBuf.append("_id: ").append(this.value).append(", ");
 			}
-			sBuf.append("label: \"").append(this.code).append(separator).append(label).append("\"")
-			.append("}");		
+			if(!"".equals(separator)) {
+				sBuf.append("label: \"").append(this.code).append(separator).append(label).append("\"")
+				.append("}");		
+			} else {
+				sBuf.append("label: \"").append(label).append("\"");
+			}
 		} else {
-			sBuf.append(code).append(separator).append(label);
+			if(!"".equals(separator)) {
+				sBuf.append(code).append(separator).append(label);
+			} else {
+				sBuf.append(label);
+			}
 		}
 		return sBuf.toString();
 	}
@@ -75,5 +83,12 @@ public final class ListOfValueItem {
 		this.value = value;
 	}
 	
+	/**
+	 * @return the label
+	 */
+	public String getDescription() {
+		return label;
+	}
+
 	
 }
