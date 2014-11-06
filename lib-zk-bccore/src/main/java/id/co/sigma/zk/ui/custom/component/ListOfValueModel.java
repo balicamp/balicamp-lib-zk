@@ -33,4 +33,12 @@ public class ListOfValueModel extends AbstractListModel<ListOfValueItem> {
 		return list.size();
 	}
 
+	/**
+	 * @return the list
+	 */
+	public List<ListOfValueItem> getInnerList() {
+		return list;
+	}
+
+	
 }
