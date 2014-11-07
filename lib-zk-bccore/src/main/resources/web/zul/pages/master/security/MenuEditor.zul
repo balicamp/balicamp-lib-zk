@@ -16,7 +16,7 @@
 			<row>
 				${labels.field.menu.code}
 				<textbox id="functionCode" if="${menuEditor$composer.flag==0}" 		
-					value="${menuEditor$composer.editedData.functionCode}" constraint="no empty:${labels.field.code} harus diisi !!!">
+					value="${menuEditor$composer.editedData.functionCode}" constraint="no empty:${labels.field.code} harus diisi!">
 				</textbox>
 				<label value="${menuEditor$composer.editedData.functionCode}" if="${menuEditor$composer.flag==1}" />
 				
@@ -24,7 +24,7 @@
 			<row>
 				${labels.field.menu.label}
 				<textbox id="functionLabel" 
-					value="${menuEditor$composer.editedData.functionLabel}" constraint="no empty:${labels.field.label} harus diisi !!!">
+					value="${menuEditor$composer.editedData.functionLabel}" constraint="no empty:${labels.field.label} harus diisi!">
 					</textbox>
 				
 			</row>

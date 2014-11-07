@@ -71,7 +71,7 @@
 					${labels.field.branch}
 				</cell>
 				<cell>
-					<combobox tabindex="4" id="defaultBranchCode" constraint="no empty : ${labels.field.cabang} Harus diisi !!!" readonly="true">
+					<combobox tabindex="4" id="defaultBranchCode" constraint="no empty : ${labels.field.cabang} Harus diisi!" readonly="true">
 						<template name="model">
 							<comboitem value="${each.branchCode}" label="${each.branchCode} - ${each.branchName}" />
 						</template>
