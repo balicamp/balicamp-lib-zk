@@ -1,5 +1,5 @@
 <?page title="User Delegation" contentType="text/html;charset=UTF-8"?>
-<zk>
+<zk xmlns:n="native">
 	<listWindow id="userDelegationWin" 
 	  width="100%"
 	  title="User Delegation" 
@@ -8,56 +8,54 @@
 	  editorPage="~./zul/pages/master/security/UserDelegationEditor.zul">
 		
 		<groupbox id="searchBox" mold="3d" width="100%">
-			<grid >
-				<rows>
-					<row>
-						<cell width="200px">${labels.field.delegate_from_user}</cell>
-						<cell>
-							<combobox id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" width="350px" 
-							model="${userDelegationWin$composer.userList}">
-								<template name="model">
-									<comboitem value="${each}" label="${each.realName}" />
-								</template>
-							</combobox>								
-							<longbox id="txtIdDelegateFromUser" visible="false" />
-						</cell>
-					</row>
-					<row>
-						<cell>${labels.field.delegate_to_user}</cell>
-						<cell>
-							<combobox id="cmbDelegateToUser" autodrop="true" buttonVisible="false" width="350px" 
-							model="${userDelegationWin$composer.userList}">
-								<template name="model">
-									<comboitem value="${each}" label="${each.realName}" />
-								</template>
-							</combobox>
-							<longbox id="txtIdDelegateToUser" visible="false" />
-						</cell>
-					</row>
-					<row>
-						<cell>${labels.field.date_start}</cell>
-						<cell>
-							<datebox id="txtStartDateBegin" format="${userDelegationWin$composer.commonDateFormat}" />
-							<space/>s/d<space/>
-							<datebox id="txtStartDateEnd" format="${userDelegationWin$composer.commonDateFormat}" />
-						</cell>
-					</row>
-					<row>
-						<cell>${labels.field.date_end}</cell>
-						<cell>
-							<datebox id="txtEndDateBegin" format="${userDelegationWin$composer.commonDateFormat}" />
-							<space/>s/d<space/>
-							<datebox id="txtEndDateEnd" format="${userDelegationWin$composer.commonDateFormat}" />
-						</cell>
-					</row>
-					<row>
-						<cell>${labels.field.status}</cell>
-						<cell>
-							<combobox id="cmbStatus" readonly="true"/>
-						</cell>
-					</row>
-				</rows>	
-			</grid>
+			<n:table>
+				<n:tr>
+					<n:td width="200px">${labels.field.delegate_from_user}</n:td>
+					<n:td>
+						<combobox id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" width="350px" 
+						model="${userDelegationWin$composer.userList}">
+							<template name="model">
+								<comboitem value="${each}" label="${each.realName}" />
+							</template>
+						</combobox>								
+						<longbox id="txtIdDelegateFromUser" visible="false" />
+					</n:td>
+				</n:tr>
+				<n:tr>
+					<n:td>${labels.field.delegate_to_user}</n:td>
+					<n:td>
+						<combobox id="cmbDelegateToUser" autodrop="true" buttonVisible="false" width="350px" 
+						model="${userDelegationWin$composer.userList}">
+							<template name="model">
+								<comboitem value="${each}" label="${each.realName}" />
+							</template>
+						</combobox>
+						<longbox id="txtIdDelegateToUser" visible="false" />
+					</n:td>
+				</n:tr>
+				<n:tr>
+					<n:td>${labels.field.date_start}</n:td>
+					<n:td>
+						<datebox id="txtStartDateBegin" format="${userDelegationWin$composer.commonDateFormat}" />
+						<space/>s/d<space/>
+						<datebox id="txtStartDateEnd" format="${userDelegationWin$composer.commonDateFormat}" />
+					</n:td>
+				</n:tr>
+				<n:tr>
+					<n:td>${labels.field.date_end}</n:td>
+					<n:td>
+						<datebox id="txtEndDateBegin" format="${userDelegationWin$composer.commonDateFormat}" />
+						<space/>s/d<space/>
+						<datebox id="txtEndDateEnd" format="${userDelegationWin$composer.commonDateFormat}" />
+					</n:td>
+				</n:tr>
+				<n:tr>
+					<n:td>${labels.field.status}</n:td>
+					<n:td>
+						<combobox id="cmbStatus" readonly="true"/>
+					</n:td>
+				</n:tr>
+			</n:table>
 		</groupbox>
 		<separator/>
 		

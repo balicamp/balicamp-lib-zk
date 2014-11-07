@@ -8,10 +8,17 @@
 		apply="id.co.sigma.zk.ui.controller.security.UserDelegationEditorController">
 		
 		<groupbox id="searchBox" mold="3d" width="100%">
-			<grid >
+			<grid>
+				<columns>
+					<column width="175px"/>
+					<column />
+					<column width="50px"/>
+					<column width="175px"/>
+					<column />
+				</columns>
 				<rows>
 					<row>
-						<cell width="200px">${labels.field.delegate_from_user}<span class="sign-mandatory">*</span></cell>
+						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
 							<combobox id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" hflex="1" 
 							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
@@ -21,9 +28,8 @@
 							</combobox>
 							<longbox id="sourceUserId" visible="false" value="${userDelegationEditorWin$composer.editedData.sourceUserId}" />
 						</cell>
-					</row>
-					<row>
-						<cell>${labels.field.delegate_to_user}<span class="sign-mandatory">*</span></cell>
+						<cell/>
+						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
 							<combobox id="cmbDelegateToUser" autodrop="true" buttonVisible="false" hflex="1" 
 							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
@@ -34,35 +40,43 @@
 							<longbox id="destUserId" visible="false" value="${userDelegationEditorWin$composer.editedData.destUserId}" />
 						</cell>
 					</row>
+					
 					<row>
-						<cell>${labels.field.date_start}<span class="sign-mandatory">*</span></cell>
+						<cell>${labels.field.date_start}</cell>
 						<cell>
 							<datebox id="startDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
 							value="${userDelegationEditorWin$composer.editedData.startDate}" 
 							readonly="true" />
 						</cell>
-					</row>
-					<row>
-						<cell>${labels.field.date_end}<span class="sign-mandatory">*</span></cell>
+						<cell/>
+						<cell>${labels.field.date_end}</cell>
 						<cell>
 							<datebox id="endDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
 							value="${userDelegationEditorWin$composer.editedData.endDate}" 
 							readonly="true" />
 						</cell>
 					</row>
+					
 					<row>
-						<cell>${labels.field.description}<span class="sign-mandatory">*</span></cell>
+						<cell>${labels.field.description}</cell>
 						<cell>
 							<textbox id="remark" width="300px" height="100px" cols="50" rows="5" value="${userDelegationEditorWin$composer.editedData.remark}" constraint="no empty" />
 						</cell>
+						<cell/>
+						<cell/>
+						<cell/>
 					</row>
+					
 					<row>
-						<cell>${labels.field.status}<span class="sign-mandatory">*</span></cell>
+						<cell>${labels.field.status}</cell>
 						<cell>
 							<combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" readonly="true" constraint="no empty" />
 						</cell>
+						<cell/>
+						<cell/>
+						<cell/>
 					</row>
-				</rows>	
+				</rows>
 			</grid>
 			
 			<separator bar="true"/>
