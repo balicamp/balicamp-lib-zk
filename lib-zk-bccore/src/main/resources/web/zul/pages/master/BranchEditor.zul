@@ -4,8 +4,8 @@
 	id="branchEditor"
 	captionLabel="Edit Page"
 	apply="id.co.sigma.zk.ui.controller.master.BranchEditorComposer"
-	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
-	confirmationMsg="Apakah anda akan menyimpan data ini ?">
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
+	confirmationMsg="Apakah anda akan menyimpan data ini?">
 	<panel>
 		<panelchildren>
 			<grid>

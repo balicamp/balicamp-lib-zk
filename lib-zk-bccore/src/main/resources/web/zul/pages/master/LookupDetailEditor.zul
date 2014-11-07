@@ -2,8 +2,8 @@
 <zk>
 <editorWindow title="Editor Lookup Detail" border="none" id="lookupDetail" 
 	apply="id.co.sigma.zk.ui.controller.master.LookupDetailEditorController"
-	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
-	confirmationMsg="Apakah anda akan menyimpan data ini ?">
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
+	confirmationMsg="Apakah anda akan menyimpan data ini?">
 <grid vflex="1">
 	
 		<columns>

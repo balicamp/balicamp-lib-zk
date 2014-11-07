@@ -1,7 +1,7 @@
 <?init class="id.co.sigma.zk.ui.WindowDataBinderInit"?> 
 <editorWindow id="editorRole" apply="id.co.sigma.zk.ui.controller.security.RoleEditorController" captionLabel="${labels.role.titleeditor}"
-				cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
-					confirmationMsg="Apakah anda akan menyimpan data ini ?" >
+				cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
+					confirmationMsg="Apakah anda akan menyimpan data ini?" >
 		<grid vflex="1">
 			<columns>
 				<column width="150px" />

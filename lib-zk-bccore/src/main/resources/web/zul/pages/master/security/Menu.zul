@@ -20,7 +20,7 @@
 	                		<actionButtonTree controller="${form$composer}" 
 	                	entityClass="${form$composer.entityClass}"
 						editorPage="~./zul/pages/master/security/MenuEditor.zul"
-						deleteMsg="Apakah anda yakin ingin menghapus ${each.data.functionCode} - ${each.data.functionLabel} ?"/>	  
+						deleteMsg="Apakah anda yakin ingin menghapus ${each.data.functionCode} - ${each.data.functionLabel}?"/>
 						</hlayout>
 	                </treecell>
 	            </treerow>

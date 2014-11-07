@@ -2,8 +2,8 @@
 <zk>
 <editorWindow id="menuEditor" captionLabel="${labels.field.menu.caption}"
 	apply="id.co.sigma.zk.ui.controller.security.ApplicationMenuEditorController"
-	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini ?"
-	confirmationMsg="Apakah anda akan menyimpan data ini ?">
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
+	confirmationMsg="Apakah anda akan menyimpan data ini?">
 	<grid hflex="1">	
 		<columns>
 			<column width="150px" align="left" />

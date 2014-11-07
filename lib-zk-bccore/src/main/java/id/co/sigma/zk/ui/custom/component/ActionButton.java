@@ -142,7 +142,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 					final Object data =  o;
 					final ZKClientSideListDataEditorContainer<Object> cntr = container;
 					if(deleteMsg == null || deleteMsg.trim().length() == 0) {
-						deleteMsg = "Apakah anda yakin akan menghapus data ?";
+						deleteMsg = "Apakah anda yakin akan menghapus data?";
 					}
 					
 					Messagebox.show(deleteMsg, Labels.getLabel("title.msgbox.confirmation"), 

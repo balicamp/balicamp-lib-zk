@@ -120,7 +120,7 @@ public class ActionButtonTree extends Div implements IdSpace, AfterCompose {
 				final TreeNode<Serializable> treeNode = item.getValue();
 				
 				if(deleteMsg == null || deleteMsg.trim().length() == 0) {
-					deleteMsg = "Apakah anda yakin akan menghapus data ?";
+					deleteMsg = "Apakah anda yakin akan menghapus data?";
 				}
 				
 				Messagebox.show(deleteMsg, "Delete Confirmation", Messagebox.YES|Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
