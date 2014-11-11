@@ -21,6 +21,8 @@ public class ListOfValueComboitemRenderer implements ComboitemRenderer<ListOfVal
 		if(data.getValue() != null) {
 			if((item.getParent() instanceof Combobox) && (data.getValue().toString().equals(defaultValue))) {
 				((Combobox)item.getParent()).setValue(item.getLabel());		
+			} else if(item.getParent() instanceof Combobox) {
+				((Combobox)item.getParent()).setValue("");
 			}
 		}
 	}
