@@ -63,9 +63,15 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 			return  ; 
 		}
 		
-		
-		String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
-		showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+		try {
+		    validateData();
+
+			String confirmMsg = (String)getSelf().getAttribute("confirmationMsg");
+			showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+		} catch (Exception e) {
+		    logger.error(e.getMessage(), e);
+		    showInvalidDataMessage(getEditorState(), e.getMessage());
+		}
 		
 	}
 	
@@ -86,4 +92,9 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 		String cancelMsg = (String)getSelf().getAttribute("cancellationMsg");
 		showCancelConfirmationMessage(cancelMsg);
 	}	
+	
+    protected void validateData() throws Exception {
+
+    }
+	
 }
