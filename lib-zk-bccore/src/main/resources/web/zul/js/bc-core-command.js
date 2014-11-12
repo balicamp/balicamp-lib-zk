@@ -168,30 +168,6 @@ function loadLOVCombo(combo, dbName) {
 	
 	syncLOVDb(combo.getId(), dbName);
 
-//	var db = new PouchDB(dbName);
-//	
-//	db.allDocs(
-//		{include_docs: true},
-//		function(err, docs){
-//			/*console.log(docs);*/
-//			if(docs.total_rows > 0) {
-//				var val = combo.getValue();
-//				var sel = null;
-//				for(i=0;i<docs.total_rows;i++) {
-//					combo.appendChild(new zul.inp.Comboitem(docs.rows[i].doc));
-//					if(val == docs.rows[i].doc.value) {
-//						sel = docs.rows[i].doc;
-//					}
-//				}
-//				if(sel != null) {
-//					combo.setValue(sel.label);
-//				}
-//				stopTimer(combo);
-//			} else {
-//				zAu.send(new zk.Event(combo,"onFill",{headerId: dbName},{toServer:true}));
-//			}
-//		}
-//	);
 }
 
 function stopTimer(combo) {
