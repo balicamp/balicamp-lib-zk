@@ -336,7 +336,6 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 
 						comp.setWidgetListener("onSelect",
 							"try {"
-							+ "		console.log(event.data);"
 							+ "		if(event.data.reference.value != undefined) {"
 							+ "			this.smartUpdate('value', event.data.reference.value);"
 							+ "		}"
@@ -437,7 +436,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 								"onChangingCombobox('" + dbName +"',this,event);"
 							);
 						} else {
-							comp.setWidgetListener("onChanging", "console.log(event.data);event.stop({au:true});");
+							comp.setWidgetListener("onChanging", "event.stop({au:true});");
 						}
 					
 						
