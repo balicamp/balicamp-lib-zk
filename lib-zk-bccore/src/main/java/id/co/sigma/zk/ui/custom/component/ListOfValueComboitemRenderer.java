@@ -25,7 +25,11 @@ public class ListOfValueComboitemRenderer implements ComboitemRenderer<ListOfVal
 				((Combobox)item.getParent()).setValue(item.getLabel());
 				this.found = true;
 			} else if(item.getParent() instanceof Combobox) {
-				if(!this.found) ((Combobox)item.getParent()).setValue("");
+				try {
+					if(!this.found) ((Combobox)item.getParent()).setValue("");
+				} catch (Exception e) {
+					((Combobox)item.getParent()).clearErrorMessage();
+				}
 			}
 		}
 	}
