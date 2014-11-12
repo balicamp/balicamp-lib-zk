@@ -17,9 +17,7 @@ zAu.cmd0.loadBandboxData=function(data) {
 	var listbox = bc[bId].firstChild.firstChild;
 	
 	try {
-		db.bulkDocs(list, function(err,resp){
-			/*console.log('bulk: ' + resp);*/
-		});
+		db.bulkDocs(list, function(err,resp){});
 	} catch(e){console.log(e);}
 	
 	db.changes().on('complete',function(resp){
@@ -39,9 +37,7 @@ zAu.cmd0.loadComboboxData=function(data) {
 	var db = new PouchDB(dbName);
 	
 	try {
-		db.bulkDocs(list, function(err,resp){
-			/*console.log('bulk: ' + resp);*/
-		});
+		db.bulkDocs(list, function(err,resp){});
 	} catch(e){console.log(e);}
 	
 	db.changes().on('complete',function(resp){
@@ -169,34 +165,37 @@ function onChangingCombobox(dbName, cmbbox, event) {
 
 function loadLOVCombo(combo, dbName) {
 	bc[combo.getId()] = combo;
-	var db = new PouchDB(dbName);
-	db.allDocs(
-		{include_docs: true},
-		function(err, docs){
-			/*console.log(docs);*/
-			if(docs.total_rows > 0) {
-				var val = combo.getValue();
-				var sel = null;
-				for(i=0;i<docs.total_rows;i++) {
-					combo.appendChild(new zul.inp.Comboitem(docs.rows[i].doc));
-					if(val == docs.rows[i].doc.value) {
-						sel = docs.rows[i].doc;
-					}
-				}
-				if(sel != null) {
-					combo.setValue(sel.label);
-				}
-				stopTimer(combo);
-			} else {
-				zAu.send(new zk.Event(combo,"onFill",{headerId: dbName},{toServer:true}));
-			}
-		}
-	);
+	
+	syncLOVDb(combo.getId(), dbName);
+
+//	var db = new PouchDB(dbName);
+//	
+//	db.allDocs(
+//		{include_docs: true},
+//		function(err, docs){
+//			/*console.log(docs);*/
+//			if(docs.total_rows > 0) {
+//				var val = combo.getValue();
+//				var sel = null;
+//				for(i=0;i<docs.total_rows;i++) {
+//					combo.appendChild(new zul.inp.Comboitem(docs.rows[i].doc));
+//					if(val == docs.rows[i].doc.value) {
+//						sel = docs.rows[i].doc;
+//					}
+//				}
+//				if(sel != null) {
+//					combo.setValue(sel.label);
+//				}
+//				stopTimer(combo);
+//			} else {
+//				zAu.send(new zk.Event(combo,"onFill",{headerId: dbName},{toServer:true}));
+//			}
+//		}
+//	);
 }
 
 function stopTimer(combo) {
 	if(cWindow.lcmb == null || cWindow.lcmb == undefined) return;
-	console.log(combo.getId() + " = " + cWindow.lcmb.getId());
 	if(combo == cWindow.lcmb) {
 		zAu.send(new zk.Event(cWindow,"onStopTimer",{comboId: combo.getId()},{toServer:true}));
 	}
@@ -310,4 +309,68 @@ function putSelectedValue(listbox, isOnSelect) {
 	if((isOnSelect == undefined) || (isOnSelect == false)) {
 		bDom.close();
 	}
+}
+
+function populateLOVfromCache(combo, dbName) {
+	var db = new PouchDB(dbName);	
+	db.allDocs(
+		{include_docs: true},
+		function(err, docs){
+			/*console.log(docs);*/
+			if(docs.total_rows > 0) {
+				var val = combo.getValue();
+				var sel = null;
+				for(i=0;i<docs.total_rows;i++) {
+					combo.appendChild(new zul.inp.Comboitem(docs.rows[i].doc));
+					if(val == docs.rows[i].doc.value) {
+						sel = docs.rows[i].doc;
+					}
+				}
+				if(sel != null) {
+					combo.setValue(sel.label);
+				}
+				stopTimer(combo);
+			}
+		}
+	);
+}
+
+function syncLOVDb(cmbId, dbName) {
+	var combo = bc[cmbId];
+	var d = _db$init.get(dbName).then(
+		function(doc){
+			var dt = new Date();
+			var cr = dt.getTime() - doc.created;
+			if(cr >= (3600 * 24 * 1000)) {
+				console.log("Sync DB...");
+				_db$init.put(
+					{created:dt.getTime(), 
+						name:dbName, 
+						_id:dbName,
+						_rev: doc._rev},
+						function(err,resp){
+							if(!err) {
+								zAu.send(new zk.Event(combo,"onFill",{headerId: dbName},{toServer:true}));
+							}
+						});
+			} else {
+				populateLOVfromCache(combo, dbName);
+			}
+		}
+	).catch(function(err){
+		var dt = new Date();
+		console.log("Sync New DB...");
+		_db$init.put({
+				created: dt.getTime(), 
+				name: dbName,
+				_id: dbName
+				}
+		).then(
+			function(resp){
+				zAu.send(new zk.Event(combo,"onFill",{headerId: dbName},{toServer:true}));
+			}
+		).catch(
+			function(err){}
+		);
+	});	
 }

@@ -674,6 +674,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		if(data instanceof Map) {
 			Map<String,?> map = (Map<String,?>) data;
 			String headerid = (String)map.get("headerId");
+			logger.info("Load lookup data...: " + headerid);
 			if(!(headerid == null || "".equals(headerid))) {
 				
 				List<String> headers = new ArrayList<String>();
