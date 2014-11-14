@@ -268,6 +268,10 @@ public final class EditorManager {
 			if(composer instanceof IReloadablePanel) {
 				((IReloadablePanel)composer).reload();
 			}
+			Timer timer = (Timer)((Window)listWindow).getFellowIfAny("listTimer");
+			if(timer != null) {
+				timer.start();
+			}
 		}
 		return System.currentTimeMillis();
 	}
