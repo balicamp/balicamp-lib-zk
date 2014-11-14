@@ -57,6 +57,7 @@ import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Spinner;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.impl.InputElement;
@@ -668,6 +669,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				val = ((Textbox)input).getValue();
 			} else if(input instanceof Longbox) {
 				val = ((Longbox)input).getValue();
+			} else if(input instanceof Spinner){
+			        val = ((Spinner)input).getValue();
 			}
 			
 			try {
