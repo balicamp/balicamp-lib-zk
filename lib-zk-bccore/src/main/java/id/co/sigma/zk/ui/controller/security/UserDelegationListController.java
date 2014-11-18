@@ -168,5 +168,12 @@ public class UserDelegationListController extends BaseSimpleListController<UserD
 	myFilters.toArray(finalFilters);
 	return finalFilters;
     }
+    
+    @Override
+    public SimpleSortArgument[] getSorts() {
+	return new SimpleSortArgument[]{
+		new SimpleSortArgument("startDate", false)
+	};
+    }
 
 }
