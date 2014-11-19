@@ -319,6 +319,17 @@ public final class EditorManager {
 		}
 	}
 	
+	/**
+	 * tutup editor terakhir tanpa reload data di list, ini untuk keperluan
+	 * apabila panel yang dibuka lebih dari 2 level dan ketika menuju panel berikutnya tidak diharuskan mereload
+	 * list yang ada di halaman searching, cukup diremove panel terakhir dari container
+	 */
+	public void removeCurrentEditorPanelFromContainer(){
+	    	List<Component> components =  editorContainerWindow.getChildren();
+		if (! components.isEmpty()){
+			editorContainerWindow.removeChild(components.get(components.size()-1));
+		}
+	}
 	
 	/**
 	 * @param editorContainer editor container
