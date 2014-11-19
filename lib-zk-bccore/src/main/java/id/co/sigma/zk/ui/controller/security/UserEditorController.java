@@ -153,7 +153,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 	@Override
 	protected void doBeforeSave(User data) {
 
-		validationForm(data);
+		/*validationForm(data);*/
 
 		if (ZKEditorState.EDIT.equals(getEditorState())) {
 			/*
@@ -234,8 +234,11 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 	protected void updateData(User data) throws Exception {
 		userService.update(data);
 	}
-
-	private boolean validationForm(User data) {
+	
+	@Override
+	protected void validateData() throws Exception {
+		// TODO Auto-generated method stub
+		User data = editedData;
 		List<String> notValidFiled = new ArrayList<String>();
 
 		if (ZKEditorState.ADD_NEW.equals(getEditorState())) {
@@ -279,13 +282,61 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 				}
 			}
 			// Messagebox.show("Error Message : \n"+error);
-			throw new RuntimeException("Error Message : \n" + error);
+			throw new RuntimeException(error);
+		}
+	}
+
+	/*private void validationForm(User data) throws Exception {
+		List<String> notValidFiled = new ArrayList<String>();
+
+		if (ZKEditorState.ADD_NEW.equals(getEditorState())) {
+			if (data.getChipperText().equalsIgnoreCase("")) {
+				notValidFiled.add("Password is empty");
+			}
+
+			String kode = data.getUserCode();
+			List<Serializable> filters = new ArrayList<Serializable>();
+			filters.add(kode);
+			try {
+				int jmlDataByUserCode = generalPurposeDao.loadDataByKeys(
+						User.class, "userCode", filters).size();
+				if (jmlDataByUserCode > 0) {
+					notValidFiled.add("Nama Pengguna Sudah Digunakan");
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		if (!data.getChipperText().equals(confirmChipperText.getValue())) {
+			notValidFiled.add("Password confirmation is incorrect");
+		}
+		if (!email.isValid()) {
+			notValidFiled.add("Invalid Email Address");
+		}
+
+		if (defaultBranchCode.getValue().equalsIgnoreCase("")) {
+			notValidFiled.add("Branch is empty");
+		}
+
+		if (notValidFiled.size() > 0) {
+			String error = "";
+			for (String string : notValidFiled) {
+				if (error.equals("")) {
+					error = string + " \n";
+				} else {
+					error += string + " \n";
+				}
+			}
+			// Messagebox.show("Error Message : \n"+error);
+			throw new RuntimeException(error);
 			// return false;
 		} else {
 			return true;
 		}
 
-	}
+	}*/
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
