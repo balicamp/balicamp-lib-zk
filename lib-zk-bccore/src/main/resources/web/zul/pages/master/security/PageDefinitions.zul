@@ -4,7 +4,8 @@
 	title="Daftar Page Definitions"
 	border="normal" 
 	apply="id.co.sigma.zk.ui.controller.security.PageDefintionListController"
-	editorPage="~./zul/pages/master/security/PageDefinitionEditor.zul">
+	editorPage="~./zul/pages/master/security/PageDefinitionEditor.zul"
+	modalEditor="true">
 	
 	<groupbox id="searchBox" mold="3d" width="100%">
 		
@@ -44,7 +45,7 @@
 			name="model">
 			<actionListitem editorPage="~./zul/pages/master/security/PageDefinitionEditor.zul"
 				deleteMsg="Apakah anda yakin menghapus data page: ${each.pageCode}"
-				controller="${pListWin$composer}">
+				controller="${pListWin$composer}" modal="true">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
 				<listcell label="${each.pageCode}" style="text-align:left"/>
 				<listcell label="${each.pageUrl}" style="text-align:left"/>

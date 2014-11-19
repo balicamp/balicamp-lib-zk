@@ -9,6 +9,7 @@ import id.co.sigma.zk.ui.controller.base.IEditorPanel;
 import id.co.sigma.zk.ui.custom.component.ListWindow;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +22,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Timer;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Window;
 
 /**
@@ -34,6 +36,8 @@ public final class EditorManager {
 	private Include includePanel ; 
 	
 	private Long createdTime = Calendar.getInstance().getTimeInMillis();
+	
+	private List<Window> winModals = new ArrayList<Window>();
 	
 	private EditorManager() {}
 	
@@ -112,18 +116,31 @@ public final class EditorManager {
 	 * @param dataContainer container dari data
 	 * @param editedData data yang di edit
 	 * @param caller pemanggil
+	 * @param isPopup TODO
 	 */
-	public<DATA extends SingleKeyEntityData<?>> void editData ( String zulPath ,ZKClientSideListDataEditorContainer<DATA> dataContainer ,DATA editedData , BaseSimpleController caller ) {
+	public<DATA extends SingleKeyEntityData<?>> void editData ( String zulPath ,ZKClientSideListDataEditorContainer<DATA> dataContainer ,DATA editedData , BaseSimpleController caller, boolean... isPopup ) {
 		
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, editedData); 
 		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.EDIT); 
 		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_CLIENT_CONTAINER_KEY, dataContainer);
-		showHideLatestComponent(false);
-		includePanel.setVisible(false);
-		editorContainerWindow.setVisible(true); 
-		Executions.createComponents(zulPath, editorContainerWindow, parameter);
+		
+		if(!isShowModal(isPopup)) {
+			showHideLatestComponent(false);
+			includePanel.setVisible(false);
+			editorContainerWindow.setVisible(true); 
+			Executions.createComponents(zulPath, editorContainerWindow, parameter);
+		} else {
+			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
+			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+			if(tb != null) {
+				tb.setAlign("center");
+			}
+			wModal.setClosable(false);			
+			wModal.doModal();
+			winModals.add(0, wModal);
+		}
 	}
 	
 	/**
@@ -132,30 +149,53 @@ public final class EditorManager {
 	 * @param editedData data yang di edit
 	 * @param caller pemanggil data
 	 */
-	public<DATA extends SingleKeyEntityData<?>> void editData ( String zulPath ,DATA editedData , BaseSimpleController caller ) {
+	public<DATA extends SingleKeyEntityData<?>> void editData ( String zulPath ,DATA editedData , BaseSimpleController caller, boolean... isPopup) {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, editedData); 
 		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.EDIT); 
 		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
 		
-		showHideLatestComponent(false);
-		includePanel.setVisible(false);
-		editorContainerWindow.setVisible(true); 
-		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+		if(!isShowModal(isPopup)) {		
+			showHideLatestComponent(false);
+			includePanel.setVisible(false);
+			editorContainerWindow.setVisible(true); 
+			Executions.createComponents(zulPath, editorContainerWindow, parameter);
+		} else {
+			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
+			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+			if(tb != null) {
+				tb.setAlign("center");
+			}
+			wModal.setClosable(false);			
+			wModal.doModal();
+			winModals.add(0, wModal);
+		}
 	}
 	
 	
 	
-	public<DATA > void addNewData ( String zulPath, ZKClientSideListDataEditorContainer<DATA> container ,DATA appendedData , BaseSimpleController caller ) {
+	public<DATA > void addNewData ( String zulPath, ZKClientSideListDataEditorContainer<DATA> container ,DATA appendedData , BaseSimpleController caller, boolean... isPopup ) {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 
 		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.ADD_NEW);
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_CLIENT_CONTAINER_KEY, container);
 		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
-		showHideLatestComponent(false);
-		includePanel.setVisible(false);
-		editorContainerWindow.setVisible(true); 
-		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+		
+		if(!isShowModal(isPopup)) {
+			showHideLatestComponent(false);
+			includePanel.setVisible(false);
+			editorContainerWindow.setVisible(true); 
+			Executions.createComponents(zulPath, editorContainerWindow, parameter);
+		} else {
+			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
+			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+			if(tb != null) {
+				tb.setAlign("center");
+			}
+			wModal.setClosable(false);			
+			wModal.doModal();
+			winModals.add(0, wModal);
+		}
 	}
 	
 	
@@ -165,15 +205,27 @@ public final class EditorManager {
 	 * @param appendedData data yang di add
 	 * @param caller caller dari editor. biasanay this 
 	 */
-	public<DATA extends SingleKeyEntityData<?>> void addNewData ( String zulPath ,DATA appendedData , BaseSimpleController caller ) {
+	public<DATA extends SingleKeyEntityData<?>> void addNewData ( String zulPath ,DATA appendedData , BaseSimpleController caller, boolean... isPopup ) {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 
 		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.ADD_NEW); 
 		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller);
-		showHideLatestComponent(false);
-		includePanel.setVisible(false);
-		editorContainerWindow.setVisible(true); 
-		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+		
+		if(!isShowModal(isPopup)) {		
+			showHideLatestComponent(false);
+			includePanel.setVisible(false);
+			editorContainerWindow.setVisible(true); 
+			Executions.createComponents(zulPath, editorContainerWindow, parameter);
+		} else {
+			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
+			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+			if(tb != null) {
+				tb.setAlign("center");
+			}
+			wModal.setClosable(false);			
+			wModal.doModal();
+			winModals.add(0, wModal);
+		}
 	}
 	
 	
@@ -184,16 +236,28 @@ public final class EditorManager {
 	 * @param additionalData
 	 * @param caller
 	 */
-	public<DATA extends SingleKeyEntityData<?>> void addNewData ( String zulPath ,DATA appendedData , DATA additionalData, BaseSimpleController caller ) {
+	public<DATA extends SingleKeyEntityData<?>> void addNewData ( String zulPath ,DATA appendedData , DATA additionalData, BaseSimpleController caller, boolean... isPopup ) {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 
 		parameter.put(ZKCoreLibConstant.ADDITIONAL_DATA_ATTRIBUTE_KEY, additionalData);
 		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.ADD_NEW); 
 		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller);
-		showHideLatestComponent(false);
-		includePanel.setVisible(false);
-		editorContainerWindow.setVisible(true); 
-		Executions.createComponents(zulPath, editorContainerWindow, parameter); 
+		
+		if(!isShowModal(isPopup)) {
+			showHideLatestComponent(false);
+			includePanel.setVisible(false);
+			editorContainerWindow.setVisible(true); 
+			Executions.createComponents(zulPath, editorContainerWindow, parameter);
+		} else {
+			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
+			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+			if(tb != null) {
+				tb.setAlign("center");
+			}
+			wModal.setClosable(false);			
+			wModal.doModal();
+			winModals.add(0, wModal);
+		}
 	}
 	
 	
@@ -227,18 +291,31 @@ public final class EditorManager {
 	 * tutup editor terakhir
 	 */
 	public void closeCurrentEditorPanel () {
-		List<Component> components =  editorContainerWindow.getChildren();
-		if (! components.isEmpty()){
-			editorContainerWindow.removeChild(components.get(components.size()-1));
-			showHideLatestComponent(true);
-		}
 		
-		
-		
-		if ( components.isEmpty()){
-			editorContainerWindow.setVisible(false) ; 
-			includePanel.setVisible(true); 
-			Events.postEvent(new ReloadEvent(includePanel.getFirstChild(), reloadData()));
+		if(winModals.isEmpty()) {
+			
+			List<Component> components =  editorContainerWindow.getChildren();
+			if (! components.isEmpty()){
+				editorContainerWindow.removeChild(components.get(components.size()-1));
+				showHideLatestComponent(true);
+			}
+			
+			
+			
+			if ( components.isEmpty()){
+				editorContainerWindow.setVisible(false) ; 
+				includePanel.setVisible(true); 
+				Events.postEvent(new ReloadEvent(includePanel.getFirstChild(), reloadData()));
+			}
+			
+		} else {
+			Window w = winModals.get(0);
+			w.detach();
+			winModals.remove(0);
+			w = null;
+			if(includePanel.isVisible()) {
+				Events.postEvent(new ReloadEvent(includePanel.getFirstChild(), reloadData()));
+			}
 		}
 	}
 	
@@ -282,5 +359,13 @@ public final class EditorManager {
 			super("onReload", target, data);
 		}
 		
+	}
+	
+	private boolean isShowModal(boolean... isPopup) {
+		boolean showModal = false;
+		if(isPopup != null && isPopup.length > 0) {
+			showModal = isPopup[0];
+		}
+		return showModal;
 	}
 }

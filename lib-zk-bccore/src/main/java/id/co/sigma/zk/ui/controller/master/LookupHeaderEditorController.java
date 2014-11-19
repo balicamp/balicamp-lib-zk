@@ -88,9 +88,9 @@ public class LookupHeaderEditorController extends BaseSimpleDirectToDBEditor<Loo
 		reloadChildGridData();
 		LookupDetail d = new LookupDetail();
 		d.setI18Key(txtI18Key.getValue());
-		clientDataContainer.appendNewItem(d);
-		lsbLookupDetails.setModel(clientDataContainer);
-//		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul", this.clientDataContainer ,  d, this);
+//		clientDataContainer.appendNewItem(d);
+//		lsbLookupDetails.setModel(clientDataContainer);
+		EditorManager.getInstance().addNewData("~./zul/pages/master/LookupDetailEditor.zul", this.clientDataContainer ,  d, this, true);
 	}
 	
 	@Override

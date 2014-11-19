@@ -36,6 +36,8 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 	
 	private boolean child = false;
 	
+	private boolean modal = false;
+	
 	public ActionRow() {
 		Executions.createComponents("~./zul/pages/common/ActionRow.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -142,6 +144,20 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 	}
 
 	/**
+	 * @return the modal
+	 */
+	public boolean isModal() {
+		return modal;
+	}
+
+	/**
+	 * @param modal the modal to set
+	 */
+	public void setModal(String modal) {
+		this.modal = Boolean.valueOf(modal);
+	}
+
+	/**
 	 * init action button
 	 * @param actBtn
 	 */
@@ -151,6 +167,7 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 		actBtn.setController(controller);
 		actBtn.setDeleteMsg(deleteMsg);
 		actBtn.setEditorPage(editorPage);
+		actBtn.setModal(modal);
 		actBtn.getChildren().get(ActionButton.EDIT_BUTTON).setVisible(editable);
 		actBtn.getChildren().get(ActionButton.DELETE_BUTTON).setVisible(deletable);
 	}

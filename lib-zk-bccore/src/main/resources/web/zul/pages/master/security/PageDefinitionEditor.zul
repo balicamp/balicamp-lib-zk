@@ -5,7 +5,8 @@
 <editorWindow id="pageDefEditor" captionLabel="Page Definition Editor"
 	apply="id.co.sigma.zk.ui.controller.security.PageDefintionEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
-	confirmationMsg="Apakah anda akan menyimpan data ini?">
+	confirmationMsg="Apakah anda akan menyimpan data ini?"
+	width="60%">
 	<grid vflex="1">	
 		<columns>
 				<column width="150px" align="left"/>
@@ -17,22 +18,22 @@
 		<rows>
 			<row>
 				${labels.field.code}
-				<textbox 
+				<textbox zindex="1" tabindex="1"
 					id="pageCode" 
 					value="${pageDefEditor$composer.editedData.pageCode}" constraint="no empty:${labels.field.code} ${labels.msg.input.required}"/>
 				<space hflex="1"/>
 				Additional Data
-				<textbox id="additionalData"
+				<textbox id="additionalData" zindex="3"  tabindex="3"
 					value="${pageDefEditor$composer.editedData.additionalData}"></textbox>
 			</row>
 			<row>
 				URL
-				<textbox id="pageUrlAnnotated" 
+				<textbox id="pageUrlAnnotated" zindex="2"  tabindex="2"
 					disabled="${editStateEnabledFlag}"
 					value="${pageDefEditor$composer.editedData.pageUrl}" constraint="no empty : URL ${labels.msg.input.required}"></textbox>
 				<space hflex="1"/>
 				${labels.field.remark}
-				<textbox id="remark"
+				<textbox id="remark" zindex="4"  tabindex="4"
 					value="${pageDefEditor$composer.editedData.remark}"></textbox>
 			</row>
 		</rows>

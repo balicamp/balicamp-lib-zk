@@ -31,6 +31,8 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 	
 	private boolean editable = true;
 	
+	private boolean modal = false;
+	
 	private int childIndex = 0;
 	
 	private boolean child = false;
@@ -145,6 +147,20 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 	}
 
 	/**
+	 * @return the modal
+	 */
+	public boolean isModal() {
+		return modal;
+	}
+
+	/**
+	 * @param modal the modal to set
+	 */
+	public void setModal(String modal) {
+		this.modal = Boolean.valueOf(modal);
+	}
+
+	/**
 	 * init action button
 	 * @param actBtn
 	 */
@@ -154,6 +170,7 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 		actBtn.setController(controller);
 		actBtn.setDeleteMsg(deleteMsg);
 		actBtn.setEditorPage(editorPage);
+		actBtn.setModal(modal);
 		actBtn.getChildren().get(ActionButton.EDIT_BUTTON).setVisible(editable);
 		actBtn.getChildren().get(ActionButton.DELETE_BUTTON).setVisible(deletable);
 		actBtn.setChildIndex(String.valueOf(childIndex));

@@ -13,13 +13,13 @@
 		</panelchildren>
 	</panel>
 	<separator/>
-	<panel>
-		<panelchildren>
-				<hlayout>
-					<button id="btnSave" label="${labels.action.button.save}"/>
-					<button id="btnCancel" label="${labels.action.button.cancel}"/>
-					<timer id="lovLoaderTimer" delay="50" onCreate="self.stop()" repeats="true"/>
-				</hlayout>
-		</panelchildren>
-	</panel>
+<!-- 	<panel hflex="1">
+		<panelchildren> -->
+	<toolbar mold="panel" id="buttonToolbar">
+		<button id="btnSave" label="${labels.action.button.save}"/>
+		<button id="btnCancel" label="${labels.action.button.cancel}"/>
+		<timer id="lovLoaderTimer" delay="50" onCreate="self.stop()" repeats="true"/>
+	</toolbar>
+<!-- 		</panelchildren>
+	</panel> -->
 </zk>

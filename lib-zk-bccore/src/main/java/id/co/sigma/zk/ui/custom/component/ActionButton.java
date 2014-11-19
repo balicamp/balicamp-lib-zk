@@ -46,6 +46,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	
 	private boolean delete = true;
 	private boolean edit = true;
+	private boolean modal = false;
 	
 	private int childIndex = 0;
 	
@@ -100,9 +101,9 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 				
 				if(data != null) {
 					if(controller instanceof BaseSimpleListController) {
-						EditorManager.getInstance().editData(editorPage, data, controller);
+						EditorManager.getInstance().editData(editorPage, data, controller, modal);
 					} else if(controller instanceof BaseSimpleDirectToDBEditor) {
-						EditorManager.getInstance().editData(editorPage, container, data, controller);
+						EditorManager.getInstance().editData(editorPage, container, data, controller, modal);
 					}
 				}
 			}
@@ -237,6 +238,20 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 		this.childIndex = Integer.valueOf(childIndex);
 	}
 	
+	/**
+	 * @return the modal
+	 */
+	public boolean isModal() {
+		return modal;
+	}
+
+	/**
+	 * @param modal the modal to set
+	 */
+	public void setModal(boolean modal) {
+		this.modal = modal;
+	}
+
 	private Component getParent(Component comp) {
 		Component prnt = comp;
 		while(!((prnt instanceof Listitem) || (prnt instanceof Row))) {

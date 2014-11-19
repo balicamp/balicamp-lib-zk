@@ -79,6 +79,8 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	private boolean searchable = true; 
 	
 	private boolean addable = true;
+	
+	private boolean modalEditor = false;
 
 	public ListWindow() {
 		Executions.createComponents("~./zul/pages/common/ListWindow.zul", this, null);
@@ -174,7 +176,7 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	@Listen("onClick = #btnAddNew")
 	public void onClickButtonAddNew() {
 		if(listController != null) {
-			EditorManager.getInstance().addNewData(editorPage, (SingleKeyEntityData<?>)listController.addNewData(), listController);
+			EditorManager.getInstance().addNewData(editorPage, (SingleKeyEntityData<?>)listController.addNewData(), listController, modalEditor);
 		}
 	}
 	
@@ -225,6 +227,20 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	 */
 	public void setAddable(String addable) {
 		this.addable = Boolean.valueOf(addable);
+	}
+
+	/**
+	 * @return the modalEditor
+	 */
+	public boolean isModalEditor() {
+		return modalEditor;
+	}
+
+	/**
+	 * @param modalEditor the modalEditor to set
+	 */
+	public void setModalEditor(String modalEditor) {
+		this.modalEditor = Boolean.valueOf(modalEditor);
 	}
 
 	
