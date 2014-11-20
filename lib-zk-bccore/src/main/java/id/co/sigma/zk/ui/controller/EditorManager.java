@@ -22,7 +22,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Timer;
-import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Window;
 
 /**
@@ -133,10 +132,10 @@ public final class EditorManager {
 			Executions.createComponents(zulPath, editorContainerWindow, parameter);
 		} else {
 			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
-			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
-			if(tb != null) {
-				tb.setAlign("center");
-			}
+//			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+//			if(tb != null) {
+//				tb.setAlign("center");
+//			}
 			wModal.setClosable(false);			
 			wModal.doModal();
 			winModals.add(0, wModal);
@@ -162,10 +161,10 @@ public final class EditorManager {
 			Executions.createComponents(zulPath, editorContainerWindow, parameter);
 		} else {
 			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
-			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
-			if(tb != null) {
-				tb.setAlign("center");
-			}
+//			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+//			if(tb != null) {
+//				tb.setAlign("center");
+//			}
 			wModal.setClosable(false);			
 			wModal.doModal();
 			winModals.add(0, wModal);
@@ -188,10 +187,10 @@ public final class EditorManager {
 			Executions.createComponents(zulPath, editorContainerWindow, parameter);
 		} else {
 			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
-			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
-			if(tb != null) {
-				tb.setAlign("center");
-			}
+//			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+//			if(tb != null) {
+//				tb.setAlign("center");
+//			}
 			wModal.setClosable(false);			
 			wModal.doModal();
 			winModals.add(0, wModal);
@@ -218,10 +217,10 @@ public final class EditorManager {
 			Executions.createComponents(zulPath, editorContainerWindow, parameter);
 		} else {
 			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
-			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
-			if(tb != null) {
-				tb.setAlign("center");
-			}
+//			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+//			if(tb != null) {
+//				tb.setAlign("center");
+//			}
 			wModal.setClosable(false);			
 			wModal.doModal();
 			winModals.add(0, wModal);
@@ -250,10 +249,10 @@ public final class EditorManager {
 			Executions.createComponents(zulPath, editorContainerWindow, parameter);
 		} else {
 			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
-			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
-			if(tb != null) {
-				tb.setAlign("center");
-			}
+//			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+//			if(tb != null) {
+//				tb.setAlign("center");
+//			}
 			wModal.setClosable(false);			
 			wModal.doModal();
 			winModals.add(0, wModal);
