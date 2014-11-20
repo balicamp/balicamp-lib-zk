@@ -49,7 +49,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 			//load from database
 			User dbUser = userDao.getUserByUserName(username);
 			if(dbUser != null) {
-				
+				dbUser.getBranch();
 				String[] roles = userDao.getUserRoles(dbUser.getId());
 				user = new UserData(username, dbUser.getChipperText(), getRoles(roles));
 				user.setApplicationUser(dbUser);
