@@ -815,6 +815,16 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	protected void handleNoButton(final Event event) {
 		
 	}
+	
+	protected final void showInvalidDataMessage(String errMessage){
+	    Messagebox.show(
+			errMessage, 
+			Labels.getLabel("title.msgbox.invalid"),
+			new Messagebox.Button[]{Messagebox.Button.OK},
+			new String[]{Labels.getLabel("action.button.ok")},
+			Messagebox.ERROR,
+			Messagebox.Button.OK, null);
+	}
 
 	protected final void showSuccesMessage(ZKEditorState state) {
 		Messagebox.show(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.success") : Labels.getLabel("msg.save.edit.success"), 
