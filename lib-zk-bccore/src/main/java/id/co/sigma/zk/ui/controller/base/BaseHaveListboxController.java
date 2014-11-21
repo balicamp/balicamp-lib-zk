@@ -212,17 +212,20 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	public abstract Listbox getListbox()  ; 
 	
 	private SimpleSortArgument[] getSortableFirstHeader(Listbox lb) {
+		SimpleSortArgument[] sorts = null;
 		Listhead headers = lb.getListhead();
 		List<Listheader> lhdrs = headers.getChildren();
 		for(Listheader hdr : lhdrs) {
-			if(hdr.getSortAscending() != null) {
+			if((hdr.getSortAscending() != null) && (sorts == null)) {
 				FieldComparator cmpr = (FieldComparator)hdr.getSortAscending();
 				hdr.setSortDirection("ascending");
-				return new SimpleSortArgument[] {
+				sorts = new SimpleSortArgument[] {
 					new SimpleSortArgument(cmpr.getRawOrderBy(), true)	
 				};
+			} else {
+				hdr.setSortDirection("natural");
 			}
 		}
-		return null;
+		return sorts;
 	}
 }
