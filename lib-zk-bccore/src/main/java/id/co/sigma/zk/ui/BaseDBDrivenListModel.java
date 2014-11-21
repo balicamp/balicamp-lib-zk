@@ -2,20 +2,26 @@ package id.co.sigma.zk.ui;
 
 import id.co.sigma.common.data.PagedResultHolder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.zkoss.lang.Objects;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.event.ListDataListener;
 import org.zkoss.zul.ext.Selectable;
+import org.zkoss.zul.ext.Sortable;
 
 /**
  * base class untuk list grid untuk data yang di drive dari database
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
-public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DATA> implements ListModel<DATA>  ,   Selectable<DATA> {
+public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DATA> implements ListModel<DATA>  ,   Selectable<DATA>, Sortable<DATA> {
 
 	
 	
@@ -34,12 +40,19 @@ public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DAT
 	
 	private Set<DATA> selectedItems = new HashSet<DATA>(); 
 	
+	private Comparator<DATA> sorting;
+
+	private boolean sortDir;	
 	
 	private boolean multiple; 
+	
+	private transient List<ListDataListener> listeners = new ArrayList<ListDataListener>();
+	
 	@Override
 	public void addListDataListener(ListDataListener listener) {
-		// TODO Auto-generated method stub
-		
+		if (listener == null)
+			throw new NullPointerException();
+		listeners.add(listener);
 	}
 
 	@Override
@@ -185,8 +198,35 @@ public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DAT
 		selectedItems.clear(); 
 		selectedItems.addAll(selection); 
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.zkoss.zul.ext.Sortable#sort(java.util.Comparator, boolean)
+	 */
+	@Override
+	public void sort(Comparator<DATA> cmpr, boolean ascending) {
+		sorting = cmpr;
+		sortDir = ascending;
+		Collections.sort(getHoldedData(), cmpr);
+		fireEvent(ListDataEvent.STRUCTURE_CHANGED, -1, -1);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.zkoss.zul.ext.Sortable#getSortDirection(java.util.Comparator)
+	 */
+	@Override
+	public String getSortDirection(Comparator<DATA> cmpr) {
+		if (Objects.equals(sorting, cmpr))
+			return sortDir ?
+					"ascending" : "descending";
+		return "natural";	
 	} 
 	
+	protected void fireEvent(int type, int index0, int index1) {
+		final ListDataEvent evt = new ListDataEvent(this, type, index0, index1);
+		for (ListDataListener l : listeners)
+			l.onChange(evt);
+	}
 	
 
 }
