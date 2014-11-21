@@ -36,10 +36,10 @@
 		pageSize="10" >
 		<actionListhead>
 			<listheader label="No" width="2%" align="center"/>
-			<listheader label="Code" width="20%" align="center"/>
-			<listheader label="URL" width="40%" align="center"/>
-			<listheader label="Remark" width="20%" align="center"/>
-			<listheader label="Additional Data" width="15%" align="center"/>
+			<listheader label="Code" width="20%" align="center" sort="auto(pageCode)"/>
+			<listheader label="URL" width="40%" align="center" sort="auto(pageUrl)"/>
+			<listheader label="Remark" width="20%" align="center" sort="auto(remark)"/>
+			<listheader label="Additional Data" width="15%" align="center" sort="auto(additionalData)"/>
 		</actionListhead>
 		<template 
 			name="model">
