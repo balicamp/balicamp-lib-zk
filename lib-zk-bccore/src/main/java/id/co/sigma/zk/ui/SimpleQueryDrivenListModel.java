@@ -4,6 +4,7 @@ import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -35,6 +36,8 @@ public abstract  class SimpleQueryDrivenListModel<DATA> extends BaseDBDrivenList
 	@Autowired
 	private IGeneralPurposeDao generalPurposeDao ;
 	
+	private SimpleSortArgument[] sortArgs = null;
+	
 	
 	public SimpleQueryDrivenListModel(){
 		super() ; 
@@ -61,7 +64,8 @@ public abstract  class SimpleQueryDrivenListModel<DATA> extends BaseDBDrivenList
 	/**
 	 * sorting arguments
 	 */
-	protected abstract SimpleSortArgument[] getSorts() ; 
+	protected abstract SimpleSortArgument[] getSorts() ;
+	
 	
 	@Override
 	public Integer count() {
@@ -69,10 +73,34 @@ public abstract  class SimpleQueryDrivenListModel<DATA> extends BaseDBDrivenList
 		return swap == null ? null : swap.intValue() ; 
 	}
 
+	/**
+	 * @return the sortArgs
+	 */
+	public SimpleSortArgument[] getSortArgs() {
+		SimpleSortArgument[] sorts = getSorts(); // additional sorts if any
+		if(sorts != null && sorts.length > 0) {
+			if(sortArgs == null) {
+				sortArgs = sorts;
+			} else {
+				int len = sortArgs.length;
+				sortArgs = Arrays.copyOf(sortArgs, sortArgs.length + sorts.length);
+				System.arraycopy(sorts, 0, sortArgs, len, sorts.length);
+			}
+		}
+		return sortArgs;
+	}
+
+	/**
+	 * @param sortArgs the sortArgs to set
+	 */
+	public void setSortArgs(SimpleSortArgument[] sortArgs) {
+		this.sortArgs = sortArgs;
+	}
+
 	@Override
 	public List<DATA> selectFromDB(int pageSize, int firstRowPosition) {
 		try {
-			return generalPurposeDao.list( getHandledClass(), getFilters() , getSorts()  , pageSize, firstRowPosition);
+			return generalPurposeDao.list( getHandledClass(), getFilters() , getSortArgs()  , pageSize, firstRowPosition);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("gagal membaca data untuk model list. error : " + e.getMessage() , e);
@@ -81,4 +109,15 @@ public abstract  class SimpleQueryDrivenListModel<DATA> extends BaseDBDrivenList
 		
 	}
 
+
+	@Override
+	protected void sortData(String fieldName, boolean ascending) {
+		if((this.sortArgs == null) || (this.sortArgs.length == 0)) {
+			this.sortArgs = new SimpleSortArgument[]{
+				new SimpleSortArgument(fieldName, ascending)	
+			};			
+		}
+		this.sortArgs[0] = new SimpleSortArgument(fieldName, ascending);
+	}
+	
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.zkoss.lang.Objects;
+import org.zkoss.zul.FieldComparator;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.event.ListDataListener;
@@ -200,20 +201,17 @@ public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DAT
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.zkoss.zul.ext.Sortable#sort(java.util.Comparator, boolean)
-	 */
 	@Override
 	public void sort(Comparator<DATA> cmpr, boolean ascending) {
 		sorting = cmpr;
 		sortDir = ascending;
-		Collections.sort(getHoldedData(), cmpr);
+		if(cmpr instanceof FieldComparator) {
+			sortData(((FieldComparator)cmpr).getRawOrderBy(), ascending);
+			navigate(getPage());
+		}
 		fireEvent(ListDataEvent.STRUCTURE_CHANGED, -1, -1);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.zkoss.zul.ext.Sortable#getSortDirection(java.util.Comparator)
-	 */
 	@Override
 	public String getSortDirection(Comparator<DATA> cmpr) {
 		if (Objects.equals(sorting, cmpr))
@@ -228,5 +226,7 @@ public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DAT
 			l.onChange(evt);
 	}
 	
-
+	protected void sortData(String fieldName, boolean ascending) {
+		
+	}
 }

@@ -3,6 +3,7 @@ package id.co.sigma.zk.ui.controller.base;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
@@ -16,7 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.FieldComparator;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -85,7 +89,8 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 				return sorts;
 			}
 		};
-		Listbox lb =getListbox(); 
+		Listbox lb = getListbox(); 
+		dataModel.setSortArgs(getSortableFirstHeader(lb));
 		dataModel.initiate(lb.getPageSize());
 		dataModel.setMultiple(lb.isMultiple());
 		lb.setModel(dataModel);
@@ -195,6 +200,7 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		flt.setOperator(opr);
 		return flt; 
 	}
+	
 	/**
 	 * sort argument
 	 */
@@ -204,4 +210,19 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 
 	
 	public abstract Listbox getListbox()  ; 
+	
+	private SimpleSortArgument[] getSortableFirstHeader(Listbox lb) {
+		Listhead headers = lb.getListhead();
+		List<Listheader> lhdrs = headers.getChildren();
+		for(Listheader hdr : lhdrs) {
+			if(hdr.getSortAscending() != null) {
+				FieldComparator cmpr = (FieldComparator)hdr.getSortAscending();
+				hdr.setSortDirection("ascending");
+				return new SimpleSortArgument[] {
+					new SimpleSortArgument(cmpr.getRawOrderBy(), true)	
+				};
+			}
+		}
+		return null;
+	}
 }
