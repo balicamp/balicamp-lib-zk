@@ -1,13 +1,17 @@
 package id.co.sigma.zk.ui.data;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.zkoss.lang.Objects;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.event.ListDataListener;
 import org.zkoss.zul.ext.Selectable;
+import org.zkoss.zul.ext.Sortable;
 
 import id.co.sigma.common.data.ClientSideListDataEditorContainer;
 
@@ -15,7 +19,7 @@ import id.co.sigma.common.data.ClientSideListDataEditorContainer;
  * data container in memory untuk ZK
  * @author <a href="mailto:gede.sutarsa@gmail.com">Gede Sutarsa</a>
  */
-public class ZKClientSideListDataEditorContainer<DATA> extends ClientSideListDataEditorContainer<DATA>  implements ListModel<DATA>  ,   Selectable<DATA>{
+public class ZKClientSideListDataEditorContainer<DATA> extends ClientSideListDataEditorContainer<DATA>  implements ListModel<DATA>  , Selectable<DATA>, Sortable<DATA>{
 	/**
 	 * 
 	 */
@@ -30,6 +34,9 @@ public class ZKClientSideListDataEditorContainer<DATA> extends ClientSideListDat
 	
 	private HashSet<ListDataListener> listeners = new HashSet<ListDataListener>() ; 
 	
+	private Comparator<DATA> sorting;
+	
+	private boolean sortDir;
 	
 	
 	private HashSet<DATA> selectedItems = new HashSet<DATA>(); 
@@ -150,5 +157,21 @@ public class ZKClientSideListDataEditorContainer<DATA> extends ClientSideListDat
 		for ( ListDataListener scn : listeners ) {
 			scn.onChange(evt);
 		}
+	}
+	
+	@Override
+	public void sort(Comparator<DATA> cmpr, boolean ascending) {
+		sorting = cmpr;
+		sortDir = ascending;
+		Collections.sort(allStillExistData, cmpr);
+		fireEvent(ListDataEvent.STRUCTURE_CHANGED, -1, -1);
+	}
+	
+	@Override
+	public String getSortDirection(Comparator<DATA> cmpr) {
+		if (Objects.equals(sorting, cmpr))
+			return sortDir ?
+					"ascending" : "descending";
+		return "natural";	
 	}
 }
