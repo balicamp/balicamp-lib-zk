@@ -2,9 +2,7 @@ package id.co.sigma.zk.ui.controller.security;
 
 
 
-import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
-import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.security.server.service.IUserService;
@@ -12,11 +10,8 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.select.annotation.Wire;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
 
@@ -114,7 +109,7 @@ public class UserListController extends BaseSimpleListController<User> implement
 		}
 	}*/
 	
-	@Override
+	/*@Override
 	public void invokeSearch(SimpleQueryFilter[] filters,
 			SimpleSortArgument[] sorts) {
 		// TODO Auto-generated method stub
@@ -126,5 +121,5 @@ public class UserListController extends BaseSimpleListController<User> implement
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }
