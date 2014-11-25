@@ -10,7 +10,7 @@
 		<panelchildren>
 			<groupbox>
 				<hlayout>
-					<button id="btnPilih" label="${labels.action.button.select}"/>
+					<button id="btnPilih" label="${labels.action.button.pilih}"/>
 					<button id="btnCancel" label="${labels.action.button.cancel}"/>
 				</hlayout>
 			</groupbox>
