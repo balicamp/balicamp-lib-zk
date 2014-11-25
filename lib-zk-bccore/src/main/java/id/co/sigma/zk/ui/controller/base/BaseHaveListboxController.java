@@ -56,7 +56,7 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	
 	
 	
-	DATA selectedItem ; 
+	protected DATA selectedItem ; 
 	
 	
 	

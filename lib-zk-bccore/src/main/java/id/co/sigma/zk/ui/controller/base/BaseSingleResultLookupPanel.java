@@ -2,10 +2,12 @@ package id.co.sigma.zk.ui.controller.base;
 
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.SingleValueLookupReciever;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
 
 import java.util.Map;
 import java.util.Set;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -76,6 +78,7 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	
 	@Listen("onClick = #btnPilih")
 	public void selectClick(final Event evt) {
+	    try {
 		Set<DATA> sels =  this.dataModel.getSelection();
 		if ( sels!= null && !sels.isEmpty()){
 			selectedItem = sels.iterator().next(); 
@@ -86,14 +89,29 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 			Messagebox.show("Belum ada data yang di pilih");
 			return ; 
 		}
+		validateData();
 		getWindowReference().detach();
 		valueSelectedHandler.onDataSelected(selectedItem);
+	    } catch (Exception e) {
+		Messagebox.show(
+			e.getMessage(), 
+			Labels.getLabel("title.msgbox.error"),
+			new Messagebox.Button[]{Messagebox.Button.OK},
+			new String[]{Labels.getLabel("action.button.ok")},
+			Messagebox.ERROR,
+			Messagebox.Button.OK, null);
+	    }
+		
 	}
 	
 	
 	@Listen("onClick = #btnCancel")
 	public void cancelClick(final Event evt) {
 		getWindowReference().detach();
+	}
+	
+	protected void validateData() throws Exception{
+	    
 	}
 
 }
