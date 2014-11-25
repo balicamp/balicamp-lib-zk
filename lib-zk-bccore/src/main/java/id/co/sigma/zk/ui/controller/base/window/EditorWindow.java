@@ -166,8 +166,8 @@ public class EditorWindow extends Window implements AfterCompose {
 		for(Component comp : comps) {
 			if(comp instanceof InputElement) {
 				Constraint cons = ((InputElement)comp).getConstraint();
-				if((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex()) 
-						|| (((InputElement) comp).getWidth() == null) || ("".equals(((InputElement) comp).getWidth()))) 
+				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
+						&& ((((InputElement) comp).getWidth() == null) || ("".equals(((InputElement) comp).getWidth())))) 
 						&& !((comp instanceof Combobox) || (comp instanceof Datebox) || (comp instanceof Bandbox))) {
 					((InputElement)comp).setHflex("1");
 				}
