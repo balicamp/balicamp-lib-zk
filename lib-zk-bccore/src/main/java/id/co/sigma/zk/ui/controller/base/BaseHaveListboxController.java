@@ -21,6 +21,7 @@ import org.zkoss.zul.FieldComparator;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -94,7 +95,25 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		dataModel.initiate(lb.getPageSize());
 		dataModel.setMultiple(lb.isMultiple());
 		lb.setModel(dataModel);
-		
+		ListitemRenderer<DATA> renderer = getCustomRenderer(); 
+		if ( renderer!= null){
+			lb.setItemRenderer(renderer);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * renderer Dedicated untuk render column. ini di pergunakan kalu render column di rasa lebih mudah dengan java code. 
+	 * silakan cek di sini : <a href="http://books.zkoss.org/wiki/User:Jimmyshiau/Comp_Ref_Listbox#ListitemRenderer">http://books.zkoss.org/wiki/User:Jimmyshiau/Comp_Ref_Listbox#ListitemRenderer</a> 
+	 * 
+	 * 
+	 */
+	protected ListitemRenderer<DATA> getCustomRenderer () {
+		return null ; 
 	}
 	/**
 	 * generate filters. ini di lakukan dengan reflection. override ini kalau anda memerlukan query yang berbeda
