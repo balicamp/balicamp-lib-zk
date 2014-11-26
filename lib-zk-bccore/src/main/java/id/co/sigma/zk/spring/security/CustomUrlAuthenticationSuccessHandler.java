@@ -6,6 +6,7 @@ import id.co.sigma.common.server.service.IGeneralPurposeService;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.zkoss.web.Attributes;
 
 public class CustomUrlAuthenticationSuccessHandler extends
 		SimpleUrlAuthenticationSuccessHandler {
@@ -41,6 +43,10 @@ public class CustomUrlAuthenticationSuccessHandler extends
 		
 		
 		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
+		
+		Locale locale = new Locale("id");
+		
+		request.getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
 		
 		User appUser = SecurityUtil.getUser().getApplicationUser();
 		
