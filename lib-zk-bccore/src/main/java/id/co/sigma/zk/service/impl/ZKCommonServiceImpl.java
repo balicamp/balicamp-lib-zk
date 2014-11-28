@@ -4,9 +4,11 @@ package id.co.sigma.zk.service.impl;
 import java.math.BigInteger;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import id.co.sigma.zk.service.IZKCommonService;
+
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
@@ -18,10 +20,11 @@ import id.co.sigma.common.server.service.AbstractService;
  * 
  * @author <a href="mailto:gede.sutarsa@gmail.com">Gede Sutarsa</a>
  */
-public class ZKCommonServiceImpl extends AbstractService implements IZKCommonService {
+public class ZKCommonServiceImpl extends AbstractService implements IZKCommonService  {
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(ZKCommonServiceImpl.class.getName());
-
+	
+	
 	
 	@Autowired
 	IGeneralPurposeDao generalPurposeDao ;
@@ -94,6 +97,7 @@ public class ZKCommonServiceImpl extends AbstractService implements IZKCommonSer
 		retval.initiateAndFillData(datas);
 		return retval ; 
 	}
+	
 	
 	
 	

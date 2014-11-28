@@ -329,9 +329,10 @@ public class ApplicationMenuEditorController extends
 	@Override
 	protected void runAditionalTaskOnDataRevieved(ApplicationMenu editedData,
 			ZKEditorState editorState, Map<?, ?> rawDataParameter) {
-		if(getEditorState().equals(ZKEditorState.EDIT)){
+		if ( ZKEditorState.EDIT.equals(editorState)){
 			flag=1;
 		}
+		
 		super.runAditionalTaskOnDataRevieved(editedData, editorState, rawDataParameter);
 	}
 	
