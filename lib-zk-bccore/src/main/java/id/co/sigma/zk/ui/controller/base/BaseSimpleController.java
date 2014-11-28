@@ -7,6 +7,8 @@ import id.co.sigma.common.data.lov.CommonLOVHeader;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.common.security.domain.Branch;
+import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.common.server.lov.ILOVProviderService;
@@ -14,6 +16,8 @@ import id.co.sigma.common.server.service.system.ICommonSystemService;
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.common.util.json.SharedServerClientLogicManager;
 import id.co.sigma.zk.service.IZKCommonService;
+import id.co.sigma.zk.spring.security.SecurityUtil;
+import id.co.sigma.zk.spring.security.model.UserData;
 import id.co.sigma.zk.ui.annotations.ListOfValue;
 import id.co.sigma.zk.ui.annotations.LoVDependency;
 import id.co.sigma.zk.ui.annotations.LoVFlag;
@@ -300,6 +304,24 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	
 	public String getCommonNumberWithoutDecimalFormat() {
 	    return commonNumberWithoutDecimalFormat;
+	}
+	
+	/**
+	 * get authenticate user
+	 * @return
+	 */
+	public User getAuthenticateUser() {
+		UserData authUser = SecurityUtil.getUser(); 
+		return (authUser == null ? null : authUser.getApplicationUser());
+	}
+	
+	/**
+	 * get default branch from authenticate user
+	 * @return
+	 */
+	public Branch getDefaultBranch() {
+		User authUser = getAuthenticateUser();
+		return (authUser == null ? null : authUser.getBranch());
 	}
 	
 	/**
