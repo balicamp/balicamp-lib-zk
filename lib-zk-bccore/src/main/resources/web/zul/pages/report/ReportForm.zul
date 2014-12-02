@@ -1,0 +1,6 @@
+<?page title="Cetak Laporan" contentType="text/html;charset=UTF-8"?>
+<zk>
+<editorWindow captionLabel="Cetak Laporan" border="none" 
+	id="printReport" apply="id.co.sigma.zk.ui.controller.report.ReportFormController">	
+</editorWindow>
+</zk>

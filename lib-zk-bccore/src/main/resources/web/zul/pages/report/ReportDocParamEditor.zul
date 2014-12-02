@@ -1,0 +1,50 @@
+<?page title="Editor Lookup Detail" contentType="text/html;charset=UTF-8"?>
+<zk>
+<editorWindow title="Parameter Laporan" border="none" id="editorParams" 
+	apply="id.co.sigma.zk.ui.controller.report.ReportParameterEditorController"
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
+	confirmationMsg="Apakah anda akan menyimpan data ini?"
+	width="40%">
+<grid vflex="1">
+	
+		<columns>
+				<column width="150px" />
+				<column  />
+			</columns>
+		<rows> 
+		<row>
+			${labels.field.code}
+			<textbox id="paramCode" value="${editorParams$composer.editedData.paramCode}" readonly="true"/>
+		</row>
+		<row>
+			Label
+			<textbox id="paramLabel"  value="${editorParams$composer.editedData.paramLabel}"/>
+		</row>
+		<row>
+			${labels.field.description}
+			<textbox id="description"  value="${editorParams$composer.editedData.description}"/>
+		</row>
+		<row>
+			${labels.field.type}
+			<combobox id="paramType" value="${editorParams$composer.editedData.paramType}">
+				<comboitem value="Textbox" label="Textbox"/>
+				<comboitem value="Intbox" label="Intbox"/>
+				<comboitem value="Decimalbox" label="Decimalbox"/>
+				<comboitem value="Datebox" label="Datebox"/>
+			</combobox>
+		</row>
+		<row>
+			Nilai Default
+			<textbox id="defaultValue"  value="${lookupDetail$composer.editedData.defaultValue}"/>
+		</row>
+		
+		<row>
+			Format
+			<textbox id="dataFormat"  value="${lookupDetail$composer.editedData.dataFormat}"/>
+		</row>
+		
+		
+		</rows>
+	</grid>
+</editorWindow>
+</zk>

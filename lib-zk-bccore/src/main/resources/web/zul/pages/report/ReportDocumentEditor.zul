@@ -1,0 +1,64 @@
+<?page title="Report Document Editor" contentType="text/html;charset=UTF-8"?>
+<zk>
+<editorWindow captionLabel="Editor Dokumen Laporan" border="none" 
+	id="rptDoc" apply="id.co.sigma.zk.ui.controller.report.ReportDocumentEditorController"
+	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
+	confirmationMsg="Apakah anda akan menyimpan data ini?">
+	
+	<grid>
+		<columns>
+			<column width="150px" align="left"/>
+			<column />
+			<column width="40px"/>
+			<column width="150px" align="left"/>
+			<column />
+		</columns>
+		<rows>
+			<row>
+				${labels.field.name}:
+				<textbox id="name" maxlength="100" value="${rptDoc$composer.editedData.name}" constraint="no empty : ${labels.field.name} tidak boleh kosong" width="80%"></textbox>
+				<space hflex="1"/>
+				${labels.field.description}:
+				<textbox id="description" maxlength="500" value="${rptDoc$composer.editedData.description}" width="60%"></textbox>
+			</row>
+			<row>
+				Template Laporan:
+				<textbox id="template" maxlength="250" value="${rptDoc$composer.editedData.template}" constraint="no empty : Template Laporan tidak boleh kosong"  width="70%"></textbox>
+				<space hflex="3"/>
+			</row>
+		</rows>
+	</grid>	
+	<separator/>
+	<groupbox closable="false" mold="3d">
+		<caption>Parameter Laporan</caption>
+		<vlayout>
+		<button id="btnAdd" label="${labels.action.button.add}"/>
+		<listbox id="listRptParams" height="300px" width="100%" >
+			<actionListhead>
+				<listheader label="${labels.field.no}" width="2%" align="center"/>
+				<listheader label="${labels.field.code}" width="12%" align="center"/>
+				<listheader label="${labels.field.label}" width="20%" align="center"/>
+				<listheader label="${labels.field.description}" width="20%" align="center"/>
+				<listheader label="${labels.field.type}" width="15%" align="center"/>
+				<listheader label="Value" width="15%" align="center"/>
+				<listheader label="Format" width="10%" align="center"/>
+			</actionListhead>
+			<template 
+				name="model">
+				<actionListitem value="${each}" editorPage="~./zul/pages/report/ReportDocParamEditor.zul"
+					deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
+					controller="${lookupHeader$composer}" child="true" modal="true">
+					<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+					<listcell style="text-align:left" label="${each.paramCode}"/>
+					<listcell style="text-align:left" label="${each.paramLabel}"/>
+					<listcell style="text-align:left" label="${each.description}"/>
+					<listcell style="text-align:left" label="${each.paramType}"/>
+					<listcell style="text-align:left" label="${each.defaultValue}"/>
+					<listcell style="text-align:right" label="${each.dataFormat}"/>
+				</actionListitem>
+			</template>		
+		</listbox>	
+		</vlayout>
+	</groupbox>
+</editorWindow>
+</zk>

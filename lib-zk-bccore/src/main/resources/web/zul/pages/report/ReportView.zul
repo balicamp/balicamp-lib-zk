@@ -1,0 +1,8 @@
+<?page title="Cetak Laporan" contentType="text/html;charset=UTF-8"?>
+<zk>
+<editorWindow captionLabel="Lihat Laporan" border="none" 
+	id="rptWindow" apply="id.co.sigma.zk.ui.controller.report.ReportController"
+	height="98%" width="98%">	
+	<iframe id="reportFrame" height="100%" width="100%"/>
+</editorWindow>
+</zk>

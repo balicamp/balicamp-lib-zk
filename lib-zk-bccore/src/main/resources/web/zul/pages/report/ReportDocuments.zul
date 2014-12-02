@@ -1,0 +1,56 @@
+<?page title="Report Document List" contentType="text/html;charset=UTF-8"?>
+<zk>
+<listWindow title="Daftar Dokumen Laporan" 
+	border="none"
+	height="100%"
+	width="100%" 
+	id="rptDocList" 
+	apply="id.co.sigma.zk.ui.controller.report.ReportDocumentListController"
+	editorPage="~./zul/pages/report/ReportDocumentEditor.zul">
+	
+	<grid vflex="1">
+	
+		<columns>
+				<column width="150px" align="left"/>
+				<column  />
+			</columns>
+		<rows>
+		<row>
+			${labels.field.code}
+			<intbox id="intCode"/>
+		</row>
+		<row>
+			${labels.field.name}
+			<textbox id="txtName"></textbox>
+		</row>
+		<row>
+			${labels.field.description}
+			<textbox id="txtDescription"></textbox>
+		</row>
+		</rows>
+	</grid>	
+	
+	<listbox
+		id="listRptDocument"
+		mold="paging"
+		pageSize="10" width="100%">
+		<actionListhead>
+			<listheader label="${labels.field.no}" width="2%" align="center"/>
+			<listheader label="${labels.field.code}" width="20%" align="center" sort="auto(id)"/>
+			<listheader label="${labels.field.name}" width="60%" align="center" sort="auto(name)"/>
+			<listheader label="${labels.field.description}" width="12%" align="center" sort="auto(description)"/>
+		</actionListhead>
+		<template 
+			name="model">
+			<actionListitem value="${each}" editorPage="~./zul/pages/report/ReportDocumentEditor.zul"
+				deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
+				controller="${rptDocList$composer}">
+				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell label="${each.id}" style="text-align:left"/>
+				<listcell label="${each.name}" style="text-align:left"/>
+				<listcell label="${each.description}" style="text-align:left"/>
+			</actionListitem>
+		</template>		
+	</listbox>
+</listWindow>
+</zk>
