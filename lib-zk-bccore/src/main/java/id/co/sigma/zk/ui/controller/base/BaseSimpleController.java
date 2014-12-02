@@ -643,7 +643,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				filterFlag.setField(flag.field());
 				filterFlag.setFilter(flag.value());
 				filterFlag.setFilterTypeClass(dtType);
-				filterFlag.setOperator(SimpleQueryFilterOperator.equal);
+				filterFlag.setOperator(flag.operator());
 				filters.add(filterFlag);
 			}
 		}

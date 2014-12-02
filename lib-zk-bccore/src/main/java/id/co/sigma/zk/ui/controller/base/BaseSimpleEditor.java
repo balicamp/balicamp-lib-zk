@@ -638,7 +638,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				
 				Object cdata = null;
 				if(idx >= 0) {
-					cdata = ((Combobox)input).getModel().getElementAt(idx);
+					if(((Combobox)input).getModel() != null) {
+						cdata = ((Combobox)input).getModel().getElementAt(idx);
+					} else {
+						cdata = ((Combobox)input).getSelectedItem().getValue();
+					}
 				}
 				if(cdata instanceof CommonLOV) {
 					val = ((CommonLOV)cdata).getDataValue();
