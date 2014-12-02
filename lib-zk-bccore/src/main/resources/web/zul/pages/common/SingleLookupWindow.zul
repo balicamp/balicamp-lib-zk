@@ -8,12 +8,10 @@
 	<separator/>
 	<panel>
 		<panelchildren>
-			<groupbox>
 				<hlayout>
 					<button id="btnPilih" label="${labels.action.button.pilih}"/>
 					<button id="btnCancel" label="${labels.action.button.cancel}"/>
 				</hlayout>
-			</groupbox>
 		</panelchildren>
 	</panel>
 </zk>
