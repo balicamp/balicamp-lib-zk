@@ -345,7 +345,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	 * create script untuk combobox dan bandbox
 	 * @return
 	 */
-	private String createComboScript() {
+	protected String createComboScript() {
 		Field[] fields = getClass().getDeclaredFields();
 		
 		StringBuffer script = new StringBuffer();
