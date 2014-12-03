@@ -31,19 +31,36 @@
 				<comboitem value="Intbox" label="Intbox"/>
 				<comboitem value="Decimalbox" label="Decimalbox"/>
 				<comboitem value="Datebox" label="Datebox"/>
+				<comboitem value="LookupCombobox" label="LookupCombobox"/>
+				<comboitem value="LoVCombobox" label="LoVCombobox"/>
+				<comboitem value="Combobox" label="Combobox"/>
+				<comboitem value="MonthCombobox" label="MonthCombobox"/>
 			</combobox>
 		</row>
 		<row>
-			Nilai Default
-			<textbox id="defaultValue"  value="${lookupDetail$composer.editedData.defaultValue}"/>
+			LOV Class
+			<textbox id="lovClass"  value="${editorParams$composer.editedData.lovClass}"/>
 		</row>
-		
+		<row>
+			LOV Separator
+			<textbox id="separator"  value="${editorParams$composer.editedData.separator}"/>
+		</row>
+		<row>
+			LOV Dependencies
+			<textbox id="lovParentId"  value="${editorParams$composer.editedData.lovParentId}"/>
+		</row>
+		<row>
+			Nilai Default
+			<textbox id="defaultValue"  value="${editorParams$composer.editedData.defaultValue}"/>
+		</row>
 		<row>
 			Format
-			<textbox id="dataFormat"  value="${lookupDetail$composer.editedData.dataFormat}"/>
+			<textbox id="dataFormat"  value="${editorParams$composer.editedData.dataFormat}"/>
 		</row>
-		
-		
+		<row>
+			Sequence
+			<textbox id="paramSec"  value="${editorParams$composer.editedData.paramSec}"/>
+		</row>
 		</rows>
 	</grid>
 </editorWindow>

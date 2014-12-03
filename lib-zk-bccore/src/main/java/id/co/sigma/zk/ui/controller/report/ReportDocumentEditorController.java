@@ -2,6 +2,7 @@ package id.co.sigma.zk.ui.controller.report;
 
 import id.co.sigma.common.report.domain.RptDocParam;
 import id.co.sigma.common.report.domain.RptDocument;
+import id.co.sigma.common.security.domain.PageDefinition;
 import id.co.sigma.zk.ui.annotations.ChildGridData;
 import id.co.sigma.zk.ui.annotations.JoinKey;
 import id.co.sigma.zk.ui.controller.EditorManager;
@@ -10,6 +11,7 @@ import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +58,28 @@ public class ReportDocumentEditorController extends BaseSimpleDirectToDBEditor<R
 		reloadChildGridData();
 		RptDocParam d = new RptDocParam();
 		EditorManager.getInstance().addNewData("~./zul/pages/report/ReportDocParamEditor.zul", this.clientDataContainer ,  d, this, true);
+	}
+
+	@Override
+	protected void insertData(Object... data) throws Exception {
+		super.insertData(data);
+		System.out.println(data[0]);
+		if(data[0] instanceof RptDocument) {
+			RptDocument rptdoc = (RptDocument) data[0];
+			PageDefinition pageDef = new PageDefinition();
+			pageDef.setApplicationId(1L);
+			pageDef.setCreatedBy(getAuthenticateUser().getUserCode());
+			pageDef.setCreatedOn(new Date());
+			pageDef.setPageCode("RPT:" + rptdoc.getTemplate().replace("/", ":") + rptdoc.getName().toUpperCase());
+			pageDef.setPageUrl("~./zul/pages/report/ReportForm.zul?reportUnit=" + rptdoc.getName());
+			pageDef.setRemark(rptdoc.getDescription());
+			generalPurposeService.insert(pageDef);
+		}
+	}
+
+	@Override
+	protected void updateData(RptDocument data) throws Exception {
+		super.updateData(data);
 	}
 
 	@Override

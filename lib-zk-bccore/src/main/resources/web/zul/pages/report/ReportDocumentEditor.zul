@@ -41,20 +41,20 @@
 				<listheader label="${labels.field.description}" width="20%" align="center"/>
 				<listheader label="${labels.field.type}" width="15%" align="center"/>
 				<listheader label="Value" width="15%" align="center"/>
-				<listheader label="Format" width="10%" align="center"/>
+				<listheader label="Sequence" width="10%" align="center"/>
 			</actionListhead>
 			<template 
 				name="model">
 				<actionListitem value="${each}" editorPage="~./zul/pages/report/ReportDocParamEditor.zul"
-					deleteMsg="Apakah anda yakin menghapus data key: ${each.id}"
-					controller="${lookupHeader$composer}" child="true" modal="true">
+					deleteMsg="Apakah anda yakin menghapus data key: ${each.paramCode}"
+					controller="${rptDoc$composer}" child="true" modal="true">
 					<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
 					<listcell style="text-align:left" label="${each.paramCode}"/>
 					<listcell style="text-align:left" label="${each.paramLabel}"/>
 					<listcell style="text-align:left" label="${each.description}"/>
 					<listcell style="text-align:left" label="${each.paramType}"/>
 					<listcell style="text-align:left" label="${each.defaultValue}"/>
-					<listcell style="text-align:right" label="${each.dataFormat}"/>
+					<listcell style="text-align:right" label="${each.paramSec}"/>
 				</actionListitem>
 			</template>		
 		</listbox>	
