@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -43,8 +44,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -164,7 +167,19 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	 * language dari current user
 	 */
 	public String getLanguge() {
-		return "id"; 
+		if(getLocale() != null) {
+			return getLocale().getLanguage().toLowerCase();
+		} else {
+			return "id";
+		}
+	}
+	
+	public Locale getLocale() {
+		Locale locale = (Locale)Executions.getCurrent().getSession().getAttribute(Attributes.PREFERRED_LOCALE);
+		if(locale == null) {
+			locale = new Locale("ID", "in"); // default country in = Indonesia, language ID = Bahasa
+		}
+		return locale;
 	}
 	
 	/**
