@@ -327,7 +327,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	/**
 	 * register combo data untuk client cache
 	 */
-	private void registerComboScript() {
+	protected void registerComboScript() {
 		Component thisComp = getSelf();
 		if(thisComp instanceof Window) {
 			Script script = new Script("cWindow = this.parent; \n"
