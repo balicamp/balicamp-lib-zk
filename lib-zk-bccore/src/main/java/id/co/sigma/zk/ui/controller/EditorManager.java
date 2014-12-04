@@ -106,7 +106,32 @@ public final class EditorManager {
 		
 	}
 	
-	
+	/**
+	 * ini untuk menampilkan halaman view data, data yang ditampilkan tidak bisa diubah (readonly)
+	 * @param zulPath zul path dari data
+	 * @param viewedData data yang ditampilkan
+	 * @param caller pemanggil
+	 * @param isPopup
+	 */
+	public<DATA extends SingleKeyEntityData<?>> void viewData ( String zulPath, DATA viewedData, BaseSimpleController caller, boolean... isPopup ) {
+
+	    Map<String, Object> parameter = new HashMap<String, Object>() ; 
+	    parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, viewedData); 
+	    parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.VIEW_READONLY); 
+	    parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller); 
+
+	    if(!isShowModal(isPopup)) {
+		showHideLatestComponent(false);
+		includePanel.setVisible(false);
+		editorContainerWindow.setVisible(true); 
+		Executions.createComponents(zulPath, editorContainerWindow, parameter);
+	    } else {
+		Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
+		wModal.setClosable(false);			
+		wModal.doModal();
+		winModals.add(0, wModal);
+	    }
+	}
 	
 	
 	/**

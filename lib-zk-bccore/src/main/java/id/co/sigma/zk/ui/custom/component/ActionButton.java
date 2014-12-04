@@ -31,8 +31,9 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final Integer EDIT_BUTTON = 0;
-	public static final Integer DELETE_BUTTON = 1;
+	public static final Integer VIEW_BUTTON = 0;
+	public static final Integer EDIT_BUTTON = 1;
+	public static final Integer DELETE_BUTTON = 2;
 	
 	private BaseSimpleController controller;
 	
@@ -41,9 +42,11 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	
 	private String targetPath;
 	private String editorPage;
+	private String viewPage;
 	
 	private String deleteMsg;
 	
+	private boolean view = false;
 	private boolean delete = true;
 	private boolean edit = true;
 	private boolean modal = false;
@@ -68,11 +71,53 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	public void afterCompose() {
 		
 		List<Component> children = getChildren();
+		Component viewComp = children.get(VIEW_BUTTON);
 		Component editComp = children.get(EDIT_BUTTON);
 		Component delComp = children.get(DELETE_BUTTON);
+		viewComp.setVisible(view);
 		editComp.setVisible(edit);
 		delComp.setVisible(delete);
 		
+		/*
+		 * Event listener untuk tombol view
+		 */
+		viewComp.addEventListener("onClick", new EventListener<Event>() {
+
+		    @SuppressWarnings({ "rawtypes", "unused" })
+		    @Override
+		    public void onEvent(Event event) throws Exception {
+			Component comp = getParent(event.getTarget());
+			
+			SingleKeyEntityData<Serializable> data = null;
+			ZKClientSideListDataEditorContainer container = null;
+			
+			if(comp instanceof Listitem) {
+			    Listitem item = (Listitem)comp;
+			    data =  item.getValue();
+			    ListModel<Object> model = item.getListbox().getModel();
+			    if(model instanceof ZKClientSideListDataEditorContainer) {
+				container = (ZKClientSideListDataEditorContainer)model;
+			    }
+			} else if(comp instanceof Row) {
+			    data = ((Row)comp).getValue();
+			    ListModel<Object> model = ((Row)comp).getGrid().getModel();
+			    if(model instanceof ZKClientSideListDataEditorContainer) {
+				container = (ZKClientSideListDataEditorContainer)model;
+			    }
+			}
+
+			if(data != null) {
+			    if(controller instanceof BaseSimpleListController) {
+				EditorManager.getInstance().viewData(viewPage, data, controller, modal);
+			    }
+			}
+		    }
+		    
+		});
+		
+		/*
+		 * Event listener untuk tombol edit
+		 */
 		editComp.addEventListener("onClick", new EventListener<Event>() {
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -110,6 +155,9 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 			
 		});
 		
+		/*
+		 * Event listener untuk tombol delete
+		 */
 		delComp.addEventListener("onClick", new EventListener<Event>() {
 
 			@SuppressWarnings("rawtypes")
@@ -258,5 +306,13 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 			prnt = prnt.getParent();
 		}
 		return prnt;
+	}
+
+	public String getViewPage() {
+	    return viewPage;
+	}
+
+	public void setViewPage(String viewPage) {
+	    this.viewPage = viewPage;
 	}
 }

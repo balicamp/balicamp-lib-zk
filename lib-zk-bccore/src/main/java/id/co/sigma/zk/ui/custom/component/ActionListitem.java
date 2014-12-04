@@ -23,6 +23,8 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 	
 	private String editorPage;
 	
+	private String viewPage;
+	
 	private String deleteMsg;
 	
 	private BaseSimpleController controller;
@@ -30,6 +32,8 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 	private boolean deletable = true;
 	
 	private boolean editable = true;
+	
+	private boolean viewable = false;
 	
 	private boolean modal = false;
 	
@@ -170,9 +174,27 @@ public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
 		actBtn.setController(controller);
 		actBtn.setDeleteMsg(deleteMsg);
 		actBtn.setEditorPage(editorPage);
+		actBtn.setViewPage(viewPage);
 		actBtn.setModal(modal);
+		actBtn.getChildren().get(ActionButton.VIEW_BUTTON).setVisible(viewable);
 		actBtn.getChildren().get(ActionButton.EDIT_BUTTON).setVisible(editable);
 		actBtn.getChildren().get(ActionButton.DELETE_BUTTON).setVisible(deletable);
 		actBtn.setChildIndex(String.valueOf(childIndex));
+	}
+
+	public boolean isViewable() {
+	    return viewable;
+	}
+
+	public void setViewable(boolean viewable) {
+	    this.viewable = viewable;
+	}
+
+	public String getViewPage() {
+	    return viewPage;
+	}
+
+	public void setViewPage(String viewPage) {
+	    this.viewPage = viewPage;
 	}
 }
