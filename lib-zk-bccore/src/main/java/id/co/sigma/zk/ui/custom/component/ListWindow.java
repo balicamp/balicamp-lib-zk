@@ -126,6 +126,7 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		panelSearchKeys.setVisible(isSearchable());
 		btnSearch.setVisible(isSearchable());
 		btnReset.setVisible(isSearchable());
+		btnAddNew.setVisible(isAddable());
 		if(!isSearchable() && !isAddable()) {
 			panelButtons.setVisible(false);
 		}
