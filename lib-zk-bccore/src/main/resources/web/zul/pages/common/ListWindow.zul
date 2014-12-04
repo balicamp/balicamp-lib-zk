@@ -16,9 +16,7 @@
 		<panelchildren>
 			<hbox height="40px" align="center" style="padding:5px">
 				<button id="btnSearch" label="${labels.action.button.search}"/>
-				<space width="1px"/>
 				<button id="btnReset" label="${labels.action.button.reset}"/>
-				<space bar="true" width="7px" height="26px"/>
 				<button id="btnAddNew" label="${labels.action.button.add}"/>
 				<timer id="listTimer" repeats="false" delay="100" onCreate="self.stop()"/>
 				<timer id="lovLoaderTimer" delay="50" onCreate="self.stop()" repeats="true"/>
