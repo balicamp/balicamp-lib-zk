@@ -170,6 +170,19 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		if(getLocale() != null) {
 			return getLocale().getLanguage().toLowerCase();
 		} else {
+			return "in";
+		}
+	}
+	
+	/**
+	 * get country from locale
+	 * @return
+	 */
+	public String getCountryLocale() {
+		if(getLocale() != null) {
+			String cntry = getLocale().getCountry().toLowerCase();			
+			return ("".equals(cntry) ? "id" : cntry);
+		} else {
 			return "id";
 		}
 	}
@@ -410,7 +423,15 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 							List<String> vals = new ArrayList<String>();
 							for(LoVDependency dpd: ann.dependency())  {
 								if(dpd.isFilter()) {
-									String val = ((Combobox)getSelf().getFellowIfAny(dpd.comboId())).getValue();
+									String val = null;
+									try {
+										val = ((Combobox) getSelf()
+												.getFellowIfAny(dpd.comboId()))
+												.getValue();
+									} catch (Exception e) {
+										((Combobox) getSelf()
+												.getFellowIfAny(dpd.comboId())).clearErrorMessage();
+									}
 									if(val != null && val.trim().length() > 0) {
 										vals.add(val);
 									}
@@ -470,7 +491,8 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 										List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann, vals.toArray(new String[vals.size()]));
 										String defaultVal = "";
 										try {
-											defaultVal = ((Combobox)comp).getValue();
+//											defaultVal = ((Combobox)comp).getValue();
+											((Combobox)comp).setRawValue(null);
 										} catch (Exception e) {}
 										((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 										((Combobox)comp).setModel(new ListOfValueModel(list));
@@ -732,7 +754,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				List<String> headers = new ArrayList<String>();
 				headers.add(headerid);
 				
-				Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getLanguge(), headers);
+				Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getCountryLocale(), headers);
 				
 				if(vals == null || vals.isEmpty()) return;
 				
@@ -742,7 +764,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 					list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), lec.separator()));
 				}
 				
-				String id = event.getTarget().getId(); 
+				String id = event.getTarget().getId();
 				
 				Clients.response(new AuResponse("loadComboboxData", event.getTarget(), 
 						"{className: \"" + headerid + "\", id: \"" + id + "\", " + 
