@@ -150,6 +150,17 @@ public class EditorWindow extends Window implements AfterCompose {
 		}
 	}
 	
+	public void addRequiredField(Component cr) {
+		if(requiredFields==null) {
+			requiredFields = new ArrayList<Component>();
+		}
+		if((cr instanceof InputElement) && ((InputElement)cr).getConstraint() != null) {
+			if(!requiredFields.contains(cr)) {
+				requiredFields.add(cr);
+			}
+		}
+	}
+	
 	private void markRequiredFields() {
 		List<String> childGrids = new ArrayList<String>();
 		if(controller != null) {			

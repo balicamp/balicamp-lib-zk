@@ -462,6 +462,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			Map<String, String> hdrBinder, Object[] parentKey, JoinKey[] joinKeys, 
 			ZKClientSideListDataEditorContainer<Object> container) throws Exception {
 		
+		EditorWindow eWind = getEditorWindow();
+		
 		if(grid != null) {
 			
 			List<Row> orgRows = grid.getRows().getChildren();
@@ -482,6 +484,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					
 					if(hdrBinder.containsKey(targetField)) {
 						targetField = hdrBinder.get(targetField);
+					}
+					
+					if(eWind != null) {
+						eWind.addRequiredField(inp);						
 					}
 					
 					setProperty(inp, data, targetField);
@@ -524,6 +530,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	private void parseListboxGridData(Listbox listbox, Class<?> eClass, 
 			Map<String, String> hdrBinder, Object[] parentKey, JoinKey[] joinKeys,
 			ZKClientSideListDataEditorContainer<Object> container) throws Exception {
+		
+		EditorWindow eWind = getEditorWindow();
+		
 		if(listbox != null) {
 			Collection<Component> headers = listbox.getHeads();
 			if(headers.size() > 0) {
@@ -552,6 +561,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 							
 							if(hdrBinder.containsKey(targetField)) {
 								targetField = hdrBinder.get(targetField);
+							}
+
+							if(eWind != null) {
+								eWind.addRequiredField(inp);						
 							}
 							
 							if(targetField != null && targetField.trim().length() > 0) {						
@@ -874,6 +887,14 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				new String[]{Labels.getLabel("action.button.ok")},
 				Messagebox.EXCLAMATION,
 				Messagebox.Button.OK, null);
+	}
+	
+	protected final EditorWindow getEditorWindow() {
+		if(getSelf() instanceof EditorWindow) {
+			return ((EditorWindow)getSelf());
+		} else {
+			return null;
+		}
 	}
 	
 	protected final void showCancelConfirmationMessage(String cancelMsg) {
