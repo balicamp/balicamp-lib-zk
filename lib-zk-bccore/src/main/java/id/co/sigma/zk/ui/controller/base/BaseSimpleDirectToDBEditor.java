@@ -15,6 +15,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.Listen;
 
@@ -64,6 +66,8 @@ public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable>
 	try {
 	    bindValueFromControl(getEditedData());
 	    children = parseChildGridData();
+	} catch(WrongValueException | WrongValuesException e) {
+		throw e; // pass error to zul
 	} catch (Exception e) {
 	    logger.error("gagal simpam data. error : " + e.getMessage(), e);
 	    showErrorMessage(getEditorState(), e.getMessage());

@@ -34,6 +34,8 @@ import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
@@ -368,6 +370,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					
 					lists.add(container);
 					
+				} catch(WrongValueException | WrongValuesException e) {
+					throw e;
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}
@@ -424,8 +428,12 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				parseListboxGridData((Listbox)grid, eClass, hMap, parentKeyVals, joinKeys, container);
 			}
 			
+		} catch (WrongValueException wve) {
+			throw wve;
+		} catch(WrongValuesException wvs) {
+			throw wvs;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	
@@ -683,7 +691,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			}
 			
 			try {
-				ExtendedBeanUtils.getInstance().setProperty(data, val, fieldName);
+				if((fieldName != null) && !("".equals(fieldName))) {
+					ExtendedBeanUtils.getInstance().setProperty(data, val, fieldName);
+				}
 			} catch (Exception e) {
 			}
 		}
