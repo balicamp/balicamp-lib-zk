@@ -5,11 +5,16 @@ import id.co.sigma.common.server.util.ExtendedBeanUtils;
 
 import org.zkoss.zhtml.Textarea;
 import org.zkoss.zk.ui.AbstractComponent;
+import org.zkoss.zk.ui.Components;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Spinner;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
@@ -27,20 +32,31 @@ public class DefaultFormDataBinder<DATA> implements IFormDataBinder<AbstractComp
 			String targetFieldName) throws Exception{
 		Object val = null ; 
 		if ( controlSource instanceof Combobox) {
-			Combobox txt = (Combobox) controlSource;
+
+			int idx = -1;
+			try {
+				idx = ((Combobox)controlSource).getSelectedIndex();
+			} catch (Exception e) {}
 			
-			int idx = txt.getSelectedIndex();
 			Object cdata = null;
 			if(idx >= 0) {
-				cdata = txt.getModel().getElementAt(idx);
+				if(((Combobox)controlSource).getModel() != null) {
+					cdata = ((Combobox)controlSource).getModel().getElementAt(idx);
+				} else {
+					cdata = ((Combobox)controlSource).getSelectedItem().getValue();
+				}
 			}
 			if(cdata instanceof CommonLOV) {
 				val = ((CommonLOV)cdata).getDataValue();
 			} else {
-				if(txt.getSelectedItem() != null) {
-					val = txt.getSelectedItem().getValue();
+				Comboitem citem = ((Combobox)controlSource).getSelectedItem();
+				if(citem != null) {
+					val = citem.getValue();
+				} else {
+					val = ((Combobox)controlSource).getValue();
 				}
 			}
+			
 		}
 		else if ( controlSource instanceof Intbox) {
 			Intbox txt = (Intbox) controlSource;
@@ -73,6 +89,23 @@ public class DefaultFormDataBinder<DATA> implements IFormDataBinder<AbstractComp
 		else if  ( controlSource instanceof Textarea) {
 			Textarea txt = (Textarea) controlSource;
 			val = txt.getValue();
+		} else if(controlSource instanceof Checkbox){
+			Checkbox chk = (Checkbox)controlSource;
+			if(chk.isChecked()){
+				val=1;
+			}else{
+				val=0;
+			}
+		} else if(controlSource instanceof Radiogroup) {
+			Radio radio = ((Radiogroup)controlSource).getSelectedItem();
+			if(radio != null) {
+				val = radio.getValue();
+			}
+		} else if(controlSource instanceof Radio){
+			Radio radio = (Radio)controlSource;
+			if(radio.isSelected() || radio.isChecked()) {
+				val = radio.getValue();
+			}
 		}
 		ExtendedBeanUtils.getInstance().setProperty(target, val, targetFieldName);
 		

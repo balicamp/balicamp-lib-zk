@@ -655,6 +655,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					}
 				}
 				
+			} else if(input instanceof Radiogroup) {
+				Radio radio = ((Radiogroup)input).getSelectedItem();
+				if(radio != null) {
+					val = radio.getValue();
+				}
 			} else if(input instanceof Radio){
 				Radio radio = (Radio)input;
 				if(radio.isSelected() || radio.isChecked()) {

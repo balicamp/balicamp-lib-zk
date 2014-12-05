@@ -219,7 +219,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		}
 		if ( indexedParamField.isEmpty())
 			return ; 
-		Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getLanguge(), indexedParamField.keySet());
+		Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getCountryLocale(), indexedParamField.keySet());
 		if ( vals== null)
 			return  ; 
 		for ( String paramId : vals.keySet()) {
@@ -756,12 +756,14 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				
 				Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getCountryLocale(), headers);
 				
-				if(vals == null || vals.isEmpty()) return;
+				if(!(vals == null || vals.isEmpty())) {
 				
-				List<CommonLOV> lov = vals.get(headerid).getDetails();
+					List<CommonLOV> lov = vals.get(headerid).getDetails();
+					
+					for(CommonLOV val : lov) {					
+						list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), lec.separator()));
+					}
 				
-				for(CommonLOV val : lov) {					
-					list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), lec.separator()));
 				}
 				
 				String id = event.getTarget().getId();
