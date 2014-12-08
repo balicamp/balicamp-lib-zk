@@ -173,8 +173,23 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		} else if(input instanceof Radio) {
 			tabIdx = ((Radio)input).getTabindex();
 		}
-		if(tabIdx < orderedInputFields.size()) {
-			orderedInputFields.add(tabIdx, input);
+		int pos = 0;
+		for(Component cmp : orderedInputFields) {
+			int rIdx = Integer.MAX_VALUE;
+			if(cmp instanceof InputElement) {
+				rIdx = ((InputElement)cmp).getTabindex();
+			} else if(cmp instanceof Checkbox) {
+				rIdx = ((Checkbox)cmp).getTabindex();
+			} else if(cmp instanceof Radio) {
+				rIdx = ((Radio)cmp).getTabindex();
+			}
+			if(tabIdx <= rIdx) {
+				break;
+			}
+			pos++;
+		}
+		if(pos < orderedInputFields.size()) {
+			orderedInputFields.add(pos, input);
 		} else {
 			orderedInputFields.add(input);
 		}
