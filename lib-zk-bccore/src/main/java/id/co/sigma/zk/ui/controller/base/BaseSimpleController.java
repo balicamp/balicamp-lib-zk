@@ -58,11 +58,15 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Script;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * base class untuk ZK MVC controller 
@@ -114,6 +118,11 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	@Wire
 	private Timer lovLoaderTimer;
 	
+	/**
+	 * simpan input component kedalam urutan sesuai dengan tabindex
+	 */
+	protected List<Component> orderedInputFields = new ArrayList<Component>();
+	
 	
 	/**
 	 * general purpose dao. untuk akses ke database yang tidak perlu spesifik
@@ -141,6 +150,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 //		fillLOVControls();
 		idspace = comp.getSpaceOwner(); 
 	}
+	
 	@Override
 	public ComponentInfo doBeforeCompose(Page page, Component parent,
 			ComponentInfo compInfo) {
@@ -148,6 +158,26 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		ComponentInfo retval =  super.doBeforeCompose(page, parent, compInfo);
 		wireSpring();
 		return retval ; 
+	}
+	
+	/**
+	 * urut input field sesuai dengan urutan tabindex 
+	 * @param input
+	 */
+	public final void orderInputField(Component input) {
+		int tabIdx = Integer.MAX_VALUE;
+		if(input instanceof InputElement) {
+			tabIdx = ((InputElement)input).getTabindex();
+		} else if(input instanceof Checkbox) {
+			tabIdx = ((Checkbox)input).getTabindex();
+		} else if(input instanceof Radio) {
+			tabIdx = ((Radio)input).getTabindex();
+		}
+		if(tabIdx < orderedInputFields.size()) {
+			orderedInputFields.add(tabIdx, input);
+		} else {
+			orderedInputFields.add(input);
+		}
 	}
 	
 	private void wireSpring () {

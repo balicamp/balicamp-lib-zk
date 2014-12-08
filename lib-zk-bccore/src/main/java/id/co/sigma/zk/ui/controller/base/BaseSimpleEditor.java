@@ -317,7 +317,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 */
 	protected void parseEditedData(Component comp) { 
 		IdSpace idSpace = comp.getSpaceOwner();
-		Collection<Component> fellows = idSpace.getFellows();
+		Collection<Component> fellows = orderedInputFields;
+		if(fellows.isEmpty()) {
+			fellows = idSpace.getFellows();
+		}
 		for(Component fComp : fellows) {
 			if(fComp instanceof InputElement || fComp instanceof Checkbox) {
 				String fId = fComp.getId();
@@ -676,15 +679,12 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				if(cdata instanceof CommonLOV) {
 					val = ((CommonLOV)cdata).getDataValue();
 				} else if(cdata != null) {
-					val = cdata;
-//					Comboitem citem = ((Combobox)input).getSelectedItem();
-//					if(citem != null) {
-//						val = citem.getValue();
-//					} else {
-//						val = ((Combobox)input).getValue();
-//					}
-				} else {
-					val = ((Combobox)input).getValue();
+					Comboitem citem = ((Combobox)input).getSelectedItem();
+					if(citem != null) {
+						val = citem.getValue();
+					} else {
+						val = ((Combobox)input).getValue();
+					}
 				}
 				
 			} else if(input instanceof Radiogroup) {

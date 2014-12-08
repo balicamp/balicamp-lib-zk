@@ -193,6 +193,8 @@ public class ReportFormController extends BaseSimpleController {
 			StringBuffer script = new StringBuffer();
 			String lastCmp = null;
 			
+			int tabIndex = 1;
+			
 			for(final RptDocParam param : rptParams) {
 				Row row = new Row();
 				Label label = new Label(param.getParamLabel());
@@ -373,6 +375,8 @@ public class ReportFormController extends BaseSimpleController {
 					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 					((Combobox)inp).setModel(new ListOfValueModel(list));
 				}
+				
+				((InputElement)inp).setTabindex(tabIndex++);
 				
 				row.appendChild(inp);
 				

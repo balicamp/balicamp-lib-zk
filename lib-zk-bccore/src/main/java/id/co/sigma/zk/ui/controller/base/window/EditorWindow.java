@@ -156,7 +156,12 @@ public class EditorWindow extends Window implements AfterCompose {
 		}
 		if((cr instanceof InputElement) && ((InputElement)cr).getConstraint() != null) {
 			if(!requiredFields.contains(cr)) {
-				requiredFields.add(cr);
+				int tabIdx = ((InputElement)cr).getTabindex();
+				if(tabIdx >= requiredFields.size()) {
+					requiredFields.add(cr);
+				} else if(tabIdx >= 0) {
+					requiredFields.add(tabIdx, cr);
+				}
 			}
 		}
 	}
@@ -175,6 +180,7 @@ public class EditorWindow extends Window implements AfterCompose {
 		}
 		List<Component> comps = new ArrayList<Component>(getFellows());
 		for(Component comp : comps) {
+			controller.orderInputField(comp);
 			if(comp instanceof InputElement) {
 				Constraint cons = ((InputElement)comp).getConstraint();
 				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
