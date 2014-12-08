@@ -43,6 +43,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
@@ -650,6 +651,13 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				val = ((Doublebox)input).getValue();
 			} else if(input instanceof Combobox)  {
 				
+				Object testVal = ((Combobox)input).getValue(); // test value
+				
+				Constraint cons = ((Combobox)input).getConstraint();
+				if(cons != null) {
+					cons.validate(input, testVal);
+				}
+				
 				if(!Components.isRealVisible(input)) return;
 				
 				int idx = -1;
@@ -667,13 +675,16 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				}
 				if(cdata instanceof CommonLOV) {
 					val = ((CommonLOV)cdata).getDataValue();
+				} else if(cdata != null) {
+					val = cdata;
+//					Comboitem citem = ((Combobox)input).getSelectedItem();
+//					if(citem != null) {
+//						val = citem.getValue();
+//					} else {
+//						val = ((Combobox)input).getValue();
+//					}
 				} else {
-					Comboitem citem = ((Combobox)input).getSelectedItem();
-					if(citem != null) {
-						val = citem.getValue();
-					} else {
-						val = ((Combobox)input).getValue();
-					}
+					val = ((Combobox)input).getValue();
 				}
 				
 			} else if(input instanceof Radiogroup) {
@@ -759,6 +770,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		}
 	}
 	
+	
+	private Object getProperty(Object data, String fieldName) {
+		return ExtendedBeanUtils.getInstance().getProperty(data, fieldName);
+	}
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
