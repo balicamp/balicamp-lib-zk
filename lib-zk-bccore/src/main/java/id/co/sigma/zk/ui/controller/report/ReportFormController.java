@@ -7,7 +7,10 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.report.domain.RptDocParam;
 import id.co.sigma.common.report.domain.RptDocument;
+import id.co.sigma.common.server.dao.util.ServerSideWrappedJSONParser;
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
+import id.co.sigma.common.util.json.ParsedJSONArrayContainer;
+import id.co.sigma.common.util.json.ParsedJSONContainer;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.custom.component.ListOfValueComboitemRenderer;
 import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
@@ -38,12 +41,15 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -257,83 +263,102 @@ public class ReportFormController extends BaseSimpleController {
 					} else {
 
 						List<String> vals = new ArrayList<String>();
-						final String[] dependencies = param.getLovParentId().split("\\,");
-						for(String dpd: dependencies)  {
-							
-							String cmbId = dpd.split("\\(")[0];
-							
-							String val = lovCombos.get(cmbId).getValue();
-							if(val != null && val.trim().length() > 0) {
-								vals.add(val);
-							} else {
-								vals.add("-1");
-							}
-						}
 						
-						if(!vals.isEmpty()) {
-							String[] svals = new String[vals.size()];
-							for(int i=0;i<vals.size();i++) {
-								svals[i] = vals.get(i);
+						try {
+							final ParsedJSONArrayContainer dependencies = ServerSideWrappedJSONParser.getInstance().parseJSONArray(param.getLovParentId());
+							for(int i = 0; i < dependencies.length(); i++) {
+								ParsedJSONContainer con = dependencies.get(i);
+								String cmbId = con.getAsString("comboId");
+								String val = lovCombos.get(cmbId).getValue();
+								if(val != null && val.trim().length() > 0) {
+									vals.add(val);
+								} else {
+									vals.add("-1");
+								}
 							}
-							List<ListOfValueItem> list = loadListOfValueItems(param, svals);
-							String defaultVal = "";
-							try {
-								defaultVal = ((Combobox)inp).getValue();
-							} catch (Exception e) {}
-							((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
-							((Combobox)inp).setModel(new ListOfValueModel(list));
-						}
-						
-						for(String dpd: dependencies)  {
+							if(!vals.isEmpty()) {
+								String[] svals = new String[vals.size()];
+								for(int i=0;i<vals.size();i++) {
+									svals[i] = vals.get(i);
+								}
+								List<ListOfValueItem> list = loadListOfValueItems(param, svals);
+								String defaultVal = "";
+								try {
+									defaultVal = ((Combobox)inp).getValue();
+								} catch (Exception e) {}
+								((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
+								((Combobox)inp).setModel(new ListOfValueModel(list));
+							}
 							
-							String cmbId = dpd.split("\\(")[0];							
-							Component cdep = lovCombos.get(cmbId);
-							
-							cdep.addEventListener("onSelect", new EventListener<Event>() {
-								@Override
-								public void onEvent(Event event)
-										throws Exception {
-									
-									List<Object> vals = new ArrayList<Object>();
-									vals.add(((Combobox)event.getTarget()).getSelectedItem().getValue());
-									for(String dpd: dependencies)  {
+							for(int i = 0; i < dependencies.length(); i++) {
+								ParsedJSONContainer con = dependencies.get(i);
+								String cmbId = con.getAsString("comboId");
+								Component cdep = lovCombos.get(cmbId);
+								
+								cdep.addEventListener("onSelect", new EventListener<Event>() {
 
-										String cmbId = dpd.split("\\(")[0];							
-										Combobox dpc = (Combobox)getSelf().getFellowIfAny(cmbId);
+									@Override
+									public void onEvent(Event event)
+											throws Exception {
+
+										List<Object> vals = new ArrayList<Object>();
+										vals.add(((Combobox)event.getTarget()).getSelectedItem().getValue());
 										
-										Object val = null;
-										if(dpc.getSelectedIndex() > -1) {
-											val = dpc.getSelectedItem().getValue();
-										} else {
-											val = "-1";
-										}
-										if(val != null) {
-											if((val instanceof String) && (val.toString().trim().length() > 0)) {
-												vals.add(val);
+										for(int i = 0; i < dependencies.length(); i++) {
+											ParsedJSONContainer con = dependencies.get(i);
+											String cmbId = con.getAsString("comboId");
+											Combobox dpc = (Combobox)getSelf().getFellowIfAny(cmbId);
+											
+											Object val = null;
+											if(dpc.getSelectedIndex() > -1) {
+												val = dpc.getSelectedItem().getValue();
 											} else {
-												vals.add(val);
+												val = "-1";
 											}
+											if(val != null) {
+												if((val instanceof String) && (val.toString().trim().length() > 0)) {
+													vals.add(val);
+												} else {
+													vals.add(val);
+												}
+											}											
 										}
+										
+										List<ListOfValueItem> list = loadListOfValueItems(param, vals.toArray(new String[vals.size()]));
+										try {
+											((Combobox)comp).setRawValue(null); //reset value selection
+										} catch (Exception e) {}
+										((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(""));
+										((Combobox)comp).setModel(new ListOfValueModel(list));
 										
 									}
 									
-									List<ListOfValueItem> list = loadListOfValueItems(param, vals.toArray(new String[vals.size()]));
-									String defaultVal = "";
-									try {
-										defaultVal = ((Combobox)comp).getValue();
-									} catch (Exception e) {}
-									((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
-									((Combobox)comp).setModel(new ListOfValueModel(list));
-									
-								}
-							});
-							
+								});
+							}
+						} catch (Exception e1) {
 						}
 					}
 					
 				} else if("Combobox".equals(param.getParamType())) {
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
+					
+					try {
+						ParsedJSONArrayContainer items = ServerSideWrappedJSONParser
+								.getInstance().parseJSONArray(param.getStaticData());
+						List<ParsedJSONContainer> litems = new ArrayList<ParsedJSONContainer>();
+						for(int i = 0; i < items.length(); i++) {
+							ParsedJSONContainer con = items.get(i);
+							litems.add(con);							
+						}
+						ListModelList<ParsedJSONContainer> model = new ListModelList<ParsedJSONContainer>(litems);
+						((Combobox)inp).setItemRenderer(new ParamComboItemRenderer());
+						((Combobox)inp).setModel(model);
+
+					} catch (Exception e) {
+						logger.error("gagal parsing JSON String: " + e.getMessage());
+					}
+					
 				} else if("MonthCombobox".equals(param.getParamType())) {
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
@@ -439,14 +464,14 @@ public class ReportFormController extends BaseSimpleController {
 				List<String> headers = new ArrayList<String>();
 				headers.add(headerid);
 				
-				Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getLanguge(), headers);
+				Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getCountryLocale(), headers);
 				
-				if(vals == null || vals.isEmpty()) return;
-				
-				List<CommonLOV> lov = vals.get(headerid).getDetails();
-				
-				for(CommonLOV val : lov) {					
-					list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), param.getSeparator()));
+				if(!(vals == null || vals.isEmpty())) {				
+					List<CommonLOV> lov = vals.get(headerid).getDetails();
+					
+					for(CommonLOV val : lov) {					
+						list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), param.getSeparator()));
+					}
 				}
 				
 				String id = event.getTarget().getId(); 
@@ -472,44 +497,56 @@ public class ReportFormController extends BaseSimpleController {
 //			filters.add(new SimpleQueryFilter(annLOV.labelField(), SimpleQueryFilterOperator.likeBothSide, sFilter));		
 //		}
 		
-//		if(annLOV.filterFlags().length > 0) {
-//			if(filters == null) filters = new ArrayList<SimpleQueryFilter>();
-//			for(LoVFlag flag : annLOV.filterFlags()) {
-//				Constructor<?>[] cs = flag.type().getConstructors();
-//				String dtType = String.class.getName();
-//				if(cs != null && cs.length > 0) {
-//					dtType = cs[0].getName();
-//				}
-//				SimpleQueryFilter filterFlag = new SimpleQueryFilter();
-//				filterFlag.setField(flag.field());
-//				filterFlag.setFilter(flag.value());
-//				filterFlag.setFilterTypeClass(dtType);
-//				filterFlag.setOperator(flag.operator());
-//				filters.add(filterFlag);
-//			}
-//		}
-		
-		if(param.getLovParentId() != null && !("".equals(param.getLovParentId().trim()))) {
-			int i = 0;
-			if(filters == null) filters = new ArrayList<SimpleQueryFilter>();
-			String[] dependencies = param.getLovParentId().split("\\,");			
-			for(String dp : dependencies) {
+		if(param.getLovFilters() != null && !("".equals(param.getLovFilters().trim()))) {
+			
+			try {
 				
-				dp = dp.replace(")", "");
+				ParsedJSONArrayContainer lovfilters = ServerSideWrappedJSONParser
+						.getInstance().parseJSONArray(param.getLovFilters());
 				
-				String[] prn = dp.split("\\(");
-				String[] fieldDes = prn[1].split("\\:");
-				String field = fieldDes[0];
-				String dtype = fieldDes[1];
+				if (filters == null)
+					filters = new ArrayList<SimpleQueryFilter>();
 				
-				if(dependencyFilter != null && dependencyFilter.length > 0) {
+				for (int i = 0; i < lovfilters.length(); i++) {
+					ParsedJSONContainer con = lovfilters.get(i);
+					String field = con.getAsString("field");
+					String fType = con.getAsString("fldType");
+					String opr = con.getAsString("opr");
+					String val = con.getAsString("val");
 					SimpleQueryFilter filterFlag = new SimpleQueryFilter();
 					filterFlag.setField(field);
-					filterFlag.setFilter(dependencyFilter[i++]);
-					filterFlag.setFilterTypeClass(dtype);
-					filterFlag.setOperator(SimpleQueryFilterOperator.equal);
+					filterFlag.setFilter(val);
+					filterFlag.setFilterTypeClass(fType);
+					filterFlag.setOperator(SimpleQueryFilterOperator.valueOf(opr));
 					filters.add(filterFlag);
 				}
+				
+			} catch (Exception e) {
+				logger.error("error parse JSON String" + e.getMessage());
+			}
+		}
+		
+		if(param.getLovParentId() != null && !("".equals(param.getLovParentId().trim()))) {			
+			try {
+				ParsedJSONArrayContainer dependencies = ServerSideWrappedJSONParser
+						.getInstance().parseJSONArray(param.getLovParentId());
+				if (filters == null)
+					filters = new ArrayList<SimpleQueryFilter>();
+				for (int i = 0; i < dependencies.length(); i++) {
+					ParsedJSONContainer con = dependencies.get(i);
+					String field = con.getAsString("fieldName");
+					String dtype = con.getAsString("fieldType");
+					if (dependencyFilter != null && dependencyFilter.length > 0) {
+						SimpleQueryFilter filterFlag = new SimpleQueryFilter();
+						filterFlag.setField(field);
+						filterFlag.setFilter(dependencyFilter[i]);
+						filterFlag.setFilterTypeClass(dtype);
+						filterFlag.setOperator(SimpleQueryFilterOperator.equal);
+						filters.add(filterFlag);
+					}
+				}
+			} catch (Exception e) {
+				logger.error("error parse JSON String" + e.getMessage());
 			}
 		}
 		
@@ -567,6 +604,17 @@ public class ReportFormController extends BaseSimpleController {
 			cal.add(Calendar.MONTH, 1);
 		}
 		return list;
+	}
+	
+	final class ParamComboItemRenderer implements ComboitemRenderer<ParsedJSONContainer> {
+
+		@Override
+		public void render(Comboitem item, ParsedJSONContainer data, int index)
+				throws Exception {
+			item.setLabel(data.getAsString("itemLabel"));
+			item.setValue(data.getAsString("itemValue"));
+		}
+		
 	}
 	
 }

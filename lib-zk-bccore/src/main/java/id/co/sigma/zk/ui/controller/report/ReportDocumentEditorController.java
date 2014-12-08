@@ -63,7 +63,6 @@ public class ReportDocumentEditorController extends BaseSimpleDirectToDBEditor<R
 	@Override
 	protected void insertData(Object... data) throws Exception {
 		super.insertData(data);
-		System.out.println(data[0]);
 		if(data[0] instanceof RptDocument) {
 			RptDocument rptdoc = (RptDocument) data[0];
 			PageDefinition pageDef = new PageDefinition();
@@ -75,11 +74,6 @@ public class ReportDocumentEditorController extends BaseSimpleDirectToDBEditor<R
 			pageDef.setRemark(rptdoc.getDescription());
 			generalPurposeService.insert(pageDef);
 		}
-	}
-
-	@Override
-	protected void updateData(RptDocument data) throws Exception {
-		super.updateData(data);
 	}
 
 	@Override

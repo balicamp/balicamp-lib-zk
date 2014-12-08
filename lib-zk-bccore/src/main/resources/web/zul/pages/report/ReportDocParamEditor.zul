@@ -4,8 +4,9 @@
 	apply="id.co.sigma.zk.ui.controller.report.ReportParameterEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
 	confirmationMsg="Apakah anda akan menyimpan data ini?"
-	width="40%">
-<grid vflex="1">
+	width="50%">
+	
+	<grid vflex="1" id="formGrid">
 	
 		<columns>
 				<column width="150px" />
@@ -14,15 +15,15 @@
 		<rows> 
 		<row>
 			${labels.field.code}
-			<textbox id="paramCode" value="${editorParams$composer.editedData.paramCode}" readonly="true"/>
+			<textbox id="paramCode" value="${editorParams$composer.editedData.paramCode}" readonly="true" width="200px"/>
 		</row>
 		<row>
 			Label
-			<textbox id="paramLabel"  value="${editorParams$composer.editedData.paramLabel}"/>
+			<textbox id="paramLabel"  value="${editorParams$composer.editedData.paramLabel}"  width="300px"/>
 		</row>
 		<row>
 			${labels.field.description}
-			<textbox id="description"  value="${editorParams$composer.editedData.description}"/>
+			<textbox id="description"  value="${editorParams$composer.editedData.description}" width="350px"/>
 		</row>
 		<row>
 			${labels.field.type}
@@ -37,29 +38,124 @@
 				<comboitem value="MonthCombobox" label="MonthCombobox"/>
 			</combobox>
 		</row>
-		<row>
-			LOV Class
-			<textbox id="lovClass"  value="${editorParams$composer.editedData.lovClass}"/>
+		<row id="rowLovClass">
+			LoV Class
+			<textbox id="lovClass"  value="${editorParams$composer.editedData.lovClass}" width="210px"/>
 		</row>
-		<row>
+		<row id="rowSeparator">
 			LOV Separator
-			<textbox id="separator"  value="${editorParams$composer.editedData.separator}"/>
+			<textbox id="separator"  value="${editorParams$composer.editedData.separator}" width="50px" maxlength="3"/>
 		</row>
-		<row>
+		<row id="rowDependencies">
 			LOV Dependencies
-			<textbox id="lovParentId"  value="${editorParams$composer.editedData.lovParentId}"/>
+			<box style="border:1px solid #CFCFCF">
+				<textbox id="lovParentId"  value="${editorParams$composer.editedData.lovParentId}" width="210px" visible="false"/>
+				<listbox id="lstLoVDepedencies">
+				<listhead>
+					<listheader id="comboId" width="40%" label="Parent Combobox" align="center"/>
+					<listheader id="fieldName" width="30%" label="${labels.field.field_name}" align="center"/>
+					<listheader id="fieldType" width="30%" label="${labels.field.type}" align="center"/>
+					<listheader width="32px"/>
+				</listhead>
+				<listitem>
+					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
+					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
+					<listcell hflex="1">
+						<combobox hflex="1">
+							<comboitem value="java.lang.Short" label="Short"/>
+							<comboitem value="java.lang.Integer" label="Int"/>
+							<comboitem value="java.lang.Long" label="Long"/>
+							<comboitem value="java.lang.Float" label="Float"/>
+							<comboitem value="java.lang.Double" label="Double"/>
+							<comboitem value="java.lang.BigInteger" label="BigInteger"/>
+							<comboitem value="java.lang.BigDecimal" label="BigDecimal"/>
+							<comboitem value="java.lang.String" label="String"/>
+						</combobox>
+					</listcell>
+					<listcell hflex="1" style="text-align:center">
+						<image src="~./zul/img/ctrlimages/plus-16.png" width="16px" height="16px" tooltiptext="${labels.action.button.add}" forward="onAddDependcies"/>
+						<image src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px" tooltiptext="${labels.action.button.delete}" visible="false" forward="onDelDependcies"/>
+					</listcell>
+				</listitem>
+				</listbox>
+			</box>
+		</row>
+		<row id="rowFilters" valign="top">
+			LOV Filters
+			<box style="border:1px solid #CFCFCF">
+			<textbox visible="false" id="lovFilters"/>
+			<listbox id="lstLoVFilter">
+				<listhead>
+					<listheader id="field" width="30%" label="${labels.field.field_name}" align="center"/>
+					<listheader id="fldType" width="25%" label="${labels.field.type}" align="center"/>
+					<listheader id="opr" width="15%" label="${labels.field.operator}" align="center"/>
+					<listheader id="val" width="30%" label="${labels.field.value}" align="center"/>
+					<listheader width="32px"/>
+				</listhead>
+				<listitem>
+					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
+					<listcell hflex="1">
+						<combobox hflex="1">
+							<comboitem value="java.lang.Short" label="Short"/>
+							<comboitem value="java.lang.Integer" label="Int"/>
+							<comboitem value="java.lang.Long" label="Long"/>
+							<comboitem value="java.lang.Float" label="Float"/>
+							<comboitem value="java.lang.Double" label="Double"/>
+							<comboitem value="java.lang.BigInteger" label="BigInteger"/>
+							<comboitem value="java.lang.BigDecimal" label="BigDecimal"/>
+							<comboitem value="java.lang.String" label="String"/>
+						</combobox>
+					</listcell>
+					<listcell hflex="1">
+						<combobox hflex="1">
+							<comboitem value="equal" label="="/>
+							<comboitem value="notEqual" label="!="/>
+							<comboitem value="less" label="&lt;"/>
+							<comboitem value="lessEqual" label="&lt;="/>
+							<comboitem value="greater" label="&gt;"/>
+							<comboitem value="greaterEqual" label="&gt;="/>
+						</combobox>
+					</listcell>
+					<listcell hflex="1"><textbox inplace="true" hflex="1"/> </listcell>
+					<listcell hflex="1" style="text-align:center">
+						<image src="~./zul/img/ctrlimages/plus-16.png" width="16px" height="16px" tooltiptext="${labels.action.button.add}" forward="onAddFilter"/>
+						<image src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px" tooltiptext="${labels.action.button.delete}" visible="false" forward="onDelFilter"/>
+					</listcell>
+				</listitem>
+			</listbox>
+			</box>
+		</row>
+		<row id="rowCbmItem" valign="top">
+			List Item
+			<box style="border:1px solid #CFCFCF">
+			<listbox id="lstComboItem">
+				<listhead>
+					<listheader id="itemValue" width="48%" label="${labels.field.code}" align="center"/>
+					<listheader id="itemLabel" width="50%" label="${labels.field.label}" align="center"/>
+					<listheader width="32px"/>
+				</listhead>
+				<listitem>
+					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
+					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
+					<listcell hflex="1" style="text-align:center">
+						<image src="~./zul/img/ctrlimages/plus-16.png" width="16px" height="16px" tooltiptext="${labels.action.button.add}" forward="onAddComboitem"/>
+						<image src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px" tooltiptext="${labels.action.button.delete}" visible="false" forward="onDelComboitem"/>
+					</listcell>
+				</listitem>
+			</listbox>
+			</box>
 		</row>
 		<row>
-			Nilai Default
-			<textbox id="defaultValue"  value="${editorParams$composer.editedData.defaultValue}"/>
+			${labels.field.default_value}
+			<textbox id="defaultValue"  value="${editorParams$composer.editedData.defaultValue}" width="210px"/>
 		</row>
 		<row>
 			Format
-			<textbox id="dataFormat"  value="${editorParams$composer.editedData.dataFormat}"/>
+			<textbox id="dataFormat"  value="${editorParams$composer.editedData.dataFormat}" width="210px"/>
 		</row>
 		<row>
 			Sequence
-			<textbox id="paramSec"  value="${editorParams$composer.editedData.paramSec}"/>
+			<textbox id="paramSec"  value="${editorParams$composer.editedData.paramSec}" width="100px"/>
 		</row>
 		</rows>
 	</grid>
