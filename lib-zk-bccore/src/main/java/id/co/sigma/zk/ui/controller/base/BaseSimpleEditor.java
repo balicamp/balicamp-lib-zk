@@ -873,7 +873,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			Messagebox.Button.OK, null);
 	}
 
-	protected final void showSuccesMessage(ZKEditorState state) {
+	protected void showSuccesMessage(ZKEditorState state) {
 		Messagebox.show(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.success") : Labels.getLabel("msg.save.edit.success"), 
 				Labels.getLabel("title.msgbox.information"),
 				new Messagebox.Button[]{Messagebox.Button.OK},
