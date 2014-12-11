@@ -44,7 +44,7 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	 * akses ke service
 	 */
 	@Autowired
-	IGeneralPurposeService generalPurposeService ;  
+	protected IGeneralPurposeService generalPurposeService ;  
 	
 	
 	
@@ -73,10 +73,31 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		invokeSearch(filters, sorts);
 	}
 	
-	@SuppressWarnings({ "unchecked", "serial" })
+	
 	public void invokeSearch (final SimpleQueryFilter[] filters ,final   SimpleSortArgument[] sorts) {
-		final Class<DATA> dt = (Class<DATA>) getHandledClass();  
-		dataModel  = new SimpleQueryDrivenListModel<DATA>() {
+		  
+		dataModel  = instantiateDataModel(filters, sorts); 
+		Listbox lb = getListbox(); 
+		dataModel.setSortArgs(getSortableFirstHeader(lb));
+		dataModel.initiate(lb.getPageSize());
+		dataModel.setMultiple(lb.isMultiple());
+		lb.setModel(dataModel);
+		ListitemRenderer<DATA> renderer = getCustomRenderer(); 
+		if ( renderer!= null){
+			lb.setItemRenderer(renderer);
+		}
+	}
+	
+	
+	
+	/**
+	 * worker untuk instantiate data model untuk data.
+	 * override ini kalau ada perlu query yang dedicated atau semacamnya
+	 */
+	@SuppressWarnings({ "unchecked", "serial" })
+	protected SimpleQueryDrivenListModel<DATA> instantiateDataModel (final SimpleQueryFilter[] filters ,final   SimpleSortArgument[] sorts) {
+		final Class<DATA> dt = (Class<DATA>) getHandledClass();
+		return new SimpleQueryDrivenListModel<DATA>() {
 			@Override
 			public Class<? extends DATA> getHandledClass() {
 				return dt;
@@ -90,18 +111,7 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 				return sorts;
 			}
 		};
-		Listbox lb = getListbox(); 
-		dataModel.setSortArgs(getSortableFirstHeader(lb));
-		dataModel.initiate(lb.getPageSize());
-		dataModel.setMultiple(lb.isMultiple());
-		lb.setModel(dataModel);
-		ListitemRenderer<DATA> renderer = getCustomRenderer(); 
-		if ( renderer!= null){
-			lb.setItemRenderer(renderer);
-		}
 	}
-	
-	
 	
 	
 	

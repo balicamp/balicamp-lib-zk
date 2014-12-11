@@ -46,8 +46,16 @@ public final class ListOfValueItem {
 				sBuf.append("_id: ").append(this.value).append(", ");
 			}
 			if(!"".equals(separator)) {
-				sBuf.append("label: \"").append(this.code).append(separator).append(label).append("\"")
-				.append("}");		
+				//gede sutarsa 1-12-2014 --> untuk value = "" tidak di tampilkan dalam data LOV
+				if ( this.value instanceof String && ((String)this.value).isEmpty()){
+					sBuf.append("label: \"").append(label).append("\"").append("}");
+				}else{
+					sBuf.append("label: \"").append(this.code).append(separator).append(label).append("\"").append("}");
+				}
+				
+				
+				
+						
 			} else {
 				sBuf.append("label: \"").append(label).append("\"").append("}");
 			}

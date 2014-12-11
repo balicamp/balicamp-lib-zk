@@ -12,6 +12,7 @@ import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.common.server.lov.ILOVProviderService;
+import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.common.server.service.system.ICommonSystemService;
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.common.util.json.SharedServerClientLogicManager;
@@ -32,11 +33,21 @@ import id.co.sigma.zk.ui.lov.DefaultLOVRenderer;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +78,7 @@ import org.zkoss.zul.Script;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.impl.InputElement;
+
 
 /**
  * base class untuk ZK MVC controller 
@@ -110,6 +122,39 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	@Qualifier("commonUiNumberWithoutDecimalFormat")
 	protected String commonNumberWithoutDecimalFormat;
 	
+	
+	
+	/**
+	 * di pergunakan untuk memformat money. formatter sesuai dengan locale yang di pakai, tanpa currency sign.<br/> 
+	 * formatter ini juga tidak melakukan pembulatan data
+	 */
+	private DecimalFormat moneyFormater ; 
+	
+	
+	
+	
+	
+	@Autowired
+	@Qualifier("common.format.ui.datetime")
+	private String dateTimeFormatPattern ; 
+	
+	@Autowired
+	@Qualifier("common.format.ui.date")
+	private String dateFormatPattern ; 
+	/**
+	 * formater data + time.ini ikut dengan key 
+	 */
+	private DateFormat dateTimeFormatter ; 
+	
+	
+	
+	
+	
+	/**
+	 * formatter date. tanpa second dan menit
+	 */
+	private DateFormat dateFormatter ; 
+	
 	/**
 	 * id space. ini untuk akses ke element dari componen
 	 */
@@ -129,6 +174,10 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	 */
 	@Autowired
 	protected IGeneralPurposeDao generalPurposeDao ; 
+	
+	
+	@Autowired
+	protected IGeneralPurposeService generalPurposeService ; 
 
 	public BaseSimpleController() {
 		super() ; 
@@ -195,12 +244,18 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		}
 	}
 	
-	private void wireSpring () {
+	
+	
+	
+	
+	protected void wireSpring () {
 		if ( springWired)
 			return ; 
 		try {
 			SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-			springWired = true ; 
+			springWired = true ;
+			dateTimeFormatter = new SimpleDateFormat(dateTimeFormatPattern);
+			dateFormatter = new SimpleDateFormat(dateFormatPattern); 
 		} catch (Exception e) {
 			springWired = false ;
 			logger.error("gagal wire spring. error : " + e.getMessage() , e);
@@ -414,6 +469,10 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		}
 	}
 	
+	
+	
+	
+	
 	/**
 	 * create script untuk combobox dan bandbox
 	 * @return
@@ -536,8 +595,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 										List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann, vals.toArray(new String[vals.size()]));
 										String defaultVal = "";
 										try {
-//											defaultVal = ((Combobox)comp).getValue();
-											((Combobox)comp).setRawValue(null);
+											defaultVal = ((Combobox)comp).getValue();
 										} catch (Exception e) {}
 										((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 										((Combobox)comp).setModel(new ListOfValueModel(list));
@@ -725,7 +783,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				filterFlag.setField(flag.field());
 				filterFlag.setFilter(flag.value());
 				filterFlag.setFilterTypeClass(dtType);
-				filterFlag.setOperator(flag.operator());
+				filterFlag.setOperator(SimpleQueryFilterOperator.equal);
 				filters.add(filterFlag);
 			}
 		}
@@ -764,15 +822,18 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 					(filters != null ? (SimpleQueryFilter[])filters.toArray(new SimpleQueryFilter[filters.size()]) : null), 
 					sortArgs);
 			if(lov != null) {
+				if ( annLOV.appendNoneSelectedItem()) {
+					list.add(new ListOfValueItem("", annLOV.noneSelectedLabel(), annLOV.separator()));
+				}
 				for(Object o : lov) {
 					if(!("".equals(annLOV.codeField()))) {
-						String code = String.valueOf(ExtendedBeanUtils.getInstance().getProperty(o, annLOV.codeField()));
-						String value = String.valueOf(ExtendedBeanUtils.getInstance().getProperty(o, annLOV.valueField()));
-						String label = String.valueOf(ExtendedBeanUtils.getInstance().getProperty(o, annLOV.labelField()));
+						String code = String.valueOf(ExtendedBeanUtils.getInstance().getPropertyBlind(o, annLOV.codeField()));
+						String value = String.valueOf(ExtendedBeanUtils.getInstance().getPropertyBlind(o, annLOV.valueField()));
+						String label = String.valueOf(ExtendedBeanUtils.getInstance().getPropertyBlind(o, annLOV.labelField()));
 						list.add(new ListOfValueItem(code, value, label, annLOV.separator()));
 					} else {
-						String value = String.valueOf(ExtendedBeanUtils.getInstance().getProperty(o, annLOV.valueField()));
-						String label = String.valueOf(ExtendedBeanUtils.getInstance().getProperty(o, annLOV.labelField()));
+						String value = String.valueOf(ExtendedBeanUtils.getInstance().getPropertyBlind(o, annLOV.valueField()));
+						String label = String.valueOf(ExtendedBeanUtils.getInstance().getPropertyBlind(o, annLOV.labelField()));
 						list.add(new ListOfValueItem(value, label, annLOV.separator()));
 					}
 				}
@@ -823,4 +884,72 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		}
 	}
 	
+	
+	/**
+	 * di pergunakan untuk memformat money. formatter sesuai dengan locale yang di pakai, tanpa currency sign.<br/> 
+	 * formatter ini juga tidak melakukan pembulatan data
+	 */
+	public NumberFormat getMoneyFormater() {
+		if (moneyFormater == null) {
+			String localeCode =  getAuthenticateUser().getLocale();
+			if ( localeCode == null)
+				localeCode ="id"; 
+			Locale l = Locale.forLanguageTag(localeCode); 
+			moneyFormater = (DecimalFormat) DecimalFormat.getCurrencyInstance(l);
+			
+			
+			DecimalFormatSymbols decimalFormatSymbols = moneyFormater.getDecimalFormatSymbols() ; 
+	    	decimalFormatSymbols.setCurrencySymbol("");
+	    	moneyFormater.setDecimalFormatSymbols(decimalFormatSymbols);
+		}
+		return moneyFormater;
+	}
+	
+	
+	 /**
+	  * reder money 
+	  */
+	 public String renderNumberAsMoney (BigDecimal money) {
+		 if ( money== null || money.longValue()==0)
+			 return "0"  ;
+		 money.setScale(2, RoundingMode.HALF_EVEN);
+		 return getMoneyFormater().format(money); 
+	 }
+	 
+	 
+	 
+	 /**
+		 * formater data + time.ini ikut dengan key 
+		 */
+	 public DateFormat getDateTimeFormatter() {
+		return dateTimeFormatter;
+	}
+	 
+	 /**
+		 * formater data + time.ini ikut dengan key 
+		 */
+	 public void setDateTimeFormatter(DateFormat dateTimeFormatter) {
+		this.dateTimeFormatter = dateTimeFormatter;
+	}
+	 
+	 /**
+	  * helper unutk zul file. render tanggal sebagai date time( sampai dengan second. format standard = format 24 jam) 
+	  */
+	 public String formatAsDateTime( Date date) {
+		 if ( date == null )
+			 return "" ; 
+		 return dateTimeFormatter.format(date); 
+	 }
+	 
+	 
+	 
+	 
+	 /**
+	  * format simple date. 
+	  */
+	 public String formatAsDate (Date date) {
+		 if ( date == null) 
+			 return "" ; 
+		 return dateFormatter.format(date); 
+	 }
 }

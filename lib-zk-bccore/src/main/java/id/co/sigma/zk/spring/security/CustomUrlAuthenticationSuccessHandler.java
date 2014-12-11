@@ -43,12 +43,15 @@ public class CustomUrlAuthenticationSuccessHandler extends
 		
 		
 		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
-		
+		User appUser = SecurityUtil.getUser().getApplicationUser();
+		String localeCode = appUser.getLocale(); 
+		if ( localeCode== null)
+			localeCode = "id" ; 
 		Locale locale = new Locale("id");
 		
 		request.getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
 		
-		User appUser = SecurityUtil.getUser().getApplicationUser();
+		
 		
 		Signon signon = new Signon();
 		signon.setLogonTime(new Date());

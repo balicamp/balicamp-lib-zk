@@ -54,11 +54,37 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 	
 	private static final ExtendedBeanUtils BEAN_UTILS = ExtendedBeanUtils.getInstance();
 	
+	
+	protected class LOVParam {
+		String lovFQCN ;  
+		String valueField ; 
+		String labelField ; 
+		String separator ; 
+		boolean appendNoneSelectedMarker ; 
+		String noneSelectedLabel ; 
+		
+		public LOVParam() {}
+
+		public LOVParam(String lovFQCN, String valueField, String labelField,
+				String separator, boolean appendNoneSelectedMarker,
+				String noneSelectedLabel) {
+			super();
+			this.lovFQCN = lovFQCN;
+			this.valueField = valueField;
+			this.labelField = labelField;
+			this.separator = separator;
+			this.appendNoneSelectedMarker = appendNoneSelectedMarker;
+			this.noneSelectedLabel = noneSelectedLabel;
+		}
+		
+	}
+	
 	/**
 	 * LOV Mapping <br/> 
 	 * [class, valueField, labelField, separator]
 	 */
-	private String[] lovMap = null;
+	//private String[] lovMap = null;
+	private LOVParam lovMap; 
 	
 	public ListModelList<Object> getListData() {
 		return listData;
@@ -91,7 +117,7 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 		String cName = getId();
 		String sFilter = "";
 		if(lovMap != null) {
-			cName = lovMap[0];
+			cName = lovMap.lovFQCN;
 			if(controller != null) {
 				if(generalPurposeDao != null) {
 					try {
@@ -102,16 +128,19 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 						
 						List<Object> lov = generalPurposeDao.list("lov", 
 								cName + 
-								" where lov." + (String)lovMap[1] + " like '%" + iEvent.getValue() + "%'" + 
-								" or lov." + (String)lovMap[2] + " like '%"  + iEvent.getValue() + "%'", 
+								" where lov." + (String)lovMap.valueField + " like '%" + iEvent.getValue() + "%'" + 
+								" or lov." + (String)lovMap.labelField + " like '%"  + iEvent.getValue() + "%'", 
 								null);
 						
 						if(lov != null) {
+							if ( lovMap.appendNoneSelectedMarker){
+								list.add(new ListOfValueItem("" , lovMap.noneSelectedLabel , lovMap.separator)); 
+							}
 							for(Object i : lov) {
-								list.add(new ListOfValueItem(
-										String.valueOf(BEAN_UTILS.getProperty(i, (String)lovMap[1])), 
-										String.valueOf(BEAN_UTILS.getProperty(i, (String)lovMap[2])), 
-										(String)lovMap[3]));
+								list.add(new ListOfValueItem( 
+										String.valueOf(BEAN_UTILS.getProperty(i, (String)lovMap.valueField)), 
+										String.valueOf(BEAN_UTILS.getProperty(i, (String)lovMap.labelField)), 
+										(String)lovMap.separator));
 							}
 						}
 						
@@ -124,7 +153,7 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 				InputEvent iEvent = (InputEvent)event;
 				sFilter = iEvent.getValue();
 				for(int i = 0; i < 10; i++) {					
-					list.add(new ListOfValueItem(iEvent.getValue() + i, iEvent.getValue(), (String)lovMap[3]));
+					list.add(new ListOfValueItem(iEvent.getValue() + i, iEvent.getValue(), (String)lovMap.separator));
 				}
 			}
 			
@@ -174,7 +203,7 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 				+ "		event.stop();"
 				+ "} else {"
 				+ "		bc['"+ getId() + "'] = this;"
-				+ "		onChangingBandbox('" + (lovMap != null ? lovMap[0] : getId()) 
+				+ "		onChangingBandbox('" + (lovMap != null ? lovMap.lovFQCN : getId()) 
 				+ "', event.value, this, event);"
 				+ "}"
 		);
@@ -218,12 +247,14 @@ public class BcBandbox extends Bandbox implements IdSpace, AfterCompose{
 						try {
 							Object o = ann.lovClass().newInstance();
 							String[] className = o.getClass().getName().split("\\.");
-							lovMap = new String[]{
+							lovMap = new LOVParam( 
 									className[className.length - 1],
 									ann.valueField(),
 									ann.labelField(),
-									ann.separator()
-								};
+									ann.separator() , 
+									ann.appendNoneSelectedItem() , 
+									ann.noneSelectedLabel()
+								);
 						} catch(Exception e) {
 						}
 					}

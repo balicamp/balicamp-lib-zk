@@ -17,6 +17,7 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
@@ -53,6 +54,12 @@ public class EditorWindow extends Window implements AfterCompose {
 	@Wire
 	private Timer lovLoaderTimer;
 	
+	
+	@Wire
+	protected Button btnSave ;
+	
+	@Wire
+	protected Button btnCancel; 
 	private String cancellationMsg;
 	
 	private String confirmationMsg;
@@ -60,6 +67,19 @@ public class EditorWindow extends Window implements AfterCompose {
 	private BaseSimpleController controller;
 	
 	private List<Component> requiredFields;
+	
+	
+	/**
+	 * ini untuk show /hide cancel button. 
+	 * set ini = false untuk hide cancel(batal) button 
+	 */
+	private boolean showCancelButton  = true;
+	
+	
+	/**
+	 * ini untuk show / hide untuk tombol save
+	 */
+	private boolean showSaveButton = true ; 
 	
 	public EditorWindow() {
 		Executions.createComponents("~./zul/pages/common/EditorWindow.zul", this, null);
@@ -121,10 +141,14 @@ public class EditorWindow extends Window implements AfterCompose {
 			Component child = children.get(childrenCount);
 			panelEditor.appendChild(child);
 		}
-
+		
 		markRequiredFields();
+		btnCancel.setVisible(showCancelButton); 
+		btnSave.setVisible(showSaveButton); 
+		composed = true ; 
 	}
 
+	protected boolean composed = false ; 
 	public String getCancellationMsg() {
 		return cancellationMsg;
 	}
@@ -234,5 +258,37 @@ public class EditorWindow extends Window implements AfterCompose {
 		cell.appendChild(prev);
 		cell.appendChild(mreq);
 		return cell;
+	}
+	/**
+	 * ini untuk show /hide cancel button. 
+	 * set ini = false untuk hide cancel(batal) button 
+	 */
+	public boolean isShowCancelButton() {
+		return showCancelButton;
+	}
+	/**
+	 * ini untuk show /hide cancel button. 
+	 * set ini = false untuk hide cancel(batal) button 
+	 */
+	public void setShowCancelButton(boolean showCancelButton) {
+		this.showCancelButton = showCancelButton;
+		if ( composed){
+			btnCancel.setVisible(this.showCancelButton); 
+		}
+	}
+	/**
+	 * ini untuk show / hide untuk tombol save
+	 */
+	public void setShowSaveButton(boolean showSaveButton) {
+		this.showSaveButton = showSaveButton;
+		if ( composed){
+			btnSave.setVisible(this.showSaveButton); 
+		}
+	}
+	/**
+	 * ini untuk show / hide untuk tombol save
+	 */
+	public boolean isShowSaveButton() {
+		return showSaveButton;
 	}
 }

@@ -51,6 +51,20 @@ public @interface ListOfValue {
 	 */
 	String componentId() default "";
 	
+	
+	
+	
+	
+	/**
+	 * flag apakah dalam combo box perlu di tambahkan none selected atau tidak
+	 */
+	boolean appendNoneSelectedItem () default false  ; 
+	
+	/**
+	 * default label untuk none selected
+	 */
+	String noneSelectedLabel() default "- silakan pilih -" ; 
+	
 	/**
 	 * flag load on demand
 	 * @return
