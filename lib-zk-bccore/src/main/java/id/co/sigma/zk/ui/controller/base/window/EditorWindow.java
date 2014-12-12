@@ -127,6 +127,7 @@ public class EditorWindow extends Window implements AfterCompose {
 				if(lovLoaderTimer != null) {
 					lovLoaderTimer.stop();
 					Clients.clearBusy(event.getTarget());
+					
 				}
 			}
 		});

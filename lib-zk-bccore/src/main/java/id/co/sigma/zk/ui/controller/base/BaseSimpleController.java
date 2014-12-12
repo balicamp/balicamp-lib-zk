@@ -467,8 +467,21 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			script.setDefer(true);
 			thisComp.appendChild(script);
 		}
+		runTaskAfterLOVFilled();
 	}
 	
+	
+	
+	
+	
+	
+	/**
+	 * task ini akan di run setelah LOV selesai di isi 
+	 */
+	protected void runTaskAfterLOVFilled () {
+		Timer t = new Timer();
+		
+	}
 	
 	
 	

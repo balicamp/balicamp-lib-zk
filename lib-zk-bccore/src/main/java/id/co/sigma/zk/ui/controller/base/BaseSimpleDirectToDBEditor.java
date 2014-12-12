@@ -83,6 +83,19 @@ extends BaseSimpleEditor<POJO> {
 		    showErrorMessage(getEditorState(), e.getMessage());
 		    return;
 		}
+		
+		
+		try {
+		    validateData();
+
+		    String confirmMsg = (String) getSelf().getAttribute(
+			    "confirmationMsg");
+		    showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+
+		} catch (Exception e) {
+		    logger.error(e.getMessage(), e);
+		    showInvalidDataMessage(getEditorState(), e.getMessage());
+		}
 
 	}
 
