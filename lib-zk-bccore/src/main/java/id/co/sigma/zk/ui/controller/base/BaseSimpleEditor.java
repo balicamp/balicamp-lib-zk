@@ -652,6 +652,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				val = ((Decimalbox)input).getValue();
 			} else if(input instanceof Doublebox) {
 				val = ((Doublebox)input).getValue();
+			} else if(input instanceof Label) {
+				val = ((Label)input).getValue();
 			} else if(input instanceof Combobox)  {
 				
 				Object testVal = ((Combobox)input).getValue(); // test value
