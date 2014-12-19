@@ -12,6 +12,8 @@ public final class ListOfValueItem {
 	
 	private String separator;
 	
+	private Integer sequence = 0;
+	
 	private boolean serverObject = false;
 	
 	public ListOfValueItem(Object value, String label, String separator) {
@@ -29,7 +31,25 @@ public final class ListOfValueItem {
 		this.separator = separator;
 		this.code = code;
 	}
-	
+
+	public ListOfValueItem(String code, Object value, String label, String separator, Integer sequence) {
+		super();
+		this.value = value;
+		this.label = label;
+		this.separator = separator;
+		this.code = code;
+		this.sequence = sequence;
+	}
+
+	public ListOfValueItem(Object value, String label, String separator, Integer sequence) {
+		super();
+		this.value = value;
+		this.label = label;
+		this.separator = separator;
+		this.code = String.valueOf(value);
+		this.sequence = sequence;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -40,10 +60,10 @@ public final class ListOfValueItem {
 			sBuf.append("{");
 			if(this.value instanceof String || this.value instanceof Date) {
 				sBuf.append("value: \"").append(this.value).append("\", ");
-				sBuf.append("_id: \"").append(this.value).append("\", ");
+				sBuf.append("_id: \"").append(this.sequence).append("_").append(this.value).append("\", ");
 			} else {
 				sBuf.append("value: ").append(this.value).append(", ");
-				sBuf.append("_id: ").append(this.value).append(", ");
+				sBuf.append("_id: ").append(this.sequence).append("_").append(this.value).append(", ");
 			}
 			if(!"".equals(separator)) {
 				//gede sutarsa 1-12-2014 --> untuk value = "" tidak di tampilkan dalam data LOV
@@ -96,6 +116,20 @@ public final class ListOfValueItem {
 	 */
 	public String getDescription() {
 		return label;
+	}
+
+	/**
+	 * @return the sequence
+	 */
+	public Integer getSequence() {
+		return sequence;
+	}
+
+	/**
+	 * @param sequence the sequence to set
+	 */
+	public void setSequence(Integer sequence) {
+		this.sequence = sequence;
 	}
 
 	
