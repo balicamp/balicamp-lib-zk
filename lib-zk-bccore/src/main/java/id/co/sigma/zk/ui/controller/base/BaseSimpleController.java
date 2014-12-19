@@ -608,7 +608,8 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 										List<ListOfValueItem> list = loadListOfValueItems(dbName, "", ann, vals.toArray(new String[vals.size()]));
 										String defaultVal = "";
 										try {
-											defaultVal = ((Combobox)comp).getValue();
+//											defaultVal = ((Combobox)comp).getValue();
+											((Combobox)comp).setRawValue(null);
 										} catch (Exception e) {}
 										((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 										((Combobox)comp).setModel(new ListOfValueModel(list));
@@ -796,7 +797,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				filterFlag.setField(flag.field());
 				filterFlag.setFilter(flag.value());
 				filterFlag.setFilterTypeClass(dtType);
-				filterFlag.setOperator(SimpleQueryFilterOperator.equal);
+				filterFlag.setOperator(flag.operator());
 				filters.add(filterFlag);
 			}
 		}
