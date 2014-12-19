@@ -514,7 +514,7 @@ public class ReportFormController extends BaseSimpleController {
 				for (int i = 0; i < lovfilters.length(); i++) {
 					ParsedJSONContainer con = lovfilters.get(i);
 					String field = con.getAsString("field");
-					String fType = con.getAsString("fldType");
+					String fType = con.getAsString("fType");
 					String opr = con.getAsString("opr");
 					String val = con.getAsString("val");
 					SimpleQueryFilter filterFlag = new SimpleQueryFilter();
@@ -539,7 +539,7 @@ public class ReportFormController extends BaseSimpleController {
 				for (int i = 0; i < dependencies.length(); i++) {
 					ParsedJSONContainer con = dependencies.get(i);
 					String field = con.getAsString("fieldName");
-					String dtype = con.getAsString("fieldType");
+					String dtype = con.getAsString("fType");
 					if (dependencyFilter != null && dependencyFilter.length > 0) {
 						SimpleQueryFilter filterFlag = new SimpleQueryFilter();
 						filterFlag.setField(field);

@@ -38,29 +38,53 @@
 				<comboitem value="MonthCombobox" label="MonthCombobox"/>
 			</combobox>
 		</row>
-		<row id="rowLovClass">
+		<row id="rowLovClass" valign="top">
 			LoV Class
-			<textbox id="lovClass"  value="${editorParams$composer.editedData.lovClass}" width="210px"/>
+			<vbox>
+				<combobox id="lovClass"  value="${editorParams$composer.editedData.lovClass}" width="210px"/>
+				<grid hflex="1" id="lovClassParams" visible="false" style="border:1px solid #CFCFCF">
+					<columns>
+						<column width="100px"/>
+						<column/>
+					</columns>
+					<rows>
+						<row>
+							${labels.field.value}
+							<combobox id="lovClassValue"/>
+						</row>
+						<row>
+							${labels.field.code}
+							<combobox id="lovClassCode"/>
+						</row>
+						<row>
+							${labels.field.label}
+							<combobox id="lovClassLabel"/>
+						</row>
+					</rows>
+				</grid>
+			</vbox>
 		</row>
 		<row id="rowSeparator">
 			LOV Separator
 			<textbox id="separator"  value="${editorParams$composer.editedData.separator}" width="50px" maxlength="3"/>
 		</row>
-		<row id="rowDependencies">
+		<row id="rowDependencies" valign="top">
 			LOV Dependencies
 			<box style="border:1px solid #CFCFCF">
 				<textbox id="lovParentId"  value="${editorParams$composer.editedData.lovParentId}" width="210px" visible="false"/>
 				<listbox id="lstLoVDepedencies">
 				<listhead>
-					<listheader id="comboId" width="40%" label="Parent Combobox" align="center"/>
-					<listheader id="fieldName" width="30%" label="${labels.field.field_name}" align="center"/>
-					<listheader id="fieldType" width="30%" label="${labels.field.type}" align="center"/>
+					<listheader id="comboId" width="45%" label="Parent Combobox" align="center"/>
+					<listheader id="fieldName" width="55%" label="${labels.field.field_name}" align="center"/>
+					<!-- <listheader id="fieldType" width="30%" label="${labels.field.type}" align="center"/> -->
 					<listheader width="32px"/>
 				</listhead>
 				<listitem>
 					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
-					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
 					<listcell hflex="1">
+						<combobox hflex="1"/>
+					</listcell>
+<!-- 					<listcell hflex="1">
 						<combobox hflex="1">
 							<comboitem value="java.lang.Short" label="Short"/>
 							<comboitem value="java.lang.Integer" label="Int"/>
@@ -71,7 +95,7 @@
 							<comboitem value="java.lang.BigDecimal" label="BigDecimal"/>
 							<comboitem value="java.lang.String" label="String"/>
 						</combobox>
-					</listcell>
+					</listcell> -->
 					<listcell hflex="1" style="text-align:center">
 						<image src="~./zul/img/ctrlimages/plus-16.png" width="16px" height="16px" tooltiptext="${labels.action.button.add}" forward="onAddDependcies"/>
 						<image src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px" tooltiptext="${labels.action.button.delete}" visible="false" forward="onDelDependcies"/>
@@ -86,15 +110,18 @@
 			<textbox visible="false" id="lovFilters"/>
 			<listbox id="lstLoVFilter">
 				<listhead>
-					<listheader id="field" width="30%" label="${labels.field.field_name}" align="center"/>
-					<listheader id="fldType" width="25%" label="${labels.field.type}" align="center"/>
+					<listheader id="field" width="40%" label="${labels.field.field_name}" align="center"/>
+					<!-- <listheader id="fldType" width="25%" label="${labels.field.type}" align="center"/> -->
 					<listheader id="opr" width="15%" label="${labels.field.operator}" align="center"/>
-					<listheader id="val" width="30%" label="${labels.field.value}" align="center"/>
+					<listheader id="val" width="45%" label="${labels.field.value}" align="center"/>
 					<listheader width="32px"/>
 				</listhead>
 				<listitem>
-					<listcell hflex="1"><textbox inplace="true" hflex="1"/></listcell>
 					<listcell hflex="1">
+						<!-- <textbox inplace="true" hflex="1"/> -->
+						<combobox hflex="1"/>
+					</listcell>
+					<!-- <listcell hflex="1">
 						<combobox hflex="1">
 							<comboitem value="java.lang.Short" label="Short"/>
 							<comboitem value="java.lang.Integer" label="Int"/>
@@ -105,7 +132,7 @@
 							<comboitem value="java.lang.BigDecimal" label="BigDecimal"/>
 							<comboitem value="java.lang.String" label="String"/>
 						</combobox>
-					</listcell>
+					</listcell> -->
 					<listcell hflex="1">
 						<combobox hflex="1">
 							<comboitem value="equal" label="="/>
