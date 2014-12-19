@@ -880,8 +880,10 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 				
 					List<CommonLOV> lov = vals.get(headerid).getDetails();
 					
+					int i = 0;
+					
 					for(CommonLOV val : lov) {					
-						list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), lec.separator()));
+						list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), lec.separator(), i++));
 					}
 				
 				}
