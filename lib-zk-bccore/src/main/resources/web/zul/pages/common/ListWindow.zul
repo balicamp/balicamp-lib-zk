@@ -20,6 +20,7 @@
 				<button id="btnAddNew" label="${labels.action.button.add}"/>
 				<timer id="listTimer" repeats="false" delay="100" onCreate="self.stop()"/>
 				<timer id="lovLoaderTimer" delay="50" onCreate="self.stop()" repeats="true"/>
+				<timer id="lovMasterTimer" delay="200" repeats="false" running="true"/>
 			</hbox>
 		</panelchildren>
 	</panel>

@@ -104,7 +104,7 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		addEventListener("onLoadCombodata", new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				if(lovLoaderTimer != null) {
+				if(lovLoaderTimer != null && !lovLoaderTimer.isRunning()) {
 					lovLoaderTimer.start();
 					Clients.showBusy(event.getTarget(), "Load combo data...");
 				}
@@ -185,6 +185,14 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	public void fecthData() {
 		if((listController != null) && (listController instanceof IReloadablePanel)) {
 			((IReloadablePanel)listController).reload();
+		}
+	}
+	
+	@Listen("onTimer = #lovMasterTimer")
+	public void forceStopLovTimer() {
+		if(lovLoaderTimer != null && lovLoaderTimer.isRunning()) {
+			lovLoaderTimer.stop();
+			Clients.clearBusy(this);
 		}
 	}
 

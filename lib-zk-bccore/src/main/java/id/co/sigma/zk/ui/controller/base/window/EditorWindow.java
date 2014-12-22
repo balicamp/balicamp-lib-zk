@@ -14,6 +14,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandbox;
@@ -114,7 +115,7 @@ public class EditorWindow extends Window implements AfterCompose {
 		addEventListener("onLoadCombodata", new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				if(lovLoaderTimer != null) {
+				if(lovLoaderTimer != null && !lovLoaderTimer.isRunning()) {
 					lovLoaderTimer.start();
 					Clients.showBusy(event.getTarget(), "Load combo data...");
 				}
@@ -149,6 +150,14 @@ public class EditorWindow extends Window implements AfterCompose {
 		composed = true ; 
 	}
 
+	@Listen("onTimer = #lovMasterTimer")
+	public void forceStopLovTimer() {
+		if(lovLoaderTimer != null && lovLoaderTimer.isRunning()) {
+			lovLoaderTimer.stop();
+			Clients.clearBusy(this);
+		}
+	}
+	
 	protected boolean composed = false ; 
 	public String getCancellationMsg() {
 		return cancellationMsg;

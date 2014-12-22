@@ -19,6 +19,7 @@
 		<button id="btnSave" label="${labels.action.button.save}"/>
 		<button id="btnCancel" label="${labels.action.button.cancel}"/>
 		<timer id="lovLoaderTimer" delay="50" onCreate="self.stop()" repeats="true"/>
+		<timer id="lovMasterTimer" delay="200" repeats="false" running="true"/>
 	</toolbar>
 <!-- 		</panelchildren>
 	</panel> -->
