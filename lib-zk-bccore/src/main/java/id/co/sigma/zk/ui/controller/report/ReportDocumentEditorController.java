@@ -69,7 +69,7 @@ public class ReportDocumentEditorController extends BaseSimpleDirectToDBEditor<R
 			pageDef.setApplicationId(1L);
 			pageDef.setCreatedBy(getAuthenticateUser().getUserCode());
 			pageDef.setCreatedOn(new Date());
-			pageDef.setPageCode("RPT:" + rptdoc.getTemplate().replace("/", ":") + rptdoc.getName().toUpperCase());
+			pageDef.setPageCode("RPT:" + rptdoc.getTemplate().replace("/", ":") + ":" + rptdoc.getName().toUpperCase());
 			pageDef.setPageUrl("~./zul/pages/report/ReportForm.zul?reportUnit=" + rptdoc.getName());
 			pageDef.setRemark(rptdoc.getDescription());
 			generalPurposeService.insert(pageDef);
