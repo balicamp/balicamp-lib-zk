@@ -32,6 +32,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
@@ -214,90 +215,80 @@ public class ReportParameterEditorController extends
 					lovClassLabel.setModel(modelLbl);
 				}
 				
+				List<Object> cmbItems = new ArrayList<Object>(attrFields);
+				cmbItems.add("-");
 				if(getEditedData().getLovParentId() != null && !"".equals(getEditedData().getLovParentId().trim())) {
 					try {
 						final ParsedJSONArrayContainer dependencies = ServerSideWrappedJSONParser.getInstance().parseJSONArray(getEditedData().getLovParentId().trim());
-						for(int i = 0; i < dependencies.length(); i++) {
-							ParsedJSONContainer con = dependencies.get(i);
+						if(dependencies.length() > 0) {
+							ParsedJSONContainer con = dependencies.get(0);
 							String field = con.getAsString("fieldName");
 							String cmbId = con.getAsString("comboId");
-							Listitem fDep = null;
-							if(i == 0) {
-								fDep = (Listitem)lstLoVDepedencies.getLastChild();
-							} else {
-								fDep = createFilterListitem((Listitem)lstLoVDepedencies.getLastChild());
-								lstLoVDepedencies.appendChild(fDep);
-							}
+							Listitem fDep = (Listitem)lstLoVDepedencies.getLastChild();
 							if(fDep != null) {
 								Combobox cmb = (Combobox)fDep.getChildren().get(1).getFirstChild();
 								cmb.setItemRenderer(new LoVClassComboitemRenderer(field, true));
-								cmb.setModel(modelVal);
+								cmb.setModel(new ListModelList<Object>(cmbItems));
 								
 								Textbox tVal = (Textbox)fDep.getChildren().get(0).getFirstChild();
 								tVal.setValue(cmbId);
 								
-							}
-							if((i - 1) >= 0) {
-								Listitem litm = lstLoVDepedencies.getItems().get(i-1);
-								litm.getLastChild().getFirstChild().setVisible(false);
-								litm.getLastChild().getLastChild().setVisible(true);
 							}
 						}
 					} catch (Exception e) {
 						Listitem fDep = (Listitem)lstLoVDepedencies.getLastChild();
 						Combobox cmb = (Combobox)fDep.getChildren().get(1).getFirstChild();
 						cmb.setItemRenderer(new LoVClassComboitemRenderer("", true));
-						cmb.setModel(modelVal);
+						cmb.setModel(new ListModelList<Object>(cmbItems));
 					}
+				} else {
+					Listitem fDep = (Listitem)lstLoVDepedencies.getLastChild();
+					Combobox cmb = (Combobox)fDep.getChildren().get(1).getFirstChild();
+					cmb.setItemRenderer(new LoVClassComboitemRenderer("", true));
+					cmb.setModel(new ListModelList<Object>(cmbItems));
 				}
 				
 				if(getEditedData().getLovFilters() != null && !"".equals(getEditedData().getLovFilters().trim())) {
 					try {
 						final ParsedJSONArrayContainer filters = ServerSideWrappedJSONParser.getInstance().parseJSONArray(getEditedData().getLovFilters().trim());
-						for(int i = 0; i < filters.length(); i++) {
-							ParsedJSONContainer con = filters.get(i);
+						if(filters.length() > 0) {
+							ParsedJSONContainer con = filters.get(0);
 							String field = con.getAsString("field");
 							String opr = con.getAsString("opr");
 							String val = con.getAsString("val");
-							Listitem fFltr = null;
-							if(i == 0) {
-								fFltr = (Listitem)lstLoVFilter.getLastChild();
-							} else {
-								fFltr = createFilterListitem((Listitem)lstLoVFilter.getLastChild());
-								lstLoVFilter.appendChild(fFltr);
-							}
+							Listitem fFltr = (Listitem)lstLoVFilter.getLastChild();
+							Combobox fCmb = (Combobox)fFltr.getChildren().get(0).getFirstChild();
 							
-							if(fFltr != null) {
-								Combobox fCmb = (Combobox)fFltr.getChildren().get(0).getFirstChild();
-								fCmb.setItemRenderer(new LoVClassComboitemRenderer(field, true));
-								fCmb.setModel(modelVal);
+							fCmb.setItemRenderer(new LoVClassComboitemRenderer(field, true));
+							fCmb.setModel(new ListModelList<Object>(attrFields));
+							
+							
 
-								Combobox oCmb = (Combobox)fFltr.getChildren().get(1).getFirstChild();
-								List<Comboitem> oitems = oCmb.getItems();
-								for(Comboitem oitem : oitems) {
-									if(oitem.getValue().equals(opr)) {
-										oCmb.setValue(oitem.getLabel());
-										break;
-									}
+							Combobox oCmb = (Combobox)fFltr.getChildren().get(1).getFirstChild();
+							List<Comboitem> oitems = oCmb.getItems();
+							for(Comboitem oitem : oitems) {
+								if(oitem.getValue().equals(opr)) {
+									oCmb.setValue(oitem.getLabel());
+									break;
 								}
+							}
 
-								Textbox tVal = (Textbox)fFltr.getChildren().get(2).getFirstChild();
-								tVal.setValue(val);
-							}
-							if((i - 1) >= 0) {
-								Listitem litm = lstLoVFilter.getItems().get(i-1);
-								litm.getLastChild().getFirstChild().setVisible(false);
-								litm.getLastChild().getLastChild().setVisible(true);
-							}
+							Textbox tVal = (Textbox)fFltr.getChildren().get(2).getFirstChild();
+							tVal.setValue(val);
 							
 						}
 					} catch (Exception e) {
+						e.printStackTrace();
 						Listitem fFltr = (Listitem)lstLoVFilter.getLastChild();
 						Combobox fCmb = (Combobox)fFltr.getChildren().get(0).getFirstChild();
 						fCmb.setItemRenderer(new LoVClassComboitemRenderer("", true));
-						fCmb.setModel(modelVal);
-						
+						fCmb.setModel(new ListModelList<Object>(attrFields));
 					}
+				} else {
+					Listitem fFltr = (Listitem)lstLoVFilter.getLastChild();
+					Combobox fCmb = (Combobox)fFltr.getChildren().get(0).getFirstChild();
+					fCmb.setItemRenderer(new LoVClassComboitemRenderer("", true));
+					fCmb.setModel(new ListModelList<Object>(attrFields));
 				}
 				
 			}
@@ -409,24 +400,25 @@ public class ReportParameterEditorController extends
 			lovClassLabel.setItemRenderer(new LoVClassComboitemRenderer(""));
 			lovClassLabel.setModel(modelLbl);
 
-			
 			Listitem fFltr = createFilterListitem((Listitem)lstLoVFilter.getLastChild());
 			Combobox fCmb = (Combobox)fFltr.getChildren().get(0).getFirstChild();
 			if(fCmb.getItemCount() > 0) {
 				fCmb.getItems().clear();
 			}
 			fCmb.setItemRenderer(new LoVClassComboitemRenderer("", true));
-			fCmb.setModel(modelVal);
+			fCmb.setModel(new ListModelList<Object>(fields));
 			lstLoVFilter.getItems().clear();
 			lstLoVFilter.appendChild(fFltr);
 
+			List<Object> deps = new ArrayList<Object>(fields);
+			deps.add("-");
 			Listitem fDep = createFilterListitem((Listitem)lstLoVDepedencies.getLastChild());
 			Combobox dCmb = (Combobox)fDep.getChildren().get(1).getFirstChild();
 			if(dCmb.getItemCount() > 0) {
 				dCmb.getItems().clear();
 			}
 			dCmb.setItemRenderer(new LoVClassComboitemRenderer("", true));
-			dCmb.setModel(modelVal);
+			dCmb.setModel(new ListModelList<Object>(deps));
 			lstLoVDepedencies.getItems().clear();
 			lstLoVDepedencies.appendChild(fDep);
 			
@@ -471,6 +463,98 @@ public class ReportParameterEditorController extends
 	@Listen("onDelDependcies= #editorParams")
 	public void onDelDependcies(ForwardEvent event) {
 		onDelFilter(event);
+	}
+	
+	@Listen("onCreate = #lateRenderTimer")
+	public void onCreateTimer() {
+		Clients.showBusy(getSelf(),"Loading...");
+	}
+	
+	@Listen("onTimer = #lateRenderTimer")
+	public void onLateRender() {
+		String lClass = getEditedData().getLovClass().replace(")", "");
+		String[] zclass = lClass.split("\\(");
+		if(zclass != null && zclass.length == 2) {
+			
+			List<Attribute<?, ?>> attrFields = basicAttributes(new ArrayList<Attribute<?, ?>>(jpaEntities.get(zclass[0]).getSingularAttributes()));
+			
+			try {
+				
+				List<Object> cmbItems = new ArrayList<Object>(attrFields);
+				cmbItems.add("-");
+				
+				final ParsedJSONArrayContainer dependencies = ServerSideWrappedJSONParser.getInstance().parseJSONArray(getEditedData().getLovParentId().trim());
+				for(int i = 1; i < dependencies.length(); i++) {
+					ParsedJSONContainer con = dependencies.get(i);
+					String field = con.getAsString("fieldName");
+					String cmbId = con.getAsString("comboId");
+					
+					Listitem fDep = createFilterListitem((Listitem)lstLoVDepedencies.getLastChild());
+					lstLoVDepedencies.appendChild(fDep);
+					
+					if(fDep != null) {
+						Combobox cmb = (Combobox)fDep.getChildren().get(1).getFirstChild();
+						cmb.setItemRenderer(new LoVClassComboitemRenderer(field, true));
+						cmb.setModel(new ListModelList<Object>(cmbItems));
+						
+						Textbox tVal = (Textbox)fDep.getChildren().get(0).getFirstChild();
+						tVal.setValue(cmbId);
+						
+					}
+					Listitem litm = lstLoVDepedencies.getItems().get(i-1);
+					litm.getLastChild().getFirstChild().setVisible(false);
+					litm.getLastChild().getLastChild().setVisible(true);
+				}
+			} catch (Exception e) {
+			}
+			
+			try {
+				
+				final ParsedJSONArrayContainer filters = ServerSideWrappedJSONParser
+						.getInstance().parseJSONArray(
+								getEditedData().getLovFilters().trim());
+				
+				for (int i = 1; i < filters.length(); i++) {
+					ParsedJSONContainer con = filters.get(i);
+					String field = con.getAsString("field");
+					String opr = con.getAsString("opr");
+					String val = con.getAsString("val");
+					Listitem fFltr = createFilterListitem((Listitem) lstLoVFilter.getLastChild());
+					lstLoVFilter.appendChild(fFltr);
+						
+					Combobox fCmb = (Combobox) fFltr.getChildren().get(0)
+								.getFirstChild();
+
+					fCmb.setItemRenderer(new LoVClassComboitemRenderer(
+							field, true));
+					fCmb.setModel(new ListModelList<Object>(attrFields));
+
+					Combobox oCmb = (Combobox) fFltr.getChildren().get(1)
+							.getFirstChild();
+					List<Comboitem> oitems = oCmb.getItems();
+					for (Comboitem oitem : oitems) {
+						if (oitem.getValue().equals(opr)) {
+							oCmb.setValue(oitem.getLabel());
+							break;
+						}
+					}
+
+					Textbox tVal = (Textbox) fFltr.getChildren().get(2)
+							.getFirstChild();
+					tVal.setValue(val);
+					
+					Listitem litm = lstLoVFilter.getItems().get(i - 1);
+					litm.getLastChild().getFirstChild().setVisible(false);
+					litm.getLastChild().getLastChild().setVisible(true);
+
+				}
+			} catch (Exception e) {
+			}
+			
+			getSelf().invalidate();
+		}
+		
+		Clients.clearBusy(getSelf());
 	}
 	
 	/**
@@ -582,11 +666,16 @@ public class ReportParameterEditorController extends
 	private Listitem createFilterListitem(Listitem last) {
 		Listitem item = (Listitem)last.clone();
 		for(Component cell : item.getChildren()) {
-			Component f = cell.getFirstChild();
-			if(f instanceof Textbox) {
-				((Textbox)f).setValue("");
-			} else if (f instanceof Combobox) {
+			Component f = cell.getFirstChild();			
+			if (f instanceof Combobox) {
 				((Combobox)f).setValue("");
+				ListModelList<Object> model = (ListModelList<Object>)((Combobox)f).getModel();
+				if(model != null && model.getInnerList() != null) {
+					((Combobox)f).setModel(new ListModelList<Object>(model.getInnerList()));
+				}
+				
+			} else if(f instanceof Textbox) {
+				((Textbox)f).setValue("");
 			}
 		}
 		return item;
@@ -654,6 +743,15 @@ public class ReportParameterEditorController extends
 				} else {
 					item.setValue(attr.getName());
 				}
+				if(item.getLabel().equals(defaultValue) && (!initiated)) {
+					try {
+						initiated = true;
+						((Combobox)item.getParent()).setRawValue(item.getLabel());
+					} catch (Exception e) {}
+				}
+			} else if(data instanceof String) {
+				item.setLabel((String)data);
+				item.setValue((String)data);
 				if(item.getLabel().equals(defaultValue) && (!initiated)) {
 					try {
 						initiated = true;

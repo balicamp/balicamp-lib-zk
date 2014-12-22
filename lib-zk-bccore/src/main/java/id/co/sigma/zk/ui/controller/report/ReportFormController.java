@@ -540,13 +540,15 @@ public class ReportFormController extends BaseSimpleController {
 					ParsedJSONContainer con = dependencies.get(i);
 					String field = con.getAsString("fieldName");
 					String dtype = con.getAsString("fType");
-					if (dependencyFilter != null && dependencyFilter.length > 0) {
-						SimpleQueryFilter filterFlag = new SimpleQueryFilter();
-						filterFlag.setField(field);
-						filterFlag.setFilter(dependencyFilter[i]);
-						filterFlag.setFilterTypeClass(dtype);
-						filterFlag.setOperator(SimpleQueryFilterOperator.equal);
-						filters.add(filterFlag);
+					if(!("-".equals(field))) {
+						if (dependencyFilter != null && dependencyFilter.length > 0) {
+							SimpleQueryFilter filterFlag = new SimpleQueryFilter();
+							filterFlag.setField(field);
+							filterFlag.setFilter(dependencyFilter[i]);
+							filterFlag.setFilterTypeClass(dtype);
+							filterFlag.setOperator(SimpleQueryFilterOperator.equal);
+							filters.add(filterFlag);
+						}
 					}
 				}
 			} catch (Exception e) {
