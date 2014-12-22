@@ -1,6 +1,6 @@
 <zk>
 	<listcell style="text-align:center"><actionButton/></listcell>
-	<listcell style="text-align:center;font-size:10px;" label="">
+	<listcell style="text-align:center;font-size:8px;" label="">
 		<custom-attributes org.zkoss.zk.ui.updateByClient="true"/>
 	</listcell>
 </zk>
