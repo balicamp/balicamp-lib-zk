@@ -171,6 +171,8 @@ function loadLOVCombo(combo, dbName) {
 }
 
 function stopTimer(combo) {
+	console.log(cWindow.lcmb);
+	console.log(combo);
 	if(cWindow.lcmb == null || cWindow.lcmb == undefined) return;
 	if(combo == cWindow.lcmb) {
 		zAu.send(new zk.Event(cWindow,"onStopTimer",{comboId: combo.getId()},{toServer:true}));
@@ -318,6 +320,7 @@ function syncLOVDb(cmbId, dbName) {
 			var dt = new Date();
 			var cr = dt.getTime() - doc.created;
 			if(cr >= (3600 * 24 * 1000)) {
+				PouchDB.destroy(dbName, function(err, info) { });
 				console.log("Sync DB...");
 				_db$init.put(
 					{created:dt.getTime(), 
