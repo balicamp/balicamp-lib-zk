@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
@@ -152,7 +153,17 @@ extends BaseSimpleEditor<POJO> {
 
 		} catch (Exception e) {
 			logger.error("gagal update file. error : " + e.getMessage(), e);
-			showErrorMessage(getEditorState(), e.getMessage());
+			String message = e.getMessage();
+			if(ZKEditorState.ADD_NEW.equals(getEditorState())) {
+				message = Labels.getLabel("msg.save.add.fail");
+			} else {
+				if(children != null && children.size() > 0) {
+					message = Labels.getLabel("msg.save.edit.master_detail.fail");
+				} else {
+					message = Labels.getLabel("msg.save.edit.fail");
+				}
+			}
+			showErrorMessage(getEditorState(), message);
 		}
 	}
 
