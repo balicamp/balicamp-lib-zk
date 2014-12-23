@@ -472,6 +472,10 @@ public class ReportParameterEditorController extends
 	
 	@Listen("onTimer = #lateRenderTimer")
 	public void onLateRender() {
+		if(getEditedData().getLovClass() == null || "".equals(getEditedData().getLovClass().trim())) {
+			Clients.clearBusy(getSelf());
+			return;
+		}
 		String lClass = getEditedData().getLovClass().replace(")", "");
 		String[] zclass = lClass.split("\\(");
 		if(zclass != null && zclass.length == 2) {
