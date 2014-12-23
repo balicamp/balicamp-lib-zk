@@ -9,6 +9,7 @@ import id.co.sigma.common.security.domain.UserDelegationGroup;
 import id.co.sigma.common.security.domain.UserDelegationRole;
 import id.co.sigma.common.security.domain.UserGroupAssignment;
 import id.co.sigma.common.security.domain.UserRole;
+import id.co.sigma.common.security.domain.lov.LookupDetail;
 import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.security.server.service.IUserDelegationService;
 import id.co.sigma.zk.spring.security.SecurityUtil;
@@ -16,11 +17,13 @@ import id.co.sigma.zk.ui.annotations.ChildGridData;
 import id.co.sigma.zk.ui.annotations.DualListboxBinder;
 import id.co.sigma.zk.ui.annotations.EqualsField;
 import id.co.sigma.zk.ui.annotations.JoinKey;
-import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
+import id.co.sigma.zk.ui.annotations.ListOfValue;
+import id.co.sigma.zk.ui.annotations.LoVFlag;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.custom.component.CustomListModel;
 import id.co.sigma.zk.ui.custom.component.DualListbox;
+import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.ArrayList;
@@ -36,6 +39,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Longbox;
 
@@ -54,7 +59,10 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
     @Qualifier("commonUiConstraintDateFormat")
     private String constraintDateFormat;
 
-    @LookupEnabledControl(parameterId = "DATA_STATUS_OPTIONS")
+    @ListOfValue(codeField="", labelField="label", valueField="detailCode", separator="", 
+	    lovClass=LookupDetail.class, 
+	    filterFlags={ @LoVFlag(field="headerId", value="DATA_STATUS_OPTIONS", type=String.class) }
+    )
     @Wire
     private Combobox dataStatus;
 
@@ -400,11 +408,27 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 
     @Override
     protected void validateData() throws Exception {
+	/*
+	 * Cek apakah user asal dan/atau tujuan kosong 
+	 */
+	if(getEditedData().getSourceUserId()==null || getEditedData().getSourceUserId()==0){
+	    throw new RuntimeException(Labels.getLabel("msg.warnings.delegation.source_user_empty"));
+	}
+	if(getEditedData().getDestUserId()==null || getEditedData().getDestUserId()==0){
+	    throw new RuntimeException(Labels.getLabel("msg.warnings.delegation.dest_user_empty"));
+	}
+	
+	/*
+	 * Cek apakah user asal dan tujuan adalah user yang sama
+	 */
 	if (fromAndToUserIsSame(sourceUserId.getValue(), destUserId.getValue())) {
-	    throw new RuntimeException(
-		    Labels.getLabel("msg.warnings.delegation.same_delegated_user"));
+	    throw new RuntimeException(Labels.getLabel("msg.warnings.delegation.same_delegated_user"));
 	}
 
+	/*
+	 * Cek apakah masih ada delegasi yang sama atau ada delegasi yang untuk user tujuan yang masih aktif 
+	 * dalam rentang waktu yang diinput saat ini
+	 */
 	if (!isEditing()) {
 	    if ( delegationIsUnique(sourceUserId.getValue(), destUserId.getValue(), startDate.getValue(), endDate.getValue()) ) {
 		hasOverlappingDelegation = overlappingUserDelegationIsExist(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
@@ -427,6 +451,16 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 
     @Override
     protected void doBeforeSave(UserDelegation editedData) {
+	if(sourceUserId.getValue()==null || sourceUserId.getValue()==0){
+	    User user = cmbDelegateFromUser.getSelectedItem().getValue();
+	    editedData.setSourceUserId(user.getId());
+	}
+	
+	if(destUserId.getValue()==null || destUserId.getValue()==0){
+	    User user = cmbDelegateToUser.getSelectedItem().getValue();
+	    editedData.setDestUserId(user.getId());
+	}
+	
 	if (!isEditing()) {
 	    getEditedData().setCreatedBy(SecurityUtil.getUser().getUsername());
 	    getEditedData().setCreatedOn(new Date());
@@ -455,6 +489,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	cmbDelegateToUser.setDisabled(isEditing());
 	startDate.setDisabled(isEditing());
 	endDate.setDisabled(isEditing());
+	loadDataStatusCombo();
 
 	if (isEditing()) {
 
@@ -485,9 +520,25 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	    endDate.setValue(getTomorrowDate());
 	    endDate.setConstraint("no empty, no past, after " + getTomorrowDateStr());
 	    
-	    // Set status = A (active)
-	    dataStatus.setValue("A");
 	}
+	
+    }
+    
+    private String getCurrentDataStatusValue(){
+	return isEditing()? getEditedData().getDataStatus() : "A";
+    }
+    
+    private void loadDataStatusCombo(){
+	dataStatus.setItemRenderer(new ComboitemRenderer<ListOfValueItem>() {
+	    @Override
+	    public void render(Comboitem item, ListOfValueItem data, int index) throws Exception {
+		item.setValue(data.getValue());
+		item.setLabel(data.getDescription());
+		if(data.getValue().equals(getCurrentDataStatusValue())){
+		    dataStatus.setSelectedItem(item);
+		}
+	    }
+	});
     }
 
     private Date getTomorrowDate() {
