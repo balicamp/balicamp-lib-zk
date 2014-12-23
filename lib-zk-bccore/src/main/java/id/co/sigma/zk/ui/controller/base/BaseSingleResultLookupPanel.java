@@ -37,7 +37,7 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	
 	
 	
-	private SingleValueLookupReciever<DATA> valueSelectedHandler ; 
+	protected SingleValueLookupReciever<DATA> valueSelectedHandler ; 
 	
 	
 	@Override
