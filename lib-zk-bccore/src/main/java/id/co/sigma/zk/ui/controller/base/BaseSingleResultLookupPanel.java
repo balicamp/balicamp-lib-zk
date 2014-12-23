@@ -87,7 +87,7 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 		
 		
 		if ( selectedItem== null){
-			Messagebox.show("Belum ada data yang di pilih");
+			Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"));
 			return ; 
 		}
 		validateData(selectedItem);
