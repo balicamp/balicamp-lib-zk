@@ -89,7 +89,7 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 			Messagebox.show("Belum ada data yang di pilih");
 			return ; 
 		}
-		validateData();
+		validateData(selectedItem);
 		getWindowReference().detach();
 		valueSelectedHandler.onDataSelected(selectedItem);
 	    } catch (Exception e) {
@@ -110,7 +110,7 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 		getWindowReference().detach();
 	}
 	
-	protected void validateData() throws Exception{
+	protected void validateData(DATA dataToValidate) throws Exception{
 	    
 	}
 
