@@ -2,6 +2,7 @@ package id.co.sigma.zk.ui.controller.base;
 
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.SingleValueLookupReciever;
+import id.co.sigma.zk.ui.SingleValueLookupRecieverWithValidation;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 
 import java.util.Map;
@@ -111,7 +112,9 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	}
 	
 	protected void validateData(DATA dataToValidate) throws Exception{
-	    
+	    if ( this.valueSelectedHandler instanceof SingleValueLookupRecieverWithValidation ) {
+	    	((SingleValueLookupRecieverWithValidation<DATA>)valueSelectedHandler).validateSelectedData(dataToValidate); 
+	    }
 	}
 
 }
