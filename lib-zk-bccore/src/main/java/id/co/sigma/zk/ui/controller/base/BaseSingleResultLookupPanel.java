@@ -80,19 +80,24 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	@Listen("onClick = #btnPilih")
 	public void selectClick(final Event evt) {
 	    try {
-		Set<DATA> sels =  this.dataModel.getSelection();
-		if ( sels!= null && !sels.isEmpty()){
-			selectedItem = sels.iterator().next(); 
-		}
+	    	if(this.dataModel!=null){
+	    		Set<DATA> sels =  this.dataModel.getSelection();
+	    		if ( sels!= null && !sels.isEmpty()){
+	    			selectedItem = sels.iterator().next(); 
+	    		}
+	    		
+	    		
+	    		if ( selectedItem== null){
+	    			Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
+	    			return ; 
+	    		}
+	    		validateData(selectedItem);
+	    		getWindowReference().detach();
+	    		valueSelectedHandler.onDataSelected(selectedItem);
+	    	}else{
+	    		Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
+	    	}
 		
-		
-		if ( selectedItem== null){
-			Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
-			return ; 
-		}
-		validateData(selectedItem);
-		getWindowReference().detach();
-		valueSelectedHandler.onDataSelected(selectedItem);
 	    } catch (Exception e) {
 		Messagebox.show(
 			e.getMessage(), 
