@@ -1,14 +1,20 @@
 package id.co.sigma.zk.ui.custom.component;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
+import id.co.sigma.zk.ui.annotations.ChildGridData;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.zkoss.zhtml.Td;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -17,14 +23,21 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * List window template layout
@@ -37,6 +50,10 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L; 
+	
+	private static final String MARK_REQUIRED_CSS = "sign-mandatory";
+	
+	private static final String MARK_REQUIRED = "*";
 	
 	@Wire
 	private Label caption;
@@ -81,6 +98,8 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	private boolean addable = true;
 	
 	private boolean modalEditor = false;
+	
+	private List<Component> requiredFields;
 
 	public ListWindow() {
 		Executions.createComponents("~./zul/pages/common/ListWindow.zul", this, null);
@@ -100,6 +119,8 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		setStyle("overflow:auto");
 		setHeight(""); //reset height
 		setVflex(""); //rest vflex
+		
+		requiredFields = new ArrayList<Component>();
 		
 		addEventListener("onLoadCombodata", new EventListener<Event>() {
 			@Override
@@ -157,6 +178,8 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 			}
 			listSection.appendChild(child);
 		}
+		
+		markRequiredFields();
 		
 	}
 	
@@ -252,5 +275,97 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		this.modalEditor = Boolean.valueOf(modalEditor);
 	}
 
+	public void clearErrorMessage() {
+		if(requiredFields == null) return;
+		for(Component cr : requiredFields) {
+			((InputElement)cr).clearErrorMessage();
+		}
+	}
+	
+	public void addRequiredField(Component cr) {
+		if(requiredFields==null) {
+			requiredFields = new ArrayList<Component>();
+		}
+		if((cr instanceof InputElement) && ((InputElement)cr).getConstraint() != null) {
+			if(!requiredFields.contains(cr)) {
+				int tabIdx = ((InputElement)cr).getTabindex();
+				if(tabIdx >= requiredFields.size()) {
+					requiredFields.add(cr);
+				} else if(tabIdx >= 0) {
+					requiredFields.add(tabIdx, cr);
+				}
+			}
+		}
+	}
+	
+	private void markRequiredFields() {
+		List<String> childGrids = new ArrayList<String>();
+		if(listController != null) {			
+			Field[] fields = listController.getClass().getDeclaredFields();
+			for(Field f : fields) {
+				if(f.isAnnotationPresent(ChildGridData.class)) {
+					ChildGridData ann = f.getAnnotation(ChildGridData.class);
+					childGrids.add(ann.gridId());
+				}
+			}
+			
+		}
+		List<Component> comps = new ArrayList<Component>(getFellows());
+		for(Component comp : comps) {
+			listController.orderInputField(comp);
+			if(comp instanceof InputElement) {
+				Constraint cons = ((InputElement)comp).getConstraint();
+				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
+						&& ((((InputElement) comp).getWidth() == null) || ("".equals(((InputElement) comp).getWidth())))) 
+						&& !((comp instanceof Combobox) || (comp instanceof Datebox) || (comp instanceof Bandbox))) {
+					((InputElement)comp).setHflex("1");
+				}
+				if(cons instanceof SimpleConstraint) {
+					SimpleConstraint sc = (SimpleConstraint) cons;
+					int reqFlag = sc.getFlags() & SimpleConstraint.NO_EMPTY;
+					if(reqFlag == SimpleConstraint.NO_EMPTY) {
+						requiredFields.add(comp);
+						Component prev = comp.getPreviousSibling();
+						if((prev != null) && (prev instanceof Label)) {
+							comp.getParent().insertBefore(createMarkRequired(prev), comp);
+						} else { //jika dalam Cell ambil parent-nya
+							Component prn = comp.getParent();
+							Component ps = prn.getPreviousSibling();
+							if((ps != null) && (ps instanceof Label)) {
+								prn.getParent().insertBefore(createMarkRequired(ps), prn);
+							} else if((ps != null) && ((ps instanceof Cell) || (ps instanceof Td))) {
+								List<Component> chs = ps.getChildren();
+								boolean marked = false;
+								for(Component c : chs) {
+									if(c instanceof HtmlBasedComponent) {
+										String sclass = ((HtmlBasedComponent)c).getSclass();
+										if(sclass != null && sclass.contains(MARK_REQUIRED_CSS)) {
+											marked = true;
+											break;
+										}
+									}
+								}
+								if(!marked) {
+									Label mreq = new Label(MARK_REQUIRED);
+									mreq.setClass(MARK_REQUIRED_CSS);
+									ps.appendChild(mreq);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private Cell createMarkRequired(Component prev) {
+		Label mreq = new Label(MARK_REQUIRED);
+		mreq.setClass(MARK_REQUIRED_CSS);
+		Cell cell = new Cell();
+		cell.setClass("z-row-inner");
+		cell.appendChild(prev);
+		cell.appendChild(mreq);
+		return cell;
+	}
 	
 }

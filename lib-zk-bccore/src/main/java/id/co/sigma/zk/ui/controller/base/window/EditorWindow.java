@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zkoss.zhtml.Td;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
@@ -235,7 +236,7 @@ public class EditorWindow extends Window implements AfterCompose {
 							Component ps = prn.getPreviousSibling();
 							if((ps != null) && (ps instanceof Label)) {
 								prn.getParent().insertBefore(createMarkRequired(ps), prn);
-							} else if((ps != null) && (ps instanceof Cell)) {
+							} else if((ps != null) && ((ps instanceof Cell) || (ps instanceof Td))) {
 								List<Component> chs = ps.getChildren();
 								boolean marked = false;
 								for(Component c : chs) {
