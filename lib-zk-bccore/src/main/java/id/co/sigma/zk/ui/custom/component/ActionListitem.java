@@ -7,14 +7,13 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 
-public class ActionListitem extends Listitem implements IdSpace, AfterCompose {
+public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompose {
 
 	/**
 	 * 
