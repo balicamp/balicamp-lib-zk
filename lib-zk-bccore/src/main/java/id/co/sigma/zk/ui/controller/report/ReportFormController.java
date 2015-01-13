@@ -32,6 +32,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -46,6 +48,7 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -54,6 +57,7 @@ import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Script;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Window;
@@ -116,7 +120,9 @@ public class ReportFormController extends BaseSimpleController {
 			
 			Window rptWindow = (Window) Executions.createComponents("~./zul/pages/report/ReportView.zul", null, args);
 			rptWindow.doModal();
-
+			
+		} catch(WrongValuesException | WrongValueException e) {
+			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -197,29 +203,49 @@ public class ReportFormController extends BaseSimpleController {
 			
 			for(final RptDocParam param : rptParams) {
 				Row row = new Row();
-				Label label = new Label(param.getParamLabel());
-				label.setTooltip(param.getDescription());
-				row.appendChild(label);
+				
+				SimpleConstraint cons = null;
+				
+				if(param.getRequired() == 1) {
+					cons = new SimpleConstraint("no empty : " + param.getInvalidErrMessage());
+					Label label = new Label(param.getParamLabel());
+					label.setTooltip(param.getDescription());
+					Label reqlabel = new Label("*");
+					reqlabel.setClass("sign-mandatory");
+					Hbox hbox = new Hbox();
+					hbox.appendChild(label);
+					hbox.appendChild(reqlabel);
+					row.appendChild(hbox);
+				} else {				
+					Label label = new Label(param.getParamLabel());
+					label.setTooltip(param.getDescription());
+					row.appendChild(label);
+				}
 				
 				Component inp = null;
 				
 				if("Textbox".equals(param.getParamType())) {
 					inp = new Textbox();
 					inp.setId(param.getParamCode());
+					((Textbox)inp).setConstraint(cons);
 				} else if("Intbox".equals(param.getParamType())) {
 					inp = new Intbox();
 					inp.setId(param.getParamCode());
 					((Intbox)inp).setStyle("text-align: right;");
+					((Intbox)inp).setConstraint(cons);
 				} else if("Decimalbox".equals(param.getParamType())) {
 					inp = new Decimalbox();
 					inp.setId(param.getParamCode());
 					((Decimalbox)inp).setStyle("text-align: right;");
+					((Decimalbox)inp).setConstraint(cons);
 				} else if("Datebox".equals(param.getParamType())) {
 					inp = new Datebox();
 					inp.setId(param.getParamCode());
+					((Datebox)inp).setConstraint(cons);
 				} else if("LookupCombobox".equals(param.getParamType())) {					
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
+					((Combobox)inp).setConstraint(cons);
 					
 					lastCmp = param.getParamCode();
 					String dbName = param.getLovClass();
@@ -248,6 +274,7 @@ public class ReportFormController extends BaseSimpleController {
 					
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
+					((Combobox)inp).setConstraint(cons);
 					
 					lovCombos.put(param.getParamCode(), (Combobox)inp);
 					
@@ -344,6 +371,7 @@ public class ReportFormController extends BaseSimpleController {
 				} else if("Combobox".equals(param.getParamType())) {
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
+					((Combobox)inp).setConstraint(cons);
 					
 					try {
 						ParsedJSONArrayContainer items = ServerSideWrappedJSONParser
@@ -364,6 +392,7 @@ public class ReportFormController extends BaseSimpleController {
 				} else if("MonthCombobox".equals(param.getParamType())) {
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
+					((Combobox)inp).setConstraint(cons);
 					
 					List<ListOfValueItem> list = monthListOfValueItems();
 					String defaultVal = "1";
@@ -439,6 +468,10 @@ public class ReportFormController extends BaseSimpleController {
 				}
 				
 			} else {
+				if(!((InputElement)inp).isValid()) {
+					SimpleConstraint cons = (SimpleConstraint)((InputElement)inp).getConstraint(); 
+					throw new WrongValueException(inp, cons.getErrorMessage(inp));
+				}
 				val = ((InputElement)inp).getRawValue();
 			}
 			try {

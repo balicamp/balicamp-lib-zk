@@ -157,6 +157,14 @@
 			Sequence
 			<textbox id="paramSec"  value="${editorParams$composer.editedData.paramSec}" width="100px"/>
 		</row>
+		<row>
+			Required
+			<checkbox id="required" checked="${editorParams$composer.editedData.required eq 1}" value="${editorParams$composer.editedData.required}"/>
+		</row>
+		<row>
+			Pesan kesalahan
+			<textbox multiline="true" rows="3" id="invalidErrMessage" value="${editorParams$composer.editedData.invalidErrMessage}"/>
+		</row>
 		</rows>
 	</grid>
 	<timer id="lateRenderTimer" delay="10" repeats="false" running="true"/>
