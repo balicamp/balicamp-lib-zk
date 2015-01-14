@@ -15,7 +15,7 @@
 		<rows>
 			<row>
 				${labels.field.menu.code}
-				<textbox id="functionCode" if="${menuEditor$composer.flag==0}" 		
+				<textbox tabindex="1" id="functionCode" if="${menuEditor$composer.flag==0}" 		
 					value="${menuEditor$composer.editedData.functionCode}" constraint="no empty:${labels.field.code} harus diisi!">
 				</textbox>
 				<label value="${menuEditor$composer.editedData.functionCode}" if="${menuEditor$composer.flag==1}" />
@@ -23,14 +23,14 @@
 			</row>
 			<row>
 				${labels.field.menu.label}
-				<textbox id="functionLabel" 
+				<textbox tabindex="2" id="functionLabel" 
 					value="${menuEditor$composer.editedData.functionLabel}" constraint="no empty:${labels.field.label} harus diisi!">
 					</textbox>
 				
 			</row>
 			<row if="${menuEditor$composer.additionalData==null}">
 				${labels.field.menu.parent}
-				<bandbox id="parentBox" mold="rounded" autodrop="true" value="${menuEditor$composer.labelParent}">
+				<bandbox tabindex="3" id="parentBox" mold="rounded" autodrop="true" value="${menuEditor$composer.labelParent}">
 					<bandpopup>
 						<listbox id="listParent" model="${menuEditor$composer.listParent}" height="250px" hflex="min">
 							<listhead>
@@ -49,7 +49,7 @@
 			</row>
 			<row>
 				${labels.field.menu.url}
-				<bandbox id="urlBox" mold="rounded" autodrop="true" value="${menuEditor$composer.editedData.pageDefinition.pageUrl}" width="350px">
+				<bandbox tabindex="4" id="urlBox" mold="rounded" autodrop="true" value="${menuEditor$composer.editedData.pageDefinition.pageUrl}" width="350px">
 					<bandpopup>
 						<listbox id="list" height="250px" hflex="min">
 							<listhead>
