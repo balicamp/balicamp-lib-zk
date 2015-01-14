@@ -16,14 +16,16 @@
 		<rows>
 			<row>
 				${labels.field.name}:
-				<textbox id="name" maxlength="100" value="${rptDoc$composer.editedData.name}" constraint="no empty : ${labels.field.name} tidak boleh kosong" width="80%"></textbox>
+				<textbox id="name" maxlength="100" value="${rptDoc$composer.editedData.name}" 
+					constraint="no empty : ${labels.field.name} tidak boleh kosong" width="80%" tabindex="1"/>
 				<space hflex="1"/>
 				${labels.field.description}:
-				<textbox id="description" maxlength="500" value="${rptDoc$composer.editedData.description}" width="60%"></textbox>
+				<textbox id="description" maxlength="500" value="${rptDoc$composer.editedData.description}" width="60%" tabindex="3"/>
 			</row>
 			<row>
 				Template Laporan:
-				<textbox id="template" maxlength="250" value="${rptDoc$composer.editedData.template}" constraint="no empty : Template Laporan tidak boleh kosong"  width="70%"></textbox>
+				<textbox id="template" maxlength="250" value="${rptDoc$composer.editedData.template}" constraint="no empty : Template Laporan tidak boleh kosong"  
+					width="70%" tabindex="2"/>
 				<space hflex="3"/>
 			</row>
 		</rows>

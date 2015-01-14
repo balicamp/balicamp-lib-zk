@@ -26,6 +26,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -34,6 +35,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
@@ -100,6 +102,8 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	private boolean modalEditor = false;
 	
 	private List<Component> requiredFields;
+	
+	private Component firstInputComp;
 
 	public ListWindow() {
 		Executions.createComponents("~./zul/pages/common/ListWindow.zul", this, null);
@@ -181,6 +185,28 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		
 		markRequiredFields();
 		
+		if(firstInputComp != null) {
+			
+			btnSearch.setTabindex(1000);
+			btnReset.setTabindex(1001);
+			btnAddNew.setTabindex(1002);
+			
+			focusFirstInput();
+			EventListener<Event> onBlurListener = new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event event) throws Exception {
+					focusFirstInput();					}
+			};
+			
+			if(btnAddNew.isVisible()) {
+				btnAddNew.addEventListener("onBlur", onBlurListener);
+			} else if(!btnAddNew.isVisible() && btnReset.isVisible()) {
+				btnReset.addEventListener("onBlur", onBlurListener);
+			} else if(!btnAddNew.isVisible() && !btnReset.isVisible() && btnSearch.isVisible()) {
+				btnSearch.addEventListener("onBlur", onBlurListener);
+			}
+		}
 	}
 	
 	@Listen("onClick = #btnSearch")
@@ -298,6 +324,30 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		}
 	}
 	
+	private void focusFirstInput() {
+		if(firstInputComp instanceof InputElement) {
+			((InputElement)firstInputComp).setFocus(true);
+		} else if(firstInputComp instanceof Checkbox) {
+			((Checkbox)firstInputComp).setFocus(true);
+		} else if(firstInputComp instanceof Radio) {
+			((Radio)firstInputComp).setFocus(true);
+		}
+	}
+	
+	private void getFirstInputComponent(Component input) {
+		int tabIdx = Integer.MAX_VALUE;
+		if(input instanceof InputElement) {
+			tabIdx = ((InputElement)input).getTabindex();
+		} else if(input instanceof Checkbox) {
+			tabIdx = ((Checkbox)input).getTabindex();
+		} else if(input instanceof Radio) {
+			tabIdx = ((Radio)input).getTabindex();
+		}
+		if(tabIdx == 1) {
+			firstInputComp = input;
+		}
+	}
+	
 	private void markRequiredFields() {
 		List<String> childGrids = new ArrayList<String>();
 		if(listController != null) {			
@@ -313,6 +363,7 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		List<Component> comps = new ArrayList<Component>(getFellows());
 		for(Component comp : comps) {
 			listController.orderInputField(comp);
+			getFirstInputComponent(comp);
 			if(comp instanceof InputElement) {
 				Constraint cons = ((InputElement)comp).getConstraint();
 				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 

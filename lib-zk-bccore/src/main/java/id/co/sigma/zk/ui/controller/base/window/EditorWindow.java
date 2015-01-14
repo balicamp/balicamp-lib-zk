@@ -21,11 +21,13 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
@@ -82,6 +84,8 @@ public class EditorWindow extends Window implements AfterCompose {
 	 * ini untuk show / hide untuk tombol save
 	 */
 	private boolean showSaveButton = true ; 
+	
+	private Component firstInputComp;
 	
 	public EditorWindow() {
 		Executions.createComponents("~./zul/pages/common/EditorWindow.zul", this, null);
@@ -147,7 +151,25 @@ public class EditorWindow extends Window implements AfterCompose {
 		
 		markRequiredFields();
 		btnCancel.setVisible(showCancelButton); 
-		btnSave.setVisible(showSaveButton); 
+		btnSave.setVisible(showSaveButton);
+		
+		if(firstInputComp != null) {
+			btnSave.setTabindex(1000);
+			btnCancel.setTabindex(1001);
+			focusFirstInput();
+			EventListener<Event> onBlurListener = new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event event) throws Exception {
+					focusFirstInput();					}
+			};
+			if(btnCancel.isVisible()) {
+				btnCancel.addEventListener("onBlur", onBlurListener);
+			} else if(!btnCancel.isVisible() && btnSave.isVisible()) {
+				btnSave.addEventListener("onBlur", onBlurListener);
+			}
+		}
+		
 		composed = true ; 
 	}
 
@@ -216,6 +238,7 @@ public class EditorWindow extends Window implements AfterCompose {
 		List<Component> comps = new ArrayList<Component>(getFellows());
 		for(Component comp : comps) {
 			controller.orderInputField(comp);
+			getFirstInputComponent(comp);
 			if(comp instanceof InputElement) {
 				Constraint cons = ((InputElement)comp).getConstraint();
 				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
@@ -270,6 +293,31 @@ public class EditorWindow extends Window implements AfterCompose {
 		cell.appendChild(mreq);
 		return cell;
 	}
+
+	private void focusFirstInput() {
+		if(firstInputComp instanceof InputElement) {
+			((InputElement)firstInputComp).setFocus(true);
+		} else if(firstInputComp instanceof Checkbox) {
+			((Checkbox)firstInputComp).setFocus(true);
+		} else if(firstInputComp instanceof Radio) {
+			((Radio)firstInputComp).setFocus(true);
+		}
+	}
+	
+	private void getFirstInputComponent(Component input) {
+		int tabIdx = Integer.MAX_VALUE;
+		if(input instanceof InputElement) {
+			tabIdx = ((InputElement)input).getTabindex();
+		} else if(input instanceof Checkbox) {
+			tabIdx = ((Checkbox)input).getTabindex();
+		} else if(input instanceof Radio) {
+			tabIdx = ((Radio)input).getTabindex();
+		}
+		if(tabIdx == 1) {
+			firstInputComp = input;
+		}
+	}
+	
 	/**
 	 * ini untuk show /hide cancel button. 
 	 * set ini = false untuk hide cancel(batal) button 
