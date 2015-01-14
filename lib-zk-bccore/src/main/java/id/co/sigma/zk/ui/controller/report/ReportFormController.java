@@ -282,7 +282,7 @@ public class ReportFormController extends BaseSimpleController {
 					
 					if(param.getLovParentId() == null || "".equals(param.getLovParentId().trim())) {
 						List<ListOfValueItem> list = loadListOfValueItems(param);
-						String defaultVal = "";
+						String defaultVal = null;
 						try {
 							defaultVal = ((Combobox)inp).getValue();
 						} catch (Exception e) {}
@@ -298,7 +298,12 @@ public class ReportFormController extends BaseSimpleController {
 							for(int i = 0; i < dependencies.length(); i++) {
 								ParsedJSONContainer con = dependencies.get(i);
 								String cmbId = con.getAsString("comboId");
-								String val = lovCombos.get(cmbId).getValue();
+								String val = null;
+								try {
+									val = lovCombos.get(cmbId).getValue();
+								} catch (Exception e) {
+									lovCombos.get(cmbId).clearErrorMessage();
+								}
 								if(val != null && val.trim().length() > 0) {
 									vals.add(val);
 								} else {
@@ -311,7 +316,7 @@ public class ReportFormController extends BaseSimpleController {
 									svals[i] = vals.get(i);
 								}
 								List<ListOfValueItem> list = loadListOfValueItems(param, svals);
-								String defaultVal = "";
+								String defaultVal = null;
 								try {
 									defaultVal = ((Combobox)inp).getValue();
 								} catch (Exception e) {}
@@ -355,6 +360,7 @@ public class ReportFormController extends BaseSimpleController {
 										
 										List<ListOfValueItem> list = loadListOfValueItems(param, vals.toArray(new String[vals.size()]));
 										try {
+											((Combobox)comp).clearErrorMessage();
 											((Combobox)comp).setRawValue(null); //reset value selection
 										} catch (Exception e) {}
 										((Combobox)comp).setItemRenderer(new ListOfValueComboitemRenderer(""));
@@ -449,6 +455,9 @@ public class ReportFormController extends BaseSimpleController {
 			Object val = "";			
 			if(inp instanceof Combobox) {
 
+				//trigger check for required field
+				((Combobox)inp).getValue();
+				
 				Object clientUpdate = inp.getAttribute("org.zkoss.zk.ui.updateByClient");
 				boolean isUpdByClient = false;
 				if(clientUpdate instanceof Boolean) {
