@@ -17,15 +17,15 @@
 			<rows>
 			<row>
 				Page Code
-				<textbox tabindex="1" id="txtPageCode"></textbox>
+				<textbox id="txtPageCode"></textbox>
 			</row>
 			<row>
 				URL
-				<textbox tabindex="2" id="txtPagUrl"></textbox>
+				<textbox id="txtPagUrl"></textbox>
 			</row>
 			<row>
 				Remark
-				<textbox tabindex="3" id="txtPageRemark"></textbox>
+				<textbox id="txtPageRemark"></textbox>
 			</row>
 			</rows>	
 		</grid>	
