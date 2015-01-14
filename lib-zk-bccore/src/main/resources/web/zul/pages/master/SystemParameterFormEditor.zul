@@ -15,18 +15,18 @@
 			<rows>
 				<row>
 					<label value="Param Key"/>
-					<textbox id="id"
+					<textbox tabindex="1" id="id"
 						value="${editorSystemParameter$composer.editedData.id}"
 						readonly="${not empty editorSystemParameter$composer.editedData.id}"
 						constraint="no empty"/>
 					<space hflex="1"/>
 					<label value="Param Remark"/>
-					<textbox id="remark"
+					<textbox tabindex="4" id="remark"
 					value="${editorSystemParameter$composer.editedData.remark}"/>
 				</row>				
 				<row>
 					<label value="Param Type"/>
-					<combobox id="cmbType" 
+					<combobox tabindex="2" id="cmbType" 
 						model="${editorSystemParameter$SystemParameterEditorController.listModelParamtype}"
 						value="${editorSystemParameter$SystemParameterEditorController.editedData.paramType}" 
 						constraint="no empty"/> 
@@ -40,19 +40,19 @@
 				</row>				
 				<row id="textParamType" visible="false">
 					<label value="Param Value"/>
-					<textbox id="paramValue"/>
+					<textbox tabindex="3" id="paramValue"/>
 				</row>				
 				<row id="decParamType" visible="false">
 					<label value="Param Value"/>
-					<decimalbox id="decparamValue" />
+					<decimalbox tabindex="3" id="decparamValue" />
 				</row>
 				<row id="intParamType" visible="false">
 					<label value="Param Value"/>
-					<intbox id="intparamValue"/>
+					<intbox tabindex="3" id="intparamValue"/>
 				</row>
 				 <row id="dateParamType" visible="false">
 					<label value="Param Value"/>
-					<datebox id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
+					<datebox tabindex="3" id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
 				</row>
 				<row id="boolParamType" visible="false" >
 					<label value="Param Value"/>
