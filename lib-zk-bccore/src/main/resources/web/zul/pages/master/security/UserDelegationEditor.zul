@@ -20,7 +20,7 @@
 					<row>
 						<cell width="200px">${labels.field.delegate_from_user}</cell>
 						<cell>
-							<combobox id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" hflex="1" 
+							<combobox tabindex="1" id="cmbDelegateFromUser" autodrop="true" buttonVisible="false" hflex="1" 
 							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
 								<template name="model">
 									<comboitem value="${each}" label="${each.realName}" />
@@ -31,7 +31,7 @@
 						<cell/>
 						<cell>${labels.field.delegate_to_user}</cell>
 						<cell>
-							<combobox id="cmbDelegateToUser" autodrop="true" buttonVisible="false" hflex="1" 
+							<combobox tabindex="5" id="cmbDelegateToUser" autodrop="true" buttonVisible="false" hflex="1" 
 							constraint="no empty" model="${userDelegationEditorWin$composer.userList}">
 								<template name="model">
 									<comboitem value="${each}" label="${each.realName}" />
@@ -44,14 +44,14 @@
 					<row>
 						<cell>${labels.field.date_start}</cell>
 						<cell>
-							<datebox id="startDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
+							<datebox tabindex="2" id="startDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
 							value="${userDelegationEditorWin$composer.editedData.startDate}" 
 							readonly="true" />
 						</cell>
 						<cell/>
 						<cell>${labels.field.date_end}</cell>
 						<cell>
-							<datebox id="endDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
+							<datebox tabindex="6" id="endDate" format="${userDelegationEditorWin$composer.commonDateFormat}" 
 							value="${userDelegationEditorWin$composer.editedData.endDate}" 
 							readonly="true" />
 						</cell>
@@ -60,7 +60,7 @@
 					<row>
 						<cell>${labels.field.description}</cell>
 						<cell>
-							<textbox id="remark" width="300px" height="100px" cols="50" rows="5" value="${userDelegationEditorWin$composer.editedData.remark}" constraint="no empty" />
+							<textbox tabindex="3" id="remark" width="300px" height="100px" cols="50" rows="5" value="${userDelegationEditorWin$composer.editedData.remark}" constraint="no empty" />
 						</cell>
 						<cell/>
 						<cell/>
@@ -70,7 +70,7 @@
 					<row>
 						<cell>${labels.field.status}</cell>
 						<cell>
-							<combobox id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" readonly="true" constraint="no empty" />
+							<combobox tabindex="4" id="dataStatus" value="${userDelegationEditorWin$composer.editedData.dataStatus}" readonly="true" constraint="no empty" />
 						</cell>
 						<cell/>
 						<cell/>
