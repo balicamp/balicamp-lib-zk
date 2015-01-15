@@ -34,7 +34,7 @@
 	<groupbox closable="false" mold="3d">
 		<caption>Parameter Laporan</caption>
 		<vlayout>
-		<button id="btnAdd" label="${labels.action.button.add}"/>
+		<button tabindex="4" id="btnAdd" label="${labels.action.button.add}"/>
 		<listbox id="listRptParams" height="300px" width="100%" >
 			<actionListhead>
 				<listheader label="${labels.field.no}" width="2%" align="center"/>
