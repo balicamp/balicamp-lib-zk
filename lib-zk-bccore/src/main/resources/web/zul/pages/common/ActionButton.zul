@@ -1,5 +1,5 @@
 <zk>
-	<image src="~./zul/img/ctrlimages/view-icon-18.png" width="18px" height="18px" tooltiptext="${labels.action.button.view}"/>
-	<image src="~./zul/img/ctrlimages/pencil-16.png" width="16px" height="16px" tooltiptext="${labels.action.button.edit}"/>
-	<image src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px" tooltiptext="${labels.action.button.delete}"/>
+	<image class="imageButton" src="~./zul/img/ctrlimages/view-icon-18.png" width="18px" height="18px" tooltiptext="${labels.action.button.view}"/>
+	<image class="imageButton" src="~./zul/img/ctrlimages/pencil-16.png" width="16px" height="16px" tooltiptext="${labels.action.button.edit}"/>
+	<image class="imageButton" src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px" tooltiptext="${labels.action.button.delete}"/>
 </zk>
