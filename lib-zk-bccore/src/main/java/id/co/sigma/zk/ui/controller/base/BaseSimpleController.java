@@ -453,6 +453,19 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	}
 	
 	/**
+	 * memeriksa apakah user login apakah kantor pusat atau tidak
+	 */
+	public boolean isMainBranch() {
+		User authUser = getAuthenticateUser();
+		if(authUser.getBranch().getbranchParentId()==null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	
+	/**
 	 * register combo data untuk client cache
 	 */
 	protected void registerComboScript() {
