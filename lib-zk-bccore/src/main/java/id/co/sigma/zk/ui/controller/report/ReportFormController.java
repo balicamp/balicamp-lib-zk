@@ -16,7 +16,10 @@ import id.co.sigma.zk.ui.custom.component.ListOfValueComboitemRenderer;
 import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
 import id.co.sigma.zk.ui.custom.component.ListOfValueModel;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -47,6 +51,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
@@ -128,6 +133,48 @@ public class ReportFormController extends BaseSimpleController {
 		}
 	}
 
+	@Listen("onClick = #btnDownloadXLS")
+	public void downloadXLS() {
+		
+		try {
+			
+			Locale locale = getLocale();
+			
+			String reportUnit = URLEncoder.encode(this.reportUnit,"UTF-8");
+			String reportFolder= URLEncoder.encode(this.reportFolder,"UTF-8");
+			String reportUrl = rptServerURL + "&ParentFolderUri=" + reportFolder + "&reportUnit=" + reportUnit 
+					+ "&j_username=" + rptUserName + "&j_password=" + rptPassword 
+					+ "&output=xls&decoration=no&userLocale=" + locale.getLanguage() + "_" + locale.getCountry();
+			
+			reportUrl = reportUrl + createReportParams();
+			
+			URL url = new URL(reportUrl);
+			
+			BufferedInputStream bis = new BufferedInputStream(url.openStream());
+			
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			
+			byte[] ba1 = new byte[1024];
+            
+		    int baLength;
+            
+            while ((baLength = bis.read(ba1)) != -1) {
+                baos.write(ba1, 0, baLength);
+            } 			    
+		    
+            String[] rptUnits = this.reportUnit.split("/");
+            
+            AMedia media  = new AMedia(rptUnits[rptUnits.length-1]+ "_" + Calendar.getInstance().getTimeInMillis() + ".xls", "xls", "application/xls", baos.toByteArray());
+            
+            Filedownload.save(media);
+			
+		} catch(WrongValuesException | WrongValueException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see id.co.sigma.zk.ui.controller.base.BaseSimpleController#doAfterCompose(org.zkoss.zk.ui.Component)
 	 */
@@ -175,6 +222,10 @@ public class ReportFormController extends BaseSimpleController {
 			Button printPdf = new Button("Cetak PDF");
 			printPdf.setId("btnPrintPdf");
 			buttonToolbar.appendChild(printPdf);
+
+			Button printXLS = new Button("Download XLS");
+			printXLS.setId("btnDownloadXLS");
+			buttonToolbar.appendChild(printXLS);
 		}
 	}
 
