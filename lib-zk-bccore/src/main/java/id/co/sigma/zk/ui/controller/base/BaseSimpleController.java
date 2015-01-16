@@ -16,6 +16,7 @@ import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.common.server.service.system.ICommonSystemService;
 import id.co.sigma.common.server.util.ExtendedBeanUtils;
 import id.co.sigma.common.util.json.SharedServerClientLogicManager;
+import id.co.sigma.security.server.dao.IBranchDao;
 import id.co.sigma.zk.service.IZKCommonService;
 import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.spring.security.model.UserData;
@@ -47,8 +48,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -73,7 +72,6 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Radio;
-import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Script;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
@@ -174,6 +172,9 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	 */
 	@Autowired
 	protected IGeneralPurposeDao generalPurposeDao ; 
+	
+	@Autowired
+	protected IBranchDao branchDao ; 
 	
 	
 	@Autowired
@@ -845,9 +846,27 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		}
 		
 		try {
-			List<?> lov = generalPurposeDao.list(dbName + " lov", "lov", 
-					(filters != null ? (SimpleQueryFilter[])filters.toArray(new SimpleQueryFilter[filters.size()]) : null), 
-					sortArgs);
+			List<?> lov = null;
+			
+			if(dbName.equalsIgnoreCase("Branch")){
+				System.out.println("Branch");
+				/*lov = generalPurposeDao.list(dbName + " lov", "lov", 
+						(filters != null ? (SimpleQueryFilter[])filters.toArray(new SimpleQueryFilter[filters.size()]) : null), 
+						sortArgs);*/
+				
+				/*lov = branchDao.getBranchComboboxByUserLogin(getDefaultBranch().getId(), (filters != null ? (SimpleQueryFilter[])filters.toArray(new SimpleQueryFilter[filters.size()]) : null), 
+						sortArgs);*/
+				lov = branchDao.getBranchComboboxByUserLogin(getDefaultBranch().getId(), (filters != null ? (SimpleQueryFilter[])filters.toArray(new SimpleQueryFilter[filters.size()]) : null), 
+						sortArgs);
+				
+			}else{
+				lov = generalPurposeDao.list(dbName + " lov", "lov", 
+						(filters != null ? (SimpleQueryFilter[])filters.toArray(new SimpleQueryFilter[filters.size()]) : null), 
+						sortArgs);
+			}
+			
+			
+			
 			if(lov != null) {
 				if ( annLOV.appendNoneSelectedItem()) {
 					list.add(new ListOfValueItem("", annLOV.noneSelectedLabel(), annLOV.separator()));
@@ -981,4 +1000,5 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			 return "" ; 
 		 return dateFormatter.format(date); 
 	 }
+	 
 }
