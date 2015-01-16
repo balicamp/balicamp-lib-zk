@@ -11,10 +11,10 @@
 			<rows>
 			<row>
 				<cell width="200px">
-					${labels.field.code}
+					${labels.field.user_name}
 				</cell>
 				<cell>
-					<textbox id="txtUserCode"></textbox>
+					<textbox id="txtUserCode" width="150px"></textbox>
 				</cell>
 				
 			</row>
@@ -23,7 +23,7 @@
 					${labels.field.realname}
 				</cell>
 				<cell>
-					<textbox id="txtRealName"></textbox>
+					<textbox id="txtRealName" width="150px"></textbox>
 				</cell>
 			</row>
 			</rows>	
