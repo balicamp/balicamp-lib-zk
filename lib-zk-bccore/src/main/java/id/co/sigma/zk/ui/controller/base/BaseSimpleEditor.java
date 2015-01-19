@@ -642,78 +642,83 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	private void setProperty(Component input, Object data, String fieldName) {
 		if(input != null) {
 			Object val = null; 
-			if(input instanceof Datebox) {
-				val = ((Datebox)input).getValue();
-			} else if(input instanceof Timebox) {
-				val = ((Timebox)input).getValue();
-			} else if(input instanceof Intbox) {
-				val = ((Intbox)input).getValue();
-			} else if(input instanceof Decimalbox) {
-				val = ((Decimalbox)input).getValue();
-			} else if(input instanceof Doublebox) {
-				val = ((Doublebox)input).getValue();
-			} else if(input instanceof Label) {
-				val = ((Label)input).getValue();
-			} else if(input instanceof Combobox)  {
-				
-				Object testVal = ((Combobox)input).getValue(); // test value
-				
-				Constraint cons = ((Combobox)input).getConstraint();
-				if(cons != null) {
-					cons.validate(input, testVal);
-				}
-				
-				if(!Components.isRealVisible(input)) return;
-				
-				int idx = -1;
-				try {
-					idx = ((Combobox)input).getSelectedIndex();
-				} catch (Exception e) {}
-				
-				Object cdata = null;
-				if(idx >= 0) {
-					if(((Combobox)input).getModel() != null) {
-						cdata = ((Combobox)input).getModel().getElementAt(idx);
-					} else {
-						cdata = ((Combobox)input).getSelectedItem().getValue();
+			try {
+				if(input instanceof Datebox) {
+					val = ((Datebox)input).getValue();
+				} else if(input instanceof Timebox) {
+					val = ((Timebox)input).getValue();
+				} else if(input instanceof Intbox) {
+					val = ((Intbox)input).getValue();
+				} else if(input instanceof Decimalbox) {
+					val = ((Decimalbox)input).getValue();
+				} else if(input instanceof Doublebox) {
+					val = ((Doublebox)input).getValue();
+				} else if(input instanceof Label) {
+					val = ((Label)input).getValue();
+				} else if(input instanceof Combobox)  {
+					
+					Object testVal = ((Combobox)input).getValue(); // test value
+					
+					Constraint cons = ((Combobox)input).getConstraint();
+					if(cons != null) {
+						cons.validate(input, testVal);
 					}
-				}
-				if(cdata instanceof CommonLOV) {
-					val = ((CommonLOV)cdata).getDataValue();
-				} else if(cdata != null) {
-					Comboitem citem = ((Combobox)input).getSelectedItem();
-					if(citem != null) {
-						val = citem.getValue();
-					} else {
-						val = ((Combobox)input).getValue();
+					
+					if(!Components.isRealVisible(input)) return;
+					
+					int idx = -1;
+					try {
+						idx = ((Combobox)input).getSelectedIndex();
+					} catch (Exception e) {}
+					
+					Object cdata = null;
+					if(idx >= 0) {
+						if(((Combobox)input).getModel() != null) {
+							cdata = ((Combobox)input).getModel().getElementAt(idx);
+						} else {
+							cdata = ((Combobox)input).getSelectedItem().getValue();
+						}
 					}
+					if(cdata instanceof CommonLOV) {
+						val = ((CommonLOV)cdata).getDataValue();
+					} else if(cdata != null) {
+						Comboitem citem = ((Combobox)input).getSelectedItem();
+						if(citem != null) {
+							val = citem.getValue();
+						} else {
+							val = ((Combobox)input).getValue();
+						}
+					}
+					
+				} else if(input instanceof Radiogroup) {
+					Radio radio = ((Radiogroup)input).getSelectedItem();
+					if(radio != null) {
+						val = radio.getValue();
+					}
+				} else if(input instanceof Radio){
+					Radio radio = (Radio)input;
+					if(radio.isSelected() || radio.isChecked()) {
+						Radiogroup rgroup = radio.getRadiogroup();
+						fieldName = rgroup.getId();
+						val = radio.getValue();
+					}
+				} else if(input instanceof Checkbox){
+					Checkbox chk = (Checkbox)input;
+					if(chk.isChecked()){
+						val=1;
+					}else{
+						val=0;
+					}
+				} else if(input instanceof Textbox) {
+					val = ((Textbox)input).getValue();
+				} else if(input instanceof Longbox) {
+					val = ((Longbox)input).getValue();
+				} else if(input instanceof Spinner){
+				        val = ((Spinner)input).getValue();
 				}
-				
-			} else if(input instanceof Radiogroup) {
-				Radio radio = ((Radiogroup)input).getSelectedItem();
-				if(radio != null) {
-					val = radio.getValue();
-				}
-			} else if(input instanceof Radio){
-				Radio radio = (Radio)input;
-				if(radio.isSelected() || radio.isChecked()) {
-					Radiogroup rgroup = radio.getRadiogroup();
-					fieldName = rgroup.getId();
-					val = radio.getValue();
-				}
-			} else if(input instanceof Checkbox){
-				Checkbox chk = (Checkbox)input;
-				if(chk.isChecked()){
-					val=1;
-				}else{
-					val=0;
-				}
-			} else if(input instanceof Textbox) {
-				val = ((Textbox)input).getValue();
-			} else if(input instanceof Longbox) {
-				val = ((Longbox)input).getValue();
-			} else if(input instanceof Spinner){
-			        val = ((Spinner)input).getValue();
+			} catch (WrongValueException e1) {
+				((InputElement)input).setFocus(true);
+				throw e1;
 			}
 			
 			try {
@@ -773,6 +778,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	}
 	
 	
+	@SuppressWarnings("unused")
 	private Object getProperty(Object data, String fieldName) {
 		return ExtendedBeanUtils.getInstance().getProperty(data, fieldName);
 	}

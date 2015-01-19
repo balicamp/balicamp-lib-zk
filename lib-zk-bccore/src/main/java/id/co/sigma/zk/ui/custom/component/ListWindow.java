@@ -371,6 +371,18 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 						&& !((comp instanceof Combobox) || (comp instanceof Datebox) || (comp instanceof Bandbox))) {
 					((InputElement)comp).setHflex("1");
 				}
+				if(cons != null && (((InputElement)comp).isReadonly() || ((InputElement)comp).isDisabled())) {
+					((InputElement)comp).addEventListener("onBlur", new EventListener<Event>() {
+
+						@Override
+						public void onEvent(Event event) throws Exception {
+							Component thisComp = event.getTarget();
+							if(thisComp instanceof InputElement) {
+								((InputElement)thisComp).clearErrorMessage();
+							}
+						}
+					});
+				}
 				if(cons instanceof SimpleConstraint) {
 					SimpleConstraint sc = (SimpleConstraint) cons;
 					int reqFlag = sc.getFlags() & SimpleConstraint.NO_EMPTY;
