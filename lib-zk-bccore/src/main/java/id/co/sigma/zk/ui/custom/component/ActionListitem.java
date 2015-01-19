@@ -175,9 +175,9 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 		actBtn.setEditorPage(editorPage);
 		actBtn.setViewPage(viewPage);
 		actBtn.setModal(modal);
-		actBtn.getChildren().get(ActionButton.VIEW_BUTTON).setVisible(viewable);
-		actBtn.getChildren().get(ActionButton.EDIT_BUTTON).setVisible(editable);
-		actBtn.getChildren().get(ActionButton.DELETE_BUTTON).setVisible(deletable);
+		actBtn.getBtnView().setVisible(viewable);
+		actBtn.getBtnEdit().setVisible(editable);
+		actBtn.getBtnDelete().setVisible(deletable);
 		actBtn.setChildIndex(String.valueOf(childIndex));
 	}
 

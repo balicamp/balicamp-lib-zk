@@ -18,11 +18,14 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Span;
 
 public class ActionButton extends Div implements IdSpace, AfterCompose {
 
@@ -53,6 +56,12 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	
 	private int childIndex = 0;
 	
+	@Wire private Span btnView;
+	
+	@Wire private Span btnEdit;
+	
+	@Wire private Span btnDelete;
+	
 	public ActionButton() {
 		Executions.createComponents("~./zul/pages/common/ActionButton.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -71,9 +80,12 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	public void afterCompose() {
 		
 		List<Component> children = getChildren();
-		Component viewComp = children.get(VIEW_BUTTON);
-		Component editComp = children.get(EDIT_BUTTON);
-		Component delComp = children.get(DELETE_BUTTON);
+		//Component viewComp = children.get(VIEW_BUTTON);
+		Component viewComp = btnView;
+		//Component editComp = children.get(EDIT_BUTTON);
+		Component editComp = btnEdit;
+		//Component delComp = children.get(DELETE_BUTTON);
+		Component delComp = btnDelete;
 		viewComp.setVisible(view);
 		editComp.setVisible(edit);
 		delComp.setVisible(delete);
@@ -314,5 +326,29 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 
 	public void setViewPage(String viewPage) {
 	    this.viewPage = viewPage;
+	}
+
+	public Span getBtnView() {
+	    return btnView;
+	}
+
+	public void setBtnView(Span btnView) {
+	    this.btnView = btnView;
+	}
+
+	public Span getBtnEdit() {
+	    return btnEdit;
+	}
+
+	public void setBtnEdit(Span btnEdit) {
+	    this.btnEdit = btnEdit;
+	}
+
+	public Span getBtnDelete() {
+	    return btnDelete;
+	}
+
+	public void setBtnDelete(Span btnDelete) {
+	    this.btnDelete = btnDelete;
 	}
 }
