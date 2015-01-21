@@ -145,13 +145,12 @@ public class ApplicationMenuListController extends
 
 	}
 
-	@SuppressWarnings("unchecked")
 	protected List<ApplicationMenu> getMenus() {
 		Long appId = new Long(applicationId);
 		SimpleQueryFilter[] flt = new SimpleQueryFilter[] { new SimpleQueryFilter(
 				"applicationId", SimpleQueryFilterOperator.equal, appId) };
 		try {
-			List l = generalPurposeDao.list(ApplicationMenu.class.getName()
+			List<ApplicationMenu> l = generalPurposeDao.list(ApplicationMenu.class.getName()
 					+ " A left outer join fetch A.pageDefinition", "A", flt,
 					DEF_SORTS, 10000, 0);
 			setListApplicationMenus(l);
@@ -195,6 +194,7 @@ public class ApplicationMenuListController extends
 	@Listen("onClick=#btnAdd")
 	public void onClickAdd() {
 		ApplicationMenu appMenu = new ApplicationMenu();
+		appMenu.setSiblingOrder(-1);
 		EditorManager.getInstance().addNewData(
 				"~./zul/pages/master/security/MenuEditor.zul", appMenu, this);
 
@@ -211,6 +211,7 @@ public class ApplicationMenuListController extends
 		tree.setModel(constructTree(getMenus()));
 	}
 
+	@SuppressWarnings("serial")
 	@Override
 	public CustomQueryDrivenTreeModel<ApplicationMenu> generateTreeModel(
 			final SimpleQueryFilter[] filters, final SimpleSortArgument[] sorts) {

@@ -258,7 +258,6 @@ public class ApplicationMenuEditorController extends
 	}
 	
 	
-	@SuppressWarnings("unchecked")
 	protected List<ApplicationMenu> getListMenu () {
 		Long appId = new Long(applicationId);
 		SimpleQueryFilter[] flt = new SimpleQueryFilter[]{
@@ -266,7 +265,7 @@ public class ApplicationMenuEditorController extends
 		};
 		try {
 			//return generalPurposeDao.list(ApplicationMenu.class, flt,DEF_SORTS);
-			List l = generalPurposeDao.list( ApplicationMenu.class.getName() +" A left outer join fetch A.application", "A", flt, DEF_SORTS,10000,0);
+			List<ApplicationMenu> l = generalPurposeDao.list( ApplicationMenu.class.getName() +" A left outer join fetch A.application", "A", flt, DEF_SORTS,10000,0);
 			return (List<ApplicationMenu>)l;
 		} catch (Exception e) {
 			e.printStackTrace();
