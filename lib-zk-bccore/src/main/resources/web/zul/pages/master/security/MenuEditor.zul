@@ -28,6 +28,10 @@
 					</textbox>
 				
 			</row>
+			<row>
+				${labels.field.menu.order}
+				<intbox id="siblingOrder" value="${menuEditor$composer.editedData.siblingOrder}" constraint="no empty, no negative:${labels.field.label} harus diisi!" />				
+			</row>
 			<row if="${menuEditor$composer.additionalData==null}">
 				${labels.field.menu.parent}
 				<bandbox id="parentBox" mold="rounded" autodrop="true" value="${menuEditor$composer.labelParent}">

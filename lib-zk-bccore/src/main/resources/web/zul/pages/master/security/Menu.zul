@@ -4,10 +4,11 @@
 	<vlayout>
     <tree id="tree" hflex="1">
 		<treecols>
-			<treecol hflex="1" label="${labels.field.menu.code}" />
-			<treecol hflex="1" label="${labels.field.menu.label}" />
-			<treecol hflex="1" label="${labels.field.menu.url}" />
-			<treecol width="100px" label="${labels.field.menu.action}" />
+			<treecol width="35%" label="${labels.field.menu.code}" />
+			<treecol width="26%" label="${labels.field.menu.label}" />
+			<treecol width="30%" label="${labels.field.menu.url}" />
+			<treecol width="4%" label="${labels.field.menu.order}" />
+			<treecol width="5%" label="${labels.field.menu.action}" />
 		</treecols>
 		<template name="model">
 	        <treeitem>
@@ -15,6 +16,7 @@
 	                <treecell label="${each.data.functionCode}" tooltiptext="${each.data.id}"/>
 	                <treecell label="${each.data.functionLabel}"/>
 	                <treecell label="${each.data.pageDefinition.pageUrl}"/>
+	                <treecell label="${each.data.siblingOrder}" style="text-align:right; padding-right:16px"/>
 	                <treecell>
 	                	<hlayout>
 	                		<actionButtonTree controller="${form$composer}" 

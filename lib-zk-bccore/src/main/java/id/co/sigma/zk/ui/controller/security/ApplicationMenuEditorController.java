@@ -122,37 +122,37 @@ public class ApplicationMenuEditorController extends
 			Long parentId = getAdditionalData().getId();
 			getEditedData().setFunctionIdParent(parentId);
 			getEditedData().setTreeLevelPosition(getAdditionalData().getTreeLevelPosition()+1);
-			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
-					new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, parentId)
-			};
-			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
-			if(swap!=null){
-				getEditedData().setSiblingOrder(swap.intValue()+1);
-			}
+//			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+//					new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, parentId)
+//			};
+//			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
+//			if(swap!=null){
+//				getEditedData().setSiblingOrder(swap.intValue()+1);
+//			}
 		}else{
 			if(getEditedData().getFunctionIdParent()!=null){
-				Long idParent = getEditedData().getFunctionIdParent();
-				SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
-						new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, idParent)
-				};
-				Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
-				if(swap!=null){
-					getEditedData().setSiblingOrder(swap.intValue()+1);
-				}
+//				Long idParent = getEditedData().getFunctionIdParent();
+//				SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+//						new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, idParent)
+//				};
+//				Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
+//				if(swap!=null){
+//					getEditedData().setSiblingOrder(swap.intValue()+1);
+//				}
 			}else{
 				getEditedData().setTreeLevelPosition(1);
-				SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
-						new SimpleQueryFilter("treeLevelPosition", SimpleQueryFilterOperator.equal, 1)
-				};
-				Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
-				if(swap!=null){
-					getEditedData().setSiblingOrder(swap.intValue()+1);
-				}
+//				SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+//						new SimpleQueryFilter("treeLevelPosition", SimpleQueryFilterOperator.equal, 1)
+//				};
+//				Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
+//				if(swap!=null){
+//					getEditedData().setSiblingOrder(swap.intValue()+1);
+//				}
 			}
 		}	
 		
 		ApplicationMenu[] menus = new ApplicationMenu[]{getEditedData()};
-		insertData(menus);
+		insertData((Object[])menus);
 		ApplicationMenu menu = menus[0];
 		Long id = menu.getId();
 		if(menu.getTreeLevelPosition()==1){
@@ -188,13 +188,13 @@ public class ApplicationMenuEditorController extends
 		}
 		if(getEditedData().getFunctionIdParent()!=null){
 			Long idParent = getEditedData().getFunctionIdParent();
-			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
-					new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, idParent)
-			};
-			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
-			if(swap!=null){
-				getEditedData().setSiblingOrder(swap.intValue()+1);
-			}
+//			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+//					new SimpleQueryFilter("functionIdParent", SimpleQueryFilterOperator.equal, idParent)
+//			};
+//			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
+//			if(swap!=null){
+//				getEditedData().setSiblingOrder(swap.intValue()+1);
+//			}
 			ApplicationMenu app = generalPurposeDao.get(ApplicationMenu.class, idParent);
 			if(app!=null){
 				getEditedData().setMenuTreeCode(app.getMenuTreeCode()+"."+getEditedData().getId());
@@ -202,13 +202,13 @@ public class ApplicationMenuEditorController extends
 		}else{
 			getEditedData().setTreeLevelPosition(1);
 			getEditedData().setMenuTreeCode(String.valueOf(getEditedData().getId()));
-			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
-					new SimpleQueryFilter("treeLevelPosition", SimpleQueryFilterOperator.equal, 1)
-			};
-			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
-			if(swap!=null){
-				getEditedData().setSiblingOrder(swap.intValue()+1);
-			}
+//			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+//					new SimpleQueryFilter("treeLevelPosition", SimpleQueryFilterOperator.equal, 1)
+//			};
+//			Long swap = generalPurposeDao.count(ApplicationMenu.class, filters);
+//			if(swap!=null){
+//				getEditedData().setSiblingOrder(swap.intValue()+1);
+//			}
 		}	
 		super.updateData();
 	}

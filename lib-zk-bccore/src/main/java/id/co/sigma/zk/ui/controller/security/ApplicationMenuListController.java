@@ -47,8 +47,10 @@ public class ApplicationMenuListController extends
 	static final org.slf4j.Logger logger = org.slf4j.LoggerFactory
 			.getLogger(ApplicationMenuListController.class.getName());
 
-	private static final SimpleSortArgument[] DEF_SORTS = { new SimpleSortArgument(
-			"id", true) };
+	private static final SimpleSortArgument[] DEF_SORTS = {
+		new SimpleSortArgument("treeLevelPosition", true),
+		new SimpleSortArgument("siblingOrder", true),
+		new SimpleSortArgument("id", true) };
 
 	private List<ApplicationMenu> listApplicationMenus;
 
