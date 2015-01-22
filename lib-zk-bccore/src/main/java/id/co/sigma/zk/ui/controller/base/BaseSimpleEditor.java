@@ -324,8 +324,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		for(Component fComp : fellows) {
 			if(fComp instanceof InputElement || fComp instanceof Checkbox) {
 				String fId = fComp.getId();
-				if(fId.contains(".")) {
-					String[] fields = fId.split("\\.");
+				if(fId.contains("_")) {
+					String[] fields = fId.split("\\_");
 					Object currObj = editedData;
 					try {
 						for(int i = 0; i < fields.length - 1; i++) {
