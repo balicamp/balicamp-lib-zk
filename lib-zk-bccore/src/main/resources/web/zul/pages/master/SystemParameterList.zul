@@ -11,11 +11,11 @@
 		<rows>
 			<row>
 				Key
-				<textbox id="keySearch"></textbox>
+				<textbox width="150px" id="keySearch"></textbox>
 			</row>
 			<row>
 				${labels.field.remark}
-				<textbox id="remarkSearch"></textbox>
+				<textbox width="350px" id="remarkSearch"></textbox>
 			</row>
 		</rows>	
 	</grid>	

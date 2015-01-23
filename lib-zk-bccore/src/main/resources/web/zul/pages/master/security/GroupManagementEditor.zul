@@ -16,13 +16,13 @@
 					<row>
 						<cell width="200px">${labels.field.group_code}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<textbox id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}" maxlength="32" constraint="no empty"/>
+							<textbox width="150px" id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}" maxlength="32" constraint="no empty"/>
 						</cell>
 					</row>
 					<row>
 						<cell>${labels.field.group_name}<span class="sign-mandatory">*</span></cell>
 						<cell>
-							<textbox id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}" maxlength="128" constraint="no empty"/>
+							<textbox width="350px" id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}" maxlength="128" constraint="no empty"/>
 						</cell>
 					</row>
 					<row>

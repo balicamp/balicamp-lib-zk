@@ -17,11 +17,11 @@
 		<rows>
 		<row>
 			${labels.field.code}
-			<textbox id="txtKode"></textbox>
+			<textbox width="150px" id="txtKode"></textbox>
 		</row>
 		<row>
 			${labels.field.remark}
-			<textbox id="txtRemark"></textbox>
+			<textbox width="350px" id="txtRemark"></textbox>
 		</row>
 		</rows>
 	</grid>	
