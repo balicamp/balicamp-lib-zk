@@ -102,6 +102,9 @@ public class ReportParameterEditorController extends
 	private Row rowCbmItem;
 	
 	@Wire
+	private Row rowMinMax;
+	
+	@Wire
 	private Listbox lstLoVFilter;
 	
 	@Wire
@@ -137,6 +140,7 @@ public class ReportParameterEditorController extends
 	private boolean showLov = false;
 	private boolean showLookup = false;
 	private boolean showCmbItem = false;
+	private boolean showMinMaxCmb = false;
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
@@ -148,6 +152,7 @@ public class ReportParameterEditorController extends
 			showCmbItem = ("Combobox".equals(type));
 			showLov = ("LoVCombobox".equals(type));
 			showLookup = ("LookupCombobox".equals(type));
+			showMinMaxCmb= "MinMaxCombobox".equals(type);
 		}
 		rowLovClass.setVisible(showLov || showLookup);
 		rowSeparator.setVisible(showLov || showLookup);
@@ -155,6 +160,7 @@ public class ReportParameterEditorController extends
 		rowFilters.setVisible(showLov);
 		rowCbmItem.setVisible(showCmbItem);
 		lovClassParams.setVisible(showLov);
+		rowMinMax.setVisible(showMinMaxCmb);
 		
 		if(jpaEntities == null) {
 			jpaEntities = new HashMap<String, EntityType<?>>();
@@ -324,6 +330,7 @@ public class ReportParameterEditorController extends
 			showCmbItem = ("Combobox".equals(trgt.getSelectedItem().getValue()));
 			showLov = ("LoVCombobox".equals(trgt.getSelectedItem().getValue()));
 			showLookup = ("LookupCombobox".equals(trgt.getSelectedItem().getValue()));
+			showMinMaxCmb= "MinMaxCombobox".equals(trgt.getSelectedItem().getValue());
 			
 			rowLovClass.setVisible(showLov || showLookup);
 			rowSeparator.setVisible(showLov || showLookup);
@@ -331,6 +338,7 @@ public class ReportParameterEditorController extends
 			rowFilters.setVisible(showLov);
 			rowCbmItem.setVisible(showCmbItem);
 			lovClassParams.setVisible(showLov);
+			rowMinMax.setVisible(showMinMaxCmb);
 			
 			Label l = (Label)rowLovClass.getFirstChild();
 			l.setValue(showLookup ? "Kode Lookup" : "LoV Class");

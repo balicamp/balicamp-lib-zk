@@ -460,6 +460,58 @@ public class ReportFormController extends BaseSimpleController {
 					}
 					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 					((Combobox)inp).setModel(new ListOfValueModel(list));
+				} else if("MinMaxCombobox".equals(param.getParamType())) {
+					inp = new Combobox();
+					inp.setId(param.getParamCode());
+					((Combobox)inp).setConstraint(cons);
+					
+					String parMinVal =  param.getMinValue();
+					String parMaxVal =  param.getMaxValue();
+					
+					String[] minVal = param.getMinValue().split("[\\-\\+]+");
+					String[] maxVal = param.getMaxValue().split("[\\-\\+]+");
+					
+					int intMinVal = 0;
+					int intMaxVal = 0;
+					
+					if(minVal[0].startsWith("#currentYear")) {
+						intMinVal = Calendar.getInstance().get(Calendar.YEAR);
+						if(minVal.length == 2) {
+							int intVal = Integer.parseInt(minVal[1].trim());
+							if(parMinVal.contains("-")) {
+								intMinVal = intMinVal - intVal;
+							} else if(parMinVal.contains("+")) {
+								intMinVal = intMinVal + intVal;
+							}
+						}
+					} else {
+						intMaxVal = Integer.parseInt(minVal[0].trim());
+					}
+					
+					if(maxVal[0].startsWith("#currentYear")) {
+						intMaxVal = Calendar.getInstance().get(Calendar.YEAR);
+						if(maxVal.length == 2) {
+							int intVal = Integer.parseInt(maxVal[1].trim());
+							if(parMaxVal.contains("-")) {
+								intMaxVal = intMaxVal - intVal;
+							} else if(parMinVal.contains("+")) {
+								intMaxVal = intMaxVal + intVal;
+							}
+						}
+					} else {
+						intMaxVal = Integer.parseInt(maxVal[0].trim());
+					}
+					
+					List<ListOfValueItem> items = new ArrayList<ListOfValueItem>();
+					
+					if(intMinVal <= intMaxVal) {
+						for(int i = intMinVal; i <= intMaxVal; i++) {
+							ListOfValueItem item = new ListOfValueItem(i, i+"", "");
+							items.add(item);
+						}
+					}
+					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(null));
+					((Combobox)inp).setModel(new ListOfValueModel(items));
 				}
 				
 				((InputElement)inp).setTabindex(tabIndex++);

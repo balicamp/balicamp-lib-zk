@@ -1,5 +1,5 @@
 <?page title="Editor Lookup Detail" contentType="text/html;charset=UTF-8"?>
-<zk>
+<zk xmlns:h="xhtml">
 <editorWindow title="Parameter Laporan" border="none" id="editorParams" 
 	apply="id.co.sigma.zk.ui.controller.report.ReportParameterEditorController"
 	cancellationMsg="Apakah anda yakin untuk membatalkan proses ini?"
@@ -36,6 +36,7 @@
 				<comboitem value="LoVCombobox" label="LoVCombobox"/>
 				<comboitem value="Combobox" label="Combobox"/>
 				<comboitem value="MonthCombobox" label="MonthCombobox"/>
+				<comboitem value="MinMaxCombobox" label="MinMaxCombobox"/>
 			</combobox>
 		</row>
 		<row id="rowLovClass" valign="top">
@@ -144,6 +145,19 @@
 				</listitem>
 			</listbox>
 			</box>
+		</row>
+		<row id="rowMinMax" valign="top">
+			Nilai
+			<h:table>
+				<h:tr>
+					<h:td style="padding-bottom:16px" width="100px">Minimal</h:td>
+					<h:td><textbox id="minValue" value="${editorParams$composer.editedData.minValue}" width="210px" /></h:td>
+				</h:tr>
+				<h:tr>
+					<h:td>Maksimal</h:td>
+					<h:td><textbox id="maxValue" value="${editorParams$composer.editedData.maxValue}" width="210px"/></h:td>
+				</h:tr>
+			</h:table>
 		</row>
 		<row>
 			${labels.field.default_value}
