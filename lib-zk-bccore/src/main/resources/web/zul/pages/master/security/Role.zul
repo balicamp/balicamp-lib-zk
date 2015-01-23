@@ -11,11 +11,11 @@
 			<rows>
 			<row>
 				${labels.field.rolecode}
-				<textbox id="codeSearch"></textbox>
+				<textbox width="150px" id="codeSearch"></textbox>
 			</row>
 			<row>
 				${labels.field.roledesc}
-				<textbox id="descSearch"></textbox>
+				<textbox width="300px" id="descSearch"></textbox>
 			</row>
 			</rows>	
 		</grid>	
