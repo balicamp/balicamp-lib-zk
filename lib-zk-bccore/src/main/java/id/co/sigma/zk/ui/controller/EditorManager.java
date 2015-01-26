@@ -3,6 +3,7 @@ package id.co.sigma.zk.ui.controller;
 import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.spring.security.SecurityUtil;
+import id.co.sigma.zk.ui.MultipleValueLookupReceiver;
 import id.co.sigma.zk.ui.SingleValueLookupReciever;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.controller.base.IEditorPanel;
@@ -303,6 +304,18 @@ public final class EditorManager {
 	 * menapilkan dialog dengan single result
 	 */
 	public <DATA> void showSingleResultLookup (String zulPath , SingleValueLookupReciever<DATA> dataSelectionHandler ) {
+		Map<String, Object> parameter = new HashMap<String, Object>() ; 
+		parameter.put(ZKCoreLibConstant.AFTER_SELECTION_HANDLER, dataSelectionHandler); 
+		final Window w = (Window) Executions.createComponents(zulPath, null, parameter);
+		w.setClosable(true);
+		w.setMaximizable(true);
+		w.doModal(); 
+	}
+	
+	/**
+	 * menampilkan dialog dengan multiple result
+	 */
+	public <DATA> void showMultipleResultLookup (String zulPath , MultipleValueLookupReceiver<DATA> dataSelectionHandler ) {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.AFTER_SELECTION_HANDLER, dataSelectionHandler); 
 		final Window w = (Window) Executions.createComponents(zulPath, null, parameter);

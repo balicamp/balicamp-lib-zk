@@ -188,7 +188,7 @@ public abstract class BaseDBDrivenListModel<DATA>  extends PagedResultHolder<DAT
 	public boolean removeFromSelection(Object data) {
 		if (! selectedItems.contains(data))
 			return false;
-		selectedItems.add((DATA)data); 
+		selectedItems.remove((DATA)data); 
 		return true;
 	}
 

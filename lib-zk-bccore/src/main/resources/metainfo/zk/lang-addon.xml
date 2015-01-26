@@ -27,6 +27,13 @@
 		<component-class>id.co.sigma.zk.ui.controller.base.window.SingleLookupWindow</component-class>
 		<extends>window</extends>
 	</component>
+	
+	<component>
+		<component-name>MultipleLookupWindow</component-name>
+		<component-class>id.co.sigma.zk.ui.controller.base.window.MultipleLookupWindow</component-class>
+		<extends>window</extends>
+	</component>
+	
     <component>
         <component-name>actionColumns</component-name>
         <extends>columns</extends>

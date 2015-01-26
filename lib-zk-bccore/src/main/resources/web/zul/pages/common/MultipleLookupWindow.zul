@@ -1,0 +1,16 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>	
+	<panel>
+		<panelchildren id="panelLookup">
+		</panelchildren>
+	</panel>
+	<separator/>
+	<panel>
+		<panelchildren>
+				<hlayout>
+					<button id="btnPilih" label="${labels.action.button.pilih}"/>
+					<button id="btnCancel" label="${labels.action.button.cancel}"/>
+				</hlayout>
+		</panelchildren>
+	</panel>
+</zk>

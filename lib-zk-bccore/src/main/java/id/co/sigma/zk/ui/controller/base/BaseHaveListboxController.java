@@ -1,10 +1,5 @@
 package id.co.sigma.zk.ui.controller.base;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
@@ -12,6 +7,11 @@ import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +58,8 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	
 	
 	protected DATA selectedItem ; 
+	
+	protected List<DATA> multipleSelectedItem;
 	
 	
 	
