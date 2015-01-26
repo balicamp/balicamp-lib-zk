@@ -168,8 +168,8 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 		actBtn.setDeleteMsg(deleteMsg);
 		actBtn.setEditorPage(editorPage);
 		actBtn.setModal(modal);
-		actBtn.getChildren().get(ActionButton.EDIT_BUTTON).setVisible(editable);
-		actBtn.getChildren().get(ActionButton.DELETE_BUTTON).setVisible(deletable);
+		actBtn.getBtnEdit().setVisible(editable);
+		actBtn.getBtnDelete().setVisible(deletable);
 	}
 	
 }
