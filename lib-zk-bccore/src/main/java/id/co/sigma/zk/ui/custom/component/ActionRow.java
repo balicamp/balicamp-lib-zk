@@ -10,6 +10,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
+import org.zkoss.zul.Columns;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Row;
@@ -58,6 +59,12 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 		
 		defaults[1].setId(defaults[1].getUuid());
 		
+		Component colm = getGrid().getColumns();
+		boolean enableAction = true;
+		if(colm instanceof ActionColumns) {
+			enableAction = ((ActionColumns)colm).isEnableAction();
+		}
+		
 		if(isChild()) {
 			ListModel<Object> model = getGrid().getModel();
 			int existing = 1; //0: new, 1: existing, 2: edited
@@ -78,11 +85,18 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 			ActionUtils.registerClientEventListner(cmp, defaults[1].getUuid());
 			children.add(cmp);
 		}
-		for(Component cmp : defaults) {
-			if(cmp instanceof ActionButton) {
-				initActionButton((ActionButton)cmp);
+		for(int i = 0; i < defaults.length; i++) {
+			Component cmp = defaults[i];
+			if(i == 0) {
+				if(enableAction) {
+					if(cmp instanceof ActionButton) {
+						initActionButton((ActionButton)cmp);
+					}
+					children.add(cmp);
+				}
+			} else {
+				children.add(cmp);
 			}
-			children.add(cmp);
 		}
 		controller.setListenerForSpecificComponent(dynamics);
 	}

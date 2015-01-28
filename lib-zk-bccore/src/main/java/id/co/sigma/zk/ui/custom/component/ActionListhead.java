@@ -16,6 +16,8 @@ public class ActionListhead extends Listhead implements IdSpace, AfterCompose {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private boolean enableAction = true;
+	
 	public ActionListhead() {
 		Executions.createComponents("~./zul/pages/common/ActionListhead.zul", this, null);
 		Selectors.wireComponents(this, this, false);
@@ -35,9 +37,32 @@ public class ActionListhead extends Listhead implements IdSpace, AfterCompose {
 		for(Component cmp : dynamics) {
 			children.add(cmp);
 		}
-		for(Component cmp : defaults) {
-			children.add(cmp);
+		for(int i = 0; i < defaults.length; i++) {
+			 Component cmp = defaults[i];
+			if(i == 0) {
+				if(enableAction) {
+					children.add(cmp);
+				}
+			} else {
+				children.add(cmp);
+			}
 		}
 	}
+
+	/**
+	 * @return the enableAction
+	 */
+	public boolean isEnableAction() {
+		return enableAction;
+	}
+
+	/**
+	 * @param enableAction the enableAction to set
+	 */
+	public void setEnableAction(String enableAction) {
+		this.enableAction = Boolean.valueOf(enableAction);
+	}
+	
+	
 
 }

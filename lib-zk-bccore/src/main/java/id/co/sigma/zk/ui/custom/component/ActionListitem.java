@@ -62,6 +62,12 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 		
 		defaults[1].setId(defaults[1].getUuid());
 		
+		Component head = getListbox().getListhead();
+		boolean enableAction = true;
+		if(head instanceof ActionListhead) {
+			enableAction = ((ActionListhead)head).isEnableAction();
+		}
+		
 		if(isChild()) {
 			ListModel<Object> model = getListbox().getModel();
 			int existing = 1; //0: new, 1: existing, 2: edited
@@ -82,13 +88,20 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 			ActionUtils.registerClientEventListner(cmp.getChildren(), defaults[1].getUuid());
 			children.add(cmp);
 		}
-		for(Component cmp : defaults) {
-			if(cmp.getChildren().size() > 0) {
-				if(cmp.getChildren().get(0) instanceof ActionButton) {
-					initActionButton((ActionButton)cmp.getChildren().get(0));
+		for(int i = 0; i < defaults.length; i++) {
+			Component cmp = defaults[i];
+			if(i == 0) {
+				if(enableAction) {
+					if(cmp.getChildren().size() > 0) {
+						if(cmp.getChildren().get(0) instanceof ActionButton) {
+							initActionButton((ActionButton)cmp.getChildren().get(0));
+						}
+					}			
+					children.add(cmp);
 				}
+			} else {
+				children.add(cmp);
 			}
-			children.add(cmp);
 		}
 	}
 
