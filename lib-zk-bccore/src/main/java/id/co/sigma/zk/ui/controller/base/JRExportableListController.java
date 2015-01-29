@@ -165,8 +165,8 @@ public abstract class JRExportableListController<T extends Serializable> extends
                 if (getSearchListbox() != null && getSearchListbox().getItemCount() > 0) {
                     doExport();
                 } else {
-                    Messagebox.show("export.empty", Labels.getLabel("title.msgbox.information"), Messagebox.OK,
-                            Messagebox.INFORMATION);
+                    Messagebox.show(Labels.getLabel("export.empty"), Labels.getLabel("title.msgbox.information"),
+                            Messagebox.OK, Messagebox.INFORMATION);
                 }
             }
         });
