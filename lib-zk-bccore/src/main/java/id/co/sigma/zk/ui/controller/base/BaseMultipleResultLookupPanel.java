@@ -74,21 +74,21 @@ BaseHaveListboxController<DATA> {
     public void selectClick(final Event evt) {
 	try {
 	    if(this.dataModel!=null){
-		Set<DATA> sels =  this.dataModel.getSelection();
-		if ( sels!= null && !sels.isEmpty()){
-		    multipleSelectedItem = new ArrayList<>(sels);	    		    
-		}
-
-
-		if ( multipleSelectedItem== null && multipleSelectedItem.isEmpty()){
-		    Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
-		    return ; 
-		}
-		validateData(multipleSelectedItem);
-		getWindowReference().detach();
-		valueSelectedHandler.onDataSelected(multipleSelectedItem);
+			Set<DATA> sels =  this.dataModel.getSelection();
+			if ( sels!= null && !sels.isEmpty()){
+			    multipleSelectedItem = new ArrayList<>(sels);	    		    
+			}
+	
+	
+			if ( multipleSelectedItem== null){
+			    Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
+			    return ; 
+			}
+			validateData(multipleSelectedItem);
+			getWindowReference().detach();
+			valueSelectedHandler.onDataSelected(multipleSelectedItem);
 	    }else{
-		Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
+	    	Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
 	    }
 
 	} catch (Exception e) {
