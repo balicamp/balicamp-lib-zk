@@ -17,15 +17,15 @@
 		<rows>
 		<row>
 			${labels.field.code}
-			<intbox id="intCode" tabindex="1"/>
+			<intbox width="150px" id="intCode" tabindex="1"/>
 		</row>
 		<row>
 			${labels.field.name}
-			<textbox id="txtName" tabindex="2"/>
+			<textbox width="350px" id="txtName" tabindex="2"/>
 		</row>
 		<row>
 			${labels.field.description}
-			<textbox id="txtDescription" tabindex="3"/>
+			<textbox width="350px" id="txtDescription" tabindex="3"/>
 		</row>
 		</rows>
 	</grid>	
