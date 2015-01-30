@@ -14,14 +14,14 @@
 			<column />
 		</columns>
 		<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				${labels.field.id}:
 				<textbox tabindex="1" id="txtIdLov" maxlength="32" value="${lookupHeader$composer.editedData.id}" constraint="no empty : ${labels.field.id} tidak boleh kosong" hflex="1"></textbox>
 				<space hflex="1"/>
 				${labels.field.remark}:
 				<textbox tabindex="3" id="txtRemark" maxlength="128" value="${lookupHeader$composer.editedData.remark}" hflex="1"></textbox>
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				${labels.field.locale}:
 				<textbox tabindex="2" id="txtI18Key" maxlength="32" value="${lookupHeader$composer.editedData.i18Key}" constraint="no empty : ${labels.field.locale} tidak boleh kosong"  hflex="1"></textbox>
 				<space hflex="1"/>

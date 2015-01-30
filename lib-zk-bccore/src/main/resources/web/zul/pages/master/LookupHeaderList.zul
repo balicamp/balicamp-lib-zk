@@ -15,11 +15,11 @@
 				<column  />
 			</columns>
 		<rows>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.code}
 			<textbox width="150px" id="txtKode"></textbox>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.remark}
 			<textbox width="350px" id="txtRemark"></textbox>
 		</row>

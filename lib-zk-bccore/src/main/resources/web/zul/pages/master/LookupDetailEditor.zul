@@ -12,28 +12,28 @@
 				<column  />
 			</columns>
 		<rows> 
-		<row>
+		<row style="background: #FFFFFF;">
 			Locale
 			<textbox id="txtI18n" value="${lookupDetail$composer.editedData.i18Key}" readonly="true"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.code}
 			<textbox id="txtCode"  value="${lookupDetail$composer.editedData.detailCode}" readonly="true"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			Label
 			<textbox id="txtLabel"  value="${lookupDetail$composer.editedData.label}"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			additional data 1
 			<textbox id="txtAdditionalData1"  value="${lookupDetail$composer.editedData.extField1}"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			additional data 2
 			<textbox id="txtAdditionalData2"  value="${lookupDetail$composer.editedData.extField2}"/>
 		</row>
 		
-		<row>
+		<row style="background: #FFFFFF;">
 			Sequence
 			<intbox id="txtSequence"  value="${lookupDetail$composer.editedData.sequence}"/>
 		</row>

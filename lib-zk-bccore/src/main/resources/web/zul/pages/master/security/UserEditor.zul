@@ -15,7 +15,7 @@
 			<column  />
 		</columns>
 		<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				<cell>${labels.field.username}</cell>
 				<cell>
 					<textbox tabindex="1" id="userCode"
@@ -29,7 +29,7 @@
                 	<textbox tabindex="5" id="chipperText" width="150px" type="password" c:onChanging="meterUpdate(event)" />
                 </cell>
 			</row>
-			 <row>
+			 <row style="background: #FFFFFF;">
 				<cell>
 					${labels.field.realname}
 				</cell>
@@ -50,7 +50,7 @@
 	                </vlayout>
                 </cell>
             </row>
-            <row>
+            <row style="background: #FFFFFF;">
                 <cell>
 					${labels.field.email}
 				</cell>
@@ -66,7 +66,7 @@
                 	<textbox tabindex="6" id="confirmChipperText" width="150px" type="password" />
                 </cell>
             </row>
-            <row>
+            <row style="background: #FFFFFF;">
 				<cell>
 					${labels.field.branch}
 				</cell>

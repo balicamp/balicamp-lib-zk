@@ -13,19 +13,19 @@
 		<div>
 			<grid >
 				<rows>
-					<row>
+					<row style="background: #FFFFFF;">
 						<cell width="200px">${labels.field.group_code}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<textbox width="150px" id="groupCode" value="${groupMgmEditorWin$composer.editedData.groupCode}" maxlength="32" constraint="no empty"/>
 						</cell>
 					</row>
-					<row>
+					<row style="background: #FFFFFF;">
 						<cell>${labels.field.group_name}<span class="sign-mandatory">*</span></cell>
 						<cell>
 							<textbox width="350px" id="groupName" value="${groupMgmEditorWin$composer.editedData.groupName}" maxlength="128" constraint="no empty"/>
 						</cell>
 					</row>
-					<row>
+					<row style="background: #FFFFFF;">
 						<cell>${labels.field.aktif}</cell>
 						<cell>
 							<checkbox id="cbActiveFlag"></checkbox>

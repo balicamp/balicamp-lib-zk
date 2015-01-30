@@ -16,7 +16,7 @@
 				<column  />
 		</columns>
 		<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				${labels.field.code}
 				<textbox zindex="1" tabindex="1"
 					id="pageCode" 
@@ -26,7 +26,7 @@
 				<textbox id="additionalData" zindex="3"  tabindex="3"
 					value="${pageDefEditor$composer.editedData.additionalData}"></textbox>
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				URL
 				<textbox id="pageUrlAnnotated" zindex="2"  tabindex="2"
 					disabled="${editStateEnabledFlag}"

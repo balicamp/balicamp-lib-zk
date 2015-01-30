@@ -15,15 +15,15 @@
 				<column />
 			</columns>
 			<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				Page Code
 				<textbox width="200px" id="txtPageCode"></textbox>
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				URL
 				<textbox width="500px" id="txtPagUrl"></textbox>
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				Remark
 				<textbox width="500px" id="txtPageRemark"></textbox>
 			</row>

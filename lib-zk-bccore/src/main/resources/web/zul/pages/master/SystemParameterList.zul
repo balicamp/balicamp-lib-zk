@@ -9,11 +9,11 @@
 			<column />
 		</columns>
 		<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				Key
 				<textbox width="150px" id="keySearch"></textbox>
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				${labels.field.remark}
 				<textbox width="350px" id="remarkSearch"></textbox>
 			</row>

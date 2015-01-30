@@ -9,7 +9,7 @@
 	<groupbox>
 		<grid>
 			<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				<cell width="200px">
 					${labels.field.user_name}
 				</cell>
@@ -18,7 +18,7 @@
 				</cell>
 				
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				<cell width="200px">
 					${labels.field.realname}
 				</cell>

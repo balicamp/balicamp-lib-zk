@@ -13,7 +13,7 @@
 				<column />
 			</columns>
 			<rows>
-				<row>
+				<row style="background: #FFFFFF;">
 					<label value="Param Key"/>
 					<textbox tabindex="1" id="id"
 						value="${editorSystemParameter$composer.editedData.id}"
@@ -24,7 +24,7 @@
 					<textbox tabindex="4" id="remark"
 					value="${editorSystemParameter$composer.editedData.remark}"/>
 				</row>				
-				<row>
+				<row style="background: #FFFFFF;">
 					<label value="Param Type"/>
 					<combobox tabindex="2" id="cmbType" 
 						model="${editorSystemParameter$SystemParameterEditorController.listModelParamtype}"
@@ -38,23 +38,23 @@
 							<radio id="editableFlagN" value ="No" label="No" radiogroup="editableFlag"/> 
 					</radiogroup>
 				</row>				
-				<row id="textParamType" visible="false">
+				<row id="textParamType" visible="false"  style="background: #FFFFFF;">
 					<label value="Param Value"/>
 					<textbox tabindex="3" id="paramValue"/>
 				</row>				
-				<row id="decParamType" visible="false">
+				<row id="decParamType" visible="false"  style="background: #FFFFFF;">
 					<label value="Param Value"/>
 					<decimalbox tabindex="3" id="decparamValue" />
 				</row>
-				<row id="intParamType" visible="false">
+				<row id="intParamType" visible="false"  style="background: #FFFFFF;">
 					<label value="Param Value"/>
 					<intbox tabindex="3" id="intparamValue"/>
 				</row>
-				 <row id="dateParamType" visible="false">
+				 <row id="dateParamType" visible="false" style="background: #FFFFFF;">
 					<label value="Param Value"/>
 					<datebox tabindex="3" id="dateValue" cols="12" format="yyyy/MM/dd" onCreate="self.value = new Date()" />
 				</row>
-				<row id="boolParamType" visible="false" >
+				<row id="boolParamType" visible="false" style="background: #FFFFFF;" >
 					<label value="Param Value"/>
 					<radiogroup id="radioValue">  
 							<radio id="valueTrue" value ="True" label="True" selected="true" radiogroup="radioValue"/>

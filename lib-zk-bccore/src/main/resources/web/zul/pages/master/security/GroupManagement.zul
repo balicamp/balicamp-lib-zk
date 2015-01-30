@@ -11,11 +11,11 @@
 	<groupbox id="searchBox" mold="3d" width="100%">
 		<grid >
 			<rows>
-				<row>
+				<row style="background: #FFFFFF;">
 					<cell width="200px">${labels.field.group_code}</cell>
 					<cell><textbox width="150px" id="txtGroupCode"></textbox></cell>
 				</row>
-				<row>
+				<row style="background: #FFFFFF;">
 					<cell>${labels.field.group_name}</cell>
 					<cell><textbox width="350px" id="txtGroupName"></textbox></cell>
 				</row>

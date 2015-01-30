@@ -3,17 +3,17 @@
 <listWindow title="${labels.role.titlelist}" id="role" 
 	apply="id.co.sigma.zk.ui.controller.security.RoleController"
 	editorPage="~./zul/pages/master/security/RoleFormEditor.zul">
-     <grid vflex="1" height="100px">
+     <grid vflex="1" >
 			<columns>
 				<column width="150px" />
 				<column/>
 			</columns>
 			<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				${labels.field.rolecode}
 				<textbox width="150px" id="codeSearch"></textbox>
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				${labels.field.roledesc}
 				<textbox width="300px" id="descSearch"></textbox>
 			</row>

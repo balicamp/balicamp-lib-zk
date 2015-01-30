@@ -10,7 +10,7 @@
 		<panelchildren>
 			<grid>
 				<rows>
-					<row>
+					<row style="background: #FFFFFF;">
 						<hlayout>
 							<label>${labels.field.code}</label>
 						</hlayout>
@@ -19,7 +19,7 @@
 								value="${branchEditor$composer.editedData.branchCode}"/>
 						</hlayout>
 					</row>
-					<row>
+					<row style="background: #FFFFFF;">
 						<hlayout>
 							<label>${labels.field.name} Cabang</label>
 						</hlayout>
@@ -28,7 +28,7 @@
 								value="${branchEditor$composer.editedData.branchName}"/>
 						</hlayout>
 					</row>
-					<row>
+					<row style="background: #FFFFFF;">
 						<hlayout>
 							<label>${labels.field.address}</label>
 						</hlayout>
@@ -36,7 +36,7 @@
 							<textbox id="branchAddress" value="${branchEditor$composer.editedData.branchAddress}"/>
 						</hlayout>
 					</row>
-					<row height="20">
+					<row height="20" style="background: #FFFFFF;">
 						<hlayout>
 							<label>${labels.each.description}</label>
 						</hlayout>
