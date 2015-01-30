@@ -14,7 +14,7 @@
 			<column />
 		</columns>
 		<rows>
-			<row>
+			<row style="background: #FFFFFF;">
 				${labels.field.name}:
 				<textbox id="name" maxlength="100" value="${rptDoc$composer.editedData.name}" 
 					constraint="no empty : ${labels.field.name} tidak boleh kosong" width="80%" tabindex="1"/>
@@ -22,7 +22,7 @@
 				${labels.field.description}:
 				<textbox id="description" maxlength="500" value="${rptDoc$composer.editedData.description}" width="60%" tabindex="3"/>
 			</row>
-			<row>
+			<row style="background: #FFFFFF;">
 				Template Laporan:
 				<textbox id="template" maxlength="250" value="${rptDoc$composer.editedData.template}" constraint="no empty : Template Laporan tidak boleh kosong"  
 					width="70%" tabindex="2"/>

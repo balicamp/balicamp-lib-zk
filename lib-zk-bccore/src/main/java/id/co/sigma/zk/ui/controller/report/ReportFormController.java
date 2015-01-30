@@ -267,6 +267,7 @@ public class ReportFormController extends BaseSimpleController {
 					hbox.appendChild(label);
 					hbox.appendChild(reqlabel);
 					row.appendChild(hbox);
+					row.setStyle("background: #FFFFFF;");
 				} else {				
 					Label label = new Label(param.getParamLabel());
 					label.setTooltip(param.getDescription());

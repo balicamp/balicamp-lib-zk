@@ -13,19 +13,19 @@
 				<column  />
 			</columns>
 		<rows> 
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.code}
 			<textbox id="paramCode" value="${editorParams$composer.editedData.paramCode}" readonly="true" width="200px"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			Label
 			<textbox id="paramLabel"  value="${editorParams$composer.editedData.paramLabel}"  width="300px"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.description}
 			<textbox id="description"  value="${editorParams$composer.editedData.description}" width="350px"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.type}
 			<combobox id="paramType" value="${editorParams$composer.editedData.paramType}">
 				<comboitem value="Textbox" label="Textbox"/>
@@ -39,7 +39,7 @@
 				<comboitem value="MinMaxCombobox" label="MinMaxCombobox"/>
 			</combobox>
 		</row>
-		<row id="rowLovClass" valign="top">
+		<row id="rowLovClass" valign="top" style="background: #FFFFFF;">
 			LoV Class
 			<vbox>
 				<combobox id="lovClass"  value="${editorParams$composer.editedData.lovClass}" width="210px"/>
@@ -65,11 +65,11 @@
 				</grid>
 			</vbox>
 		</row>
-		<row id="rowSeparator">
+		<row id="rowSeparator" style="background: #FFFFFF;">
 			LOV Separator
 			<textbox id="separator"  value="${editorParams$composer.editedData.separator}" width="50px" maxlength="3"/>
 		</row>
-		<row id="rowDependencies" valign="top">
+		<row id="rowDependencies" valign="top" style="background: #FFFFFF;">
 			LOV Dependencies
 			<box style="border:1px solid #CFCFCF">
 				<textbox id="lovParentId"  value="${editorParams$composer.editedData.lovParentId}" width="210px" visible="false"/>
@@ -92,7 +92,7 @@
 				</listbox>
 			</box>
 		</row>
-		<row id="rowFilters" valign="top">
+		<row id="rowFilters" valign="top" style="background: #FFFFFF;">
 			LOV Filters
 			<box style="border:1px solid #CFCFCF">
 			<textbox visible="false" id="lovFilters"/>
@@ -126,7 +126,7 @@
 			</listbox>
 			</box>
 		</row>
-		<row id="rowCbmItem" valign="top">
+		<row id="rowCbmItem" valign="top" style="background: #FFFFFF;">
 			List Item
 			<box style="border:1px solid #CFCFCF">
 			<listbox id="lstComboItem">
@@ -146,7 +146,7 @@
 			</listbox>
 			</box>
 		</row>
-		<row id="rowMinMax" valign="top">
+		<row id="rowMinMax" valign="top" style="background: #FFFFFF;">
 			Nilai
 			<h:table>
 				<h:tr>
@@ -159,23 +159,23 @@
 				</h:tr>
 			</h:table>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.default_value}
 			<textbox id="defaultValue"  value="${editorParams$composer.editedData.defaultValue}" width="210px"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			Format
 			<textbox id="dataFormat"  value="${editorParams$composer.editedData.dataFormat}" width="210px"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			Sequence
 			<textbox id="paramSec"  value="${editorParams$composer.editedData.paramSec}" width="100px"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			Required
 			<checkbox id="required" checked="${editorParams$composer.editedData.required eq 1}" value="${editorParams$composer.editedData.required}"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			Pesan kesalahan
 			<textbox multiline="true" rows="3" id="invalidErrMessage" value="${editorParams$composer.editedData.invalidErrMessage}"/>
 		</row>

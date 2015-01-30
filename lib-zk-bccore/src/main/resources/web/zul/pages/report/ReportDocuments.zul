@@ -15,15 +15,15 @@
 				<column  />
 			</columns>
 		<rows>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.code}
 			<intbox width="150px" id="intCode" tabindex="1"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.name}
 			<textbox width="350px" id="txtName" tabindex="2"/>
 		</row>
-		<row>
+		<row style="background: #FFFFFF;">
 			${labels.field.description}
 			<textbox width="350px" id="txtDescription" tabindex="3"/>
 		</row>
