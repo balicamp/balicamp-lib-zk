@@ -35,8 +35,10 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	 */
 	private static final long serialVersionUID = 1908186628421108883L;
 	
-	
-	
+	/**
+	 * Default sort direction
+	 */
+	private boolean sortAscending = true;
 	
 	private static final Logger logger = LoggerFactory.getLogger(BaseHaveListboxController.class); 
 	
@@ -61,7 +63,13 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	
 	protected List<DATA> multipleSelectedItem;
 	
+	public boolean isSortAscending() {
+		return sortAscending;
+	}
 	
+	public void setSortAscending(boolean sortAscending) {
+		this.sortAscending = sortAscending;
+	}
 	
 	/**
 	 * class yang di render controller ini
@@ -247,14 +255,26 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 		Listhead headers = lb.getListhead();
 		List<Listheader> lhdrs = headers.getChildren();
 		for(Listheader hdr : lhdrs) {
-			if((hdr.getSortAscending() != null) && (sorts == null)) {
-				FieldComparator cmpr = (FieldComparator)hdr.getSortAscending();
-				hdr.setSortDirection("ascending");
-				sorts = new SimpleSortArgument[] {
-					new SimpleSortArgument(cmpr.getRawOrderBy(), true)	
-				};
-			} else {
-				hdr.setSortDirection("natural");
+			if(sortAscending){
+				if((hdr.getSortAscending() != null) && (sorts == null)) {
+					FieldComparator cmpr = (FieldComparator)hdr.getSortAscending();
+					hdr.setSortDirection("ascending");
+					sorts = new SimpleSortArgument[] {
+						new SimpleSortArgument(cmpr.getRawOrderBy(), true)	
+					};
+				} else {
+					hdr.setSortDirection("natural");
+				}
+			}else{
+				if((hdr.getSortDescending() != null) && (sorts == null)) {
+					FieldComparator cmpr = (FieldComparator)hdr.getSortDescending();
+					hdr.setSortDirection("descending");
+					sorts = new SimpleSortArgument[] {
+						new SimpleSortArgument(cmpr.getRawOrderBy(), false)	
+					};
+				} else {
+					hdr.setSortDirection("natural");
+				}
 			}
 		}
 		return sorts;
