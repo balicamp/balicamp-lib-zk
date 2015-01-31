@@ -18,18 +18,16 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -142,6 +140,16 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 				if(lovLoaderTimer != null) {
 					lovLoaderTimer.stop();
 					Clients.clearBusy(event.getTarget());
+				}
+			}
+		});
+		
+		addEventListener("onOK", new EventListener<Event>() {
+
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if(!(event.getTarget() instanceof Button)) {
+					Events.sendEvent("onClick", btnSearch, null);
 				}
 			}
 		});
@@ -366,11 +374,11 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 			getFirstInputComponent(comp);
 			if(comp instanceof InputElement) {
 				Constraint cons = ((InputElement)comp).getConstraint();
-				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
-						&& ((((InputElement) comp).getWidth() == null) || ("".equals(((InputElement) comp).getWidth())))) 
-						&& !((comp instanceof Combobox) || (comp instanceof Datebox) || (comp instanceof Bandbox))) {
-					((InputElement)comp).setHflex("1");
-				}
+//				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
+//						&& ((((InputElement) comp).getWidth() == null) || ("".equals(((InputElement) comp).getWidth())))) 
+//						&& !((comp instanceof Combobox) || (comp instanceof Datebox) || (comp instanceof Bandbox))) {
+//					((InputElement)comp).setHflex("1");
+//				}
 				if(cons != null && (((InputElement)comp).isReadonly() || ((InputElement)comp).isDisabled())) {
 					((InputElement)comp).addEventListener("onBlur", new EventListener<Event>() {
 
