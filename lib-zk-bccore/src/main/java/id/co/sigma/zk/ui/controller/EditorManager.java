@@ -1,6 +1,8 @@
 package id.co.sigma.zk.ui.controller;
 
 import id.co.sigma.common.data.SingleKeyEntityData;
+import id.co.sigma.common.data.query.SimpleQueryFilter;
+import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.MultipleValueLookupReceiver;
@@ -306,6 +308,20 @@ public final class EditorManager {
 	public <DATA> void showSingleResultLookup (String zulPath , SingleValueLookupReciever<DATA> dataSelectionHandler ) {
 		Map<String, Object> parameter = new HashMap<String, Object>() ; 
 		parameter.put(ZKCoreLibConstant.AFTER_SELECTION_HANDLER, dataSelectionHandler); 
+		final Window w = (Window) Executions.createComponents(zulPath, null, parameter);
+		w.setClosable(true);
+		w.setMaximizable(true);
+		w.doModal(); 
+	}
+	
+	/**
+	 * menampilkan dialog lookup dengan single result, custom filter, dan custom sort 
+	 */
+	public <DATA> void showSingleResultLookup (String zulPath , SingleValueLookupReciever<DATA> dataSelectionHandler, SimpleQueryFilter[] filters, SimpleSortArgument[] sorts) {
+		Map<String, Object> parameter = new HashMap<String, Object>() ; 
+		parameter.put(ZKCoreLibConstant.AFTER_SELECTION_HANDLER, dataSelectionHandler);
+		parameter.put(ZKCoreLibConstant.LOOKUP_LIST_FILTERS, filters);
+		parameter.put(ZKCoreLibConstant.LOOKUP_LIST_SORTS, sorts);
 		final Window w = (Window) Executions.createComponents(zulPath, null, parameter);
 		w.setClosable(true);
 		w.setMaximizable(true);

@@ -19,7 +19,15 @@ public final class ZKCoreLibConstant  {
 	 */
 	public static final String ADDITIONAL_DATA_ATTRIBUTE_KEY="additionalData";
 	
+	/**
+	 * key untuk passing filter list lookup
+	 */
+	public static final String LOOKUP_LIST_FILTERS="lookupListFilters";
 	
+	/**
+	 * key untuk passing sort list lookup
+	 */
+	public static final String LOOKUP_LIST_SORTS="lookupListSorts";
 	
 	/**
 	 * container data.key
