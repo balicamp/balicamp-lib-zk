@@ -330,11 +330,18 @@ public class ReportFormController extends BaseSimpleController {
 					
 					lovCombos.put(param.getParamCode(), (Combobox)inp);
 					
+					String defVal = param.getDefaultValue();
+					if(defVal != null && defVal.trim().length() > 0) {
+						if("#userBranch".equals(defVal.trim())) {
+							defVal = getDefaultBranch().getId().toString();
+						}
+					} else defVal = null;
+					
 					final Component comp = inp;
 					
 					if(param.getLovParentId() == null || "".equals(param.getLovParentId().trim())) {
 						List<ListOfValueItem> list = loadListOfValueItems(param);
-						String defaultVal = null;
+						String defaultVal = defVal;
 						try {
 							defaultVal = ((Combobox)inp).getValue();
 						} catch (Exception e) {}
@@ -368,7 +375,7 @@ public class ReportFormController extends BaseSimpleController {
 									svals[i] = vals.get(i);
 								}
 								List<ListOfValueItem> list = loadListOfValueItems(param, svals);
-								String defaultVal = null;
+								String defaultVal = defVal;
 								try {
 									defaultVal = ((Combobox)inp).getValue();
 								} catch (Exception e) {}
