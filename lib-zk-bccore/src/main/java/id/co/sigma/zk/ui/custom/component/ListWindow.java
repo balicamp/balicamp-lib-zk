@@ -144,16 +144,6 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 			}
 		});
 		
-		addEventListener("onOK", new EventListener<Event>() {
-
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if(!(event.getTarget() instanceof Button)) {
-					Events.sendEvent("onClick", btnSearch, null);
-				}
-			}
-		});
-		
 		listController = (BaseSimpleListController<Serializable>) getAttribute(getId() + "$composer");
 		
 		panelSearchKeys.setVisible(isSearchable());
@@ -369,16 +359,24 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 			
 		}
 		List<Component> comps = new ArrayList<Component>(getFellows());
+		
+		EventListener<Event> okEvent = new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if(!(event.getTarget() instanceof Button)) {
+					Events.sendEvent("onClick", btnSearch, null);
+				}
+			}
+		};
+		
 		for(Component comp : comps) {
 			listController.orderInputField(comp);
 			getFirstInputComponent(comp);
 			if(comp instanceof InputElement) {
 				Constraint cons = ((InputElement)comp).getConstraint();
-//				if(((((InputElement)comp).getHflex() == null || "".equals(((InputElement)comp).getHflex())) 
-//						&& ((((InputElement) comp).getWidth() == null) || ("".equals(((InputElement) comp).getWidth())))) 
-//						&& !((comp instanceof Combobox) || (comp instanceof Datebox) || (comp instanceof Bandbox))) {
-//					((InputElement)comp).setHflex("1");
-//				}
+
+				comp.addEventListener("onOK", okEvent);
+				
 				if(cons != null && (((InputElement)comp).isReadonly() || ((InputElement)comp).isDisabled())) {
 					((InputElement)comp).addEventListener("onBlur", new EventListener<Event>() {
 
