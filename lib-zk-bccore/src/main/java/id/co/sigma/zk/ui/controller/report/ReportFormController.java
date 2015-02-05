@@ -103,7 +103,7 @@ public class ReportFormController extends BaseSimpleController {
 	private String reportUnit;
 	
 	private List<Component> reportParams = new ArrayList<Component>();
-	private Map<String, Combobox> lovCombos = new HashMap<String, Combobox>();
+	private Map<String, ComboComponent> lovCombos = new HashMap<String, ComboComponent>();
 
 	@Listen("onClick = #btnPrintPdf")
 	public void printPDF() {
@@ -328,7 +328,10 @@ public class ReportFormController extends BaseSimpleController {
 					inp.setId(param.getParamCode());
 					((Combobox)inp).setConstraint(cons);
 					
-					lovCombos.put(param.getParamCode(), (Combobox)inp);
+					ComboComponent cc = new ComboComponent();
+					cc.combobox = (Combobox)inp;
+					
+					lovCombos.put(param.getParamCode(), cc);
 					
 					String defVal = param.getDefaultValue();
 					if(defVal != null && defVal.trim().length() > 0) {
@@ -336,6 +339,8 @@ public class ReportFormController extends BaseSimpleController {
 							defVal = getDefaultBranch().getId().toString();
 						}
 					} else defVal = null;
+
+					cc.defaultValue = defVal;
 					
 					final Component comp = inp;
 					
@@ -344,6 +349,9 @@ public class ReportFormController extends BaseSimpleController {
 						String defaultVal = defVal;
 						try {
 							defaultVal = ((Combobox)inp).getValue();
+							if(defaultVal == null || defaultVal.trim().length() == 0) {
+								defaultVal = defVal;
+							}
 						} catch (Exception e) {}
 						((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 						((Combobox)inp).setModel(new ListOfValueModel(list));
@@ -358,10 +366,16 @@ public class ReportFormController extends BaseSimpleController {
 								ParsedJSONContainer con = dependencies.get(i);
 								String cmbId = con.getAsString("comboId");
 								String val = null;
+								ComboComponent c = lovCombos.get(cmbId); 
 								try {
-									val = lovCombos.get(cmbId).getValue();
+									if(c.combobox.getSelectedIndex() > -1) {
+										val = c.combobox.getSelectedItem().getValue();
+									} else {
+										val = "-1";
+									}
 								} catch (Exception e) {
-									lovCombos.get(cmbId).clearErrorMessage();
+									c.combobox.clearErrorMessage();
+									val = c.defaultValue == null ? "-1" : c.defaultValue;
 								}
 								if(val != null && val.trim().length() > 0) {
 									vals.add(val);
@@ -378,6 +392,9 @@ public class ReportFormController extends BaseSimpleController {
 								String defaultVal = defVal;
 								try {
 									defaultVal = ((Combobox)inp).getValue();
+									if(defaultVal == null || defaultVal.trim().length() == 0) {
+										defaultVal = defVal;
+									}
 								} catch (Exception e) {}
 								((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 								((Combobox)inp).setModel(new ListOfValueModel(list));
@@ -386,7 +403,7 @@ public class ReportFormController extends BaseSimpleController {
 							for(int i = 0; i < dependencies.length(); i++) {
 								ParsedJSONContainer con = dependencies.get(i);
 								String cmbId = con.getAsString("comboId");
-								Component cdep = lovCombos.get(cmbId);
+								Component cdep = lovCombos.get(cmbId).combobox;
 								
 								cdep.addEventListener("onSelect", new EventListener<Event>() {
 
@@ -776,4 +793,8 @@ public class ReportFormController extends BaseSimpleController {
 		
 	}
 	
+	final class ComboComponent {
+		Combobox combobox;
+		String defaultValue;
+	}
 }
