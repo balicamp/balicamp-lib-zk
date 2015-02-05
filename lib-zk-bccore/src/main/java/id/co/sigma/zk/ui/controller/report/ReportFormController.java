@@ -272,6 +272,7 @@ public class ReportFormController extends BaseSimpleController {
 					Label label = new Label(param.getParamLabel());
 					label.setTooltip(param.getDescription());
 					row.appendChild(label);
+					row.setStyle("background: #FFFFFF;");
 				}
 				
 				Component inp = null;
