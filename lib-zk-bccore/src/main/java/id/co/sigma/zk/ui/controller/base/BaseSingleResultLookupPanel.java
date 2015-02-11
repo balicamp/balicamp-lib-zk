@@ -3,8 +3,9 @@ package id.co.sigma.zk.ui.controller.base;
 import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.SingleValueLookupReciever;
 import id.co.sigma.zk.ui.SingleValueLookupRecieverWithValidation;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,10 +14,15 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * base class untuk lookup dengan hasil tunggal. 
@@ -38,9 +44,12 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	
 	
 	
-	protected SingleValueLookupReciever<DATA> valueSelectedHandler ; 
+	protected SingleValueLookupReciever<DATA> valueSelectedHandler ;
 	
+	@Wire
+	Button btnCari;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public ComponentInfo doBeforeCompose(Page page, Component parent,
 			ComponentInfo compInfo) {
@@ -50,9 +59,34 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 		return info ; 
 	}
 	
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
+		setEnterKeyListener();
+	}
 	
-	
-	
+	/**
+	 * Set 'Enter' key listener on input elements (except for Button)
+	 */
+	private void setEnterKeyListener(){
+		EventListener<Event> okEvent = new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if(!(event.getTarget() instanceof Button)) {
+					Events.sendEvent("onClick", btnCari, null);
+				}
+			}
+		};
+		
+		List<Component> comps = new ArrayList<Component>(getWindowReference().getFellows());
+		if(comps.size()>0){
+			for(Component comp : comps){
+				if(comp instanceof InputElement){
+					comp.addEventListener("onOK", okEvent);
+				}
+			}
+		}
+	}
 	
 	
 	
