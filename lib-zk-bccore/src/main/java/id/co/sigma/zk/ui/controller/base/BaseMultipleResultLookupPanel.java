@@ -14,10 +14,15 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.impl.InputElement;
 
 
 /**
@@ -43,7 +48,9 @@ BaseHaveListboxController<DATA> {
 
     protected MultipleValueLookupReceiver<DATA> valueSelectedHandler ; 
 
-
+    @Wire
+    Button btnCari;
+	
     @SuppressWarnings("unchecked")
     @Override
     public ComponentInfo doBeforeCompose(Page page, Component parent,
@@ -58,6 +65,51 @@ BaseHaveListboxController<DATA> {
      * reference ke window. ini di samakan dengan id window yang di pakai
      */
     protected abstract Window getWindowReference () ; 
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+	super.doAfterCompose(comp);
+	setEnterKeyListener();
+	setEscKeyListener();
+    }
+
+    /**
+     * Set 'Enter' key listener on input elements (except for Button)
+     */
+    private void setEnterKeyListener(){
+	EventListener<Event> okEvent = new EventListener<Event>() {
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		if(!(event.getTarget() instanceof Button)) {
+		    Events.sendEvent("onClick", btnCari, null);
+		}
+	    }
+	};
+
+	List<Component> comps = new ArrayList<Component>(getWindowReference().getFellows());
+	if(comps.size()>0){
+	    for(Component comp : comps){
+		if(comp instanceof InputElement){
+		    comp.addEventListener("onOK", okEvent);
+		}
+	    }
+	}
+    }
+
+
+    /**
+     * Set 'ESC' key listener
+     */
+    private void setEscKeyListener(){
+
+	getWindowReference().addEventListener("onCancel", new EventListener<Event>() {
+
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		cancelClick(event);
+	    }
+	});
+    }
 
     @Listen("onClick = #btnReset")
     public void resetClick(final Event evt) {
@@ -74,21 +126,21 @@ BaseHaveListboxController<DATA> {
     public void selectClick(final Event evt) {
 	try {
 	    if(this.dataModel!=null){
-			Set<DATA> sels =  this.dataModel.getSelection();
-			if ( sels!= null && !sels.isEmpty()){
-			    multipleSelectedItem = new ArrayList<>(sels);	    		    
-			}
-	
-	
-			if ( multipleSelectedItem== null){
-			    Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
-			    return ; 
-			}
-			validateData(multipleSelectedItem);
-			getWindowReference().detach();
-			valueSelectedHandler.onDataSelected(multipleSelectedItem);
+		Set<DATA> sels =  this.dataModel.getSelection();
+		if ( sels!= null && !sels.isEmpty()){
+		    multipleSelectedItem = new ArrayList<>(sels);	    		    
+		}
+
+
+		if ( multipleSelectedItem== null){
+		    Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
+		    return ; 
+		}
+		validateData(multipleSelectedItem);
+		getWindowReference().detach();
+		valueSelectedHandler.onDataSelected(multipleSelectedItem);
 	    }else{
-	    	Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
+		Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"), Labels.getLabel("title.msgbox.error"), Messagebox.OK, Messagebox.ERROR);
 	    }
 
 	} catch (Exception e) {

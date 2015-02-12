@@ -63,6 +63,7 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 		setEnterKeyListener();
+		setEscKeyListener();
 	}
 	
 	/**
@@ -89,10 +90,21 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	}
 	
 	
-	
-	
-	
-	
+	/**
+	 * Set 'ESC' key listener
+	 */
+	private void setEscKeyListener(){
+	    
+	    getWindowReference().addEventListener("onCancel", new EventListener<Event>() {
+
+		@Override
+		public void onEvent(Event event) throws Exception {
+		    cancelClick(event);
+		}
+	    });
+	}
+		
+		
 	/**
 	 * reference ke window. ini di samakan dengan id window yang di pakai
 	 */

@@ -16,10 +16,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.WrongValuesException;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zul.Window;
 
 /**
  * 
@@ -58,6 +59,26 @@ extends BaseSimpleEditor<POJO> {
 	protected void updateData(POJO data) throws Exception {
 		generalPurposeService.update(data);
 	}
+	
+	/**
+	 * Set 'ESC' key listener
+	 */
+	public void setEscKeyListener(){
+	    
+		getSelf().addEventListener("onCancel", new EventListener<Event>() {
+
+		    @Override
+		    public void onEvent(Event event) throws Exception {
+			if(((Window)getSelf()).inModal()){
+			    cancelClick();
+			}else{
+			    // do nothing
+			}
+			
+		    }
+		});
+	  
+	}
 
 	@Listen("onClick = #btnSave")
 	public void saveClick(final Event evt) {
@@ -74,7 +95,7 @@ extends BaseSimpleEditor<POJO> {
 		}
 		// -->end
 
-		try {
+		/*try {
 		    bindValueFromControl(getEditedData());
 		    children = parseChildGridData();
 		} catch(WrongValueException | WrongValuesException e) {
@@ -83,8 +104,8 @@ extends BaseSimpleEditor<POJO> {
 		    logger.error("gagal simpam data. error : " + e.getMessage(), e);
 		    showErrorMessage(getEditorState(), e.getMessage());
 		    return;
-		}
-		
+		}*/
+	
 		
 		try {
 		    validateData();
@@ -181,5 +202,11 @@ extends BaseSimpleEditor<POJO> {
 	public void deleteChildData(Object data,
 			ZKClientSideListDataEditorContainer<Object> container) {
 		container.eraseData(data);
+	}
+	
+	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+	    super.doAfterCompose(comp);
+	    setEscKeyListener();
 	}
 }

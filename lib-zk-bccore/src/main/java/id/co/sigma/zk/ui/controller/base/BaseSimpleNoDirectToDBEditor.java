@@ -6,8 +6,11 @@ import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.util.Map;
 
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zul.Window;
 
 /**
  * editor ini menyimpan ke data container, bukan ke db
@@ -95,6 +98,32 @@ public abstract class BaseSimpleNoDirectToDBEditor<POJO> extends BaseSimpleEdito
 	
     protected void validateData() throws Exception {
 
+    }
+    
+    /**
+     * Set 'ESC' key listener
+     */
+    public void setEscKeyListener(){
+
+	getSelf().addEventListener("onCancel", new EventListener<Event>() {
+
+	    @Override
+	    public void onEvent(Event event) throws Exception {
+		if(((Window)getSelf()).inModal()){
+		    cancelClick();
+		}else{
+		    // do nothing
+		}
+
+	    }
+	});
+
+    }
+    
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+	super.doAfterCompose(comp);
+	setEscKeyListener();
     }
 	
 }

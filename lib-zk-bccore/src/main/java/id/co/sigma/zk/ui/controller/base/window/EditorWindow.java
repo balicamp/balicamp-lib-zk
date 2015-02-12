@@ -171,6 +171,7 @@ public class EditorWindow extends Window implements AfterCompose {
 		}
 		
 		composed = true ; 
+		
 	}
 
 	@Listen("onTimer = #lovMasterTimer")

@@ -364,7 +364,7 @@ public final class EditorManager {
 		} else {
 			Window w = winModals.get(0);
 			w.detach();
-			winModals.remove(0);
+			winModals.clear();
 			w = null;
 			if(includePanel.isVisible()) {
 				Events.postEvent(new ReloadEvent(includePanel.getFirstChild(), reloadData()));
