@@ -561,6 +561,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 							
 							Component inp = cell.getChildren().get(0);
 							
+							if(inp.getChildren()!=null && !inp.getChildren().isEmpty()){
+							    inp = inp.getChildren().get(0);
+							}
+							
 							String targetField = hdr.getId();
 							
 							if(hdrBinder.containsKey(targetField)) {
