@@ -113,14 +113,14 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	@Listen("onClick = #btnReset")
 	public void resetClick(final Event evt) {
 		this.resetFilter();
-		
+		selectedItem = null;
 	}
 	
 	
 	@Listen("onClick = #btnCari")
 	public void searchClick(final Event evt) {
 		searchData();
-		
+		selectedItem = null;
 	}
 	
 	@Listen("onClick = #btnPilih")
