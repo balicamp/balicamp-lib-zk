@@ -130,6 +130,8 @@ public abstract class BaseSingleResultLookupPanel<DATA> extends BaseHaveListboxC
 	    		Set<DATA> sels =  this.dataModel.getSelection();
 	    		if ( sels!= null && !sels.isEmpty()){
 	    			selectedItem = sels.iterator().next(); 
+	    		}else{
+	    		    selectedItem=null;
 	    		}
 	    		
 	    		
