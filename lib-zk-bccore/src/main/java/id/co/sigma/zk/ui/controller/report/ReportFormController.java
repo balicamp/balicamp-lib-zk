@@ -24,6 +24,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -102,7 +103,7 @@ public class ReportFormController extends BaseSimpleController {
 	
 	private String reportUnit;
 	
-	private List<Component> reportParams = new ArrayList<Component>();
+	private List<ReportParam> reportParams = new ArrayList<ReportParam>();
 	private Map<String, ComboComponent> lovCombos = new HashMap<String, ComboComponent>();
 
 	@Listen("onClick = #btnPrintPdf")
@@ -545,9 +546,9 @@ public class ReportFormController extends BaseSimpleController {
 				
 				row.appendChild(inp);
 				
-				rows.appendChild(row);
+				rows.appendChild(row);				
 				
-				reportParams.add(inp);
+				reportParams.add(new ReportParam(inp, param));
 			}
 			
 			grid.appendChild(rows);
@@ -581,8 +582,11 @@ public class ReportFormController extends BaseSimpleController {
 	
 	private String createReportParams() {
 		StringBuffer sbuf = new StringBuffer();
-		for(Component inp : reportParams) {
-			Object val = "";			
+		for(ReportParam par : reportParams) {
+			
+			Object val = "";
+			Component inp = par.rptInputParam;
+			
 			if(inp instanceof Combobox) {
 
 				//trigger check for required field
@@ -615,7 +619,17 @@ public class ReportFormController extends BaseSimpleController {
 			}
 			try {
 				if(val != null) {
-					String sVal = String.valueOf(val);				
+					String sVal = String.valueOf(val);
+					if(val instanceof Date) {
+						String dformat = par.rptDocParam.getDataFormat();
+						if(dformat != null) {
+							try {
+								SimpleDateFormat sdf = new SimpleDateFormat(dformat);
+								sVal = sdf.format((Date)val);
+							} catch (Exception e) {
+							}
+						}
+					}									
 					if(!("".equals(sVal.trim()))){
 						sbuf.append("&").append(inp.getId()).append("=").append(URLEncoder.encode(sVal, "UTF-8"));
 					}
@@ -798,5 +812,17 @@ public class ReportFormController extends BaseSimpleController {
 	final class ComboComponent {
 		Combobox combobox;
 		String defaultValue;
+	}
+	
+	final class ReportParam {
+		Component rptInputParam;
+		RptDocParam rptDocParam;
+		
+		public ReportParam(Component rptInputParam, RptDocParam rptDocParam) {
+			super();
+			this.rptInputParam = rptInputParam;
+			this.rptDocParam = rptDocParam;
+		}
+		
 	}
 }
