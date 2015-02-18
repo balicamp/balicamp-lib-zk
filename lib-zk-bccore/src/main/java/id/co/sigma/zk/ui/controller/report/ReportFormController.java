@@ -295,6 +295,7 @@ public class ReportFormController extends BaseSimpleController {
 					inp = new Datebox();
 					inp.setId(param.getParamCode());
 					((Datebox)inp).setConstraint(cons);
+					((Datebox)inp).setFormat("dd-MMM-yyyy");
 				} else if("LookupCombobox".equals(param.getParamType())) {					
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
