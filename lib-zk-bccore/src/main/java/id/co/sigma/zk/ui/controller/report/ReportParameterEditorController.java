@@ -1,12 +1,18 @@
 package id.co.sigma.zk.ui.controller.report;
 
+import id.co.sigma.common.data.lov.CommonLOV;
+import id.co.sigma.common.data.lov.CommonLOVHeader;
 import id.co.sigma.common.report.domain.RptDocParam;
 import id.co.sigma.common.security.domain.lov.LookupHeader;
 import id.co.sigma.common.server.dao.util.ServerSideWrappedJSONParser;
 import id.co.sigma.common.util.json.ParsedJSONArrayContainer;
 import id.co.sigma.common.util.json.ParsedJSONContainer;
+import id.co.sigma.zk.ui.annotations.LookupEnabledControl;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleNoDirectToDBEditor;
+import id.co.sigma.zk.ui.custom.component.ListOfValueComboitemRenderer;
+import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
+import id.co.sigma.zk.ui.custom.component.ListOfValueModel;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -145,10 +151,33 @@ public class ReportParameterEditorController extends
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
+		
+		List<String> headers = new ArrayList<String>();
+		headers.add("RPT_INPUT_TYPE");
+
+		String type = getEditedData().getParamType();
+		
+		Map<String, CommonLOVHeader> vals =  lovProviderService.getLOVAsMap(getCountryLocale(), headers);
+		
+		if(!(vals == null || vals.isEmpty())) {
+		
+			List<CommonLOV> lov = vals.get("RPT_INPUT_TYPE").getDetails();
+			
+			int i = 0;
+			
+			List<ListOfValueItem> list = new ArrayList<ListOfValueItem>();
+			
+			for(CommonLOV val : lov) {					
+				list.add(new ListOfValueItem(val.getDataValue(), val.getLabel(), "", i++));
+			}
+			
+			paramType.setItemRenderer(new ListOfValueComboitemRenderer(type));
+			paramType.setModel(new ListOfValueModel(list));
+		}
+		
 		if(ZKEditorState.ADD_NEW.equals(getEditorState())) {
 			paramCode.setReadonly(false);
-		} else {
-			String type = getEditedData().getParamType();
+		} else {			
 			showCmbItem = ("Combobox".equals(type));
 			showLov = ("LoVCombobox".equals(type));
 			showLookup = ("LookupCombobox".equals(type));

@@ -28,7 +28,7 @@
 		<row style="background: #FFFFFF;">
 			${labels.field.type}
 			<combobox id="paramType" value="${editorParams$composer.editedData.paramType}">
-				<comboitem value="Textbox" label="Textbox"/>
+				<!--<comboitem value="Textbox" label="Textbox"/>
 				<comboitem value="Intbox" label="Intbox"/>
 				<comboitem value="Decimalbox" label="Decimalbox"/>
 				<comboitem value="Datebox" label="Datebox"/>
@@ -36,7 +36,7 @@
 				<comboitem value="LoVCombobox" label="LoVCombobox"/>
 				<comboitem value="Combobox" label="Combobox"/>
 				<comboitem value="MonthCombobox" label="MonthCombobox"/>
-				<comboitem value="MinMaxCombobox" label="MinMaxCombobox"/>
+				<comboitem value="MinMaxCombobox" label="MinMaxCombobox"/>-->
 			</combobox>
 		</row>
 		<row id="rowLovClass" valign="top" style="background: #FFFFFF;">

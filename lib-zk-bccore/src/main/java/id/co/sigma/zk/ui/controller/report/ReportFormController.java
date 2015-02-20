@@ -19,6 +19,8 @@ import id.co.sigma.zk.ui.custom.component.ListOfValueModel;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -30,9 +32,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Component;
@@ -87,6 +93,9 @@ public class ReportFormController extends BaseSimpleController {
 	@Value("${jasper.report.pass}")
 	private String rptPassword;
 	
+	@Autowired
+	private ConfigurableEnvironment env;
+	
 	@Wire
 	private Iframe reportFrame;
 	
@@ -110,6 +119,9 @@ public class ReportFormController extends BaseSimpleController {
 	public void printPDF() {
 		
 		try {
+			
+			@SuppressWarnings("unused")
+			String user = env.getProperty("jasper.report.user");
 			
 			Locale locale = getLocale();
 			
@@ -540,9 +552,19 @@ public class ReportFormController extends BaseSimpleController {
 					}
 					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(null));
 					((Combobox)inp).setModel(new ListOfValueModel(items));
+				} else {
+					int mPos = param.getParamType().lastIndexOf(".");
+					String paramTypeClass = param.getParamType().substring(0, mPos);
+					try {
+						inp = (Component)Class.forName(paramTypeClass).newInstance();
+						inp.setId(param.getParamCode());
+					} catch (Exception e) {
+					}
 				}
 				
-				((InputElement)inp).setTabindex(tabIndex++);
+				if(inp instanceof InputElement) {
+					((InputElement)inp).setTabindex(tabIndex++);
+				}
 				
 				row.appendChild(inp);
 				
@@ -611,11 +633,24 @@ public class ReportFormController extends BaseSimpleController {
 				}
 				
 			} else {
-				if(!((InputElement)inp).isValid()) {
-					SimpleConstraint cons = (SimpleConstraint)((InputElement)inp).getConstraint(); 
-					throw new WrongValueException(inp, cons.getErrorMessage(inp));
+				boolean customComp = (par.rptDocParam.getParamType().indexOf(".") >= 0);
+				if(!customComp) {
+					if(!((InputElement)inp).isValid()) {
+						SimpleConstraint cons = (SimpleConstraint)((InputElement)inp).getConstraint(); 
+						throw new WrongValueException(inp, cons.getErrorMessage(inp));
+					}
+					val = ((InputElement)inp).getRawValue();
+				} else {
+					String[] classPathName = par.rptDocParam.getParamType().split("\\.");
+					String valMethodName = classPathName[classPathName.length - 1];
+					try {
+						
+						Method m = inp.getClass().getMethod(valMethodName);
+						val = m.invoke(inp);
+					} catch (Exception e) {
+//						e.printStackTrace();
+					}
 				}
-				val = ((InputElement)inp).getRawValue();
 			}
 			try {
 				if(val != null) {

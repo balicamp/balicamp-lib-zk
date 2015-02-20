@@ -54,7 +54,7 @@
 					<listcell style="text-align:left" label="${each.paramCode}"/>
 					<listcell style="text-align:left" label="${each.paramLabel}"/>
 					<listcell style="text-align:left" label="${each.description}"/>
-					<listcell style="text-align:left" label="${each.paramType}"/>
+					<listcell style="text-align:left" label="${each.paramTypeShort}"/>
 					<listcell style="text-align:left" label="${each.defaultValue}"/>
 					<listcell style="text-align:right" label="${each.paramSec}"/>
 				</actionListitem>
