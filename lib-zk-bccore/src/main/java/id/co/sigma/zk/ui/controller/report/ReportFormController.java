@@ -47,6 +47,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
@@ -240,6 +241,7 @@ public class ReportFormController extends BaseSimpleController {
 			printXLS.setId("btnDownloadXLS");
 			buttonToolbar.appendChild(printXLS);
 		}
+		
 	}
 
 	private Grid createInputForm(List<RptDocParam> rptParams) {
@@ -558,6 +560,9 @@ public class ReportFormController extends BaseSimpleController {
 					try {
 						inp = (Component)Class.forName(paramTypeClass).newInstance();
 						inp.setId(param.getParamCode());
+						if(inp instanceof AfterCompose) {
+							((AfterCompose)inp).afterCompose();
+						}
 					} catch (Exception e) {
 					}
 				}
