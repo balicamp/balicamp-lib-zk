@@ -718,8 +718,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				} else if(input instanceof Longbox) {
 					val = ((Longbox)input).getValue();
 				} else if(input instanceof Spinner){
-				        val = ((Spinner)input).getValue();
+				    val = ((Spinner)input).getValue();
+				} else if(input instanceof Comboitem){
+					val = ((Comboitem) input).getValue();
 				}
+				
 			} catch (WrongValueException e1) {
 				((InputElement)input).setFocus(true);
 				throw e1;
