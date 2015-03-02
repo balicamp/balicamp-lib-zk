@@ -7,6 +7,9 @@ import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.io.Serializable;
 
+import javax.persistence.OptimisticLockException;
+
+import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,6 +178,19 @@ extends BaseSimpleEditor<POJO> {
 		} catch (Exception e) {
 			logger.error("gagal update file. error : " + e.getMessage(), e);
 			String message = e.getMessage();
+			
+			/*
+			 * ini untuk handle error yang disebabkan karena user mencoba menyimpan data yang sudah disimpan oleh user/transaksi lain (beda version)
+			 */
+			if(e.getCause() instanceof OptimisticLockException){
+				message = Labels.getLabel("msg.warnings.optimistic_lock_exception");
+				showErrorMessage(getEditorState(), message);
+				return;
+			}
+			
+			/*
+			 * ini untuk handle error yang disebabkan karena kesalahan umum pada saat simpan
+			 */
 			if(ZKEditorState.ADD_NEW.equals(getEditorState())) {
 				message = Labels.getLabel("msg.save.add.fail");
 			} else {
@@ -185,6 +201,7 @@ extends BaseSimpleEditor<POJO> {
 				}
 			}
 			showErrorMessage(getEditorState(), message);
+			return;
 		}
 	}
 
