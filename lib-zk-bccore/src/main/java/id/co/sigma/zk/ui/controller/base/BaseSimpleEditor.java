@@ -561,7 +561,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 							
 							Component inp = cell.getChildren().get(0);
 							
-							if(inp.getChildren()!=null && !inp.getChildren().isEmpty()){
+							if(!(inp instanceof Combobox) && inp.getChildren()!=null && !inp.getChildren().isEmpty()){
 							    inp = inp.getChildren().get(0);
 							}
 							
@@ -719,8 +719,6 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					val = ((Longbox)input).getValue();
 				} else if(input instanceof Spinner){
 				    val = ((Spinner)input).getValue();
-				} else if(input instanceof Comboitem){
-					val = ((Comboitem) input).getValue();
 				}
 				
 			} catch (WrongValueException e1) {
