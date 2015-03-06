@@ -96,6 +96,8 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
     private DualListbox dlbDelegateRole;
 
     private boolean hasOverlappingDelegation = false;
+    
+    private boolean replaceDuplicateInactiveDelegation = false;
 
     private List<UserRole> userSourceRoles;
     private List<UserGroupAssignment> userSourceGroups;
@@ -371,18 +373,18 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	return ((delegs != null) && (delegs > 0L));
     }
 
-    private boolean delegationIsUnique(Long srcUserId, Long destUserId, Date startDate, Date endDate) {
+    private boolean isDelegationExist(Long srcUserId, Long destUserId, Date startDate, Date endDate, String dataStatus) {
 	SimpleQueryFilter[] filters = {
 		new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, srcUserId),
 		new SimpleQueryFilter("destUserId", SimpleQueryFilterOperator.equal, destUserId),
 		new SimpleQueryFilter("startDate", SimpleQueryFilterOperator.equal, startDate),
 		new SimpleQueryFilter("endDate", SimpleQueryFilterOperator.equal, endDate),
-		new SimpleQueryFilter("dataStatus", SimpleQueryFilterOperator.equal, "A") 
+		new SimpleQueryFilter("dataStatus", SimpleQueryFilterOperator.equal, dataStatus) 
 	};
 
 	Long delegs = generalPurposeDao.count(UserDelegation.class, filters);
 
-	return ((delegs != null) && (delegs == 0L));
+	return ((delegs != null) && (delegs > 0L));
     }
 
     private void disableExistingDelegations(Long userId, Date startDate,
@@ -426,11 +428,14 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 	}
 
 	/*
-	 * Cek apakah masih ada delegasi yang sama atau ada delegasi yang untuk user tujuan yang masih aktif 
+	 * Cek apakah masih ada delegasi yang sama atau ada delegasi untuk user tujuan yang masih aktif 
 	 * dalam rentang waktu yang diinput saat ini
 	 */
 	if (!isEditing()) {
-	    if ( delegationIsUnique(sourceUserId.getValue(), destUserId.getValue(), startDate.getValue(), endDate.getValue()) ) {
+	    // Check for unique active delegation
+	    boolean activeAndUniqueDelegationExist = isDelegationExist(sourceUserId.getValue(), destUserId.getValue(), startDate.getValue(), endDate.getValue(), UserDelegation.STATUS_ACTIVE);
+	    if ( !activeAndUniqueDelegationExist ) {
+		// Check for overlapping delegation
 		hasOverlappingDelegation = overlappingUserDelegationIsExist(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
 		if (hasOverlappingDelegation) {
 		    String confirmMsg = Labels.getLabel("msg.warnings.delegation.overlapping");
@@ -445,6 +450,20 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 		exMsg = exMsg.replace("{srcUserId}", cmbDelegateFromUser.getValue());
 		exMsg = exMsg.replace("{destUserId}", cmbDelegateToUser.getValue());
 		throw new RuntimeException(exMsg);
+	    }
+	    
+	    // Check for unique inactive delegation
+	    boolean inactiveAndUniqueDelegationExist = isDelegationExist(sourceUserId.getValue(), destUserId.getValue(), startDate.getValue(), endDate.getValue(), UserDelegation.STATUS_INACTIVE);
+	    if (inactiveAndUniqueDelegationExist) {
+		replaceDuplicateInactiveDelegation = true;
+		String msg = Labels.getLabel("msg.questions.confirm_replace_duplicate_delegation")
+			.replace("{sourceUser}", cmbDelegateFromUser.getValue())
+			.replace("{destUser}", cmbDelegateToUser.getValue())
+			.replace("{startDate}", startDate.getText())
+			.replace("{endDate}", endDate.getText());
+		getSelf().setAttribute("confirmationMsg", msg);
+	    }else{
+		getSelf().setAttribute("confirmationMsg", Labels.getLabel("msg.questions.confirm_save"));
 	    }
 	}
     }
@@ -469,13 +488,65 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
 
     @Override
     protected void saveData(Event event) {
-	if (hasOverlappingDelegation) {
-	    disableExistingDelegations(sourceUserId.getValue(),
-		    startDate.getValue(), endDate.getValue());
+	if(hasOverlappingDelegation){
+	    disableExistingDelegations(sourceUserId.getValue(), startDate.getValue(), endDate.getValue());
 	}
 	super.saveData(event);
     }
-
+    
+    @Override
+    public void insertData() throws Exception {
+	if(replaceDuplicateInactiveDelegation){
+	    removeDuplicateDelegation();
+	}
+        super.insertData();
+    }
+    
+    private boolean delegationHasGroups(Long delegId){
+	SimpleQueryFilter[] filters = {
+		new SimpleQueryFilter("userDelegateId", SimpleQueryFilterOperator.equal, delegId)
+	};
+	Long count = generalPurposeDao.count(UserDelegationGroup.class, filters);
+	return (count!=null && count > 0L);
+    }
+    
+    private boolean delegationHasRoles(Long delegId){
+	SimpleQueryFilter[] filters = {
+		new SimpleQueryFilter("userDelegateId", SimpleQueryFilterOperator.equal, delegId)
+	};
+	Long count = generalPurposeDao.count(UserDelegationRole.class, filters);
+	return (count!=null && count > 0L);
+    }
+    
+    /**
+     * Hapus data delegasi dengan user asal, user tujuan, tgl mulai, dan tgl berakhir 
+     * yg sama dengan data yang baru diinput.
+     */
+    private void removeDuplicateDelegation(){
+	SimpleQueryFilter[] filters = {
+		new SimpleQueryFilter("sourceUserId", SimpleQueryFilterOperator.equal, sourceUserId.getValue()),
+		new SimpleQueryFilter("destUserId", SimpleQueryFilterOperator.equal, destUserId.getValue()),
+		new SimpleQueryFilter("startDate", SimpleQueryFilterOperator.equal, startDate.getValue()),
+		new SimpleQueryFilter("endDate", SimpleQueryFilterOperator.equal, endDate.getValue()),
+		new SimpleQueryFilter("dataStatus", SimpleQueryFilterOperator.equal, UserDelegation.STATUS_INACTIVE) 
+	};
+	try {
+	    List<UserDelegation> delegs = generalPurposeDao.list(UserDelegation.class, filters, null);
+	    if(delegs!=null && delegs.size()>0){
+		UserDelegation deleg = delegs.get(0);
+		if(delegationHasGroups(deleg.getId())){
+		    generalPurposeDao.deleteByParentId(UserDelegationGroup.class, deleg.getId(), "userDelegateId");
+		}
+		if(delegationHasRoles(deleg.getId())){
+		    generalPurposeDao.deleteByParentId(UserDelegationRole.class, deleg.getId(), "userDelegateId");
+		}
+		generalPurposeDao.delete(UserDelegation.class, deleg.getId(), "id");
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+    }
+    
     private boolean isEditing() {
 	return (ZKEditorState.EDIT.equals(getEditorState()));
     }
@@ -525,7 +596,7 @@ public class UserDelegationEditorController extends BaseSimpleDirectToDBEditor<U
     }
     
     private String getCurrentDataStatusValue(){
-	return isEditing()? getEditedData().getDataStatus() : "A";
+	return isEditing()? getEditedData().getDataStatus() : UserDelegation.STATUS_ACTIVE;
     }
     
     private void loadDataStatusCombo(){
