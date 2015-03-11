@@ -304,7 +304,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	/**
 	 * close current editor
 	 */
-	protected final void closeCurrentEditorPanel() {
+	protected void closeCurrentEditorPanel() {
 		if ( this.editorCallerReference != null && this.editorCallerReference instanceof IReloadablePanel) {
 			((IReloadablePanel)editorCallerReference).reload();
 		}
