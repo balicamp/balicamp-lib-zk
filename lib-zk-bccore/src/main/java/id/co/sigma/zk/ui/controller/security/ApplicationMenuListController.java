@@ -125,18 +125,15 @@ public class ApplicationMenuListController extends
 		}
 
 		for (MenuTreeNode<ApplicationMenu> tree : listOfTreeMenu) {
-			if ((tree.getData().getPageId() == null && tree.getData()
-					.getFunctionIdParent() == null)
-					|| (tree.getData().getFunctionIdParent() == null && tree
-							.getData().getPageId() != null)) {
+			if ( (tree.getData().getPageId() == null && tree.getData().getFunctionIdParent() == null) || 
+			     (tree.getData().getFunctionIdParent() == null && tree.getData().getPageId() != null) ){
 				col.add(tree);
-			} else if (tree.getData().getFunctionIdParent() != null
-					&& tree.getData().getPageId() == null) {
-				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(
-						tree);
+			} else if (tree.getData().getFunctionIdParent() != null && tree.getData().getPageId() == null) {
+				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
 			} else {
-				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(
-						tree);
+			    if( mapsOfChildCol.get(tree.getData().getFunctionIdParent())!=null ){
+				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
+			    }
 			}
 		}
 		setMapsOfNodeCollection(mapsOfChildCol);
