@@ -949,7 +949,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 		} else EditorManager.getInstance().closeCurrentEditorPanel();
 	}
 	
-	protected final void showSaveConfirmationMessage(final Event evt, ZKEditorState state, String confirmMsg) {
+	protected void showSaveConfirmationMessage(final Event evt, ZKEditorState state, String confirmMsg) {
 		if(confirmMsg != null && confirmMsg.trim().length() > 0) {
 			
 			Messagebox.show(confirmMsg, Labels.getLabel("title.msgbox.confirmation"),
