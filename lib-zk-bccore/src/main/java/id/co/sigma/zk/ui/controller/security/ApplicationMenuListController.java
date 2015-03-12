@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,7 +53,7 @@ public class ApplicationMenuListController extends
 		new SimpleSortArgument("siblingOrder", true),
 		new SimpleSortArgument("id", true) };
 
-	private List<ApplicationMenu> listApplicationMenus;
+	private List<ApplicationMenu> listApplicationMenus = new ArrayList<>();
 
 	private Map<Long, List<TreeNode<ApplicationMenu>>> mapsOfNodeCollection;
 
@@ -123,7 +124,7 @@ public class ApplicationMenuListController extends
 			}
 			listOfTreeMenu.add(treeMenu);
 		}
-
+		
 		for (MenuTreeNode<ApplicationMenu> tree : listOfTreeMenu) {
 			if ( (tree.getData().getPageId() == null && tree.getData().getFunctionIdParent() == null) || 
 			     (tree.getData().getFunctionIdParent() == null && tree.getData().getPageId() != null) ){
@@ -131,9 +132,13 @@ public class ApplicationMenuListController extends
 			} else if (tree.getData().getFunctionIdParent() != null && tree.getData().getPageId() == null) {
 				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
 			} else {
-			    if( mapsOfChildCol.get(tree.getData().getFunctionIdParent())!=null ){
-				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
-			    }
+				List<TreeNode<ApplicationMenu>> dataList = mapsOfChildCol.get(tree.getData().getFunctionIdParent());
+				try {
+					dataList.add(tree);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			}
 		}
 		setMapsOfNodeCollection(mapsOfChildCol);
