@@ -909,7 +909,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	protected final void showInvalidDataMessage(ZKEditorState state, String errMessage) {
 		Messagebox.show(
 				(ZKEditorState.ADD_NEW.equals(state) ? Labels.getLabel("msg.save.add.invalid") : Labels.getLabel("msg.save.edit.invalid"))
-				+ ".\n\n" + ((errMessage != null) ? (Labels.getLabel("title.msgbox.invalid")+ ": \n" + errMessage) : ""), 
+				+ ".\n\n" + ((errMessage != null) ? (errMessage) : ""), 
 				Labels.getLabel("title.msgbox.invalid"),
 				new Messagebox.Button[]{Messagebox.Button.OK},
 				new String[]{Labels.getLabel("action.button.ok")},
