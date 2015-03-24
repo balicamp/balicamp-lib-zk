@@ -5,8 +5,6 @@ import id.co.sigma.common.data.query.SimpleQueryFilter;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Map;
 
 import org.slf4j.Logger;

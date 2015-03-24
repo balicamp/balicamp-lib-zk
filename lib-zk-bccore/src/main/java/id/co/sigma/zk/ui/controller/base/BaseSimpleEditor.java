@@ -727,6 +727,9 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			}
 			
 			try {
+				if(val instanceof String){
+					val = val.toString().trim();
+				}
 				if((fieldName != null) && !("".equals(fieldName))) {
 					ExtendedBeanUtils.getInstance().setProperty(data, val, fieldName);
 				}
