@@ -18,6 +18,7 @@ import id.co.sigma.zk.ui.controller.base.BaseSimpleTreeController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,8 +50,8 @@ public class ApplicationMenuListController extends
 			.getLogger(ApplicationMenuListController.class.getName());
 
 	private static final SimpleSortArgument[] DEF_SORTS = {
+		new SimpleSortArgument("menuTreeCode", true),
 		new SimpleSortArgument("treeLevelPosition", true),
-		new SimpleSortArgument("siblingOrder", true),
 		new SimpleSortArgument("id", true) };
 
 	private List<ApplicationMenu> listApplicationMenus = new ArrayList<>();
@@ -112,10 +113,18 @@ public class ApplicationMenuListController extends
 		Map<Long, List<TreeNode<ApplicationMenu>>> mapsOfChildCol = new HashMap<>();
 		MenuTreeNodeCollection<ApplicationMenu> col = new MenuTreeNodeCollection<>();
 		List<MenuTreeNode<ApplicationMenu>> listOfTreeMenu = new ArrayList<>();
-
+		
+		Set<Long> parentKeyId = new HashSet<>();
+		for(ApplicationMenu m : data){
+			if(m.getFunctionIdParent()!=null){
+				parentKeyId.add(m.getFunctionIdParent());
+			}
+			
+		}
+		
 		for (ApplicationMenu menu : data) {
 			MenuTreeNode<ApplicationMenu> treeMenu = null;
-			if (menuHasChild(menu.getId(), data)) {
+			if (parentKeyId.contains(menu.getId())) {
 				treeMenu = new MenuTreeNode<ApplicationMenu>(menu,
 						new MenuTreeNodeCollection<ApplicationMenu>());
 				mapsOfChildCol.put(menu.getId(), treeMenu.getChildren());
@@ -132,6 +141,7 @@ public class ApplicationMenuListController extends
 			} else if (tree.getData().getFunctionIdParent() != null && tree.getData().getPageId() == null) {
 				mapsOfChildCol.get(tree.getData().getFunctionIdParent()).add(tree);
 			} else {
+				System.out.println(tree.getData().getFunctionIdParent());
 				List<TreeNode<ApplicationMenu>> dataList = mapsOfChildCol.get(tree.getData().getFunctionIdParent());
 				try {
 					dataList.add(tree);
