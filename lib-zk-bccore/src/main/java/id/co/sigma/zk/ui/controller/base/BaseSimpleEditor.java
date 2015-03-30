@@ -13,6 +13,7 @@ import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.controller.base.window.EditorWindow;
+import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.io.Serializable;
@@ -694,6 +695,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 						}
 					}
 					
+					if(val instanceof ListOfValueItem){
+						val = ((ListOfValueItem) val).getValue();
+					}
+					
 				} else if(input instanceof Radiogroup) {
 					Radio radio = ((Radiogroup)input).getSelectedItem();
 					if(radio != null) {
@@ -719,6 +724,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					val = ((Longbox)input).getValue();
 				} else if(input instanceof Spinner){
 				    val = ((Spinner)input).getValue();
+				} else if(input instanceof Label){
+					val = ((Label)input).getValue();
 				}
 				
 			} catch (WrongValueException e1) {

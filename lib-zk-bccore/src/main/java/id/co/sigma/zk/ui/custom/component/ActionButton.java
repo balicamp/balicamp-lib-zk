@@ -20,7 +20,6 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;

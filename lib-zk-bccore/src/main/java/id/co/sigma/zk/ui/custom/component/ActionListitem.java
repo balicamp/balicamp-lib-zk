@@ -103,6 +103,8 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 				children.add(cmp);
 			}
 		}
+		
+		controller.setListenerForSpecificComponent(dynamics);
 	}
 
 	public String getEditorPage() {
