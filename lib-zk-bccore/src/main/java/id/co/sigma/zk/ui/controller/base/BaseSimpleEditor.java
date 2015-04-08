@@ -644,7 +644,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 	 * @param data
 	 * @param fieldName
 	 */
-	private void setProperty(Component input, Object data, String fieldName) {
+	protected void setProperty(Component input, Object data, String fieldName) {
 		if(input != null) {
 			Object val = null; 
 			try {
