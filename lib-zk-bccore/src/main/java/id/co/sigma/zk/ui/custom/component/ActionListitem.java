@@ -104,7 +104,9 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 			}
 		}
 		
-		controller.setListenerForSpecificComponent(dynamics);
+		if(controller!=null){
+			controller.setListenerForSpecificComponent(dynamics);
+		}
 	}
 
 	public String getEditorPage() {
