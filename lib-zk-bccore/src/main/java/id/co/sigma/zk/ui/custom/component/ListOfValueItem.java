@@ -132,5 +132,11 @@ public final class ListOfValueItem {
 		this.sequence = sequence;
 	}
 
-	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 }
