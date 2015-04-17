@@ -4,7 +4,6 @@ import id.co.sigma.common.data.SingleKeyEntityData;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.zk.ZKCoreLibConstant;
-import id.co.sigma.zk.spring.security.SecurityUtil;
 import id.co.sigma.zk.ui.MultipleValueLookupReceiver;
 import id.co.sigma.zk.ui.SingleValueLookupReciever;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
@@ -47,16 +46,17 @@ public final class EditorManager {
 	private static Map<String, EditorManager> instances ; 
 	
 	public static EditorManager getInstance() {
-		String sessionId = SecurityUtil.getAuthDetails().getSessionId();
+//		String sessionId = SecurityUtil.getAuthDetails().getSessionId();
+		String desktopId = Executions.getCurrent().getDesktop().getId();
 		if(instances == null) {
 			instances = new HashMap<String, EditorManager>();
 		} else {
 			checkExpiredInstances();
 		}
-		EditorManager instance = instances.get(sessionId);
+		EditorManager instance = instances.get(desktopId);
 		if ( instance== null) {
 			instance = new EditorManager();			
-			instances.put(sessionId, instance);			
+			instances.put(desktopId, instance);			
 		}
 		return instance;
 	}
