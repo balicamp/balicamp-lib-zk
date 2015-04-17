@@ -9,6 +9,7 @@ import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.annotations.ChildGridData;
 import id.co.sigma.zk.ui.annotations.HeaderBinder;
 import id.co.sigma.zk.ui.annotations.JoinKey;
+import id.co.sigma.zk.ui.component.CoaSuggestionBox;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
@@ -562,7 +563,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 							
 							Component inp = cell.getChildren().get(0);
 							
-							if(!(inp instanceof Combobox) && inp.getChildren()!=null && !inp.getChildren().isEmpty()){
+							if( !(inp instanceof Combobox) 
+									&& !(inp instanceof CoaSuggestionBox) 
+									&& inp.getChildren()!=null 
+									&& !inp.getChildren().isEmpty() )
+							{
 							    inp = inp.getChildren().get(0);
 							}
 							
@@ -718,8 +723,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					}else{
 						val=0;
 					}
-				} else if(input instanceof Textbox) {
+				} else if( (input instanceof Textbox) && !(input instanceof CoaSuggestionBox) ){
 					val = ((Textbox)input).getValue();
+				} else if( (input instanceof Textbox) && (input instanceof CoaSuggestionBox) ){
+					String[] valParts = ((CoaSuggestionBox) input).getValue().split("-");
+					val = valParts[0].trim();
 				} else if(input instanceof Longbox) {
 					val = ((Longbox)input).getValue();
 				} else if(input instanceof Spinner){
