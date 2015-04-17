@@ -37,6 +37,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -1002,4 +1003,22 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 		 return dateFormatter.format(date); 
 	 }
 	 
+	 
+	 /**
+		 * get month name
+		 * 
+		 * @param month
+		 * @return
+		 */
+		public String getMonthName(Integer month) {
+			DateFormatSymbols format = new DateFormatSymbols(getLocale());
+			if(month==null || month<=0){
+				return "-";
+			}
+			if (month <= 12) {
+				return format.getMonths()[month - 1];
+			} else {
+				return format.getMonths()[11] + " (audit)";
+			}
+		}
 }
