@@ -82,6 +82,14 @@
     	<component-class>id.co.sigma.zk.ui.custom.component.BcBandbox</component-class>
     </component>
     
+    <!--
+    COA suggestion box (auto complete kode perkiraan)
+    -->
+    <component>
+    	<component-name>coaSuggestionBox</component-name>
+    	<component-class>id.co.sigma.zk.ui.component.CoaSuggestionBox</component-class>
+    	<extends>bandbox</extends>
+    </component>
     	
 <!--  
 Author : gede sutarsa
