@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -341,6 +343,7 @@ public class ReportFormController extends BaseSimpleController {
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
 					((Combobox)inp).setConstraint(cons);
+					((Combobox)inp).setWidth("300px");
 					
 					ComboComponent cc = new ComboComponent();
 					cc.combobox = (Combobox)inp;
@@ -348,6 +351,7 @@ public class ReportFormController extends BaseSimpleController {
 					lovCombos.put(param.getParamCode(), cc);
 					
 					String defVal = param.getDefaultValue();
+					
 					if(defVal != null && defVal.trim().length() > 0) {
 						if("#userBranch".equals(defVal.trim())) {
 							defVal = getDefaultBranch().getId().toString();
@@ -493,7 +497,7 @@ public class ReportFormController extends BaseSimpleController {
 					List<ListOfValueItem> list = monthListOfValueItems();
 					String defaultVal = "1";
 					try {
-						defaultVal = ((Combobox)inp).getValue();
+						defaultVal = String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1);
 					} catch (Exception e) {
 						defaultVal = "1";
 					}
@@ -512,6 +516,14 @@ public class ReportFormController extends BaseSimpleController {
 					
 					int intMinVal = 0;
 					int intMaxVal = 0;
+					
+					String defVal = param.getDefaultValue();
+					
+					if(defVal != null && defVal.trim().length() > 0) {
+						if("#currentYear".equals(defVal.trim())) {
+							defVal = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+						}
+					} else defVal = null;
 					
 					if(minVal[0].startsWith("#currentYear")) {
 						intMinVal = Calendar.getInstance().get(Calendar.YEAR);
@@ -549,7 +561,15 @@ public class ReportFormController extends BaseSimpleController {
 							items.add(item);
 						}
 					}
-					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(null));
+					String defaultVal = defVal;
+					try {
+						defaultVal = ((Combobox)inp).getValue();
+						if(defaultVal == null || defaultVal.trim().length() == 0) {
+							defaultVal = defVal;
+						}
+					} catch (Exception e) {}
+//					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(null));
+					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
 					((Combobox)inp).setModel(new ListOfValueModel(items));
 				} else {
 					int mPos = param.getParamType().lastIndexOf(".");
