@@ -343,7 +343,11 @@ public class ReportFormController extends BaseSimpleController {
 					inp = new Combobox();
 					inp.setId(param.getParamCode());
 					((Combobox)inp).setConstraint(cons);
-					((Combobox)inp).setWidth("300px");
+					if(param.getLovClass().startsWith("BankAccount")){
+						((Combobox)inp).setWidth("450px");
+					} else {
+						((Combobox)inp).setWidth("300px");
+					}
 					
 					ComboComponent cc = new ComboComponent();
 					cc.combobox = (Combobox)inp;
