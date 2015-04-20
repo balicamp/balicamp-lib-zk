@@ -723,11 +723,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					}else{
 						val=0;
 					}
-				} else if( (input instanceof Textbox) && !(input instanceof CoaSuggestionBox) ){
+				} else if(input instanceof CoaSuggestionBox) {
+					val = ((CoaSuggestionBox)input).getSelectedData();					
+				} else if(input instanceof Textbox){
 					val = ((Textbox)input).getValue();
-				} else if( (input instanceof Textbox) && (input instanceof CoaSuggestionBox) ){
-					String[] valParts = ((CoaSuggestionBox) input).getValue().split("-");
-					val = valParts[0].trim();
 				} else if(input instanceof Longbox) {
 					val = ((Longbox)input).getValue();
 				} else if(input instanceof Spinner){
