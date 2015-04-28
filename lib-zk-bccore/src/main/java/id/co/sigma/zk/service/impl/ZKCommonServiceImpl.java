@@ -2,6 +2,7 @@ package id.co.sigma.zk.service.impl;
 
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -108,6 +109,34 @@ public class ZKCommonServiceImpl extends AbstractService implements IZKCommonSer
 		}; 
 		try {
 			List<DATA> d = generalPurposeDao.list(customTableJoinHQL, tableAliasName , flt ,  sorts);
+			return transposeToContainer(d);
+		} catch (Exception e) {
+			logger.error("gagal membaca data. error di laporkan : " + e.getMessage() , e);
+			return null;
+		}
+	}
+	
+	@Override
+	public <DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetailsWithAdditionalFilters(
+			Class<DATA> dataClass, Long parentPrimaryKey,
+			SimpleSortArgument[] sorts, SimpleQueryFilter[] filters,
+			String parentPKField) {
+		
+		List<SimpleQueryFilter> filterList = new ArrayList<>();
+		filterList.add(new 	SimpleQueryFilter( parentPKField , SimpleQueryFilterOperator.equal , parentPrimaryKey ));
+		
+		if(filters != null && filters.length > 0){
+			int i = 0;
+			for(SimpleQueryFilter f : filters){
+				filterList.add(f);
+				i++;
+			}
+		}
+		
+		SimpleQueryFilter [] flt = new SimpleQueryFilter [filterList.size()];
+		filterList.toArray(flt);
+		try {
+			List<DATA> d = generalPurposeDao.list(dataClass, flt ,  sorts);
 			return transposeToContainer(d);
 		} catch (Exception e) {
 			logger.error("gagal membaca data. error di laporkan : " + e.getMessage() , e);

@@ -3,6 +3,7 @@ package id.co.sigma.zk.service;
 
 import java.math.BigInteger;
 
+import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.server.service.IBaseService;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
@@ -31,6 +32,8 @@ public interface IZKCommonService extends IBaseService{
 	public<DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetails ( Class<DATA> dataClass , Integer parentPrimaryKey, SimpleSortArgument[] sorts , String parentPKField ) ;
 	
 	public<DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetailsWithCustomTableJoinHQL ( String customTableJoinHQL , String tableAliasName ,Long parentPrimaryKey, SimpleSortArgument[] sorts , String parentPKField ) ;
+	
+	public<DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetailsWithAdditionalFilters ( Class<DATA> dataClass , Long parentPrimaryKey, SimpleSortArgument[] sorts, SimpleQueryFilter[] filters, String parentPKField ) ;
 	
 
 }
