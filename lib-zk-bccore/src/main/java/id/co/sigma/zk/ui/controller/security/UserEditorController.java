@@ -352,8 +352,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 		if (isEditedState()) {
 			setComboValueByRealData(defaultBranchCode,
 					editedData.getDefaultBranchCode());
-			chipperText.setReadonly(true);
-			confirmChipperText.setReadonly(true);
+			/*chipperText.setReadonly(true);
+			confirmChipperText.setReadonly(true);*/
 			chipperText.setValue(editedData.getChipperText());
 			confirmChipperText.setValue(editedData.getChipperText());
 
