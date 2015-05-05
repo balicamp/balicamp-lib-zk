@@ -3,7 +3,6 @@ package id.co.sigma.zk.ui.controller.base;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.report.domain.RptDocument;
-import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
@@ -50,9 +48,6 @@ public abstract class JRPrintableEditorController<POJO extends Serializable> ext
 
     @Value("${jasper.report.pass}")
     private String reportServerPassword;
-
-    @Autowired
-    protected IGeneralPurposeDao generalPurposeDao;
     
     /**
      * Returns report unit.
