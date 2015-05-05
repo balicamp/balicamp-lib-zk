@@ -909,7 +909,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				titleMessage,
 				new Messagebox.Button[]{Messagebox.Button.OK},
 				new String[]{Labels.getLabel("action.button.ok")},
-				Messagebox.ERROR,
+				Messagebox.INFORMATION,
 				Messagebox.Button.OK, null);
 	}
 
