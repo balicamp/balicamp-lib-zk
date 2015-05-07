@@ -64,8 +64,10 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 		
 		Component head = getListbox().getListhead();
 		boolean enableAction = true;
+		boolean enableSign = true;
 		if(head instanceof ActionListhead) {
 			enableAction = ((ActionListhead)head).isEnableAction();
+			enableSign = ((ActionListhead)head).isEnableSign();
 		}
 		
 		if(isChild()) {
@@ -85,7 +87,7 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 		}
 		
 		for(Component cmp : dynamics) {
-			ActionUtils.registerClientEventListner(cmp.getChildren(), defaults[1].getUuid());
+			ActionUtils.registerClientEventListner(cmp.getChildren(), defaults[1].getUuid(),enableSign);
 			children.add(cmp);
 		}
 		for(int i = 0; i < defaults.length; i++) {
@@ -100,7 +102,10 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 					children.add(cmp);
 				}
 			} else {
-				children.add(cmp);
+				if(enableSign){
+					children.add(cmp);
+				}
+				
 			}
 		}
 		
@@ -213,4 +218,5 @@ public class ActionListitem extends Listitem implements /*IdSpace,*/ AfterCompos
 	public void setViewPage(String viewPage) {
 	    this.viewPage = viewPage;
 	}
+
 }

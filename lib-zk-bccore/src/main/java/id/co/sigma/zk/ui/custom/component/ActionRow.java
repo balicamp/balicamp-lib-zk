@@ -10,7 +10,6 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.select.Selectors;
-import org.zkoss.zul.Columns;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Row;
@@ -38,6 +37,8 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 	private boolean child = false;
 	
 	private boolean modal = false;
+	
+	private boolean enableSign = true;
 	
 	public ActionRow() {
 		Executions.createComponents("~./zul/pages/common/ActionRow.zul", this, null);
@@ -82,7 +83,7 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 		}
 		
 		for(Component cmp : dynamics) {
-			ActionUtils.registerClientEventListner(cmp, defaults[1].getUuid());
+			ActionUtils.registerClientEventListner(cmp, defaults[1].getUuid(),this.enableSign);
 			children.add(cmp);
 		}
 		for(int i = 0; i < defaults.length; i++) {
@@ -184,6 +185,14 @@ public class ActionRow extends Row implements IdSpace, AfterCompose {
 		actBtn.setModal(modal);
 		actBtn.getBtnEdit().setVisible(editable);
 		actBtn.getBtnDelete().setVisible(deletable);
+	}
+
+	public boolean isEnableSign() {
+		return enableSign;
+	}
+
+	public void setEnableSign(boolean enableSign) {
+		this.enableSign = enableSign;
 	}
 	
 }

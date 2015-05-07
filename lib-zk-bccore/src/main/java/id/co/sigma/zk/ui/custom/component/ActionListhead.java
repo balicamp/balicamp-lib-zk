@@ -17,6 +17,7 @@ public class ActionListhead extends Listhead implements IdSpace, AfterCompose {
 	private static final long serialVersionUID = 1L;
 	
 	private boolean enableAction = true;
+	private boolean enableSign = true;
 	
 	public ActionListhead() {
 		Executions.createComponents("~./zul/pages/common/ActionListhead.zul", this, null);
@@ -44,7 +45,9 @@ public class ActionListhead extends Listhead implements IdSpace, AfterCompose {
 					children.add(cmp);
 				}
 			} else {
-				children.add(cmp);
+				if(enableSign){
+					children.add(cmp);
+				}
 			}
 		}
 	}
@@ -62,7 +65,13 @@ public class ActionListhead extends Listhead implements IdSpace, AfterCompose {
 	public void setEnableAction(String enableAction) {
 		this.enableAction = Boolean.valueOf(enableAction);
 	}
-	
-	
+
+	public boolean isEnableSign() {
+		return enableSign;
+	}
+
+	public void setEnableSign(boolean enableSign) {
+		this.enableSign = enableSign;
+	}
 
 }
