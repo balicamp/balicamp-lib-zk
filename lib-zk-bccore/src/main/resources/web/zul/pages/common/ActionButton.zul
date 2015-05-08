@@ -1,15 +1,15 @@
 <zk xmlns:n="xhtml">
   <n:table style="width:100%; border-collapse:collapse;">
     <n:tr>
-      <n:td style="width:33%; padding:2px;">
+      <n:td style="width:33%;">
       	<!-- <image id="btnView" class="imageButton" src="~./zul/img/ctrlimages/view-icon-18.png" width="18px" height="18px" tooltiptext="${labels.action.button.view}"/> -->
       	<span id="btnView" class="z-icon-eye lb-actionbutton lb-actionbutton-view" tooltiptext="${labels.action.button.view}"></span>
       </n:td>
-      <n:td style="width:33%; padding:2px;">
+      <n:td style="width:33%;">
       	<!-- <image id="btnEdit" class="imageButton" src="~./zul/img/ctrlimages/pencil-16.png" width="16px" height="16px" tooltiptext="${labels.action.button.edit}"/> -->
       	<span id="btnEdit" class="z-icon-pencil lb-actionbutton lb-actionbutton-edit" tooltiptext="${labels.action.button.edit}"></span>
       </n:td>
-      <n:td style="width:33%; padding:2px;">
+      <n:td style="width:33%;">
       	<!-- <image id="btnDelete" class="imageButton" src="~./zul/img/ctrlimages/del_red_16.png" width="16px" height="16px" tooltiptext="${labels.action.button.delete}"/> -->
       	<span id="btnDelete" class="z-icon-trash-o lb-actionbutton lb-actionbutton-delete" tooltiptext="${labels.action.button.delete}"></span>
       </n:td>
