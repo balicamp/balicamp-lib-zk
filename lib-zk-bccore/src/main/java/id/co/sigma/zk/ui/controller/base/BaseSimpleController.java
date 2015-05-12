@@ -496,7 +496,6 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	 */
 	protected void runTaskAfterLOVFilled () {
 		Timer t = new Timer();
-		
 	}
 	
 	
@@ -964,6 +963,22 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			 return "0"  ;
 		 money.setScale(2, RoundingMode.HALF_EVEN);
 		 return getMoneyFormater().format(money); 
+	 }
+	 
+	 /**
+	  * render money without decimal
+	  */
+	 public String renderNumberAsMoneyWithoutDecimal(BigDecimal money) {
+		 if ( money== null || money.longValue()==0)
+			 return "0"  ;
+		 
+		 String localeCode =  getAuthenticateUser().getLocale();
+			if ( localeCode == null)
+				localeCode ="id"; 
+			Locale l = Locale.forLanguageTag(localeCode);
+		 DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(l);
+		 format.applyPattern(commonNumberWithoutDecimalFormat);
+		 return format.format(money); 
 	 }
 	 
 	 

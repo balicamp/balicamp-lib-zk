@@ -73,6 +73,9 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	private Panel panelButtons;
 	
 	@Wire
+	private Panel panelTitle;
+	
+	@Wire
 	private Button btnAddNew;
 
 	@Wire
@@ -98,6 +101,8 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	private boolean addable = true;
 	
 	private boolean modalEditor = false;
+	
+	private boolean showPanelTitle = true;
 	
 	private List<Component> requiredFields;
 	
@@ -146,6 +151,7 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		
 		listController = (BaseSimpleListController<Serializable>) getAttribute(getId() + "$composer");
 		
+		panelTitle.setVisible(isShowPanelTitle());
 		panelSearchKeys.setVisible(isSearchable());
 		btnSearch.setVisible(isSearchable());
 		btnReset.setVisible(isSearchable());
@@ -290,6 +296,14 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	 */
 	public boolean isModalEditor() {
 		return modalEditor;
+	}
+
+	public boolean isShowPanelTitle() {
+		return showPanelTitle;
+	}
+
+	public void setShowPanelTitle(boolean showPanelTitle) {
+		this.showPanelTitle = showPanelTitle;
 	}
 
 	/**

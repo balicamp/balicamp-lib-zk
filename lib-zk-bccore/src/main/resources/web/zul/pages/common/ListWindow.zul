@@ -1,6 +1,6 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<panel>
+	<panel id="panelTitle">
 		<panelchildren>
 			<div class="page-title">
 				<label id="caption" style="font-weight:bold;" />
