@@ -174,7 +174,7 @@ public abstract class BaseSimpleListController<DATA extends Serializable> extend
 		}
 	}
 
-	private void refreshList() {
+	public void refreshList() {
 		Component timer = getSelf().getFellowIfAny("listTimer");
 		if (timer instanceof Timer) {
 			((Timer) timer).start();
