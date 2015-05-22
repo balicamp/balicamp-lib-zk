@@ -1,4 +1,4 @@
 <zk>
 	<listheader label="${labels.field.action}" hflex="min" align="center"/>
-	<listheader label="*" width="2%" align="center"/>
+	<listheader label="*" width="4%" align="center"/>
 </zk>

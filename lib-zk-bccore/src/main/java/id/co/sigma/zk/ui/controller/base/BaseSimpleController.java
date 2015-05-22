@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.au.AuResponse;
@@ -1035,5 +1036,18 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			} else {
 				return format.getMonths()[11] + " (audit)";
 			}
+		}
+		
+		public boolean checkUserAuthority(String role) {
+			List<GrantedAuthority> authorities = new ArrayList<>(SecurityUtil.getUser().getAuthorities());
+			if (authorities != null && !authorities.isEmpty()) {
+				for (GrantedAuthority auth : authorities) {
+					if (auth.getAuthority().equals(role)) {
+						return true;
+					}
+				}
+			}
+			
+			return false;
 		}
 }
