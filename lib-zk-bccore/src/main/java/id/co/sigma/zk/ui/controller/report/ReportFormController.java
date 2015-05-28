@@ -75,12 +75,14 @@ import org.zkoss.zul.impl.InputElement;
 
 public class ReportFormController extends BaseSimpleController {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5141315517810906819L;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ReportFormController.class);
+	
+	/*
+	 * Report parameters default value constants
+	 */
+	private static final String RPTPARAMDEFVAL_USER_BRANCH = "#userBranch";
 	
 	@Value("${jasper.report.server}")
 	private String rptServerURL;
@@ -118,8 +120,8 @@ public class ReportFormController extends BaseSimpleController {
 		
 		try {
 			
-			@SuppressWarnings("unused")
-			String user = env.getProperty("jasper.report.user");
+			/*@SuppressWarnings("unused")
+			String user = env.getProperty("jasper.report.user");*/
 			
 			Locale locale = getLocale();
 			
@@ -355,7 +357,7 @@ public class ReportFormController extends BaseSimpleController {
 					String defVal = param.getDefaultValue();
 					
 					if(defVal != null && defVal.trim().length() > 0) {
-						if("#userBranch".equals(defVal.trim())) {
+						if(RPTPARAMDEFVAL_USER_BRANCH.equals(defVal.trim())) {
 							defVal = getDefaultBranch().getId().toString();
 						}
 					} else defVal = null;
@@ -736,15 +738,8 @@ public class ReportFormController extends BaseSimpleController {
 	}
 
 	private final List<ListOfValueItem> loadListOfValueItems(final RptDocParam param, String... dependencyFilter) {
-		
 		List<ListOfValueItem> list = new ArrayList<ListOfValueItem>();
 		List<SimpleQueryFilter> filters = null;
-//		if(annLOV.onDemand()) {
-//			filters = new ArrayList<SimpleQueryFilter>();
-//			filters.add(new SimpleQueryFilter("".equals(annLOV.codeField()) ? annLOV.valueField() : annLOV.codeField(), 
-//					SimpleQueryFilterOperator.likeBothSide, sFilter));
-//			filters.add(new SimpleQueryFilter(annLOV.labelField(), SimpleQueryFilterOperator.likeBothSide, sFilter));		
-//		}
 		
 		if(param.getLovFilters() != null && !("".equals(param.getLovFilters().trim()))) {
 			
@@ -753,8 +748,9 @@ public class ReportFormController extends BaseSimpleController {
 				ParsedJSONArrayContainer lovfilters = ServerSideWrappedJSONParser
 						.getInstance().parseJSONArray(param.getLovFilters());
 				
-				if (filters == null)
+				if (filters == null){
 					filters = new ArrayList<SimpleQueryFilter>();
+				}
 				
 				for (int i = 0; i < lovfilters.length(); i++) {
 					ParsedJSONContainer con = lovfilters.get(i);
@@ -762,6 +758,10 @@ public class ReportFormController extends BaseSimpleController {
 					String fType = con.getAsString("fType");
 					String opr = con.getAsString("opr");
 					String val = con.getAsString("val");
+					if(RPTPARAMDEFVAL_USER_BRANCH.equals(val)){
+						val = getDefaultBranch().getId().toString();
+					}
+					
 					SimpleQueryFilter filterFlag = new SimpleQueryFilter();
 					filterFlag.setField(field);
 					filterFlag.setFilter(val);
