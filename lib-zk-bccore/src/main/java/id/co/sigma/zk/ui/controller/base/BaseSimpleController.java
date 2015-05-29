@@ -56,7 +56,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.web.Attributes;
+import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -495,6 +497,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	/**
 	 * task ini akan di run setelah LOV selesai di isi 
 	 */
+	@SuppressWarnings("unused")
 	protected void runTaskAfterLOVFilled () {
 		Timer t = new Timer();
 	}
@@ -1049,5 +1052,25 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 			}
 			
 			return false;
+		}
+		
+		protected final void showErrorMessage(String message){
+			Messagebox.show(
+					message, 
+					Labels.getLabel("title.msgbox.error"),
+					new Messagebox.Button[]{Messagebox.Button.OK},
+					new String[]{Labels.getLabel("action.button.ok")},
+					Messagebox.ERROR,
+					Messagebox.Button.OK, null);
+		}
+		
+		protected final void showWarningMessage(String message){
+			Messagebox.show(
+					message, 
+					Labels.getLabel("title.msgbox.attention"),
+					new Messagebox.Button[]{Messagebox.Button.OK},
+					new String[]{Labels.getLabel("action.button.ok")},
+					Messagebox.EXCLAMATION,
+					Messagebox.Button.OK, null);
 		}
 }
