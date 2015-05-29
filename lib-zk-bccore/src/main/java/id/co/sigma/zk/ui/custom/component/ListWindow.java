@@ -104,6 +104,12 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 	
 	private boolean showPanelTitle = true;
 	
+	private boolean showSearchButton = true;
+	
+	private boolean showResetButton = true;
+	
+	private boolean showAddButton = true;
+	
 	private List<Component> requiredFields;
 	
 	private Component firstInputComp;
@@ -153,29 +159,26 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		
 		panelTitle.setVisible(isShowPanelTitle());
 		panelSearchKeys.setVisible(isSearchable());
-		btnSearch.setVisible(isSearchable());
-		btnReset.setVisible(isSearchable());
-		btnAddNew.setVisible(isAddable());
+		btnSearch.setVisible(isSearchable() && isShowSearchButton());
+		btnReset.setVisible(isSearchable() && isShowResetButton());
+		btnAddNew.setVisible(isAddable() && isShowAddButton());
 		if(!isSearchable() && !isAddable()) {
+			panelButtons.setVisible(false);
+		}else if(!isShowSearchButton() && !isShowResetButton() && !isShowAddButton()){
 			panelButtons.setVisible(false);
 		}
 
 		if((getChildren().size() - childrenCount) >= 2) {
-			
 			Component srchSection = getChildren().get(childrenCount);
 			srchSection.setVisible(isSearchable());
 			searchSection.appendChild(srchSection);
-			
 		}
 		
 		Component child = null;
 		
 		for(;getChildren().size() > childrenCount;) {
-			
 			child = getChildren().get(childrenCount);
-			
 			if(child instanceof Listbox) break;
-			
 			searchSection.appendChild(child);
 		}
 		
@@ -449,6 +452,30 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		cell.appendChild(prev);
 		cell.appendChild(mreq);
 		return cell;
+	}
+
+	public boolean isShowSearchButton() {
+		return showSearchButton;
+	}
+
+	public void setShowSearchButton(boolean showSearchButton) {
+		this.showSearchButton = showSearchButton;
+	}
+
+	public boolean isShowResetButton() {
+		return showResetButton;
+	}
+
+	public void setShowResetButton(boolean showResetButton) {
+		this.showResetButton = showResetButton;
+	}
+
+	public boolean isShowAddButton() {
+		return showAddButton;
+	}
+
+	public void setShowAddButton(boolean showAddButton) {
+		this.showAddButton = showAddButton;
 	}
 	
 }
