@@ -122,12 +122,16 @@ public class ListWindow extends Window implements AfterCompose, IdSpace {
 		childrenCount = getChildren().size();
 	}
 	
+	public void setCaption(String value){
+		caption.setValue(value);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void afterCompose() {
 		setBorder("none");
 		String title = getTitle();
-		caption.setValue(title);
+		setCaption(title);
 		setTitle("");
 		setStyle("overflow:auto");
 		setHeight(""); //reset height
