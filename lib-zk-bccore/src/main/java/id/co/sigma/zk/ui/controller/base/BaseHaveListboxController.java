@@ -16,6 +16,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.FieldComparator;
 import org.zkoss.zul.Listbox;
@@ -85,16 +86,20 @@ public abstract class BaseHaveListboxController<DATA> extends BaseSimpleControll
 	
 	
 	public void invokeSearch (final SimpleQueryFilter[] filters ,final   SimpleSortArgument[] sorts) {
-		  
 		dataModel  = instantiateDataModel(filters, sorts); 
 		Listbox lb = getListbox(); 
 		dataModel.setSortArgs(getSortableFirstHeader(lb));
 		dataModel.initiate(lb.getPageSize());
 		dataModel.setMultiple(lb.isMultiple());
 		lb.setModel(dataModel);
-		ListitemRenderer<DATA> renderer = getCustomRenderer(); 
-		if ( renderer!= null){
-			lb.setItemRenderer(renderer);
+		if (dataModel != null && dataModel.getHoldedData().isEmpty()) {
+			lb.setEmptyMessage(Labels.getLabel("msg.search.empty_result"));
+			lb.invalidate();
+		}else{
+			ListitemRenderer<DATA> renderer = getCustomRenderer(); 
+			if ( renderer!= null){
+				lb.setItemRenderer(renderer);
+			}
 		}
 	}
 	
