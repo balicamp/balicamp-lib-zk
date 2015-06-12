@@ -9,6 +9,7 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.Branch;
 import id.co.sigma.common.security.domain.User;
+import id.co.sigma.common.security.domain.lov.LookupDetail;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.dao.util.ServerSideDateTimeParser;
 import id.co.sigma.common.server.lov.ILOVProviderService;
@@ -1072,5 +1073,26 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 					new String[]{Labels.getLabel("action.button.ok")},
 					Messagebox.EXCLAMATION,
 					Messagebox.Button.OK, null);
+		}
+		
+		/**
+		 * Get lookup details by headerId
+		 * @param headerId - Header ID (lookup key)
+		 * @return {@code List<LookupDetail> }
+		 */
+		protected List<LookupDetail> getLookupDetails(String headerId){
+			List<LookupDetail> lookupDetails = null;
+			SimpleQueryFilter[] filters = {
+					new SimpleQueryFilter("headerId", SimpleQueryFilterOperator.equal, headerId)
+			};
+			SimpleSortArgument[] sorts = {
+					new SimpleSortArgument("sequence", true)
+			};
+			try {
+				lookupDetails = generalPurposeDao.list(LookupDetail.class, filters, sorts);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return lookupDetails;
 		}
 }
