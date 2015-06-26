@@ -255,6 +255,36 @@ public final class EditorManager {
 		}
 	}
 	
+	/**
+	 * menampilkan editor data dengan tambahan parameter component yang akan di set valuenya
+	 * @param zulPath path dari zul
+	 * @param appendedData data yang di add
+	 * @param caller caller dari editor. biasanay this 
+	 */
+	public<DATA extends SingleKeyEntityData<?>> void addNewData ( String zulPath ,DATA appendedData , Map<String, Component> comps, BaseSimpleController caller, boolean... isPopup ) {
+		Map<String, Object> parameter = new HashMap<String, Object>() ; 
+		parameter.put(ZKCoreLibConstant.EDITED_DATA_ATTRIBUTE_KEY, appendedData); 
+		parameter.put(ZKCoreLibConstant.EDITOR_STATE_ATTRIBUTE_KEY, ZKEditorState.ADD_NEW); 
+		parameter.put(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT, caller);
+		parameter.put(ZKCoreLibConstant.COMPONENT_VALUE_HOLDER_KEY, comps);
+		
+		if(!isShowModal(isPopup)) {		
+			showHideLatestComponent(false);
+			includePanel.setVisible(false);
+			editorContainerWindow.setVisible(true); 
+			Executions.createComponents(zulPath, editorContainerWindow, parameter);
+		} else {
+			Window wModal = (Window)Executions.createComponents(zulPath, null, parameter);
+//			Toolbar tb = (Toolbar) wModal.getFellowIfAny("buttonToolbar");
+//			if(tb != null) {
+//				tb.setAlign("center");
+//			}
+			wModal.setClosable(false);			
+			wModal.doModal();
+			winModals.add(0, wModal);
+		}
+	}
+	
 	
 	/**
 	 * menampilkan editor data dengan data tambahan, keperluan tree
@@ -379,6 +409,14 @@ public final class EditorManager {
 	 */
 	public void removeCurrentEditorPanelFromContainer(){
 	    	List<Component> components =  editorContainerWindow.getChildren();
+		if (! components.isEmpty()){
+			editorContainerWindow.removeChild(components.get(components.size()-1));
+		}
+	}
+	
+	public void removeCurrentEditorPanelFromIncludeContainer(){
+		
+		List<Component> components =  includePanel.getChildren();
 		if (! components.isEmpty()){
 			editorContainerWindow.removeChild(components.get(components.size()-1));
 		}
