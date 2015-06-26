@@ -33,6 +33,8 @@ public interface IZKCommonService extends IBaseService{
 	
 	public<DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetailsWithCustomTableJoinHQL ( String customTableJoinHQL , String tableAliasName ,Long parentPrimaryKey, SimpleSortArgument[] sorts , String parentPKField ) ;
 	
+	public<DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetailsWithCustomTableJoinHQL ( String customTableJoinHQL , String tableAliasName ,String parentPrimaryKey, SimpleSortArgument[] sorts , String parentPKField ) ;
+	
 	public<DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetailsWithAdditionalFilters ( Class<DATA> dataClass , Long parentPrimaryKey, SimpleSortArgument[] sorts, SimpleQueryFilter[] filters, String parentPKField ) ;
 	
 

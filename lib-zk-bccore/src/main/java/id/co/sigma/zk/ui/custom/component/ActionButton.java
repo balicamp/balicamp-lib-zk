@@ -5,10 +5,10 @@ import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleNoDirectToDBEditor;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -78,7 +78,7 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 	@Override
 	public void afterCompose() {
 		
-		List<Component> children = getChildren();
+		//List<Component> children = getChildren();
 		//Component viewComp = children.get(VIEW_BUTTON);
 		Component viewComp = btnView;
 		//Component editComp = children.get(EDIT_BUTTON);
@@ -118,9 +118,11 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 			}
 
 			if(data != null) {
-			    if(controller instanceof BaseSimpleListController) {
-				EditorManager.getInstance().viewData(viewPage, data, controller, modal);
-			    }
+				if(controller instanceof BaseSimpleListController) {
+					EditorManager.getInstance().viewData(viewPage, data, controller, modal);
+				}else if(controller instanceof BaseSimpleNoDirectToDBEditor){
+					EditorManager.getInstance().viewData(viewPage, data, controller, modal);
+				}
 			}
 		    }
 		    
@@ -159,6 +161,8 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 					if(controller instanceof BaseSimpleListController) {
 						EditorManager.getInstance().editData(editorPage, data, controller, modal);
 					} else if(controller instanceof BaseSimpleDirectToDBEditor) {
+						EditorManager.getInstance().editData(editorPage, container, data, controller, modal);
+					} else if(controller instanceof BaseSimpleNoDirectToDBEditor){
 						EditorManager.getInstance().editData(editorPage, container, data, controller, modal);
 					}
 				}
@@ -220,6 +224,8 @@ public class ActionButton extends Div implements IdSpace, AfterCompose {
 									((BaseSimpleListController<Serializable>)controller).deleteData((SingleKeyEntityData<?>)data);
 								} else if(controller instanceof BaseSimpleDirectToDBEditor) {
 									((BaseSimpleDirectToDBEditor)controller).deleteChildData(data, cntr);
+								} else if(controller instanceof BaseSimpleNoDirectToDBEditor){
+									((BaseSimpleNoDirectToDBEditor)controller).deleteChildData(data, cntr);
 								}
 							}
 						}

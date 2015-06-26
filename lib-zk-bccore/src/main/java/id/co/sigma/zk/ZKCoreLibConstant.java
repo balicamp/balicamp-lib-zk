@@ -20,6 +20,11 @@ public final class ZKCoreLibConstant  {
 	public static final String ADDITIONAL_DATA_ATTRIBUTE_KEY="additionalData";
 	
 	/**
+	 * key untuk passing component tambahan ke controller
+	 */
+	public static final String COMPONENT_VALUE_HOLDER_KEY="componentValueHolder";
+	
+	/**
 	 * key untuk passing filter list lookup
 	 */
 	public static final String LOOKUP_LIST_FILTERS="lookupListFilters";

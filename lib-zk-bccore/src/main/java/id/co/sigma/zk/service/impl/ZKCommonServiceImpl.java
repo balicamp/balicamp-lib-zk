@@ -143,4 +143,21 @@ public class ZKCommonServiceImpl extends AbstractService implements IZKCommonSer
 			return null;
 		}
 	}
+	@Override
+	public <DATA> ZKClientSideListDataEditorContainer<DATA> getDataDetailsWithCustomTableJoinHQL(
+			String customTableJoinHQL, String tableAliasName,
+			String parentPrimaryKey, SimpleSortArgument[] sorts,
+			String parentPKField) {
+		
+		SimpleQueryFilter [] flt = new SimpleQueryFilter []{
+				new 	SimpleQueryFilter( parentPKField , SimpleQueryFilterOperator.equal , parentPrimaryKey )
+		}; 
+		try {
+			List<DATA> d = generalPurposeDao.list(customTableJoinHQL, tableAliasName , flt ,  sorts);
+			return transposeToContainer(d);
+		} catch (Exception e) {
+			logger.error("gagal membaca data. error di laporkan : " + e.getMessage() , e);
+			return null;
+		}
+	}
 }
