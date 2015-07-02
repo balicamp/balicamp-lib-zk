@@ -144,6 +144,18 @@ penambahan component form dengan tag binding
 		<component-class>id.co.sigma.zk.ui.component.TimeboxBindable</component-class>		    
 	</component>
 	
+	<component>
+        <component-name>button</component-name>
+        <extends>button</extends>
+        <mold>
+            <mold-name>bs</mold-name>
+        </mold>
+        <property>
+            <property-name>autodisable</property-name>
+            <property-value>self</property-value>
+        </property>
+    </component>
+	
 <!-- end of form component -->	
     <component>
         <component-name>springSecurityLogin</component-name>
