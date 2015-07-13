@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,6 +73,9 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.impl.InputElement;
+import org.zkoss.zul.impl.NumberInputElement;
+
+import com.google.gwt.i18n.client.ConstantsWithLookup;
 
 public class ReportFormController extends BaseSimpleController {
 
@@ -83,6 +87,17 @@ public class ReportFormController extends BaseSimpleController {
 	 * Report parameters default value constants
 	 */
 	private static final String RPTPARAMDEFVAL_USER_BRANCH = "#userBranch";
+	private static final String RPTPARAMDEFVAL_CURRENT_MONTH = "#currentMonth";
+	private static final String RPTPARAMDEFVAL_CURRENT_YEAR = "#currentYear";
+	
+	/*
+	 * Report parameter types constants
+	 */
+	private static final String RPTPARAMTYPE_COA_LOOKUP = "CoaLookup";
+	private static final String RPTPARAMTYPE_COA_LOOKUP_RPT = "CoaLookupRpt";
+	private static final String RPTPARAMTYPE_CUSTOMER_LOOKUP = "CustomerLookup";
+	private static final String RPTPARAMTYPE_EMPLOYEE_LOOKUP = "EmployeeLookup";
+	private static final String RPTPARAMTYPE_VENDOR_LOOKUP = "VendorLookup";
 	
 	@Value("${jasper.report.server}")
 	private String rptServerURL;
@@ -188,6 +203,53 @@ public class ReportFormController extends BaseSimpleController {
 		}
 	}
 	
+	@Listen("onClick=#btnReset")
+	public void resetForm(){
+		for(ReportParam prm : reportParams){
+			Component comp = prm.rptInputParam;
+			RptDocParam docParam = prm.rptDocParam;
+			if(comp instanceof Textbox){
+				String defaultValue = null;
+				switch (docParam.getDefaultValue()) {
+					case RPTPARAMDEFVAL_CURRENT_MONTH:
+						DateFormatSymbols dfs = new DateFormatSymbols(getLocale());
+						defaultValue = dfs.getMonths()[Calendar.getInstance().get(Calendar.MONTH)];
+						break;
+					case RPTPARAMDEFVAL_CURRENT_YEAR:
+						defaultValue = ""+Calendar.getInstance().get(Calendar.YEAR);
+						break;
+					case RPTPARAMDEFVAL_USER_BRANCH:
+						defaultValue = getDefaultBranch().getBranchCode()+" - "+getDefaultBranch().getBranchName();
+						break;
+					default:
+						defaultValue = docParam.getDefaultValue();
+						break;
+				}
+				((Textbox)comp).setRawValue(defaultValue);
+			}else if(comp instanceof NumberInputElement){
+				((NumberInputElement)comp).setRawValue(null);
+			}else if(comp instanceof Datebox){
+				((Datebox)comp).setRawValue(null);
+			}else if( docParam.getParamType().indexOf(".") > 0 ){
+				String[] arr = docParam.getParamType().split("\\.");
+				String className = arr[arr.length - 2];
+				String methodName = "";
+				if(className.equals(RPTPARAMTYPE_COA_LOOKUP) || className.equals(RPTPARAMTYPE_COA_LOOKUP_RPT)){
+					methodName = "setTextValue";
+				}else if(className.equals(RPTPARAMTYPE_CUSTOMER_LOOKUP) || className.equals(RPTPARAMTYPE_EMPLOYEE_LOOKUP) || className.equals(RPTPARAMTYPE_VENDOR_LOOKUP)){
+					methodName = "setValue";
+				}
+				
+				try {
+					Method m = comp.getClass().getMethod(methodName, String.class);
+					m.invoke(comp, "");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see id.co.sigma.zk.ui.controller.base.BaseSimpleController#doAfterCompose(org.zkoss.zk.ui.Component)
 	 */
@@ -239,6 +301,10 @@ public class ReportFormController extends BaseSimpleController {
 			Button printXLS = new Button("Download XLS");
 			printXLS.setId("btnDownloadXLS");
 			buttonToolbar.appendChild(printXLS);
+			
+			Button btnReset = new Button("Reset");
+			btnReset.setId("btnReset");
+			buttonToolbar.appendChild(btnReset);
 		}
 		
 	}
@@ -524,12 +590,12 @@ public class ReportFormController extends BaseSimpleController {
 					String defVal = param.getDefaultValue();
 					
 					if(defVal != null && defVal.trim().length() > 0) {
-						if("#currentYear".equals(defVal.trim())) {
+						if(RPTPARAMDEFVAL_CURRENT_YEAR.equals(defVal.trim())) {
 							defVal = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 						}
 					} else defVal = null;
 					
-					if(minVal[0].startsWith("#currentYear")) {
+					if(minVal[0].startsWith(RPTPARAMDEFVAL_CURRENT_YEAR)) {
 						intMinVal = Calendar.getInstance().get(Calendar.YEAR);
 						if(minVal.length == 2) {
 							int intVal = Integer.parseInt(minVal[1].trim());
@@ -543,7 +609,7 @@ public class ReportFormController extends BaseSimpleController {
 						intMaxVal = Integer.parseInt(minVal[0].trim());
 					}
 					
-					if(maxVal[0].startsWith("#currentYear")) {
+					if(maxVal[0].startsWith(RPTPARAMDEFVAL_CURRENT_YEAR)) {
 						intMaxVal = Calendar.getInstance().get(Calendar.YEAR);
 						if(maxVal.length == 2) {
 							int intVal = Integer.parseInt(maxVal[1].trim());
