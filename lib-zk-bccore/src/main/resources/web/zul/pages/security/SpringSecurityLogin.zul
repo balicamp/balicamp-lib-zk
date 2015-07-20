@@ -1,10 +1,17 @@
-<html:form id="f" name="f" action="j_spring_security_check" method="POST" xmlns:html="native">
-   <hlayout style="padding-top:20px;">
-       <label value="Username : "/>
-       <textbox id="nameTxb" name="j_username" value="" constraint="no empty"/>
-       <label value="Password : "/>
-       <textbox id="passwordTxb" type="password" name="j_password" value="" constraint="no empty"/>
-       <button id="confirmBtn" type="submit" label="Login"  />
-       <label id="mesgLbl" />
-   </hlayout>
- </html:form>      
+<zk xmlns:n="native">
+    <n:div class="col-sm-4 col-sm-offset-4">
+        <n:form id="f" name="f" action="../j_spring_security_check" method="POST" class="form-login" autocomplete="off">
+            <n:div class="form-group">
+                <n:label for="nameTxb">Username</n:label>
+                <textbox type="text" id="nameTxb" name="j_username" class="form-control" placeholder="Username"
+                         constraint="no empty"/>
+            </n:div>
+            <n:div class="form-group">
+                <n:label for="passwordTxb">Password</n:label>
+                <textbox type="password" id="passwordTxb" name="j_password" class="form-control" placeholder="Password"
+                         constraint="no empty"/>
+            </n:div>
+            <n:button type="submit" id="confirmBtn" class="btn btn-primary">Login</n:button>
+        </n:form>
+    </n:div>
+</zk>
