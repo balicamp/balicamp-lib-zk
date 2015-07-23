@@ -80,7 +80,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 	Textbox userCode;
 
 	@Wire
-	Textbox chipperText;
+	Textbox txtChipperText;
 
 	@Wire
 	Checkbox status;
@@ -155,6 +155,10 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 
 		/*validationForm(data);*/
 
+		String pass = txtChipperText.getValue();
+		if(pass!=null && !pass.isEmpty()){
+			data.setChipperText(pass);
+		}
 		if (ZKEditorState.EDIT.equals(getEditorState())) {
 			/*
 			 * if(data.getChipperText().equalsIgnoreCase("")){
@@ -233,6 +237,11 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 	@Override
 	protected void updateData(User data) throws Exception {
 		userService.update(data);
+		String pass = txtChipperText.getValue();
+		if(pass!=null && !pass.isEmpty()){
+			userService.updateUserPassword(data);
+		}
+		
 	}
 	
 	@Override
@@ -261,9 +270,13 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 			}
 		}
 
-		if (!data.getChipperText().equals(confirmChipperText.getValue())) {
-			notValidFiled.add("Password confirmation is incorrect");
+		String pass = txtChipperText.getValue();
+		if(pass!=null && !pass.isEmpty()){
+			if (!pass.equals(confirmChipperText.getValue())) {
+				notValidFiled.add("Password confirmation is incorrect");
+			}
 		}
+		
 		if (!email.isValid()) {
 			notValidFiled.add("Invalid Email Address");
 		}
@@ -354,8 +367,8 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 					editedData.getDefaultBranchCode());
 			/*chipperText.setReadonly(true);
 			confirmChipperText.setReadonly(true);*/
-			chipperText.setValue(editedData.getChipperText());
-			confirmChipperText.setValue(editedData.getChipperText());
+			/*chipperText.setValue(editedData.getChipperText());*/
+			/*confirmChipperText.setValue(editedData.getChipperText());*/
 
 		}
 
