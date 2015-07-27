@@ -51,7 +51,7 @@ public class CustomListModel<E> extends ListModelList<E> implements
 	
 	protected boolean inSubModel(Object key, Object value) {
 		String idx = objectToString(key);
-		return idx.length() > 0 && objectToString(value).toLowerCase().startsWith(idx.toLowerCase());
+		return idx.length() > 0 && objectToString(value).toLowerCase().contains(idx.toLowerCase());
 	}
 	
 	protected String objectToString(Object value) {
