@@ -246,10 +246,12 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 	
 	@Override
 	protected void validateData() throws Exception {
-		// TODO Auto-generated method stub
 		String pass = txtChipperText.getValue();
 		User data = editedData;
-		data.setChipperText(pass);
+		if(pass!=null && !pass.isEmpty()){
+			data.setChipperText(pass);
+		}
+		
 		List<String> notValidFiled = new ArrayList<String>();
 
 		if (ZKEditorState.ADD_NEW.equals(getEditorState())) {
