@@ -9,7 +9,7 @@ import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.annotations.ChildGridData;
 import id.co.sigma.zk.ui.annotations.HeaderBinder;
 import id.co.sigma.zk.ui.annotations.JoinKey;
-import id.co.sigma.zk.ui.component.CoaSuggestionBox;
+import id.co.sigma.zk.ui.component.AutoSuggestBox;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
@@ -564,7 +564,7 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 							Component inp = cell.getChildren().get(0);
 							
 							if( !(inp instanceof Combobox) 
-									&& !(inp instanceof CoaSuggestionBox) 
+									&& !(inp instanceof AutoSuggestBox) 
 									&& inp.getChildren()!=null 
 									&& !inp.getChildren().isEmpty() )
 							{
@@ -723,8 +723,8 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					}else{
 						val=0;
 					}
-				} else if(input instanceof CoaSuggestionBox) {
-					val = ((CoaSuggestionBox)input).getSelectedData();					
+				} else if(input instanceof AutoSuggestBox) {
+					val = ((AutoSuggestBox)input).getSelectedData();					
 				} else if(input instanceof Textbox){
 					val = ((Textbox)input).getValue();
 				} else if(input instanceof Longbox) {

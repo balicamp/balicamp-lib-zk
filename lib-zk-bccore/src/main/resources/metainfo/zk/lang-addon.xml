@@ -83,11 +83,11 @@
     </component>
     
     <!--
-    COA suggestion box (auto complete kode perkiraan)
+    Auto suggestion (auto complete) box
     -->
     <component>
-    	<component-name>coaSuggestionBox</component-name>
-    	<component-class>id.co.sigma.zk.ui.component.CoaSuggestionBox</component-class>
+    	<component-name>autoSuggestBox</component-name>
+    	<component-class>id.co.sigma.zk.ui.component.AutoSuggestBox</component-class>
     	<extends>bandbox</extends>
     </component>
     	
