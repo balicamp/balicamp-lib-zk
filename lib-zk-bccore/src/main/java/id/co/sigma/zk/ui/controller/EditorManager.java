@@ -7,6 +7,7 @@ import id.co.sigma.zk.ZKCoreLibConstant;
 import id.co.sigma.zk.ui.MultipleValueLookupReceiver;
 import id.co.sigma.zk.ui.SingleValueLookupReciever;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleController;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 import id.co.sigma.zk.ui.controller.base.IEditorPanel;
 import id.co.sigma.zk.ui.custom.component.ListWindow;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
@@ -106,7 +107,10 @@ public final class EditorManager {
     }
 
     private void createComponents(String zulPath, Map<String, Object> parameter) {
-        editorContainerWindow.getChildren().clear();
+    	BaseSimpleController controller = (BaseSimpleController) parameter.get(ZKCoreLibConstant.EDITOR_CALLER_COMPONENT);
+    	if(controller instanceof BaseSimpleListController){
+    		editorContainerWindow.getChildren().clear();
+    	}
         Executions.createComponents(zulPath, editorContainerWindow, parameter);
     }
 

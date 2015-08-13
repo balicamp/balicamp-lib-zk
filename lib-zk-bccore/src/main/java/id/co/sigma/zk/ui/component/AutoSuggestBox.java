@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Bandbox;
 
@@ -30,7 +31,8 @@ public class AutoSuggestBox extends Bandbox implements AfterCompose{
 		// TODO Auto-generated method stub
 	}
 
-	public Serializable getSelectedData() {
+	public Serializable getSelectedData() throws WrongValueException {
+		checkUserError();
 		return selectedData;
 	}
 
