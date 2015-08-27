@@ -3,17 +3,6 @@
  */
 package id.co.sigma.zk.ui.controller.security;
 
-import id.co.sigma.common.data.query.SimpleQueryFilter;
-import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
-import id.co.sigma.common.data.query.SimpleSortArgument;
-import id.co.sigma.common.security.domain.ApplicationMenu;
-import id.co.sigma.common.security.domain.PageDefinition;
-import id.co.sigma.common.server.service.IGeneralPurposeService;
-import id.co.sigma.zk.ui.controller.EditorManager;
-import id.co.sigma.zk.ui.controller.IReloadablePanel;
-import id.co.sigma.zk.ui.controller.ZKEditorState;
-import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
-
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +19,16 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Textbox;
+
+import id.co.sigma.common.data.query.SimpleQueryFilter;
+import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.common.security.domain.ApplicationMenu;
+import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.zk.ui.controller.EditorManager;
+import id.co.sigma.zk.ui.controller.IReloadablePanel;
+import id.co.sigma.zk.ui.controller.ZKEditorState;
+import id.co.sigma.zk.ui.controller.base.BaseSimpleDirectToDBEditor;
 
 /**
  * 
@@ -88,8 +87,7 @@ public class ApplicationMenuEditorController extends
 	@Wire
 	Label code;
 	
-	@Autowired
-	private IGeneralPurposeService generalPurposeService ;
+	
 	
 	int flag=0;
 	
@@ -244,8 +242,11 @@ public class ApplicationMenuEditorController extends
 		SimpleQueryFilter[] flt = new SimpleQueryFilter[]{
 				new SimpleQueryFilter("applicationId" , SimpleQueryFilterOperator.equal , appId)
 		};
+		SimpleSortArgument[] sorts = new SimpleSortArgument[]{
+				new SimpleSortArgument("pageCode", true)
+		};
 		try {
-			return generalPurposeDao.list(PageDefinition.class, flt,DEF_SORTS);
+			return generalPurposeDao.list(PageDefinition.class, flt,sorts);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("gagal membaca menu untuk app id : " + applicationId + " , error : " + e.getMessage() , e);
