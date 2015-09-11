@@ -267,6 +267,17 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 						
 					}
 					
+					for(Object data : child.getEditedData()) {
+
+						for(JoinKey key : keys) {
+							Object val = beanUtils.getProperty(editedData, key.parentKey());
+							beanUtils.setProperty(data, val, key.childKey());
+						}
+
+						updateData((POJO)data);
+
+					}
+					
 				}
 				
 			}
