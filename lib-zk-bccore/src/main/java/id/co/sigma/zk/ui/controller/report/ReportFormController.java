@@ -87,6 +87,7 @@ public class ReportFormController extends BaseSimpleController {
     private static final String RPTPARAMDEFVAL_USER_BRANCH = "#userBranch";
     private static final String RPTPARAMDEFVAL_CURRENT_MONTH = "#currentMonth";
     private static final String RPTPARAMDEFVAL_CURRENT_YEAR = "#currentYear";
+    private static final String RPTPARAMDEFVAL_CURRENT_USER = "#currentUser";
 
     /*
      * Report parameter types constants
@@ -830,6 +831,9 @@ public class ReportFormController extends BaseSimpleController {
                     String val = con.getAsString("val");
                     if (RPTPARAMDEFVAL_USER_BRANCH.equals(val)) {
                         val = getDefaultBranch().getId().toString();
+                    }
+                    if (RPTPARAMDEFVAL_CURRENT_USER.equals(val)) {
+                        val = getAuthenticateUser().getId().toString();
                     }
 
                     SimpleQueryFilter filterFlag = new SimpleQueryFilter();
