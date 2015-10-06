@@ -965,7 +965,7 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	  */
 	 public String renderNumberAsMoney (BigDecimal money) {
 		 if ( money== null || money.longValue()==0)
-			 return "0"  ;
+			 return getMoneyFormater().format(0)  ;
 		 money.setScale(2, RoundingMode.HALF_EVEN);
 		 return getMoneyFormater().format(money); 
 	 }
@@ -974,15 +974,16 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	  * render money without decimal
 	  */
 	 public String renderNumberAsMoneyWithoutDecimal(BigDecimal money) {
-		 if ( money== null || money.longValue()==0)
-			 return "0"  ;
-		 
 		 String localeCode =  getAuthenticateUser().getLocale();
 			if ( localeCode == null)
 				localeCode ="id"; 
 			Locale l = Locale.forLanguageTag(localeCode);
 		 DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(l);
 		 format.applyPattern(commonNumberWithoutDecimalFormat);
+		 if ( money== null || money.longValue()==0){
+			 return format.format(0)  ;
+		 }
+		
 		 return format.format(money); 
 	 }
 	 
