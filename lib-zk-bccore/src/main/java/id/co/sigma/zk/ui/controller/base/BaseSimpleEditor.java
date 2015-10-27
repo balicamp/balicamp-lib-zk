@@ -666,6 +666,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 			try {
 				if(input instanceof Datebox) {
 					val = ((Datebox)input).getValue();
+					Constraint cons = ((Datebox)input).getConstraint();
+					if(cons != null){
+						cons.validate(input, val);
+					}
 				} else if(input instanceof Timebox) {
 					val = ((Timebox)input).getValue();
 				} else if(input instanceof Intbox) {
@@ -737,7 +741,15 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 				} else if(input instanceof AutoSuggestBox) {
 					val = ((AutoSuggestBox)input).getSelectedData();					
 				} else if(input instanceof Textbox){
-					val = ((Textbox)input).getValue();
+					if(((Textbox) input).isReadonly()){
+						val = ((Textbox)input).getValue();
+						Constraint cons = ((Textbox)input).getConstraint();
+						if(cons != null){
+							cons.validate(input, val);
+						}
+					}else{
+						val = ((Textbox)input).getValue();
+					}
 				} else if(input instanceof Longbox) {
 					val = ((Longbox)input).getValue();
 				} else if(input instanceof Spinner){
