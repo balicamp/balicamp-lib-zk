@@ -220,7 +220,7 @@ public class ReportFormController extends BaseSimpleController {
                         defaultValue = "" + Calendar.getInstance().get(Calendar.YEAR);
                         break;
                     case RPTPARAMDEFVAL_USER_BRANCH:
-                        defaultValue = getDefaultBranch().getBranchCode() + " - " + getDefaultBranch().getBranchName();
+                        defaultValue = getDefaultBranch().getBranchCode() + "-" + getDefaultBranch().getBranchName();
                         break;
                     default:
                         defaultValue = docParam.getDefaultValue();
@@ -339,6 +339,12 @@ public class ReportFormController extends BaseSimpleController {
                 Row row = new Row();
 
                 SimpleConstraint cons = null;
+                
+                // hilangkan spasi di separator agar seragam pada saat reset
+                if( param.getSeparator()!=null && param.getSeparator().equals(" - ") ){
+                	String dashSeparator = param.getSeparator();
+                	param.setSeparator(dashSeparator.trim());
+                }
 
                 if (param.getRequired() == 1) {
                     cons = new SimpleConstraint("no empty : " + param.getInvalidErrMessage());
@@ -379,10 +385,12 @@ public class ReportFormController extends BaseSimpleController {
                     inp.setId(param.getParamCode());
                     ((Datebox) inp).setConstraint(cons);
                     ((Datebox) inp).setFormat("dd-MMM-yyyy");
+                    ((Datebox) inp).setReadonly(true);
                 } else if ("LookupCombobox".equals(param.getParamType())) {
                     inp = new Combobox();
                     inp.setId(param.getParamCode());
                     ((Combobox) inp).setConstraint(cons);
+                    ((Combobox) inp).setReadonly(true);
 
                     lastCmp = param.getParamCode();
                     String dbName = param.getLovClass();
@@ -412,6 +420,7 @@ public class ReportFormController extends BaseSimpleController {
                     inp = new Combobox();
                     inp.setId(param.getParamCode());
                     ((Combobox) inp).setConstraint(cons);
+                    ((Combobox) inp).setReadonly(true);
                     if (param.getLovClass().startsWith("BankAccount")) {
                         ((Combobox) inp).setWidth("450px");
                     } else {
@@ -548,7 +557,7 @@ public class ReportFormController extends BaseSimpleController {
                     inp = new Combobox();
                     inp.setId(param.getParamCode());
                     ((Combobox) inp).setConstraint(cons);
-
+                    ((Combobox) inp).setReadonly(true);
                     try {
                         ParsedJSONArrayContainer items = ServerSideWrappedJSONParser
                                 .getInstance().parseJSONArray(param.getStaticData());
