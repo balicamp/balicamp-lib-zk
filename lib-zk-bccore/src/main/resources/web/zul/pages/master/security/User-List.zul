@@ -36,7 +36,7 @@
 		pageSize="10" >
 		<actionListhead>
 			<listheader label="${labels.field.no}" width="25px" align="center"/>
-			<listheader label="${labels.field.code}" width="50px" align="center"/>
+			<listheader label="${labels.field.user_name}" width="100px" align="center"/>
 			<listheader label="${labels.field.realname}" width="250px" align="center"/>
 			<listheader label="${labels.field.email}" width="200px" align="center"/>
 		</actionListhead>

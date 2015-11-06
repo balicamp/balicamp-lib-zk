@@ -179,10 +179,12 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 		 */
 		if (status.isChecked()) {
 			data.setStatus("A");
+			data.setActiveFlag("A");
 		} else {
 			data.setStatus("I");
+			data.setActiveFlag("I");
 		}
-		data.setActiveFlag("A");
+		
 		List<UserGroupAssignment> listUserAssignment = new ArrayList<UserGroupAssignment>(
 				groups.getAllStillExistData());
 		groups.eraseData(listUserAssignment);
