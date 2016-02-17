@@ -376,6 +376,20 @@ public final class EditorManager {
         w.setMaximizable(true);
         w.doModal();
     }
+    
+    /**
+     * menampilkan dialog dengan multiple result, custom filter, dan custom sort
+     */
+    public <DATA> void showMultipleResultLookup(String zulPath, MultipleValueLookupReceiver<DATA> dataSelectionHandler, SimpleQueryFilter[] filters, SimpleSortArgument[] sorts) {
+        Map<String, Object> parameter = new HashMap<String, Object>();
+        parameter.put(ZKCoreLibConstant.AFTER_SELECTION_HANDLER, dataSelectionHandler);
+        parameter.put(ZKCoreLibConstant.LOOKUP_LIST_FILTERS, filters);
+        parameter.put(ZKCoreLibConstant.LOOKUP_LIST_SORTS, sorts);
+        final Window w = (Window) Executions.createComponents(zulPath, null, parameter);
+        w.setClosable(true);
+        w.setMaximizable(true);
+        w.doModal();
+    }
 
     /**
      * tutup editor terakhir
