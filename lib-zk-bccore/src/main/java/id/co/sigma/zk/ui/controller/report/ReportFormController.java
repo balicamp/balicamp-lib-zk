@@ -1,5 +1,6 @@
 package id.co.sigma.zk.ui.controller.report;
 
+import id.co.sigma.common.data.app.SystemSimpleParameter;
 import id.co.sigma.common.data.lov.CommonLOV;
 import id.co.sigma.common.data.lov.CommonLOVHeader;
 import id.co.sigma.common.data.query.SimpleQueryFilter;
@@ -107,7 +108,8 @@ public class ReportFormController extends BaseSimpleController {
     @Value("${jasper.report.pass}")
     private String rptPassword;
 
-    @Autowired
+    @SuppressWarnings("unused")
+	@Autowired
     private ConfigurableEnvironment env;
 
     @Wire
@@ -588,6 +590,27 @@ public class ReportFormController extends BaseSimpleController {
                     }
                     ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                     ((Combobox) inp).setModel(new ListOfValueModel(list));
+                } else if ("FinancialMonthCombobox".equals(param.getParamType())) {
+                	inp = new Combobox();
+                    inp.setId(param.getParamCode());
+                    ((Combobox) inp).setConstraint(cons);
+                    List<ListOfValueItem> list = monthListOfValueItems();
+                    Calendar cal = Calendar.getInstance();
+                    cal.set(Calendar.MONTH, Calendar.DECEMBER);
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMMMM", getLocale());
+                    String lblPeriod13 = sdf.format(cal.getTime());
+                    String lblPeriod13Suffix = getSystemParameterValue("FMS_PERIOD13_SUFFIX");
+                    lblPeriod13 += " "+lblPeriod13Suffix;
+                    ListOfValueItem period13 = new ListOfValueItem(13, lblPeriod13, "", 13);
+                    list.add(period13);
+                    String defaultVal = "1";
+                    try {
+                        defaultVal = String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
+                    } catch (Exception e) {
+                        defaultVal = "1";
+                    }
+                    ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
+                    ((Combobox) inp).setModel(new ListOfValueModel(list));
                 } else if ("MinMaxCombobox".equals(param.getParamType())) {
                     inp = new Combobox();
                     inp.setId(param.getParamCode());
@@ -966,4 +989,9 @@ public class ReportFormController extends BaseSimpleController {
         }
 
     }
+    
+    protected String getSystemParameterValue(String key) {
+		SystemSimpleParameter sysParam = commonSystemService.getParameterByKey(key);
+		return sysParam.getValueRaw();
+	}
 }
