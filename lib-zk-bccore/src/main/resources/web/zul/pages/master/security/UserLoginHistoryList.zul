@@ -1,0 +1,69 @@
+<?page title="" contentType="text/html;charset=UTF-8"?>
+<zk xmlns:n="xhtml">
+<listWindow title="User Login History" 
+	apply="id.co.sigma.zk.ui.controller.security.UserLoginHistoryListController"
+	border="normal"
+	id="userLoginHistoryListWin" showAddButton="false">
+<div style="display:block; margin:0; padding:0;" class="row">
+	<n:table class="col col-md-12">
+		<n:tr>
+			<n:td class="col-md-2">User Name</n:td>
+			<n:td style="width:15px;">:</n:td>
+            <n:td>
+                <textbox id="txtUserName" />
+            </n:td>
+            <n:td class="col-md-1"/>
+            <n:td class="col-md-2">Nama User</n:td>
+			<n:td style="width:15px;">:</n:td>
+            <n:td>
+                <textbox id="txtNamaUser" />
+            </n:td>
+		</n:tr>
+		<n:tr>
+			<n:td class="col-md-2">Kantor</n:td>
+			<n:td style="width:15px;">:</n:td>
+            <n:td>
+                <combobox id="cmbBranch" readonly="true" />
+            </n:td>
+            <n:td class="col-md-1"/>
+            <n:td class="col-md-2">Tanggal</n:td>
+			<n:td style="width:15px;">:</n:td>
+            <n:td>
+                 <hbox>
+                     <datebox id="startDate" tabindex="5"
+                              format="${apVoucher$composer.commonDateFormat}" readonly="true"/>
+                     s/d
+                     <datebox id="endDate" tabindex="6"
+                              format="${apVoucher$composer.commonDateFormat}" readonly="true"/>
+                 </hbox>
+             </n:td>
+		</n:tr>
+	</n:table>
+</div>
+
+<separator/>
+<div style="display: block;">
+	<listbox id="listbox" mold="paging" pageSize="10" width="100%">
+		<listhead>
+			<listheader label="${labels.field.no}" width="2%" align="center"/>
+			<listheader label="${labels.field.user_name}" width="10%" align="center"/>
+			<listheader label="Nama Pegawai" width="15%" align="center"/>
+			<listheader label="Kantor" width="15%" align="center"/>
+			<listheader label="Timestamp" width="10%" align="center"/>
+			<listheader label="Ip Address" width="10%" align="center"/>
+		</listhead>
+		<template name="model">
+			<listitem>
+				<listcell label="${forEachStatus.index + 1}" style="text-align: center"/>
+				<listcell label="${each.user.userCode}" style="text-align: center"/>
+				<listcell label="${each.user.realName}" style="text-align: center"/>
+				<listcell label="${userLoginHistoryListWin$composer.getBranchNameByBranchCode(each.user.defaultBranchCode)}" style="text-align: center"/>
+				<listcell label="${each.logonTime}" style="text-align: center"/>
+				<listcell label="${each.terminal}" style="text-align: center"/>
+			</listitem>
+		</template>
+	</listbox>
+</div>
+       
+</listWindow>
+</zk>
