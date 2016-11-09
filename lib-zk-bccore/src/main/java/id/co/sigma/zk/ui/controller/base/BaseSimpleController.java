@@ -1015,7 +1015,11 @@ public abstract class BaseSimpleController extends SelectorComposer<Component>{
 	 
 	 
 	 
-	 /**
+	 public String getDateTimeFormatPattern() {
+		return dateTimeFormatPattern;
+	}
+
+	/**
 	  * format simple date. 
 	  */
 	 public String formatAsDate (Date date) {

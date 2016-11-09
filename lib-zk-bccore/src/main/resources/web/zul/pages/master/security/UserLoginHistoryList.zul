@@ -1,4 +1,3 @@
-<?page title="" contentType="text/html;charset=UTF-8"?>
 <zk xmlns:n="xhtml">
 <listWindow title="User Login History" 
 	apply="id.co.sigma.zk.ui.controller.security.UserLoginHistoryListController"
@@ -31,10 +30,10 @@
             <n:td>
                  <hbox>
                      <datebox id="startDate" tabindex="5"
-                              format="${apVoucher$composer.commonDateFormat}" readonly="true"/>
+                              format="${userLoginHistoryListWin$composer.commonDateFormat}" readonly="true"/>
                      s/d
                      <datebox id="endDate" tabindex="6"
-                              format="${apVoucher$composer.commonDateFormat}" readonly="true"/>
+                              format="${userLoginHistoryListWin$composer.commonDateFormat}" readonly="true"/>
                  </hbox>
              </n:td>
 		</n:tr>
@@ -58,7 +57,7 @@
 				<listcell label="${each.user.userCode}" style="text-align: center"/>
 				<listcell label="${each.user.realName}" style="text-align: center"/>
 				<listcell label="${userLoginHistoryListWin$composer.getBranchNameByBranchCode(each.user.defaultBranchCode)}" style="text-align: center"/>
-				<listcell label="${each.logonTime}" style="text-align: center"/>
+				<listcell label="${each.logonTime!=null? zkfn:formatDate(each.logonTime, userLoginHistoryListWin$composer.dateTimeFormatPattern) : '-'}" style="text-align:center" />
 				<listcell label="${each.terminal}" style="text-align: center"/>
 			</listitem>
 		</template>

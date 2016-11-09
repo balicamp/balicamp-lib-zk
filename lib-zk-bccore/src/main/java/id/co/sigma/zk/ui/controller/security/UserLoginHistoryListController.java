@@ -1,12 +1,15 @@
 package id.co.sigma.zk.ui.controller.security;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
 
@@ -43,11 +46,20 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	@Wire
 	private Textbox txtNamaUser;
 	
-	/*@QueryParameterEntry(filteredField = "branchId", queryOperator = SimpleQueryFilterOperator.equal, fieldType = Long.class)*/
-	@ListOfValue(codeField = "branchCode", valueField = "id", labelField = "branchName", lovClass = Branch.class, onDemand = false, sorts = { @LoVSort(field = "branchCode") })
+	@QueryParameterEntry(filteredField = "user.defaultBranchCode", queryOperator = SimpleQueryFilterOperator.equal, fieldType = String.class)
+	@ListOfValue(codeField = "branchCode", valueField = "branchCode", labelField = "branchName", lovClass = Branch.class, onDemand = false, sorts = { @LoVSort(field = "branchCode") })
 	@Wire
 	private Combobox cmbBranch;
 
+	@QueryParameterEntry(filteredField = "logonTime", queryOperator = SimpleQueryFilterOperator.greaterEqual,
+            fieldType = Date.class)
+	@Wire
+	private Datebox startDate;
+	
+	@QueryParameterEntry(filteredField = "logoutTime", queryOperator = SimpleQueryFilterOperator.lessEqual,
+            fieldType = Date.class)
+	@Wire
+	private Datebox endDate;
 	
 	@Override
 	protected Class<? extends Signon> getHandledClass() {
@@ -81,7 +93,6 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 			
 			@Override
 			public List<Signon> selectFromDB(int pageSize, int firstRowPosition) {
-				/*return super.selectFromDB(pageSize, firstRowPosition);*/
 				List<Signon> listSignOn = new ArrayList<>();
 				try {
 					listSignOn = dao.list(Signon.class.getName()+" uh inner join fetch uh.user", "uh",filters, getSortArgs());
