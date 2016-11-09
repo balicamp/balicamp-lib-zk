@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:w="http://www.zkoss.org/2005/zk/client">
+	<window id="winUserLogin"
+		apply="id.co.sigma.zk.ui.controller.security.UserLoginController">
+		<panel>
+			<panelchildren>
+				<label sclass="h1" value="${labels.title.userlogin}" />
+				<textbox id="module" value="USER" visible="false" />
+				<textbox id="function" value="USER_LOGIN"
+					visible="false" />
+				<textbox id="action" value="INQUIRY" visible="false" />
+			</panelchildren>
+		</panel>
+		<separator />
+		<panel>
+			<panelchildren>
+				<listbox id="lstUser" emptyMessage="Data Tidak Ada"
+					mold="paging" pageSize="15">
+					<listhead>
+						<listheader label="${labels.field.no}"
+							width="10%" />
+						<listheader label="${labels.field.userName}"
+							width="15%" />
+						<listheader label="${labels.field.name}"
+							width="15%" />
+						<listheader label="${labels.field.office}"
+							width="15%" />
+						<listheader label="${labels.field.ipAddress}"
+							width="15%" />
+						<listheader label="${labels.field.lastLogin}"
+							width="30%" />
+					</listhead>
+					<template name="model">
+						<listitem value="${each}">
+							<listcell label="${forEachStatus.index + 1}"
+								style="text-align:left;" />
+							<listcell label="${each.user.userCode}"
+								style="text-align:left;" />
+							<listcell label="${each.user.realName}"
+								style="text-align:left;" />
+							<listcell
+								label="${winUserLogin$composer.getBranchNameByBranchCode(each.user.defaultBranchCode)}"
+								style="text-align: center" />
+							<listcell label="${each.terminal}"
+								style="text-align:left;" />
+							<listcell label="${each.logonTime}"
+								style="text-align:left;" />
+						</listitem>
+					</template>
+				</listbox>
+			</panelchildren>
+		</panel>
+		<separator />
+	</window>
+</zk>
