@@ -54,7 +54,7 @@
 			</row>
 			<row>
 				${labels.field.menu.url}
-				<bandbox id="urlBox" mold="rounded" autodrop="true" value="${menuEditor$composer.editedData.pageDefinition.pageUrl}" width="350px" tabindex="5">
+				<!-- <bandbox id="urlBox" mold="rounded" autodrop="true" value="${menuEditor$composer.editedData.pageDefinition.pageUrl}" width="350px" tabindex="5">
 					<bandpopup>
 						<listbox id="list" height="250px" hflex="min">
 							<listhead>
@@ -69,7 +69,13 @@
 							</template>
 						</listbox>
 					</bandpopup>
-				</bandbox>
+				</bandbox> -->
+				<textbox tabindex="4" id="txtUrl" disabled="true"
+					value="${menuEditor$composer.editedData.pageDefinition.pageUrl != null ? menuEditor$composer.editedData.pageDefinition.pageUrl : ''}" />
+				<image id="btnBrowseUrl"
+					src="~./zul/img/ctrlimages/zoom-24.png" width="16px" height="16px"
+					class="imageButton" style="cursor:pointer; margin-left:5px;"
+					tooltiptext="Browse" />
 			</row>
 			<row>
 				<longbox id="pageId" value="${menuEditor$composer.editedData.pageId}" visible="false" />

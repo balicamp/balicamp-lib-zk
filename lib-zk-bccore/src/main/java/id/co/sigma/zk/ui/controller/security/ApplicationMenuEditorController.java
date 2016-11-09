@@ -18,6 +18,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 import id.co.sigma.common.data.query.SimpleQueryFilter;
@@ -25,6 +26,7 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.ApplicationMenu;
 import id.co.sigma.common.security.domain.PageDefinition;
+import id.co.sigma.zk.ui.SingleValueLookupReciever;
 import id.co.sigma.zk.ui.controller.EditorManager;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
@@ -64,7 +66,10 @@ public class ApplicationMenuEditorController extends
 	Listbox listParent;
 	
 	@Wire
-	Bandbox urlBox;
+	Textbox txtUrl;
+	
+	/*@Wire
+	Bandbox urlBox;*/
 	
 	@Wire
 	Bandbox parentBox;
@@ -110,7 +115,7 @@ public class ApplicationMenuEditorController extends
 		Long appId = new Long(applicationId);
 		getEditedData().setApplicationId(appId);
 		getEditedData().setStatus("A");
-		if(getEditedData().getPageId()==0 || urlBox.getValue().equals("") || urlBox.getValue()==null){
+		if(getEditedData().getPageId()==0){
 			getEditedData().setPageId(null);
 		}
 		if(getEditedData().getFunctionIdParent()==0 || parentBox.getValue().equals("") || parentBox.getValue()==null){
@@ -177,7 +182,7 @@ public class ApplicationMenuEditorController extends
 	@Override
 	public void updateData() throws Exception {
 		
-		if(getEditedData().getPageId()==0 || urlBox.getValue().equals("") || urlBox.getValue()==null){
+		if(getEditedData().getPageId()==0){
 			getEditedData().setPageId(null);
 			getEditedData().setPageDefinition(null);
 		}
@@ -237,7 +242,7 @@ public class ApplicationMenuEditorController extends
 		return "";
 	}
 	
-	protected List<PageDefinition> getPages () {
+	/*protected List<PageDefinition> getPages () {
 		Long appId = new Long(applicationId);
 		SimpleQueryFilter[] flt = new SimpleQueryFilter[]{
 				new SimpleQueryFilter("applicationId" , SimpleQueryFilterOperator.equal , appId)
@@ -252,7 +257,7 @@ public class ApplicationMenuEditorController extends
 			logger.error("gagal membaca menu untuk app id : " + applicationId + " , error : " + e.getMessage() , e);
 			return null ;
 		}
-	}
+	}*/
 	
 	public ListModelList<ApplicationMenu> getListParent(){
 		return new ListModelList<>(getListMenu());
@@ -299,11 +304,11 @@ public class ApplicationMenuEditorController extends
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
-		listModel = new ListModelList<>(getPages());
-		list.setModel(listModel);
+		/*listModel = new ListModelList<>(getPages());
+		list.setModel(listModel);*/
 	}
 	
-	@Listen("onSelect=#list")
+	/*@Listen("onSelect=#list")
 	public void onItemSelect(){
 		PageDefinition selectedItem = list.getSelectedItem().getValue();
 		if(selectedItem!=null){
@@ -311,7 +316,7 @@ public class ApplicationMenuEditorController extends
 			urlBox.setValue(selectedItem.getPageUrl());
 			urlBox.close();
 		}
-	}
+	}*/
 	
 	@Listen("onSelect=#listParent")
 	public void onParentSelect(){
@@ -336,6 +341,23 @@ public class ApplicationMenuEditorController extends
 		super.runAditionalTaskOnDataRevieved(editedData, editorState, rawDataParameter);
 	}
 	
-	
+	@Listen("onClick=#btnBrowseUrl")
+	public void onClickUrl() {
+		EditorManager.getInstance().showSingleResultLookup(
+				"~./zul/pages/component/PageDefinitionSingleValueLookup.zul",
+				new SingleValueLookupReciever<PageDefinition>() {
+					@Override
+					public void onDataSelected(PageDefinition selectedData) {
+						txtUrl.setValue(selectedData.getPageUrl());
+						pageId.setValue(selectedData.getId());
+					}
+
+					@Override
+					public void onNoneSelected() {
+						Messagebox.show(Labels.getLabel("msg.warnings.no_item_selected"));
+					}
+				});
+
+	}
 
 }

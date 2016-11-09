@@ -1,0 +1,50 @@
+<zk xmlns:n="xhtml">
+	<SingleLookupWindow id="pageDefinitionLookupWin" 
+						apply="id.co.sigma.zk.ui.controller.component.PageDefinitionSingleLookupController"
+						width="75%" 
+						height="auto" 
+						contentStyle="overflow:auto;">
+	
+		<div class="page-title">
+			<label style="font-weight:bold;" value="Data Pegawai"/>
+		</div>
+		
+		<vlayout>
+			<n:table>
+				<n:tr>
+					<n:td style="width:100px;">Code</n:td>
+					<n:td style="width:20px;">:</n:td>
+					<n:td><textbox id="txtCode" /></n:td>
+				</n:tr>
+				<n:tr>
+					<n:td>Url</n:td>
+					<n:td>:</n:td>
+					<n:td><textbox id="txtUrl" /></n:td>
+				</n:tr>
+				<n:tr>
+					<n:td colspan="3">
+						<button id="btnCari" label="${labels.action.button.search}" />
+						<button id="btnReset" label="${labels.action.button.reset}" />
+					</n:td>
+				</n:tr>
+			</n:table>
+			<separator />
+			<listbox id="listbox" mold="paging" width="100%" height="100%" checkmark="true" pageSize="5"  >
+					<listhead>
+						<listheader label="" align="center" width="5%" />
+						<listheader label="Code" align="center" width="15%" />
+						<listheader label="Url" align="center" width="20%" />
+						<listheader label="Remark" align="center" width="15%" />
+					</listhead>
+					<template name="model">
+						<listitem>
+							<listcell style="text-align:center;" label=""  />
+							<listcell style="text-align:left;" label="${each.pageCode}" />
+							<listcell style="text-align:left;" label="${each.pageUrl}" />
+							<listcell style="text-align:left;" label="${each.remark}" />
+						</listitem>
+					</template>
+			</listbox>
+		</vlayout>
+	</SingleLookupWindow>
+</zk>
