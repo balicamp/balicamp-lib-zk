@@ -80,9 +80,7 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	public void invokeSearch(final SimpleQueryFilter[] filters, final SimpleSortArgument[] sorts) {
 		dataModel = new SimpleQueryDrivenListModel<Signon>() {
 			
-			/**
-			 * 
-			 */
+			private static final long serialVersionUID = 1L;
 			
 
 			@Override
@@ -104,7 +102,7 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 			public List<Signon> selectFromDB(int pageSize, int firstRowPosition) {
 				List<Signon> listSignOn = new ArrayList<>();
 				try {
-					listSignOn = dao.list(Signon.class.getName()+" uh inner join fetch uh.user", "uh",filters, sorts, pageSize, firstRowPosition);
+					listSignOn = dao.list(Signon.class.getName()+" uh inner join fetch uh.user", "uh",filters, getSorts(), pageSize, firstRowPosition);
 					if (listSignOn.size()>0) {
 						return listSignOn;
 					}
