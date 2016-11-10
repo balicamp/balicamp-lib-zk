@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -26,11 +25,16 @@ import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
 /**	
- * controller budget usage detail list
+ * controller User LOgin detail list
  * 
  * @author <a href="mailto:gusti.darmawan@sigma.co.id">Eka D.</a>
  */
 public class UserLoginHistoryListController extends BaseSimpleListController<Signon>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Autowired
 	protected IGeneralPurposeDao dao ; 
@@ -76,6 +80,11 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	public void invokeSearch(final SimpleQueryFilter[] filters, final SimpleSortArgument[] sorts) {
 		dataModel = new SimpleQueryDrivenListModel<Signon>() {
 			
+			/**
+			 * 
+			 */
+			
+
 			@Override
 			protected SimpleSortArgument[] getSorts() {
 				return sorts;
@@ -95,11 +104,14 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 			public List<Signon> selectFromDB(int pageSize, int firstRowPosition) {
 				List<Signon> listSignOn = new ArrayList<>();
 				try {
-					listSignOn = dao.list(Signon.class.getName()+" uh inner join fetch uh.user", "uh",filters, getSortArgs());
+					listSignOn = dao.list(Signon.class.getName()+" uh inner join fetch uh.user", "uh",filters, sorts, pageSize, firstRowPosition);
+					if (listSignOn.size()>0) {
+						return listSignOn;
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return listSignOn;
+				return null;
 			}
 		};
 		
@@ -120,19 +132,35 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	}
 	
 	public String getBranchNameByBranchCode(String branchCode){
-		SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
-			new SimpleQueryFilter("branchCode", SimpleQueryFilterOperator.equal, branchCode)	
-		};	
-		List<Branch> branchList = null;
-		try {
-			branchList = dao.list(Branch.class, filters, null);
-			if(branchList != null || !branchList.isEmpty()){
-				return branchCode+" - "+branchList.get(0).getBranchName();
+		if(branchCode!=""){
+			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
+				new SimpleQueryFilter("branchCode", SimpleQueryFilterOperator.equal, branchCode)	
+			};	
+			List<Branch> branchList = new ArrayList<>();
+			try {
+				branchList = dao.list(Branch.class, filters, null);
+				if(branchList.size() > 0){
+					return branchCode+" - "+branchList.get(0).getBranchName();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return "-";
+	}
+	
+	@Override
+	public SimpleSortArgument[] getSorts() {
+		SimpleSortArgument[] currentSort = super.getSorts();
+		List<SimpleSortArgument> tmpSort = new ArrayList<>();
+		if(currentSort != null && currentSort.length > 0){
+			for (SimpleSortArgument sort : currentSort) {
+				tmpSort.add(sort);
+			}
+		}
+		tmpSort.add(new SimpleSortArgument("logonTime", false));
+		SimpleSortArgument[] finalSort = new SimpleSortArgument[tmpSort.size()];
+		return tmpSort.toArray(finalSort);
 	}
 }

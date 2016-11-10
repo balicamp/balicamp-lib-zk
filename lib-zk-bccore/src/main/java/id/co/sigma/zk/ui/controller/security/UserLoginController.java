@@ -1,9 +1,13 @@
 package id.co.sigma.zk.ui.controller.security;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Listbox;
 
@@ -28,12 +32,11 @@ public class UserLoginController extends BaseSimpleListController<Signon> {
 	public Listbox getListbox() {
 		return lstUser;
 	}
+	
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
-		// TODO Auto-generated method stub
 		super.doAfterCompose(comp);
-		System.out.println("test 123s");
 		invokeSearch();
 	}
 
@@ -53,6 +56,11 @@ public class UserLoginController extends BaseSimpleListController<Signon> {
 		return "-";
 	}
 
+	@Listen("onClick = #btnRefresh")
+	public void onClickRefresh(){
+		invokeSearch();
+	}
+	
 	@SuppressWarnings("serial")
 	@Override
 	protected SimpleQueryDrivenListModel<Signon> instantiateDataModel(final SimpleQueryFilter[] filters,
@@ -68,13 +76,11 @@ public class UserLoginController extends BaseSimpleListController<Signon> {
 
 			@Override
 			protected SimpleQueryFilter[] getFilters() {
-				// TODO Auto-generated method stub
 				return filters;
 			}
 
 			@Override
 			protected SimpleSortArgument[] getSorts() {
-				// TODO Auto-generated method stub
 				return sorts;
 			}
 
@@ -100,5 +106,38 @@ public class UserLoginController extends BaseSimpleListController<Signon> {
 	protected Class<? extends Signon> getHandledClass() {
 		return Signon.class;
 	}
+	
+	@Override
+	protected SimpleQueryFilter[] generateFilters() {
+		SimpleQueryFilter[] currentFilter = super.generateFilters();
+		List<SimpleQueryFilter> tmpFilter = new ArrayList<>();
+		if(currentFilter != null && currentFilter.length > 0){
+			for (SimpleQueryFilter filter : currentFilter) {
+				tmpFilter.add(filter);
+			}
+		}
+		Date currentDate = new Date();
+		
+		tmpFilter.add(new SimpleQueryFilter("logonTime", SimpleQueryFilterOperator.greaterEqual, currentDate));
+		tmpFilter.add(new SimpleQueryFilter("logoutTime", SimpleQueryFilterOperator.fieldIsNull, true));
+		SimpleQueryFilter[] finalFilter = new SimpleQueryFilter[tmpFilter.size()];
+		
+		tmpFilter.toArray(finalFilter);
+		return finalFilter;
+	}
 
+	
+	@Override
+	public SimpleSortArgument[] getSorts() {
+		SimpleSortArgument[] currentSort = super.getSorts();
+		List<SimpleSortArgument> tmpSort = new ArrayList<>();
+		if(currentSort != null && currentSort.length > 0){
+			for (SimpleSortArgument sort : currentSort) {
+				tmpSort.add(sort);
+			}
+		}
+		tmpSort.add(new SimpleSortArgument("logonTime", false));
+		SimpleSortArgument[] finalSort = new SimpleSortArgument[tmpSort.size()];
+		return tmpSort.toArray(finalSort);
+	}
 }
