@@ -159,6 +159,7 @@ public class UserEditorController extends BaseSimpleDirectToDBEditor<User> {
 		if(pass!=null && !pass.isEmpty()){
 			data.setChipperText(pass);
 		}
+		data.setLastChangePassword(new Date());
 		if (ZKEditorState.EDIT.equals(getEditorState())) {
 			/*
 			 * if(data.getChipperText().equalsIgnoreCase("")){
