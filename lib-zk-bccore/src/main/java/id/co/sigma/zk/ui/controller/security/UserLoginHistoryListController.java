@@ -55,13 +55,13 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	@Wire
 	private Combobox cmbBranch;
 
-	@QueryParameterEntry(filteredField = "logonTime", queryOperator = SimpleQueryFilterOperator.greaterEqual,
-            fieldType = Date.class)
+	/*@QueryParameterEntry(filteredField = "logonTime", queryOperator = SimpleQueryFilterOperator.greaterEqual,
+            fieldType = Date.class)*/
 	@Wire
 	private Datebox startDate;
 	
-	@QueryParameterEntry(filteredField = "logoutTime", queryOperator = SimpleQueryFilterOperator.lessEqual,
-            fieldType = Date.class)
+	/*@QueryParameterEntry(filteredField = "logonTime", queryOperator = SimpleQueryFilterOperator.lessEqual,
+            fieldType = Date.class)*/
 	@Wire
 	private Datebox endDate;
 	
@@ -160,5 +160,58 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 		tmpSort.add(new SimpleSortArgument("logonTime", false));
 		SimpleSortArgument[] finalSort = new SimpleSortArgument[tmpSort.size()];
 		return tmpSort.toArray(finalSort);
+	}
+	
+	@Override
+	protected SimpleQueryFilter[] generateFilters() {
+		/*// TODO Auto-generated method stub
+		return super.generateFilters();*/
+		/*SimpleQueryFilter[] currentFilter = super.generateFilters();
+		List<SimpleQueryFilter> listFilter = new ArrayList<>();
+		if(currentFilter !=null || currentFilter.length > 0){
+			for (SimpleQueryFilter filter : currentFilter) {
+				listFilter.add(filter);
+			}
+		}
+		
+		
+		if(endDate.getValue()!=null){
+			Date endDateFil = endDate.getValue();
+			endDateFil.setHours(23);
+			endDateFil.setMinutes(59);
+			endDateFil.setSeconds(59);
+			listFilter.add(new SimpleQueryFilter("logonTime", SimpleQueryFilterOperator.lessEqual, endDateFil));
+		}
+		
+		SimpleQueryFilter[] finalFilter = new SimpleQueryFilter[listFilter.size()];
+		return listFilter.toArray(finalFilter);*/
+		
+		SimpleQueryFilter[] currentFilter = super.generateFilters();
+		List<SimpleQueryFilter> tmpFilter = new ArrayList<>();
+		if(currentFilter != null && currentFilter.length > 0){
+			for (SimpleQueryFilter filter : currentFilter) {
+				tmpFilter.add(filter);
+			}
+		}
+		
+		if(startDate.getValue() !=null && endDate.getValue() != null){
+			tmpFilter.add(new SimpleQueryFilter("logonTime", startDate.getValue(), endDate.getValue()));
+		}else if(startDate.getValue() !=null && endDate.getValue() == null ){
+				tmpFilter.add(new SimpleQueryFilter("logonTime", SimpleQueryFilterOperator.greaterEqual, startDate.getValue()));
+			}else if(startDate.getValue() ==null && endDate.getValue() != null){
+				tmpFilter.add(new SimpleQueryFilter("logonTime", SimpleQueryFilterOperator.lessEqual, endDate.getValue()));
+		}
+		
+		SimpleQueryFilter[] finalFilter = new SimpleQueryFilter[tmpFilter.size()];
+		
+		tmpFilter.toArray(finalFilter);
+		return finalFilter;
+	}
+	
+	@Override
+	protected void resetFilter() {
+		super.resetFilter();
+		endDate.setValue(null);
+		startDate.setValue(null);
 	}
 }
