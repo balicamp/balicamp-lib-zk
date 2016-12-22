@@ -6,7 +6,7 @@
 		apply="id.co.sigma.zk.ui.controller.security.UserLoginController">
 		<panel>
 			<panelchildren>
-				<label sclass="h1" value="${labels.title.userlogin}" />
+				<label sclass="h1" value="View Active User Login" />
 				<textbox id="module" value="USER" visible="false" />
 				<textbox id="function" value="USER_LOGIN"
 					visible="false" />
