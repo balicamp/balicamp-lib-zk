@@ -49,6 +49,7 @@
 			<listheader label="Nama Pegawai" width="15%" align="center"/>
 			<listheader label="Kantor" width="15%" align="center"/>
 			<listheader label="Timestamp" width="10%" align="center"/>
+			<listheader label="Activity" width="10%" align="center"/>
 			<listheader label="Ip Address" width="10%" align="center"/>
 		</listhead>
 		<template name="model">
@@ -57,7 +58,8 @@
 				<listcell label="${each.user.userCode}" style="text-align: center"/>
 				<listcell label="${each.user.realName}" style="text-align: center"/>
 				<listcell label="${userLoginHistoryListWin$composer.getBranchNameByBranchCode(each.user.defaultBranchCode)}" style="text-align: center"/>
-				<listcell label="${each.logonTime!=null? zkfn:formatDate(each.logonTime, userLoginHistoryListWin$composer.dateTimeFormatPattern) : '-'}" style="text-align:center" />
+				<listcell label="${each.waktu!=null? zkfn:formatDate(each.waktu, userLoginHistoryListWin$composer.dateTimeFormatPattern) : '-'}" style="text-align:center" />
+				<listcell label="${each.activity}" style="text-align: center"/>
 				<listcell label="${each.terminal}" style="text-align: center"/>
 			</listitem>
 		</template>

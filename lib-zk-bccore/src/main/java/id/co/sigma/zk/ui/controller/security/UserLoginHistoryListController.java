@@ -1,7 +1,6 @@
 package id.co.sigma.zk.ui.controller.security;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.Branch;
-import id.co.sigma.common.security.domain.Signon;
+import id.co.sigma.common.security.domain.SigonHistoryView;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 import id.co.sigma.zk.ui.annotations.ListOfValue;
@@ -29,15 +28,13 @@ import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
  * 
  * @author <a href="mailto:gusti.darmawan@sigma.co.id">Eka D.</a>
  */
-public class UserLoginHistoryListController extends BaseSimpleListController<Signon>{
+public class UserLoginHistoryListController extends BaseSimpleListController<SigonHistoryView>{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Autowired
-	protected IGeneralPurposeDao dao ; 
 	
 	@Wire
 	private Listbox listbox;
@@ -66,8 +63,8 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	private Datebox endDate;
 	
 	@Override
-	protected Class<? extends Signon> getHandledClass() {
-		return Signon.class;
+	protected Class<? extends SigonHistoryView> getHandledClass() {
+		return SigonHistoryView.class;
 	}
 
 	@Override
@@ -78,7 +75,7 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	
 	@Override
 	public void invokeSearch(final SimpleQueryFilter[] filters, final SimpleSortArgument[] sorts) {
-		dataModel = new SimpleQueryDrivenListModel<Signon>() {
+		dataModel = new SimpleQueryDrivenListModel<SigonHistoryView>() {
 			
 			private static final long serialVersionUID = 1L;
 			
@@ -89,8 +86,8 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 			}
 			
 			@Override
-			public Class<? extends Signon> getHandledClass() {
-				return Signon.class;
+			public Class<? extends SigonHistoryView> getHandledClass() {
+				return SigonHistoryView.class;
 			}
 			
 			@Override
@@ -99,11 +96,13 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 			}
 			
 			@Override
-			public List<Signon> selectFromDB(int pageSize, int firstRowPosition) {
-				List<Signon> listSignOn = new ArrayList<>();
+			public List<SigonHistoryView> selectFromDB(int pageSize, int firstRowPosition) {
+				List<SigonHistoryView> listSignOn = new ArrayList<>();
 				try {
-					listSignOn = dao.list(Signon.class.getName()+" uh inner join fetch uh.user", "uh",filters, getSorts(), pageSize, firstRowPosition);
-					if (listSignOn.size()>0) {
+					/*listSignOn = dao.list(SigonHistoryView.class.getName()+" uh inner join fetch uh.user", "uh",filters, getSorts(), pageSize, firstRowPosition);*/
+					listSignOn = generalPurposeDao.list(SigonHistoryView.class.getName()+" sh inner join fetch sh.user ", "sh", filters, getSorts(), pageSize, firstRowPosition);
+					if (listSignOn != null && !listSignOn.isEmpty()) {
+						/*List<Signon> listData = splitLogonLogout(listSignOn);*/
 						return listSignOn;
 					}
 				} catch (Exception e) {
@@ -129,6 +128,25 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 		}
 	}
 	
+	/*private List<Signon> splitLogonLogout(List<Signon> listData){
+		List<Signon> retval = new ArrayList<>();
+		for (Signon data : listData) {
+			if(data.getLogoutTime() != null){
+				data.setLoginLogout(Signon.SIGNON_STATUS_LOGIN);
+				retval.add(data);
+				Signon dataLogout = new Signon();
+				dataLogout = data;
+				dataLogout.setLoginLogout(Signon.SIGNON_STATUS_LOGOUT);
+				dataLogout.setLogonTime(data.getLogoutTime());
+				retval.add(dataLogout);
+			}else{
+				data.setLoginLogout(Signon.SIGNON_STATUS_LOGIN);
+				retval.add(data);
+			}
+		}
+		return retval;
+	}*/
+	
 	public String getBranchNameByBranchCode(String branchCode){
 		if(branchCode!=""){
 			SimpleQueryFilter[] filters = new SimpleQueryFilter[]{
@@ -136,7 +154,8 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 			};	
 			List<Branch> branchList = new ArrayList<>();
 			try {
-				branchList = dao.list(Branch.class, filters, null);
+				/*branchList = dao.list(Branch.class, filters, null);*/
+				branchList = generalPurposeDao.list(Branch.class, filters, null);
 				if(branchList.size() > 0){
 					return branchCode+" - "+branchList.get(0).getBranchName();
 				}
@@ -157,7 +176,7 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 				tmpSort.add(sort);
 			}
 		}
-		tmpSort.add(new SimpleSortArgument("logonTime", false));
+		tmpSort.add(new SimpleSortArgument("waktu", false));
 		SimpleSortArgument[] finalSort = new SimpleSortArgument[tmpSort.size()];
 		return tmpSort.toArray(finalSort);
 	}
@@ -195,11 +214,11 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 		}
 		
 		if(startDate.getValue() !=null && endDate.getValue() != null){
-			tmpFilter.add(new SimpleQueryFilter("logonTime", startDate.getValue(), endDate.getValue()));
+			tmpFilter.add(new SimpleQueryFilter("waktu", startDate.getValue(), endDate.getValue()));
 		}else if(startDate.getValue() !=null && endDate.getValue() == null ){
-				tmpFilter.add(new SimpleQueryFilter("logonTime", SimpleQueryFilterOperator.greaterEqual, startDate.getValue()));
+				tmpFilter.add(new SimpleQueryFilter("waktu", SimpleQueryFilterOperator.greaterEqual, startDate.getValue()));
 			}else if(startDate.getValue() ==null && endDate.getValue() != null){
-				tmpFilter.add(new SimpleQueryFilter("logonTime", SimpleQueryFilterOperator.lessEqual, endDate.getValue()));
+				tmpFilter.add(new SimpleQueryFilter("waktu", SimpleQueryFilterOperator.lessEqual, endDate.getValue()));
 		}
 		
 		SimpleQueryFilter[] finalFilter = new SimpleQueryFilter[tmpFilter.size()];
