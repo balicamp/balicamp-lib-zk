@@ -6,6 +6,7 @@ import id.co.sigma.common.server.service.IGeneralPurposeService;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -56,7 +57,29 @@ public class CustomUrlAuthenticationSuccessHandler extends
 		Signon signon = new Signon();
 		signon.setLogonTime(new Date());
 		signon.setUserId(appUser.getId());
-		signon.setTerminal(request.getRemoteAddr());
+		
+		Enumeration<String> header = request.getHeaderNames();
+		
+		String ip = request.getHeader("X-Forwarded-For");  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("WL-Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_CLIENT_IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getRemoteAddr();  
+        }  
+        
+        System.out.println("Ip yg login : "+ip);
+		
+		signon.setTerminal(ip);
 		signon.setUserBrowser(getUserBrowser(request.getHeader("User-Agent")));
 		signon.setUuid(sessionId);
 		
