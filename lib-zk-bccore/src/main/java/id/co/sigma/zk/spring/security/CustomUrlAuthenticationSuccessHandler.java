@@ -60,24 +60,39 @@ public class CustomUrlAuthenticationSuccessHandler extends
 		
 		Enumeration<String> header = request.getHeaderNames();
 		
-		String ip = request.getHeader("X-Forwarded-For");  
+		String ip = request.getHeader("X-Forwarded-For");
+		String ip1 = request.getHeader("Proxy-Client-IP");
+		String ip2 = request.getHeader("WL-Proxy-Client-IP");
+		String ip3 = request.getHeader("HTTP_CLIENT_IP");
+		String ip4 = request.getHeader("HTTP_X_FORWARDED_FOR");
+		String ip5 = request.getHeader("getRemoteAddr");
+		
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
             ip = request.getHeader("Proxy-Client-IP");  
+            logger.debug("ngambil dari : Proxy-Client-IP");
         }  
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
             ip = request.getHeader("WL-Proxy-Client-IP");  
+            logger.debug("ngambil dari : WL-Proxy-Client-IP");
         }  
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
             ip = request.getHeader("HTTP_CLIENT_IP");  
+            logger.debug("ngambil dari : HTTP_CLIENT_IP");
         }  
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            logger.debug("ngambil dari : HTTP_X_FORWARDED_FOR");
         }  
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
             ip = request.getRemoteAddr();  
+            logger.debug("ngambil dari : getRemoteAddr");
         }  
         
-        System.out.println("Ip yg login : "+ip);
+        logger.debug(ip1+" ngambil dari : Proxy-Client-IP");
+        logger.debug(ip2+" ngambil dari : WL-Proxy-Client-IP");
+        logger.debug(ip3+" ngambil dari : HTTP_CLIENT_IP");
+        logger.debug(ip4+" ngambil dari : HTTP_X_FORWARDED_FOR");
+        logger.debug(ip5+" ngambil dari : getRemoteAddr");
 		
 		signon.setTerminal(ip);
 		signon.setUserBrowser(getUserBrowser(request.getHeader("User-Agent")));
