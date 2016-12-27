@@ -6,7 +6,7 @@
 						contentStyle="overflow:auto;">
 	
 		<div class="page-title">
-			<label style="font-weight:bold;" value="Data Pegawai"/>
+			<label style="font-weight:bold;" value="Url"/>
 		</div>
 		
 		<vlayout>
