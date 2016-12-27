@@ -3,8 +3,8 @@ package id.co.sigma.zk.ui.controller.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
@@ -16,12 +16,13 @@ import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
 import id.co.sigma.common.data.query.SimpleSortArgument;
 import id.co.sigma.common.security.domain.Branch;
 import id.co.sigma.common.security.domain.SigonHistoryView;
-import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
 import id.co.sigma.zk.ui.annotations.ListOfValue;
 import id.co.sigma.zk.ui.annotations.LoVSort;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
+import id.co.sigma.zk.ui.custom.component.ListOfValueItem;
+import id.co.sigma.zk.ui.custom.component.ListOfValueModel;
 
 /**	
  * controller User LOgin detail list
@@ -51,6 +52,10 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	@ListOfValue(codeField = "branchCode", valueField = "branchCode", labelField = "branchName", lovClass = Branch.class, onDemand = false, sorts = { @LoVSort(field = "branchCode") })
 	@Wire
 	private Combobox cmbBranch;
+	
+	@QueryParameterEntry(filteredField = "activity", queryOperator = SimpleQueryFilterOperator.equal, fieldType = String.class)
+	@Wire
+	private Combobox cmbActivities;
 
 	/*@QueryParameterEntry(filteredField = "logonTime", queryOperator = SimpleQueryFilterOperator.greaterEqual,
             fieldType = Date.class)*/
@@ -182,6 +187,12 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 	}
 	
 	@Override
+	public void doAfterCompose(Component comp) throws Exception {
+		super.doAfterCompose(comp);
+		cmbActivities.setModel(new ListOfValueModel(getActivities()));
+	}
+	
+	@Override
 	protected SimpleQueryFilter[] generateFilters() {
 		/*// TODO Auto-generated method stub
 		return super.generateFilters();*/
@@ -221,10 +232,27 @@ public class UserLoginHistoryListController extends BaseSimpleListController<Sig
 				tmpFilter.add(new SimpleQueryFilter("waktu", SimpleQueryFilterOperator.lessEqual, endDate.getValue()));
 		}
 		
+		
+		
 		SimpleQueryFilter[] finalFilter = new SimpleQueryFilter[tmpFilter.size()];
 		
 		tmpFilter.toArray(finalFilter);
 		return finalFilter;
+	}
+	
+	private List<ListOfValueItem> getActivities() {
+		List<String> listActivites = new ArrayList<>();
+		listActivites.add("Login");
+		listActivites.add("Logout");
+		List<ListOfValueItem> activities = new ArrayList<>();
+		/*for (int i = 0; i <= listActivites.size(); i++) {
+			activities.add(new ListOfValueItem(listActivites.get(i), listActivites.get(i), ""));
+		}*/
+		
+		for (String data : listActivites) {
+			activities.add(new ListOfValueItem(data.toString(), data.toString(), ""));
+		}
+		return activities;
 	}
 	
 	@Override
