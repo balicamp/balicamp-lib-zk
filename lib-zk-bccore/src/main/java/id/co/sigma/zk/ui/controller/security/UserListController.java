@@ -2,16 +2,27 @@ package id.co.sigma.zk.ui.controller.security;
 
 
 
+import id.co.sigma.common.data.query.SimpleQueryFilter;
 import id.co.sigma.common.data.query.SimpleQueryFilterOperator;
+import id.co.sigma.common.data.query.SimpleSortArgument;
+import id.co.sigma.common.security.domain.Branch;
 import id.co.sigma.common.security.domain.User;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.security.server.service.IUserService;
+import id.co.sigma.zk.ui.SimpleQueryDrivenListModel;
+import id.co.sigma.zk.ui.annotations.ListOfValue;
+import id.co.sigma.zk.ui.annotations.LoVSort;
 import id.co.sigma.zk.ui.annotations.QueryParameterEntry;
 import id.co.sigma.zk.ui.controller.IReloadablePanel;
 import id.co.sigma.zk.ui.controller.base.BaseSimpleListController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Textbox;
 
@@ -42,6 +53,11 @@ public class UserListController extends BaseSimpleListController<User> implement
 	@QueryParameterEntry(filteredField="realName" , 
 			queryOperator=SimpleQueryFilterOperator.likeBothSide ) 
 	@Wire Textbox txtRealName;
+	
+	@QueryParameterEntry(filteredField = "defaultBranchCode", queryOperator = SimpleQueryFilterOperator.equal, fieldType = String.class)
+	@ListOfValue(codeField = "branchCode", valueField = "branchCode", labelField = "branchName", lovClass = Branch.class, onDemand = false, sorts = { @LoVSort(field = "branchCode") })
+	@Wire
+	Combobox cmbBranch;
 	
 	@Override
 	public User addNewData() {
@@ -122,4 +138,48 @@ public class UserListController extends BaseSimpleListController<User> implement
 			e.printStackTrace();
 		}
 	}*/
+	@Override
+	public void invokeSearch(final SimpleQueryFilter[] filters, final SimpleSortArgument[] sorts) {
+		// TODO Auto-generated method stub
+		/*super.invokeSearch(filters, sorts);*/
+		dataModel = new SimpleQueryDrivenListModel<User>() {
+
+			@Override
+			public Class<? extends User> getHandledClass() {
+				return User.class;
+			}
+
+			@Override
+			protected SimpleQueryFilter[] getFilters() {
+				return filters;
+			}
+
+			@Override
+			protected SimpleSortArgument[] getSorts() {
+				return sorts;
+			}
+			
+			@Override
+			public List<User> selectFromDB(int pageSize, int firstRowPosition) {
+				
+				List<User> retval = new ArrayList<>();
+				try {
+					retval = generalPurposeDao.list(User.class.getName()+" u inner join fetch u.branch ", "u", getFilters(), getSorts(), pageSize, firstRowPosition);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				return retval;
+			}
+		};
+		Listbox lb = getListbox();
+		dataModel.setSortArgs(getSortableFirstHeader(lb));
+		dataModel.initiate(lb.getPageSize());
+		dataModel.setMultiple(lb.isMultiple());
+		lb.setModel(dataModel);
+		if (dataModel != null && dataModel.getHoldedData().isEmpty()) {
+			lb.setEmptyMessage(Labels.getLabel("msg.search.empty_result"));
+			lb.invalidate();
+		}
+	}
 }

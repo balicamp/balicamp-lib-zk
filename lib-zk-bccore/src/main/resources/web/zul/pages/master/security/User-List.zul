@@ -26,6 +26,15 @@
 					<textbox id="txtRealName" width="250px"></textbox>
 				</cell>
 			</row>
+			<row style="background: #FFFFFF;">
+				<cell width="200px">
+					${labels.field.branch}
+				</cell>
+				<cell>
+					<combobox id="cmbBranch" width="250px" readonly="true"/>
+				</cell>
+			</row>
+			
 			</rows>	
 		</grid>	
 	</groupbox>
@@ -35,16 +44,18 @@
 		mold="paging"
 		pageSize="10" >
 		<actionListhead>
-			<listheader label="${labels.field.no}" width="25px" align="center"/>
-			<listheader label="${labels.field.user_name}" width="100px" align="center"/>
-			<listheader label="${labels.field.realname}" width="250px" align="center"/>
-			<listheader label="${labels.field.email}" width="200px" align="center"/>
+			<listheader label="${labels.field.no}" width="5%" align="center"/>
+			<listheader label="${labels.field.branch}" width="25%" align="center"/>
+			<listheader label="${labels.field.user_name}" width="20%" align="center"/>
+			<listheader label="${labels.field.realname}" width="25%" align="center"/>
+			<listheader label="${labels.field.email}" width="25%" align="center"/>
 		</actionListhead>
 		<template name="model">
 			<actionListitem editorPage="~./zul/pages/master/security/UserEditor.zul"
 						deleteMsg="Apakah anda yakin menghapus data key: ${each.userCode}"
 						controller="${listUser$composer}">
 				<listcell label="${forEachStatus.index+1}" style="text-align:right"/>
+				<listcell label="${each.branch.branchCode} - ${each.branch.branchName}" style="text-align:left"/>
 				<listcell label="${each.userCode}" style="text-align:left"/>
 				<listcell label="${each.realName}" style="text-align:left"/>
 			 	<listcell label="${each.email}" style="text-align:left"/>
