@@ -213,8 +213,11 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					for(Object data: child.getNewlyAppendedData()) {
 						
 						for(JoinKey key : keys) {
-							Object val = beanUtils.getProperty(editedData, key.parentKey());
-							beanUtils.setProperty(data, val, key.childKey());
+							if(!key.parentKey().equals("")){
+								Object val = beanUtils.getProperty(editedData, key.parentKey());
+								beanUtils.setProperty(data, val, key.childKey());
+							}
+							
 						}
 						
 						insertData((POJO)data);
@@ -259,8 +262,10 @@ public abstract class BaseSimpleEditor<POJO > extends BaseSimpleController imple
 					for(Object data: child.getNewlyAppendedData()) {
 						
 						for(JoinKey key : keys) {
-							Object val = beanUtils.getProperty(editedData, key.parentKey());
-							beanUtils.setProperty(data, val, key.childKey());
+							if(!key.parentKey().equals("")){
+								Object val = beanUtils.getProperty(editedData, key.parentKey());
+								beanUtils.setProperty(data, val, key.childKey());
+							}
 						}
 						
 						insertData((POJO)data);
