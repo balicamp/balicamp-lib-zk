@@ -1,9 +1,11 @@
 package id.co.sigma.zk.ui.controller.base;
 
+import id.co.sigma.common.security.exception.PasswordPolicyException;
 import id.co.sigma.common.server.dao.IGeneralPurposeDao;
 import id.co.sigma.common.server.service.IGeneralPurposeService;
 import id.co.sigma.zk.ui.controller.ZKEditorState;
 import id.co.sigma.zk.ui.data.ZKClientSideListDataEditorContainer;
+import javassist.expr.Instanceof;
 
 import java.io.Serializable;
 
@@ -28,16 +30,14 @@ import org.zkoss.zul.Window;
  * 
  * @author <a href='mailto:gede.sutarsa@gmail.com'>Gede Sutarsa</a>
  */
-public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable>
-extends BaseSimpleEditor<POJO> {
+public abstract class BaseSimpleDirectToDBEditor<POJO extends Serializable> extends BaseSimpleEditor<POJO> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5283385493029490963L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(BaseSimpleDirectToDBEditor.class);
+	private static final Logger logger = LoggerFactory.getLogger(BaseSimpleDirectToDBEditor.class);
 
 	@Autowired
 	protected IGeneralPurposeService generalPurposeService;
@@ -61,25 +61,25 @@ extends BaseSimpleEditor<POJO> {
 	protected void updateData(POJO data) throws Exception {
 		generalPurposeService.update(data);
 	}
-	
+
 	/**
 	 * Set 'ESC' key listener
 	 */
-	public void setEscKeyListener(){
-	    
+	public void setEscKeyListener() {
+
 		getSelf().addEventListener("onCancel", new EventListener<Event>() {
 
-		    @Override
-		    public void onEvent(Event event) throws Exception {
-			if(((Window)getSelf()).inModal()){
-			    cancelClick();
-			}else{
-			    // do nothing
+			@Override
+			public void onEvent(Event event) throws Exception {
+				if (((Window) getSelf()).inModal()) {
+					cancelClick();
+				} else {
+					// do nothing
+				}
+
 			}
-			
-		    }
 		});
-	  
+
 	}
 
 	@Listen("onClick = #btnSave")
@@ -97,28 +97,24 @@ extends BaseSimpleEditor<POJO> {
 		}
 		// -->end
 
-		/*try {
-		    bindValueFromControl(getEditedData());
-		    children = parseChildGridData();
-		} catch(WrongValueException | WrongValuesException e) {
-			throw e; // pass error to zul
-		} catch (Exception e) {
-		    logger.error("gagal simpam data. error : " + e.getMessage(), e);
-		    showErrorMessage(getEditorState(), e.getMessage());
-		    return;
-		}*/
-	
-		
+		/*
+		 * try { bindValueFromControl(getEditedData()); children =
+		 * parseChildGridData(); } catch(WrongValueException |
+		 * WrongValuesException e) { throw e; // pass error to zul } catch
+		 * (Exception e) { logger.error("gagal simpam data. error : " +
+		 * e.getMessage(), e); showErrorMessage(getEditorState(),
+		 * e.getMessage()); return; }
+		 */
+
 		try {
-		    validateData();
+			validateData();
 
-		    String confirmMsg = (String) getSelf().getAttribute(
-			    "confirmationMsg");
-		    showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
+			String confirmMsg = (String) getSelf().getAttribute("confirmationMsg");
+			showSaveConfirmationMessage(evt, getEditorState(), confirmMsg);
 
 		} catch (Exception e) {
-		    logger.error(e.getMessage(), e);
-		    showInvalidDataMessage(getEditorState(), e.getMessage());
+			logger.error(e.getMessage(), e);
+			showInvalidDataMessage(getEditorState(), e.getMessage());
 		}
 
 	}
@@ -130,8 +126,7 @@ extends BaseSimpleEditor<POJO> {
 	@Override
 	protected void saveData(final Event event) {
 
-		TransactionTemplate tmpl = new TransactionTemplate(
-				this.transactionManager);
+		TransactionTemplate tmpl = new TransactionTemplate(this.transactionManager);
 
 		try {
 
@@ -175,30 +170,49 @@ extends BaseSimpleEditor<POJO> {
 			closeCurrentEditorPanel();
 
 		} catch (Exception e) {
-			logger.error("gagal update file. error : " + e.getMessage(), e);
-			String message = e.getMessage();
-			
+			logger.error("Proses simpan/update gagal. Error: " + e.getMessage(), e);
+			String lineSep = System.lineSeparator();
+			String message = "";
+
+			if (e.getCause() instanceof PasswordPolicyException) {
+				message = ZKEditorState.ADD_NEW.equals(getEditorState()) ? Labels.getLabel("msg.save.add.fail")
+						: Labels.getLabel("msg.save.edit.fail");
+				message += lineSep + "Error:" + lineSep;
+				PasswordPolicyException ppe = (PasswordPolicyException) e.getCause();
+				for (String errMsg : ppe.getDetailMessages()) {
+					message += errMsg + lineSep;
+				}
+				showErrorMessage(message);
+				return;
+			}
+
 			/*
-			 * ini untuk handle error yang disebabkan karena user mencoba menyimpan data yang sudah disimpan oleh user/transaksi lain (beda version)
+			 * ini untuk handle error yang disebabkan karena user mencoba
+			 * menyimpan data yang sudah disimpan oleh user/transaksi lain (beda
+			 * version)
 			 */
-			if(e.getCause() instanceof OptimisticLockException){
-				message = Labels.getLabel("msg.warnings.optimistic_lock_exception");
+			if (e.getCause() instanceof OptimisticLockException) {
+				message = Labels.getLabel("msg.warnings.optimistic_lock_exception") + lineSep + "Error:" + lineSep
+						+ e.getMessage();
+
 				showErrorMessage(getEditorState(), message);
 				return;
 			}
-			
+
 			/*
-			 * ini untuk handle error yang disebabkan karena kesalahan umum pada saat simpan
+			 * ini untuk handle error yang disebabkan karena kesalahan umum pada
+			 * saat simpan
 			 */
-			if(ZKEditorState.ADD_NEW.equals(getEditorState())) {
+			if (ZKEditorState.ADD_NEW.equals(getEditorState())) {
 				message = Labels.getLabel("msg.save.add.fail");
 			} else {
-				if(children != null && children.size() > 0) {
+				if (children != null && children.size() > 0) {
 					message = Labels.getLabel("msg.save.edit.master_detail.fail");
 				} else {
 					message = Labels.getLabel("msg.save.edit.fail");
 				}
 			}
+			message = message + lineSep + "Error:" + lineSep + e.getMessage();
 			showErrorMessage(getEditorState(), message);
 			return;
 		}
@@ -215,14 +229,13 @@ extends BaseSimpleEditor<POJO> {
 	 * 
 	 * @param data
 	 */
-	public void deleteChildData(Object data,
-			ZKClientSideListDataEditorContainer<Object> container) {
+	public void deleteChildData(Object data, ZKClientSideListDataEditorContainer<Object> container) {
 		container.eraseData(data);
 	}
-	
+
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
-	    super.doAfterCompose(comp);
-	    setEscKeyListener();
+		super.doAfterCompose(comp);
+		setEscKeyListener();
 	}
 }
