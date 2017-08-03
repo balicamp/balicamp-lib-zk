@@ -21,6 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormatSymbols;
@@ -129,7 +130,24 @@ public class ReportFormController extends BaseSimpleController {
     private String reportUnit;
 
     private List<ReportParam> reportParams = new ArrayList<ReportParam>();
-    private Map<String, ComboComponent> lovCombos = new HashMap<String, ComboComponent>();
+    private Map<String, ComboComponent> comboComps = new HashMap<String, ComboComponent>();
+    
+    /**
+     * Append a combobox to list of combo components
+     * @param componentId Component ID 
+     * @param defaultValue Component default value
+     * @param combobox Combobox to append
+     */
+    private void appendComboComps(String componentId, String defaultValue, Combobox combobox) {
+        if(componentId == null || combobox == null) {
+            return;
+        }
+        
+        ComboComponent cc = new ComboComponent();
+        cc.combobox = combobox;
+        cc.defaultValue = defaultValue;
+        comboComps.put(componentId, cc);
+    }
 
     @Listen("onClick = #btnPrintPdf")
     public void printPDF() {
@@ -247,7 +265,7 @@ public class ReportFormController extends BaseSimpleController {
                     Method m = comp.getClass().getMethod(methodName, String.class);
                     m.invoke(comp, "");
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -409,14 +427,12 @@ public class ReportFormController extends BaseSimpleController {
                     });
 
                     inp.setWidgetListener("onSelect",
-                            "try {"
-                                    + "		this.smartUpdate('value', event.data.reference.value);"
-                                    + "} catch (e){}"
-                    );
+                            "try {" + "		this.smartUpdate('value', event.data.reference.value);" + "} catch (e){}");
 
                     inp.setAttribute("org.zkoss.zk.ui.updateByClient", true);
 
-
+                    // Append comboComps
+                    appendComboComps(param.getParamCode(), null, (Combobox) inp);
                 } else if ("LoVCombobox".equals(param.getParamType())) {
 
                     inp = new Combobox();
@@ -432,7 +448,7 @@ public class ReportFormController extends BaseSimpleController {
                     ComboComponent cc = new ComboComponent();
                     cc.combobox = (Combobox) inp;
 
-                    lovCombos.put(param.getParamCode(), cc);
+                    comboComps.put(param.getParamCode(), cc);
 
                     String defVal = param.getDefaultValue();
 
@@ -455,6 +471,7 @@ public class ReportFormController extends BaseSimpleController {
                                 defaultVal = defVal;
                             }
                         } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
                         }
                         ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                         ((Combobox) inp).setModel(new ListOfValueModel(list));
@@ -469,7 +486,7 @@ public class ReportFormController extends BaseSimpleController {
                                 ParsedJSONContainer con = dependencies.get(i);
                                 String cmbId = con.getAsString("comboId");
                                 String val = null;
-                                ComboComponent c = lovCombos.get(cmbId);
+                                ComboComponent c = comboComps.get(cmbId);
                                 try {
                                     if (c.combobox.getSelectedIndex() > -1) {
                                         val = c.combobox.getSelectedItem().getValue();
@@ -477,6 +494,7 @@ public class ReportFormController extends BaseSimpleController {
                                         val = "-1";
                                     }
                                 } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
                                     c.combobox.clearErrorMessage();
                                     val = c.defaultValue == null ? "-1" : c.defaultValue;
                                 }
@@ -499,6 +517,7 @@ public class ReportFormController extends BaseSimpleController {
                                         defaultVal = defVal;
                                     }
                                 } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
                                 }
                                 ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                                 ((Combobox) inp).setModel(new ListOfValueModel(list));
@@ -507,7 +526,7 @@ public class ReportFormController extends BaseSimpleController {
                             for (int i = 0; i < dependencies.length(); i++) {
                                 ParsedJSONContainer con = dependencies.get(i);
                                 String cmbId = con.getAsString("comboId");
-                                Component cdep = lovCombos.get(cmbId).combobox;
+                                Component cdep = comboComps.get(cmbId).combobox;
 
                                 cdep.addEventListener("onSelect", new EventListener<Event>() {
 
@@ -537,12 +556,26 @@ public class ReportFormController extends BaseSimpleController {
                                                 }
                                             }
                                         }
+                                        
+                                        List<String> strVals = new ArrayList<>();
+                                        for (Object obj : vals) {
+                                            if(obj instanceof String) {
+                                                strVals.add((String) obj);
+                                            } else if(obj instanceof Integer) {
+                                                strVals.add( ((Integer)obj).toString() );
+                                            } else if(obj instanceof Long) {
+                                                strVals.add( ((Long)obj).toString() );
+                                            } else if(obj instanceof BigDecimal) {
+                                                strVals.add( ((BigDecimal)obj).toString() );
+                                            }
+                                        }
 
-                                        List<ListOfValueItem> list = loadListOfValueItems(param, vals.toArray(new String[vals.size()]));
+                                        List<ListOfValueItem> list = loadListOfValueItems(param, strVals.toArray(new String[strVals.size()]));
                                         try {
                                             ((Combobox) comp).clearErrorMessage();
                                             ((Combobox) comp).setRawValue(null); //reset value selection
                                         } catch (Exception e) {
+                                            logger.error(e.getMessage(), e);
                                         }
                                         ((Combobox) comp).setItemRenderer(new ListOfValueComboitemRenderer(""));
                                         ((Combobox) comp).setModel(new ListOfValueModel(list));
@@ -552,6 +585,7 @@ public class ReportFormController extends BaseSimpleController {
                                 });
                             }
                         } catch (Exception e1) {
+                            logger.error(e1.getMessage(), e1);
                         }
                     }
 
@@ -575,25 +609,34 @@ public class ReportFormController extends BaseSimpleController {
                     } catch (Exception e) {
                         logger.error("gagal parsing JSON String: " + e.getMessage());
                     }
-
+                    
+                    // Append comboComps
+                    appendComboComps(param.getParamCode(), null, (Combobox) inp);
                 } else if ("MonthCombobox".equals(param.getParamType())) {
                     inp = new Combobox();
                     inp.setId(param.getParamCode());
                     ((Combobox) inp).setConstraint(cons);
+                    ((Combobox) inp).setReadonly(true);
 
                     List<ListOfValueItem> list = monthListOfValueItems();
                     String defaultVal = "1";
                     try {
                         defaultVal = String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                         defaultVal = "1";
                     }
                     ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                     ((Combobox) inp).setModel(new ListOfValueModel(list));
+                    
+                    // Append comboComps
+                    appendComboComps(param.getParamCode(), defaultVal, (Combobox) inp);
                 } else if ("FinancialMonthCombobox".equals(param.getParamType())) {
                 	inp = new Combobox();
                     inp.setId(param.getParamCode());
                     ((Combobox) inp).setConstraint(cons);
+                    ((Combobox) inp).setReadonly(true);
+                    
                     List<ListOfValueItem> list = monthListOfValueItems();
                     Calendar cal = Calendar.getInstance();
                     cal.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -607,14 +650,19 @@ public class ReportFormController extends BaseSimpleController {
                     try {
                         defaultVal = String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                         defaultVal = "1";
                     }
                     ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                     ((Combobox) inp).setModel(new ListOfValueModel(list));
+                    
+                    // Append comboComps
+                    appendComboComps(param.getParamCode(), defaultVal, (Combobox) inp);
                 } else if ("MinMaxCombobox".equals(param.getParamType())) {
                     inp = new Combobox();
                     inp.setId(param.getParamCode());
                     ((Combobox) inp).setConstraint(cons);
+                    ((Combobox) inp).setReadonly(true);
 
                     String parMinVal = param.getMinValue();
                     String parMaxVal = param.getMaxValue();
@@ -676,10 +724,13 @@ public class ReportFormController extends BaseSimpleController {
                             defaultVal = defVal;
                         }
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                     }
-//					((Combobox)inp).setItemRenderer(new ListOfValueComboitemRenderer(null));
                     ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                     ((Combobox) inp).setModel(new ListOfValueModel(items));
+                    
+                    // Append comboComps
+                    appendComboComps(param.getParamCode(), defaultVal, (Combobox) inp);
                 } else {
                     int mPos = param.getParamType().lastIndexOf(".");
                     String paramTypeClass = param.getParamType().substring(0, mPos);
@@ -690,6 +741,7 @@ public class ReportFormController extends BaseSimpleController {
                             ((AfterCompose) inp).afterCompose();
                         }
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                     }
                 }
 
@@ -779,7 +831,7 @@ public class ReportFormController extends BaseSimpleController {
                         Method m = inp.getClass().getMethod(valMethodName);
                         val = m.invoke(inp);
                     } catch (Exception e) {
-//						e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 }
             }
@@ -793,6 +845,7 @@ public class ReportFormController extends BaseSimpleController {
                                 SimpleDateFormat sdf = new SimpleDateFormat(dformat);
                                 sVal = sdf.format((Date) val);
                             } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
                             }
                         }
                     }
@@ -801,7 +854,7 @@ public class ReportFormController extends BaseSimpleController {
                     }
                 }
             } catch (UnsupportedEncodingException e) {
-                //todo
+                logger.error(e.getMessage(), e);
             }
         }
         return sbuf.toString();
