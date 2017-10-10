@@ -471,7 +471,7 @@ public class ReportFormController extends BaseSimpleController {
                                 defaultVal = defVal;
                             }
                         } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
+                            logger.error(e.getMessage());
                         }
                         ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                         ((Combobox) inp).setModel(new ListOfValueModel(list));
@@ -724,7 +724,7 @@ public class ReportFormController extends BaseSimpleController {
                             defaultVal = defVal;
                         }
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        logger.error(e.getMessage());
                     }
                     ((Combobox) inp).setItemRenderer(new ListOfValueComboitemRenderer(defaultVal));
                     ((Combobox) inp).setModel(new ListOfValueModel(items));
