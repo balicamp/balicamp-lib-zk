@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/security" 
+<beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
     <beans:bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
@@ -34,15 +32,15 @@
    	<beans:bean id="springSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy">
         <beans:constructor-arg>
             <beans:list>
-                <filter-chain pattern="${default.security.loginUrl}" filters="none"/>
+                <filter-chain pattern="${default.security.loginUrl}" filters="anonFilter"/>
                 <filter-chain pattern="/**"                 
                     filters="securityContextFilter,    
                     logoutFilter,                                                
-                    formLoginFilter,     
-                    requestCacheFilter,  
+                    formLoginFilter,
+                    requestCacheFilter,
                     servletApiFilter,
                     anonFilter,      
-                    sessionMgmtFilter,                                       
+                    sessionMgmtFilter,
                     formLoginExceptionTranslationFilter,
                     filterSecurityInterceptor" />
             </beans:list>
@@ -89,12 +87,28 @@
                 <beans:constructor-arg value="${default.security.loginUrl}?login_error=1"/>
             </beans:bean>
         </beans:property>
-		<beans:property name="sessionAuthenticationStrategy">
-			<beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" />
-		</beans:property>
+		<beans:property name="sessionAuthenticationStrategy" ref="sessionAuthenticationStrategy"/>
     </beans:bean>
 
-	<beans:bean id="requestCacheFilter" class="org.springframework.security.web.savedrequest.RequestCacheAwareFilter" />
+    <beans:bean id="sessionAuthenticationStrategy" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+        <beans:constructor-arg>
+            <beans:list>
+                <beans:bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+                    <beans:constructor-arg ref="sessionRegistry" />
+                    <beans:property name="maximumSessions" value="2" />
+                    <beans:property name="exceptionIfMaximumExceeded" value="true" />
+                </beans:bean>
+                <beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy" />
+                <beans:bean class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+                    <beans:constructor-arg ref="sessionRegistry" />
+                </beans:bean>
+            </beans:list>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+    <beans:bean id="requestCacheFilter" class="org.springframework.security.web.savedrequest.RequestCacheAwareFilter" />
 	
 	<beans:bean id="servletApiFilter" class="org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter" />
 	
@@ -106,7 +120,7 @@
 	<beans:bean id="sessionMgmtFilter" class="org.springframework.security.web.session.SessionManagementFilter" >
 		<beans:constructor-arg ref="securityContextRepository" />
 	</beans:bean>
-	
+
     <beans:bean id="filterSecurityInterceptor"
         class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
         <beans:property name="authenticationManager" ref="authenticationManager" />
@@ -158,5 +172,5 @@
                 <beans:bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
             </beans:list>
         </beans:constructor-arg>
-    </beans:bean> 
+    </beans:bean>
 </beans:beans>
