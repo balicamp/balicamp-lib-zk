@@ -1,0 +1,69 @@
+<zk>
+    <window id="activeSessionWindow" apply="id.co.sigma.zk.ui.controller.security.ActiveSessionController">
+        <div sclass="container-fluid">
+            <div sclass="panel panel-default">
+                <div sclass="panel-heading">Configuration</div>
+                <div sclass="panel-body">
+                    <div sclass="row">
+                        <div sclass="col-md-6 col-xs-12">
+                            <div sclass="form-group">
+                                <label value="Maximum Allowed Sessions per User:"/>
+                                <spinner id="maxSessionSpinner" style="font-size: 14px" width="100%"
+                                         constraint="no negative"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div sclass="row">
+                        <div sclass="col-md-6 col-xs-12">
+                            <button id="saveButton" sclass="btn btn-primary btn-lg" iconSclass="zk-icon-save"
+                                    autodisable="saveButton," label="Save"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div sclass="panel panel-default" style="margin: 20px 0;">
+                <div sclass="panel-heading">Current Active Session</div>
+                <div sclass="panel-body">
+                    <div sclass="row">
+                        <div sclass="col-md-12 col-xs-12">
+                            <listbox id="activeSessionListbox" mold="paging" width="100%" pageSize="10" checkmark="true"
+                                     multiple="true">
+                                <listhead>
+                                    <listheader width="5%" align="center" hflex="min"/>
+                                    <listheader label="Username" width="20%" align="center" hflex="min"/>
+                                    <listheader label="Full Name" width="25%" align="center" hflex="min"/>
+                                    <listheader label="Branch" width="15%" align="center" hflex="min"/>
+                                    <listheader label="Session Id" width="15%" align="center" hflex="min"/>
+                                    <listheader label="Last Active" width="10%" align="center" hflex="min"/>
+                                </listhead>
+                                <template name="model">
+                                    <listitem value="${each}">
+                                        <listcell/>
+                                        <listcell label="${each.principal.username}" style="text-align: left"/>
+                                        <listcell label="${each.principal.applicationUser.realName}"
+                                                  style="text-align: left"/>
+                                        <listcell
+                                                label="${each.principal.applicationUser.branch.branchCode} - ${each.principal.applicationUser.branch.branchName}"
+                                                style="text-align: left"/>
+                                        <listcell label="${each.sessionId}" style="text-align: left"/>
+                                        <listcell
+                                                label="${zkfn:formatDate(each.lastRequest, activeSessionWindow$composer.dateTimeFormatPattern)}"/>
+                                    </listitem>
+                                </template>
+                            </listbox>
+                        </div>
+                    </div>
+
+                    <div sclass="row" style="margin: 20px 0;">
+                        <button id="killSessionButton" sclass="btn btn-danger" iconSclass="zk-icon-refresh"
+                                autodisable="killSessionButton" label="Kill Session"/>
+                        <button id="refreshButton" sclass="btn btn-primary" iconSclass="zk-icon-refresh"
+                                autodisable="refreshButton" label="Refresh"/>
+                        <timer id="refreshTimer" delay="1000" onCreate="self.stop()" repeats="false"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </window>
+</zk>
